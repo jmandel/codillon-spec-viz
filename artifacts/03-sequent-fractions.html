@@ -45,7 +45,7 @@ section.sec { margin-top: 26px; border-top: 1px solid #ddd8c4; padding-top: 8px;
 .runbadge.cexl { border: 1.5px dashed darkred; color: darkred; }
 .slwrap { position: relative; margin: 2px 8px 0; }
 .step-slider { width: 100%; margin: 0; accent-color: darkblue; }
-.slider-ticks { position: relative; height: 38px; margin: 0 8px; }
+.slider-ticks { position: relative; height: 50px; margin: 0 8px; }
 .slider-tick { position: absolute; transform: translateX(-50%); color: darkblue; font-family: var(--sans); font-size: 11px; background: var(--ivory); white-space: nowrap; top: 2px; cursor: pointer; }
 .slider-tick.plain { color: #8a8aa8; cursor: default; }
 .bad-slider-tick { color: #fffff0; background: darkred; border-radius: 10px; padding: 0 6px; }
@@ -705,7 +705,6 @@ function ruleEnd(key, x, yc, st, extra) {
   if (st === 'unk') html = `<path d="${starPath(6, 0, 6.2, 2.6)}" fill="#fffff0" stroke="indigo" stroke-width="1.1"/><text x="13.5" y="3.5" fill="indigo">?</text>`;
   else if (st === 'dyn') html = `<text x="1" y="3.5" fill="slategray">∘${extra.count}</text>`;
   else if (st === 'vac') html = `<text x="1" y="3.8" fill="#666">○</text>`;
-  else if (st === 'refg') html = `<text x="1" y="3.6" fill="darkred" font-size="9">ghost</text>`;
   return N('g', key, { class: 'rend', transform: `translate(${x},${yc})` }, { html });
 }
 const CUP_IN = 'M -4.9,-12 H -15 V 0 H 15 V -12 H 4.9';
@@ -1442,11 +1441,11 @@ class Section {
       if (taken.some(t => Math.abs(t - x) < 5)) continue;
       html += `<span class="slider-tick plain" style="left:${x}%" data-i="${i}">${fmtNum(R.trace[i].s)}</span>`;
     }
-    const placed = [pos(this.idx)];
+    const rows = [[pos(this.idx)], [], []];
     R.pills.forEach(p => {
       if (p.i === this.idx) return;
-      const x = pos(p.i); const row = placed.some(t => Math.abs(t - x) < 4.5) ? 1 : 0; placed.push(x);
-      html += `<span class="slider-tick ${p.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick'}" style="left:${x}%;top:${2 + row * 16}px" data-i="${p.i}" title="${esc(p.why)}">${p.kind === 'trap' ? '💣' : '⚖\uFE0E'} ${fmtNum(p.s)}</span>`;
+      const x = pos(p.i); let row = rows.findIndex(rw => rw.every(t => Math.abs(t - x) >= 4.5)); if (row < 0) row = 2; rows[row].push(x);
+      html += `<span class="slider-tick ${p.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick'}" style="left:${x}%;top:${2 + row * 15}px" data-i="${p.i}" title="${esc(p.why)}">${p.kind === 'trap' ? '💣' : '⚖\uFE0E'} ${fmtNum(p.s)}</span>`;
     });
     const curBad = R.pills.find(p => p.i === this.idx);
     html += `<span class="slider-tick ${curBad ? (curBad.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick') : 'current-slider-tick'}" style="left:${pos(this.idx)}%;z-index:3${curBad ? ';outline:2px solid darkblue' : ''}" data-i="${this.idx}">${curBad ? (curBad.kind === 'trap' ? '💣 ' : '⚖\uFE0E ') : ''}${cur ? fmtNum(cur.s) : ''}</span>`;
@@ -1791,7 +1790,15 @@ if (QS.get('selftest')) {
   })();
 }
 
-// footer filled below
+$('#crit').innerHTML = `<h2><span class="sec" style="color:indigo">◦</span>Self-critique</h2><ul>
+<li><b>What it makes obvious.</b> Where the reasoning breaks, and which conjunct: the rule snaps at the obligation's site, only the failing chip is boxed, and the counterexample sits in the shapes. Spec bugs and code bugs separate by <i>location</i>: in S2 and P3 the header's own sequent (precondition over postcondition) breaks; in S1, S3, (a)–(d) a body line does. A needed-but-missing fact is a visible empty cup wired to the line that should have supplied it, and a darkred dotted under-mark shows where that fact was lost (line 38 in (b), line 127 in (d), line 18 in S1). In (c) the key store on line 159 keeps a <i>solid</i> rule but shows a darkred premise. The inference is valid and the premise is false, so the eye follows the wire up to the refuted loop entry at 135.</li>
+<li><b>What it hides.</b> Chips name a fact; they do not draw its extent. "Path so far has no EMPTY" and R3 are one glyph each, so <i>which</i> slot breaks reachability is only in the memory panel's arcs. Nonlinear content (the square chips) is symbolic, not geometric, so the 46341² wrap shows up only as the in-shape value and the commentary. Disjunctive results ($find) are forced into two implication chips. There are about 30 chip icons to learn; the legend and hover text carry the exact predicate.</li>
+<li><b>Two marks per bug.</b> The broken rule marks the <i>site</i> (where the obligation lives, per 01 §2.5); a second ⚖ plus the floated commentary marks the <i>line to change</i> when that differs (S3 → line 3, (a) → 146, (b) → 38, (b′) → 99, (d) → 125). At 1× the broken rule is less salient than the gutter ⚖. The gutter and commentary carry the first glance; the rule carries the explanation.</li>
+<li><b>Scale.</b> Rows never grow (45 px in B, 38 px in C). Sequents grow sideways (up to about 300 px on frame lines such as 41 and 159). Proof wires appear only for pinned, hovered or refuted sequents and run in a lane to the right with hooked drops, which avoids spaghetti. Long-range wires (159 → 136/137/143) leave the viewport; the overview strip at the left of the pane finds every ⚖ ★ ○ line in a 169-line program.</li>
+<li><b>Codillon cost.</b> <code>OperatorFraction</code> already has input and output <code>DomVec</code>s of <code>&lt;use&gt;</code> symbols and a rule position. Each slot gains a third short <code>DomVec</code> of chip <code>&lt;use&gt;</code>s (about 30 new <code>&lt;symbol&gt;</code> defs next to <code>i32_in</code>/<code>mystery_out</code>). The rule becomes two <code>&lt;rect&gt;</code>s with a status class (the break is a CSS transform, so it tweens for free). Proof wires reuse <code>Connection</code>'s cubic path and reveal mask. The checker must expose per-slot facts and the unsat core (<code>used</code>) of every proven goal, as in 01 §8. Context cups for frame obligations need a <code>FractionInfo</code> extension. Rough size: 600–900 lines of Rust plus the symbol art.</li>
+<li><b>Deviations.</b> The listings, line numbers and traces are 03's (all fixture key frames are re-derived by an embedded interpreter and self-checked on load). The predicate syntax is 01's ($-names, a named result <code>$v</code>), and long headers wrap onto a second visual row under one line number. S1's slider is the loop-head one-iteration replay; the reachable input run (step 695,119) is shown as a ghost pill. Line 15's no-overflow lemma and the probe loops' counting lemma are deliberately left <i>unknown</i>, so the unknown and held-on-this-run states appear in real programs.</li>
+<li><b>Rubric self-scores</b> (04 §4): salience 4 · blame locality 4 · kind discrimination in grayscale 4 · vocabulary continuity 5 · predicate on shape 4 · causal trail 4 · concrete witness 5 · ink economy 3 · scale 4 · edit continuity 3 (on an edit, old verdicts fade and squiggle for about 0.5 s, then the rule tweens apart and chips re-box; there is no shake, but no "fact flies off" animation either).</li>
+</ul>`;
 
 </script>
 </body>

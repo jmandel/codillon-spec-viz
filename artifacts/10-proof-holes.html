@@ -26,7 +26,7 @@ section { margin-top: 26px; border-top: 1px solid #cfcfb8; padding-top: 10px; po
 /* ---------------- legend ---------------- */
 .legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 14px; margin-top: 10px; }
 .lg { display: flex; gap: 8px; align-items: flex-start; font-family: var(--sans); font-size: 12px; line-height: 1.3; color: #222; }
-.lg .sw { flex: 0 0 auto; min-width: 74px; display: flex; justify-content: center; align-items: center; }
+.lg .sw { flex: 0 0 auto; min-width: 74px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .lg b { font-weight: 600; }
 .lgsec { grid-column: 1 / -1; font-family: var(--sans); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #777; margin-top: 4px; border-bottom: 1px solid #e2e2cc; }
 
@@ -172,7 +172,7 @@ section { margin-top: 26px; border-top: 1px solid #cfcfb8; padding-top: 10px; po
 .sstep { color: #444; }
 .sbtn { font-family: var(--sans); font-size: 11.5px; border: 1px solid #888; background: #fff; border-radius: 9px; padding: 0 8px; cursor: pointer; }
 .sbtn.dr { border-color: var(--dr); color: var(--dr); }
-.strack { position: relative; height: 40px; margin: 0 8px; }
+.strack { position: relative; height: 46px; margin: 0 8px; }
 .strack input { position: absolute; left: -8px; right: -8px; width: calc(100% + 16px); top: 14px; margin: 0; accent-color: darkblue; }
 .sticks { position: absolute; left: 0; top: 30px; width: 100%; height: 10px; overflow: visible; }
 .pill { position: absolute; top: -1px; transform: translateX(-50%); font-size: 10.5px; color: #fff; background: darkblue; border-radius: 8px; padding: 0 6px; white-space: nowrap; pointer-events: none; transition: left .12s; }
@@ -257,7 +257,7 @@ footer li { margin-bottom: 5px; }
       <h3>A1 · <code>$half</code>: a spec that is wrong (P3)</h3>
       <div class="ctl"><label><input type="radio" name="a1" value="ok"> ensures <code>$h + $h == $x</code></label><label><input type="radio" name="a1" value="P3"> P3: <code>… &amp;&amp; $h &lt; $x</code></label></div>
       <div id="A1list"></div><div id="A1strip"></div>
-      <div class="cap">The hole's witness <i>x = 0</i> is not yet replayed: outlined shapes, a hollow broken rule, hollow ⚖. Both chips are <i>spec</i> chips because the code is right. "Tighten requires" closes this hole but pushes the obligation onto the caller (watch A2).</div>
+      <div class="cap">The hole's witness <i>x = 0</i> is not yet replayed: outlined shapes, a hollow broken rule, hollow ⚖. Both chips are <i>spec</i> chips because the code is right. "Tighten requires" closes this hole but moves the obligation to the caller: once A2's P1 is fixed, a new hole opens at its line 21.</div>
     </div>
     <div class="card">
       <h3>A2 · <code>$half_or_neg1</code>: the gate inverted (P1), blame at the caller</h3>
