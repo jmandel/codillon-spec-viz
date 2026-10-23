@@ -130,7 +130,7 @@ svg.ov [data-tip]{pointer-events:all}
 "use strict";
 const D = JSON.parse(document.getElementById('data').textContent);
 const NS = 'http://www.w3.org/2000/svg';
-const ROW = 32, CODEX = 66, IND = 22, FX = 588, LX = 716, CX0 = 890, COLW = 24, PW = 1358;
+const ROW = 32, CODEX = 66, IND = 22, FX = 588, LX = 712, CX0 = 896, COLW = 27, PW = 1358, CW = 19, CH = 13, RP = 17;
 const I32 = '#6A5ACD', I32M = '#d2cee6', DR = 'darkred', INDC = 'indigo', SG = 'slategray', DB = 'darkblue', INK = '#2a2a40';
 const SANS = '"Latin Modern Sans","Fira Sans Condensed","Roboto Condensed","Arial Narrow",sans-serif';
 const SERIF = '"Latin Modern Roman","CMU Serif","Computer Modern",Georgia,"Times New Roman",serif';
@@ -160,7 +160,7 @@ const CELL_TIP = {
   trap: 'trap (💣) during this lap',
   na: 'not evaluated on this lap'
 };
-function cell(state, w = 16, h = 11) {
+function cell(state, w = CW, h = CH) {
   switch (state) {
     case 'ok': return `<rect width="${w}" height="${h}" fill="#fffff0" stroke="#8f8b72" stroke-width=".8"/>`;
     case 'fail': return `<rect width="${w}" height="${h}" fill="${DR}" stroke="${DR}"/>` + T(w / 2, h - 1.8, '⚖', { fs: 9.5, fill: '#fffff0', anchor: 'middle' });
@@ -197,9 +197,9 @@ function gutterGlyph(g) {
 function labelChip(text, st, w = 166) {
   // st: P proven, R refuted-with-witness-in-run, Rh refuted-not-replayed, U unknown, V vacuous, M missing
   let g = '', col = '#333', deco = '', op = 1;
-  if (st === 'R') { g = '⚖'; col = DR; deco = `<line x1="12" y1="12" x2="${w}" y2="12" stroke="${DR}" stroke-width="1.2"/>`; }
-  if (st === 'Rh') { g = 'h'; col = DR; deco = `<line x1="12" y1="12" x2="${w}" y2="12" stroke="${DR}" stroke-width="1" stroke-dasharray="3 2"/>`; }
-  if (st === 'U') { g = '✲'; col = INDC; deco = `<line x1="12" y1="12" x2="${w}" y2="12" stroke="${INDC}" stroke-width="1" stroke-dasharray="3 2"/>`; }
+  if (st === 'R') { g = '⚖'; col = DR; deco = `<line x1="12" y1="13" x2="${w}" y2="13" stroke="${DR}" stroke-width="1.2"/>`; }
+  if (st === 'Rh') { g = 'h'; col = DR; deco = `<line x1="12" y1="13" x2="${w}" y2="13" stroke="${DR}" stroke-width="1" stroke-dasharray="3 2"/>`; }
+  if (st === 'U') { g = '✲'; col = INDC; deco = `<line x1="12" y1="13" x2="${w}" y2="13" stroke="${INDC}" stroke-width="1" stroke-dasharray="3 2"/>`; }
   if (st === 'V') { g = '○'; col = '#444'; op = .5; }
   if (st === 'M') { g = '+'; col = INDC; }
   let gl = '';
@@ -208,7 +208,7 @@ function labelChip(text, st, w = 166) {
   else if (g === '✲') gl = `<path d="${starPath(5, 6, 5)}" fill="none" stroke="${INDC}" stroke-width="1" stroke-dasharray="2 1.2"/>`;
   else if (g === '○') gl = T(0, 10, '○', { fs: 10, fill: '#444' });
   else if (g === '+') gl = T(0, 10, '+?', { fs: 10, fill: INDC });
-  return `<g opacity="${op}">${gl}${T(14, 9.5, text, { fs: 11, fill: col, serif: 0 })}${deco}</g>`;
+  return `<g opacity="${op}">${gl}${T(14, 10, text, { fs: 12, fill: col, serif: 0 })}${deco}</g>`;
 }
 
 /* ---------------- program text analysis ---------------- */
@@ -621,11 +621,11 @@ Panel.prototype.renderLap = function ({ lp, an }) {
   const lapNo = k => replay ? replay.lap0 + k : k;
   /* vertical layout */
   let y = hy + 8; const rowY = [];
-  lp.rows.forEach((r, j) => { if (r.sep) y += 6; rowY[j] = y; y += 15; });
-  let missY = null; if (lp.missing) { missY = y; y += 15; }
-  y += 5; const mTop = y, mBase = y + 32; y += 44;
-  const bodyY = {}; (lp.body || []).forEach(b => { bodyY[b.id] = y; y += 15; });
-  y += 4; const exitY = {}; (lp.exits || []).forEach(e => e.conj.forEach((c, j) => { exitY[e.line + '_' + j] = y; y += 15; }));
+  lp.rows.forEach((r, j) => { if (r.sep) y += 6; rowY[j] = y; y += RP; });
+  let missY = null; if (lp.missing) { missY = y; y += RP; }
+  y += 5; const mTop = y, mBase = y + 36; y += 48;
+  const bodyY = {}; (lp.body || []).forEach(b => { bodyY[b.id] = y; y += RP; });
+  y += 4; const exitY = {}; (lp.exits || []).forEach(e => e.conj.forEach((c, j) => { exitY[e.line + '_' + j] = y; y += RP; }));
   const yEnd = y;
   /* title + horizon + gate */
   const act = A ? `activation ${ai + 1}/${an.acts.filter(a => a.start <= cur).length}` + (sc.calls && sc.calls.length > 1 ? ' · ' + this.callAt(A.start) : '') : 'not reached yet';
@@ -677,7 +677,7 @@ Panel.prototype.renderLap = function ({ lp, an }) {
   if (missY !== null) {
     const w = Math.max(COLW, xEnd - CX0);
     this.Lf.put(K + 'miss', LX, missY - 1, labelChip(lp.missing.label, 'M', CX0 - LX - 12) +
-      `<path d="M${CX0 - LX},1 L${CX0 - LX},12 L${CX0 - LX + w},12 L${CX0 - LX + w},1" fill="url(#fadeup)" stroke="${INDC}" stroke-width="1" stroke-dasharray="3 2"/>`,
+      `<path d="M${CX0 - LX},1 L${CX0 - LX},14 L${CX0 - LX + w},14 L${CX0 - LX + w},1" fill="url(#fadeup)" stroke="${INDC}" stroke-width="1" stroke-dasharray="3 2"/>`,
       { tip: `needed but missing fact (empty cup): the exit cannot prove the postcondition from the invariant alone.\nSuggestion: strengthen the invariant with ${lp.missing.suggest}.\nEvery lap held, so the code is fine: the spec is short.` });
   }
   /* measure staircase */
@@ -692,9 +692,9 @@ Panel.prototype.renderLap = function ({ lp, an }) {
     const r = arr[it.k], cx = it.x;
     const stat = r.kind === 'entry' ? lp.measure.entry : r.kind === 'inject' ? 'assumed' : lp.measure.pres;
     const state = !r.mOk ? 'fail' : STAT2CELL[stat];
-    const hgt = r.m >= 0 ? Math.max(1.5, 28 * r.m / maxM) : Math.min(9, 4 + 5 * Math.abs(r.m) / maxM);
+    const hgt = r.m >= 0 ? Math.max(1.5, 31 * r.m / maxM) : Math.min(9, 4 + 5 * Math.abs(r.m) / maxM);
     let h = '';
-    const bw = 14, bx = 5;
+    const bw = 17, bx = 5;
     if (r.m >= 0) {
       const top = -hgt;
       if (state === 'ok' || state === 'fail') h += `<rect x="${bx}" y="${top}" width="${bw}" height="${hgt}" fill="${I32M}" stroke="${I32}" stroke-width="1"/>`;
@@ -709,7 +709,7 @@ Panel.prototype.renderLap = function ({ lp, an }) {
     this.Lf.put(K + 'm' + it.k, cx, mBase, h, { tip: `${lp.measure.label} = ${r.m} at lap ${lapNo(it.k)}\n${r.mOk ? 'ok: ≥ 0 and below the previous lap' : 'FAILS: ' + (r.m < 0 ? 'negative' : 'did not descend')}\nstatically ${STAT_TXT[stat]}`, click: () => P.jump(r.s) });
     const top = r.m >= 0 ? mBase - hgt : mBase;
     if (prevTop !== null) stairs += `L${cx + 5 - CX0},${prevTop - mBase}L${cx + 5 - CX0},${top - mBase}`; else stairs += `M${cx + 5 - CX0},${top - mBase}`;
-    stairs += `L${cx + 19 - CX0},${top - mBase}`; prevTop = top;
+    stairs += `L${cx + 22 - CX0},${top - mBase}`; prevTop = top;
   }
   if (stairs) this.Lb.put(K + 'stairs', CX0, mBase, `<path d="${stairs}" fill="none" stroke="${INK}" stroke-width=".8" opacity=".55"/>`);
   else this.Lb.put(K + 'stairs', CX0, mBase, '');

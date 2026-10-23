@@ -28,16 +28,18 @@ label.ctl { font-family: var(--sans); font-size: 13px; margin-right: 14px; color
 .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; margin: 6px 0 4px; }
 
 /* legend */
-.legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px 18px; margin: 10px 0 6px; }
+.legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 18px; margin: 10px 0 6px; }
 .lg { display: flex; align-items: center; gap: 8px; min-height: 30px; }
 .lg svg { flex: none; }
 .lg .t { font-family: var(--sans); font-size: 12px; line-height: 1.25; color: #222; }
 .lg .t b { font-weight: 600; }
+.lg code { font-size: 12.5px; }
+.lg svg { width: 165px; }
 .lgsec { grid-column: 1 / -1; font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #777; margin-top: 6px; border-bottom: 1px dotted #ccc; }
 
 /* listing */
 .listing { position: relative; }
-.row { position: relative; height: 34px; display: flex; align-items: center; white-space: pre; }
+.row { position: relative; height: 40px; display: flex; align-items: center; white-space: pre; }
 .row .arrow { width: 16px; flex: none; }
 .row .gut { width: 40px; flex: none; text-align: right; padding-right: 10px; font-family: var(--sans); font-size: 12px; color: var(--gray); }
 .row .gut.glyph { font-size: 20px; color: var(--dark); font-family: var(--serif); cursor: pointer; }
@@ -53,9 +55,9 @@ label.ctl { font-family: var(--sans); font-size: 13px; margin-right: 14px; color
 .row .code.trap { color: var(--dark); }
 .row.cur .code { }
 .stale .row .code.edited { text-decoration: underline wavy #888; }
-.row .comm { position: absolute; right: 2px; top: 7px; font-family: var(--sans); font-size: 11px; color: var(--dark); border: 1px solid var(--dark); border-radius: 2px; padding: 1px 5px; background: var(--ivory); max-width: 330px; overflow: hidden; text-overflow: ellipsis; transition: opacity .25s; z-index: 2; }
+.row .comm { position: absolute; right: 2px; top: 10px; font-family: var(--sans); font-size: 11px; color: var(--dark); border: 1px solid var(--dark); border-radius: 2px; padding: 1px 5px; background: var(--ivory); max-width: 330px; overflow: hidden; text-overflow: ellipsis; transition: opacity .25s; z-index: 2; }
 .row .comm.ghostc { border-style: dashed; }
-.arrowmark { position: absolute; left: 0; width: 16px; height: 34px; display: flex; align-items: center; color: var(--navy); font-size: 15px; transition: transform .25s, opacity .25s; pointer-events: none; }
+.arrowmark { position: absolute; left: 0; width: 16px; height: 40px; display: flex; align-items: center; color: var(--navy); font-size: 15px; transition: transform .25s, opacity .25s; pointer-events: none; }
 svg.margin { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
 svg.margin .hit { pointer-events: all; cursor: crosshair; }
 .anim { transition: x .25s, y .25s, width .25s, height .25s, cx .25s, cy .25s, r .25s, d .25s, opacity .25s, transform .25s, fill .25s, stroke .25s; }
@@ -338,11 +340,11 @@ const SANS = '"Latin Modern Sans","Fira Sans Condensed","Roboto Condensed","Aria
 function mix(hex, t = 0.7) { const c = parseInt(hex.slice(1), 16), iv = [255, 255, 240]; const rgb = [c >> 16, (c >> 8) & 255, c & 255].map((v, i) => Math.round(v * (1 - t) + iv[i] * t)); return '#' + rgb.map(v => v.toString(16).padStart(2, '0')).join(''); }
 const MUTED = mix(COL.i32);
 const TAB = 0.15;          // width (fraction of W) of the zone beyond each wall (math values that do not fit in i32)
-// piecewise scale: |v|<=16 linear (40% of the width), 16..65536 log (34%), 65536..2^31 log (26%)
+// piecewise scale: |v|<=16 linear (50% of the width), 16..65536 log (32%), 65536..2^31 log (18%)
 function half(a) {
-  if (a <= 16) return 0.20 * a / 16;
-  if (a <= 65536) return 0.20 + 0.17 * Math.log2(a / 16) / 12;
-  return 0.37 + 0.13 * Math.log2(Math.min(a, 2147483648) / 65536) / 15;
+  if (a <= 16) return 0.25 * a / 16;
+  if (a <= 65536) return 0.25 + 0.16 * Math.log2(a / 16) / 12;
+  return 0.41 + 0.09 * Math.log2(Math.min(a, 2147483648) / 65536) / 15;
 }
 function fx(v) {
   if (v > I32MAX) return 1 + TAB * Math.min(1, Math.log2(1 + v - I32MAX) / 31);
@@ -636,7 +638,7 @@ function specsToSVG(specs) {
   }).join('');
 }
 function staticShapeSVG(sh, W = 96, H = 11, extra = {}) {
-  const pad = 12, w = W + TAB * W + 70;
+  const pad = 12, w = W + TAB * W + 40;
   const specs = shapeSpecs(sh, Object.assign({ x: pad, y: 9, W, H, k: 's', noHit: true }, extra));
   return `<svg width="${w}" height="${H + 20}" viewBox="0 0 ${w} ${H + 20}">${specsToSVG(specs)}</svg>`;
 }
@@ -709,8 +711,8 @@ const Insp = {
 // =====================================================================================================
 //  Listing (Codillon idiom: one instruction per row, gutter, fraction of shapes in the right margin)
 // =====================================================================================================
-const ROW = 34, CODEW = 610, MXOFF = 16 + 40 + 10 + CODEW + 58; // margin x inside a listing
-const STRIDE = 132, SW = 96, SH = 11;
+const ROW = 40, CODEW = 610, MXOFF = 16 + 40 + 10 + CODEW + 58; // margin x inside a listing
+const STRIDE = 172, SW = 140, SH = 13;
 const BIN = new Set(['i32.add', 'i32.sub', 'i32.mul', 'i32.and', 'i32.shr_s', 'i32.shr_u', 'i32.lt_u', 'i32.gt_u', 'i32.ge_u', 'i32.lt_s', 'i32.gt_s', 'i32.ge_s', 'i32.eq', 'i32.ne']);
 function arity(prog, I) {
   const op = I.op;
@@ -810,15 +812,15 @@ class Listing {
         pos[`${ln}i${j}`] = [x, y + SH / 2];
       });
       const nIns = (A.ins || []).length;
-      if (nIns && (A.outs || []).length || A.rule) specs.push(E.path(`${this.key}${ln}rule`, 2, `M ${this.mx - 4} ${top + 19} L ${this.mx + Math.max(1, nIns, (A.outs || []).length) * STRIDE - 30} ${top + 19}`, { stroke: '#333', 'stroke-width': 1, fill: 'none' }));
+      if (nIns && (A.outs || []).length || A.rule) specs.push(E.path(`${this.key}${ln}rule`, 2, `M ${this.mx - 4} ${top + 21.5} L ${this.mx + Math.max(1, nIns, (A.outs || []).length) * STRIDE - 30} ${top + 21.5}`, { stroke: '#333', 'stroke-width': 1, fill: 'none' }));
       (A.outs || []).forEach((sh, j) => {
-        if (!sh) return; const x = this.mx + j * STRIDE, y = top + 22; const k = `${this.key}${ln}o${j}`;
+        if (!sh) return; const x = this.mx + j * STRIDE, y = top + 25; const k = `${this.key}${ln}o${j}`;
         sh.kind = 'out'; reg.set(k, sh); specs.push(...shapeSpecs(sh, { x, y, W: SW, H: SH, k }));
         pos[`${ln}o${j}`] = [x, y + SH / 2];
       });
       if (A.chips && A.chips.length) {
         const cx = this.mx + Math.max(nIns, (A.outs || []).length, A.chipCol || 0) * STRIDE + (nIns || (A.outs || []).length ? 6 : 0);
-        specs.push(...chipSpecs(A.chips, cx, top + (A.chipY || 11), `${this.key}${ln}c`));
+        specs.push(...chipSpecs(A.chips, cx, top + (A.chipY || 13) + (A.chipY ? 2 : 0), `${this.key}${ln}c`));
       }
     }
     // connections: output (left edge) -> input cup (left edge), bulging into the channel
@@ -871,7 +873,8 @@ class Slider {
     });
     const cs = cfg.val; const lbl = `step ${cs}${cfg.offsetNote ? cfg.offsetNote(cs) : ''}`;
     const w = lbl.length * 5.6 + 12;
-    h += `<g><rect x="${X(cs) - w / 2}" y="${cfg.ghost ? 20 : 4}" width="${w}" height="14" rx="7" fill="${(cfg.bad || []).some(b => b.s === cs) ? 'darkred' : '#00008b'}"/><text x="${X(cs)}" y="${cfg.ghost ? 30.5 : 14.5}" font-size="10" text-anchor="middle" fill="#fffff0" font-family='${SANS}'>${lbl}</text></g>`;
+    const px = Math.max(w / 2, Math.min(W - w / 2, X(cs)));
+    h += `<g><rect x="${px - w / 2}" y="${cfg.ghost ? 20 : 4}" width="${w}" height="14" rx="7" fill="${(cfg.bad || []).some(b => b.s === cs) ? 'darkred' : '#00008b'}"/><text x="${px}" y="${cfg.ghost ? 30.5 : 14.5}" font-size="10" text-anchor="middle" fill="#fffff0" font-family='${SANS}'>${lbl}</text></g>`;
     this.svg.innerHTML = h;
     this.svg.querySelectorAll('[data-jump]').forEach(g => g.addEventListener('click', () => this.onChange(+g.getAttribute('data-jump'))));
   }

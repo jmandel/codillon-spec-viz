@@ -15,3 +15,9 @@ followed by the coordinator's own observations from the screenshots and the file
 - The S1 picture is the best single rendering of the overflow story so far: the product strip rises above the 2^31−1 ceiling, a dotted "machine reads −2147479015" echo drops to the bottom, r steps above √n, the decreases staircase falls below 0, all on one shared x-axis.
 - Checkpoint discipline (violations only count at loop-head arrivals / operation boundaries / refined writes; mid-operation excursions are gray dashed) is the right semantics and mirrors 06's "R open".
 - Weak spots the builder names honestly: blame sits at the obligation site not the edit (S3: ⚖ on line 6, fix on line 3); "unknown" only appears in Section A; boolean facts have no strip (bug c first goes darkred at step 86, not 43).
+
+## 07 · Witness track — self 4,3,4,5,2,4,5,5,3,3
+- The core move works and is the most Codillon-native of the three so far: a solver witness is a dashed ghost track above the slider, replay drops it onto the real slider as a ringed ⚖ pill on its own "witness band" labelled w1…wN beside the student's run; the S1 view shows the one-iteration loop-head replay with a before/after card, a darkred input cup on `i32.gt_s`, and a dashed wrap-blame curve back to `i32.mul` annotated "46341·46341 = 2147488281 → −2147479015".
+- The substituted-predicate card (values on top, evaluated sides below, false conjunct underlined, later conjuncts dimmed) is the clearest rendering of *why* a predicate is false in any prototype; the hash-table version splits `$find`'s either/or ensures into groups.
+- Spurious witnesses are handled honestly: struck through, obligation falls back to unknown. Six states demonstrated on one obligation in A3.
+- Weakness the builder admits and I agree with: shapes never carry predicates (predicate-on-shape 2); facts only appear in the card when something fails. This idea is a complement to 01/03/04, not a substitute.

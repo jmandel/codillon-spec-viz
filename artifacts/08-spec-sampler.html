@@ -1817,7 +1817,7 @@ function hashCellTip(r, k, s, kind) {
 }
 function drawMemory(host, f, showStrong) {
   host.innerHTML = '';
-  if (!f || !f.slots) { host.append(el('div', { class: 'cap' }, 'no state')); return; }
+  if (!f || !f.slots) { host.append(el('div', { class: 'cap' }, 'No admissible run to show: requires false excludes every call.')); return; }
   const W = 470, sw = 56;
   const svg = sv('svg', { width: W, height: 92 });
   svg.append(sv('text', { x: 0, y: 10, 'font-size': 10, fill: '#555', 'font-family': 'Arial Narrow, sans-serif' }, 'memory at this step: slot  [state · key · value]'));
