@@ -31,20 +31,23 @@ as the slider moves. **Hash table.** Each memory slot is a tiny i32 triple of sh
 exactly three legal points (0,1,2); a `key` shape's region is "in M" (dot-pattern of model keys).
 **Risk.** Scale compression inside a 30-px shape; must zoom on hover.
 
-## 2. Fences on margin rulers
-**Concept.** A second annotation column to the right of the fractions: for each instruction that
-produces a value with a refinement, a small horizontal *ruler* (number line) with the predicate drawn as
-*fences* (bounds), *hatching* (congruence classes), and *pins* (equality to another named value, with a
-tie-line back to that value's ruler). The runtime value is a bead on the ruler. Dependent bounds are
-fences whose position is tied to another bead (as the slider moves, the fence moves). Rulers for
-the same variable across lines are vertically aligned so the eye can follow a value down the program.
-**Bug made obvious.** The bead lands on the wrong side of a fence: fence turns darkred, bead gets a
-💣-like "broken fence" glyph in the gutter at the first offending step; the slider tick for that step is darkred.
-Static: the producer's permitted range (drawn as a bracket under the ruler) overhangs the consumer's fence.
-**Number theory.** gcd: ruler for `$x` and `$y` with the invariant `gcd(x,y) = gcd(a,b)` as a pin to a
-ghost bead; termination measure as a ruler that must strictly shrink each iteration (bead must move left).
-**Hash table.** The probe index ruler has fences at 0 and cap; the un-masked index escapes past the fence.
-**Risk.** Many rulers = clutter; show only for refined values and the hovered dataflow chain.
+## 2. Wraparound ring with twin ticks (overflow made spatial)
+**Concept.** Wasm integers have no signedness; the *operator* chooses (`gt_s` vs `gt_u`). Draw the i32
+value space not as a line but as a **ring (clock)** with a seam at the top where `0x7fffffff + 1` wraps to
+`−2^31`. Each refined value gets a small ring in the margin: the admitted region is a shaded arc with
+fence posts (filled = inclusive, hollow = exclusive); the runtime value is a bead on the ring with **two
+tick labels**, its signed and unsigned reading. Mathematical predicates (`($r+1)*($r+1)` in ℤ) are drawn
+as a second, *unrolled* arc that may extend past the seam: the machine value is where that arc lands after
+wrapping. Dependent bounds are fences tethered to another ring's bead; they move as the slider moves.
+**Bug made obvious.** Overflow = the bead *jumps the seam*: the unrolled arc crosses the top of the clock
+and the bead reappears on the far side, with the seam flashing darkred and the gutter showing `⚖`. Signed
+vs unsigned confusion = the two tick labels disagree *and* the operator's chosen reading is the one outside
+the fence. Un-masked index = bead runs past a fence at 16 on a 16-slot ring.
+**Number theory.** isqrt: the `sq := sq + 2r + 1` ring shows `sq` creeping toward the seam as `r → 46340`;
+the signed-comparison bug is the bead crossing the seam and then being read as negative by `gt_s`.
+**Hash table.** The 16-slot table *is* a ring (index `& 15`), so the same glyph draws the probe sequence as
+an arc around the table ring; the two rings rhyme.
+**Risk.** Rings are small; need a hover zoom and a linear fallback for non-wrapping predicates.
 
 ## 3. Sequent fractions (hypotheses over conclusions)
 **Concept.** Extend the fraction glyph from *stack types* to *knowledge*. Above the rule: the facts
@@ -124,20 +127,24 @@ the exact arithmetic that lied.
 **Hash table.** The 20-step tombstone sequence becomes a witness run whose last step fails `lookup ensures`.
 **Risk.** Multiple counterexamples per program; show the shortest first, others collapsed.
 
-## 8. Spec sampler grid (edge-case heatmap at the function header)
-**Concept.** Treat the spec as an oracle and *sample* it. At each function header, a small grid of
-cells, one per sampled input (edge cases 0, 1, −1, INT_MAX, INT_MIN, powers of two, plus random, plus
-any solver witness), ordered by magnitude. Cell fill: ivory = ensures holds; darkred = fails; gray =
-excluded by requires; pale-striped = ensures was *vacuously* true (did not depend on the result).
-Hover shows the input and output; click loads that input as the current run on the slider.
-**Bug made obvious.** Off-by-one and overflow bugs light up only the *edge* cells; a wrong spec lights up
-*everything*; a vacuous spec shows the pale stripe everywhere (and a hollow-outline glyph); an
-inconsistent `requires` grays out every cell. Patterns, not messages.
-**Number theory.** Perfect for isqrt/gcd/pow_mod: one-dimensional or two-dimensional grids.
-**Hash table.** Inputs are short *operation sequences*; grid rows = sequence templates
-(insert/insert-collide/delete/lookup…), columns = key seeds. The tombstone bug lights exactly the
-row "insert A, insert B colliding, delete A, lookup B".
-**Risk.** Sampling is not proof; must be visually subordinate to proven status (idea 3/5) and labeled as such.
+## 8. Spec sampler: relation plots and edge-case grids (coverage, not proof)
+**Concept.** Treat the spec as an oracle and *sample* it, then draw the samples **on the spec's own
+shape**. For a dependent result (`r*r <= n < (r+1)*(r+1)`), a small 2D **relation plot** at the function
+header: input on the x-axis, result on the y-axis, the spec region shaded in the type color (a staircase
+here, a line for `y == 2x`, a half-plane for `y >= x`). Every executed call (the student's run, edge-case
+probes 0, 1, −1, INT_MAX, INT_MIN, powers of two, and any solver witness) adds a point; points inside the
+shading are ivory, outside are darkred and clickable (jump the slider there). For multi-input or
+sequence-valued specs (the hash table) the plot degrades to an **edge-case grid**: rows = operation
+templates, columns = key seeds; cell = holds / fails / excluded-by-requires / vacuous (pale stripe).
+The unshaded, unvisited part of the input range is left visibly *blank* so one green run reads as
+one point, never as proof.
+**Bug made obvious.** Off-by-one and overflow bugs light up only the edge points (the top-right corner of
+the plot for isqrt); a wrong spec lights up everything; a vacuous `ensures` has no shaded region at all
+(and a `○` glyph); an inconsistent `requires` grays out every cell. The student reads *patterns*.
+**Number theory.** isqrt and gcd are one- and two-input functions with drawable relations.
+**Hash table.** The tombstone bug lights exactly the row "insert A, insert B colliding, delete A, lookup B".
+**Risk.** Sampling is not proof; the plot must sit visually *below* proven status (ideas 3/5/10) and carry
+a "sampled" label; large input spaces need log-scaled axes.
 
 ## 9. Envelope strips (trajectory inside the spec band over time)
 **Concept.** For each refined local/global (and selected memory cells), a horizontal *strip* whose
@@ -171,12 +178,22 @@ tombstone-aware invariant.
 ---
 
 ## Cross-cutting consistency rules for all ten prototypes
-- Status palette (never color-only; each also has a glyph/line style):
-  - proven: ivory/none (silence is success, like a numbered line today)
-  - unknown / needs hint: indigo, dashed, `?`
-  - false with counterexample: darkred, broken/solid, new gutter glyph `⚖` ("spec violated")
-  - checked only at runtime (dynamic): slate, dotted
-  - vacuous / trivially true: hollow outline, glyph `○`
-- Keep: ✗ invalid, 💣 trap, 𝄞 malformed, 𝄠 synthetic. Add exactly one new gutter glyph for spec violation.
-- Runtime values keep appearing *inside* shapes; predicates never replace values, they frame them.
-- Everything that appears/disappears animates (0.25s) so the student sees what their edit changed.
+Six epistemic states, each with its own look, readable in grayscale (never color-only):
+| state | color | line/shape style | glyph |
+|---|---|---|---|
+| proven | none (ivory) | solid, quiet | gray line number (silence is success) |
+| refuted, witness replayed | darkred | solid, broken rule / spill / seam flash | `⚖` in gutter; darkred slider pill |
+| refuted, witness not yet replayed | darkred outline only | dashed "ghost" track above the slider; outlined shapes | `⚖` hollow |
+| held on this run only (dynamic check) | slategray | dotted | small `∘` tick count, never a check mark |
+| unknown / timeout / needs hint | indigo | dashed, `?` | star-family (Codillon's "mystery" star) |
+| assumed / admitted / vacuous | ghosted (50% opacity) | hollow outline | `○`; everything downstream also ghosted |
+Also: stale verdicts (text edited since checking) fade to 40% and squiggle until re-checked.
+- Keep ✗ invalid, 💣 trap, 𝄞 malformed, 𝄠 synthetic end. Gutter precedence: 💣 > 𝄞 > ⚖ > ✗ > unknown-star > number.
+- No green anywhere. Darkred means *violated* and nothing else (never "changed", never "interesting").
+- Compound predicates are split into **conjunct chips** that pass or fail separately.
+- Every darkred leads to a witness one click away (slider jump); if there is no witness it is not darkred.
+- Runtime values keep appearing *inside* shapes; predicates frame values, never replace them.
+- Everything that appears/disappears/moves tweens (0.25s). The shake is reserved for *refused edits*.
+- Annotations live in the right margin at fixed row height; richer pictures open on hover/selection and can be pinned.
+- Surface syntax for specs follows 01-language-design.md: `(param $n (i32 | 0 <= $n))`, `(@invariant …)`,
+  `(@decreases …)`, `(@ensures …)`, `(@assert …)`, `(@use lemma …)`, `(@ghost …)`, `(@region …)`.

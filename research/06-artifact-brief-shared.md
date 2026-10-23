@@ -62,3 +62,15 @@ resources: no CDN scripts, no web fonts, no images. Vanilla HTML + CSS + JS + in
   visually distinct and all appear somewhere in the page; (4) runtime values appear inside shapes as the slider moves.
 - Do not modify files outside `artifacts/NN-*.html` (you may write scratch files under
   `/home/jmandel/hobby/.agent-scratch/codalon-viz/`). Do not run git commands.
+
+## Addendum (after research): status model and syntax
+- Use the six-state table at the end of 05-ten-visualization-ideas.md verbatim. All six states must appear
+  somewhere in your page and be told apart in grayscale (test by adding `filter: grayscale(1)` to body once).
+- Spec surface syntax follows 01-language-design.md §1 (refinements `(T | P)`, `(@invariant)`, `(@decreases)`,
+  `(@ensures)`, `(@assert)`, `(@use)`, `(@ghost)`, `(@region)`). Use the isqrt listing in 01 §5 as the canonical
+  isqrt program unless 03-sample-programs.md supersedes it; if the two differ, prefer 03's *traces/fixture* and
+  01's *syntax*, and say so in your footer.
+- Obligations have a *site* (wire / frame / line, see 01 §2.5). Draw wire obligations on the input cup,
+  frame obligations on the frame line at the br/end, line obligations on the annotation line itself.
+- Counterexamples come in two kinds (01 §2.8): a reachable *input* and a *loop-head state* ("invariant too weak").
+  Distinguish them: an input witness is a full run; a loop-head witness is a one-iteration replay.
