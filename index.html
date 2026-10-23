@@ -37,6 +37,16 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
   <p>One page, written as if the design were decided: a type is a set, a refinement is a region inside the shape, the fraction is a sequent, a failed obligation is an inserted hole line, a counterexample is a run on the slider, and density lives in lenses. Walks through parity, integer square root and the hash table with every seeded bug, live.</p>
 </div>
 
+<h2>The real editor</h2>
+<p>Refined Codillon is now running in the actual editor (a fork of Codillon): specifications are parsed, erased from the binary, and checked at run time, drawn in Codillon's own idiom. Open an example in a new tab:
+<a href="editor/#ex=parity-p1&step=fail" target="_blank">parity, gate inverted</a> ·
+<a href="editor/#ex=isqrt-s3&step=fail" target="_blank">isqrt starting at 1</a> ·
+<a href="editor/#ex=isqrt-s2&step=fail" target="_blank">isqrt spec bug</a> ·
+<a href="editor/#ex=triangle-bug&step=fail" target="_blank">refined local spills</a> ·
+<a href="editor/#ex=gcd-g1&step=fail" target="_blank">gcd trap</a> ·
+<a href="editor/EXAMPLES.html">all examples</a>.
+Source: <a href="https://github.com/jmandel/codillon/tree/refined">github.com/jmandel/codillon, branch refined</a>; plan: <a href="research/12-implementation-plan.html">research 12</a>.</p>
+
 <h2>Ten prototypes</h2>
 <p class="status">Each page follows the same contract: legend → primitive in isolation → integer square root (or gcd) with a step slider and a “seed bug” control → an 8‑slot open‑addressing hash table with the same → self‑critique. Everything is a single self‑contained HTML file.</p>
 <div class="gallery" id="gallery">

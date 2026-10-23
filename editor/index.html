@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/codillon-spec-viz/editor/codillon-aab2c0f160846f05.css" integrity="sha384-IDeFJUjixoC4qCDHV4f/1WR9bb/vPWtSldNgoetzLkPmR9QoAQHLCcg38z6bk+oD"/>
+    
+    
+    <link rel="icon" href="/codillon-spec-viz/editor/favicon-7b39a1b948b8e6e8.ico" integrity="sha384-RuFb1jjOrXdGHaenqsl++de3DxpDlbW0jxmi4Z9GWbvf23t3/fubp0jaSz06g3u/"/>
+    <title>Codillon</title>
+    <script>
+      // Embed mode (#...&embed=1): mark the document, and keep the parent frame informed
+      // of our height so it can size the iframe to fit.
+      (function () {
+        function isEmbed() { return /(^#|&)embed=1(&|$)/.test(location.hash); }
+        var last = -1;
+        function post() {
+          if (!isEmbed() || window.parent === window) return;
+          var h = Math.ceil(Math.max(document.documentElement.scrollHeight,
+                                     document.body ? document.body.getBoundingClientRect().bottom : 0));
+          if (h !== last) {
+            last = h;
+            window.parent.postMessage({ type: "codillon-height", height: h }, "*");
+          }
+        }
+        function apply() {
+          document.documentElement.classList.toggle("embed", isEmbed());
+          post();
+        }
+        apply();
+        window.addEventListener("hashchange", apply);
+        window.addEventListener("load", post);
+        var ro = new ResizeObserver(post);
+        ro.observe(document.documentElement);
+        document.addEventListener("DOMContentLoaded", function () {
+          ro.observe(document.body);
+          new MutationObserver(function () { requestAnimationFrame(post); })
+            .observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["height", "class"] });
+        });
+      })();
+    </script>
+  <link rel="modulepreload" href="/codillon-spec-viz/editor/codillon-78f0c15115b92af3.js" crossorigin="anonymous" integrity="sha384-kf4CTLhSsnm0R0/Lzclag5gHZ26UQnNuMeU/SLbDcKnkYhzmTq1aiydH1BxReRKP"><link rel="preload" href="/codillon-spec-viz/editor/codillon-6529cb03dfea8d3b_bg.wasm" crossorigin="anonymous" integrity="sha384-J+OF9mMKVUs3bX1grXGlj9DE3ru7cfLXMWLS1ty9GvY0ewiIkof+wkcpZHTXapFe" as="fetch" type="application/wasm"></head>
+  <body>
+<script type="module">
+import init, * as bindings from '/codillon-spec-viz/editor/codillon-78f0c15115b92af3.js';
+const wasm = await init({ module_or_path: '/codillon-spec-viz/editor/codillon-6529cb03dfea8d3b_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
