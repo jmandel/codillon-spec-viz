@@ -56,6 +56,7 @@ svg.listing *, #legend * { transition: opacity .25s ease, d .25s ease, fill .25s
 .gstar { fill: none; stroke: indigo; stroke-width: 1.2; stroke-dasharray: 2 1.4; }
 .frame { stroke: #c4c0b0; fill: none; stroke-width: 1; }
 .note { font: 11.5px "Arial Narrow", sans-serif; fill: darkred; text-anchor: end; }
+.notebox { fill: #fffff0; stroke: darkred; stroke-width: 1; }
 .specul { stroke: darkred; stroke-width: 1.6; stroke-dasharray: 2.5 2; }
 .arrow { fill: #000080; }
 /* fractions */
@@ -85,10 +86,10 @@ svg.listing *, #legend * { transition: opacity .25s ease, d .25s ease, fill .25s
 .lane.hollowi { stroke: #fbfbf0; stroke-width: 1.5px; }
 .lane.stub { }
 .ghostlane { fill: none; stroke: darkred; stroke-width: 1.25px; stroke-dasharray: 5 2 1.2 2; }
-.whisk { fill: none; stroke: var(--i32); stroke-width: 1; }
+.whisk { fill: none; stroke: var(--i32); stroke-width: .9; stroke-linecap: round; }
 .whisk.root { stroke: darkred; stroke-width: 1.5; }
 .birth { fill: var(--i32); } .birth.bad { fill: darkred; }
-.blabel { font: 10px "Arial Narrow", sans-serif; fill: #4a3fa0; text-anchor: start; }
+.blabel { font: 10px "Arial Narrow", sans-serif; fill: #4a3fa0; text-anchor: end; }
 .blabel.unkl { fill: indigo; } .blabel.ghostl { fill-opacity: .5; }
 /* chips (badges) */
 .chip { stroke-width: 1; }
@@ -117,7 +118,7 @@ svg.listing *, #legend * { transition: opacity .25s ease, d .25s ease, fill .25s
 .slot.phantom { fill: none; stroke: darkred; stroke-dasharray: 4 3; }
 .memidx { font: 10px "Arial Narrow", sans-serif; fill: #777; text-anchor: middle; } .memidx.bad { fill: darkred; }
 .stt { font: bold 12px "Arial Narrow", sans-serif; fill: #444; }
-.mshape { fill: var(--i32); } .mval { font: 8.5px "Arial Narrow", sans-serif; fill: #fff; text-anchor: middle; }
+.mshape { fill: var(--i32); } .mshape.mempty { fill: none; stroke: #c9c4e4; } .mval { font: 8.5px "Arial Narrow", sans-serif; fill: #fff; text-anchor: middle; }
 .memlab { font: 11px "Arial Narrow", sans-serif; fill: #333; } .memlab.small { font-size: 9px; fill: #888; } .memlab.bad { fill: darkred; }
 .pageend { stroke: #333; stroke-width: 2.5; }
 .iptr { fill: #6A5ACD; } .iptr.bad { fill: darkred; }
@@ -502,7 +503,7 @@ function modelParity(bug) {
     chipAt: { '19:f': 20 },
     tags: { '8>10': 'param', '14>15': '$is_even', '14>16': '$is_even', '21>22': '$half', '20>21': 'if' },
     roots: P1 ? { 15: 'negation gone: gate inverted' } : P2 ? { 10: 'shr_u: v+v=x not born' } : {},
-    spec: P3 ? { 7: ['v < x', 'spec asks for a fact nothing births'] } : {},
+    spec: P3 ? { 7: ['v < x', 'spec asks for a fact nothing births', 11] } : {},
   };
 }
 
@@ -567,7 +568,7 @@ function modelIsqrt(bug, hint) {
     },
     tags: { '9>11': 'inv', '12>14': 'inv', '19>21': 'inv', '16>17': 'param', '26>27': 'exit' },
     roots: S1 ? { 15: 'product leaves the signed range', 17: 'gt_s reads it signed' } : S3 ? { 3: 'r starts at 1' } : {},
-    spec: S2 ? { 1: ['v * v < n', 'spec: < where the code gives ≤'] } : {},
+    spec: S2 ? { 1: ['v * v < n', 'spec: < where the code gives ≤', 27] } : {},
     gate: [6],
   };
   if (S1 || S3) ghostify(m, ['9>11', '12>14', '19>21', '11>15', '14>15', '21>22', '15>17', '17>18', '26>27'],
@@ -992,8 +993,8 @@ class Listing {
       else if (g.fray) items.gutter.push({ k: 'g' + ln, t: 'path', a: { d: `M${G.NUM_X - 17},${y + 21} L${G.NUM_X - 7},${y + 21} M${G.NUM_X - 7},${y + 21} L${G.NUM_X},${y + 15} M${G.NUM_X - 7},${y + 21} L${G.NUM_X + 1},${y + 21} M${G.NUM_X - 7},${y + 21} L${G.NUM_X},${y + 27}`, class: 'gfray' }, tip: 'a needed fact frays (dies) at this line: ' + m.roots[ln] });
       else if (g.unk) items.gutter.push({ k: 'g' + ln, t: 'path', a: { d: starD(G.NUM_X - 8, y + 21, 8), class: 'gstar' }, tip: 'unknown: the checker needs a hint for a fact on this line' });
       else items.gutter.push({ k: 'g' + ln, t: 'text', a: { x: G.NUM_X, y: y + 25, class: 'num' + (o.kind === 'func' || o.kind === 'meta' ? ' metanum' : '') }, x: String(ln) });
-      if (m.roots && m.roots[ln]) items.over.push({ k: 'note' + ln, t: 'text', a: { x: G.W - 6, y: y + 25, class: 'note' }, x: m.roots[ln] });
-      else if (m.spec && m.spec[ln]) items.over.push({ k: 'note' + ln, t: 'text', a: { x: G.W - 6, y: y + 25, class: 'note' }, x: m.spec[ln][1] });
+      const nt = (m.roots && m.roots[ln]) || (m.spec && m.spec[ln] && m.spec[ln][1]);
+      if (nt) { const w = measure(nt, 11.5) + 12; items.over.push({ k: 'nb' + ln, t: 'rect', a: { x: G.W - 4 - w, y: y + 12, width: w, height: 17, rx: 2, class: 'notebox' } }); items.over.push({ k: 'note' + ln, t: 'text', a: { x: G.W - 10, y: y + 24.5, class: 'note' }, x: nt }); }
     });
     // frames (block brackets)
     for (const name of this.prog.order) {
@@ -1017,14 +1018,14 @@ class Listing {
           const cx = G.XC + (k - (nIn - 1) / 2) * G.CUP_DX; const c = this.connOf(r.line, k);
           const val = c && hasRun ? this.valueAt(c.P, cur) : null;
           items.frac.push({ k: 'cup' + r.line + ':' + k, t: 'path', a: { d: `M${cx - 15},${y + 5} L${cx - 15},${y + 16} L${cx + 15},${y + 16} L${cx + 15},${y + 5}`, class: 'cup' + (c ? '' : ' emptycup') } });
-          if (val) items.frac.push({ k: 'cv' + r.line + ':' + k, t: 'text', a: { x: cx, y: y + 14, class: 'val in' + (val.fresh ? '' : ' old') }, x: fmtVal(val.v) });
+          if (val) items.frac.push({ k: 'cv' + r.line + ':' + k, t: 'text', a: { x: cx, y: y + 14, class: 'val in' + (val.fresh ? '' : ' old') }, x: fmtVal(val.v), tip: 'value arriving: ' + val.v + (val.fresh ? '' : '  (from an earlier iteration / call)') });
         }
         items.frac.push({ k: 'rule' + r.line, t: 'line', a: { x1: G.XC - 26, x2: G.XC + 26, y1: y + 19.5, y2: y + 19.5, class: 'rule' } });
       }
       if (o.outs) {
         const val = shapeVal(r.line);
         items.frac.push({ k: 'out' + r.line, t: 'rect', a: { x: G.XC - 15, y: y + 22, width: 30, height: 11, class: 'outshape' + (val && !val.fresh ? ' oldshape' : '') } });
-        if (val) items.frac.push({ k: 'ov' + r.line, t: 'text', a: { x: G.XC, y: y + 30.5, class: 'val out' }, x: fmtVal(val.v) });
+        if (val) items.frac.push({ k: 'ov' + r.line, t: 'text', a: { x: G.XC, y: y + 30.5, class: 'val out' }, x: fmtVal(val.v), tip: 'value produced: ' + val.v + ' (unsigned ' + (val.v >>> 0) + ')' + (val.fresh ? '' : '  — old: from an earlier iteration / call') });
         if (!nIn) items.frac.push({ k: 'rule' + r.line, t: 'line', a: { x1: G.XC - 26, x2: G.XC + 26, y1: y + 19.5, y2: y + 19.5, class: 'rule' } });
       }
     }
@@ -1058,7 +1059,7 @@ class Listing {
       });
       // birth labels (left of the trunk)
       const born = shown.filter(s => s.born && !s.vacant && !s.fray);
-      if (born.length) items.over.push({ k: 'bl' + c.key, t: 'text', a: { x: tx + 4, y: S[1] - 8, class: 'blabel' + (born.every(s => s.assumed) ? ' ghostl' : born.some(s => s.unknown) ? ' unkl' : '') }, x: '✦ ' + born.map(s => s.f.label + (s.unknown ? '?' : '')).join(' · ') + ((m.tags || {})[c.key] ? '  ← ' + m.tags[c.key] : ''), tip: 'born at line ' + c.P + ':\n' + born.map(s => '  ' + s.f.text).join('\n') + ((m.tags || {})[c.key] ? '\nsource: ' + m.tags[c.key] : '') });
+      if (born.length) items.over.push({ k: 'bl' + c.key, t: 'text', a: { x: tx - 8, y: S[1] + 3.5, class: 'blabel' + (born.every(s => s.assumed) ? ' ghostl' : born.some(s => s.unknown) ? ' unkl' : '') }, x: '✦ ' + born.map(s => s.f.label + (s.unknown ? '?' : '')).join(' · ') + ((m.tags || {})[c.key] ? '  ← ' + m.tags[c.key] : ''), tip: 'born at line ' + c.P + ':\n' + born.map(s => '  ' + s.f.text).join('\n') + ((m.tags || {})[c.key] ? '\nsource: ' + m.tags[c.key] : '') });
       if (extra > 0) items.over.push({ k: 'ex' + c.key, t: 'text', a: { x: tx + 8, y: (ya + yb) / 2, class: 'blabel' }, x: '+' + extra, tip });
     }
     // ----- chips -----
@@ -1105,7 +1106,7 @@ class Listing {
       items.rails.push({ k: 'rb' + r.id, t: 'path', a: { d: segsToD(segs), class: 'railbase', 'stroke-width': 5 + 4.6 * n }, tip });
       const SS = sampleSegs(segs, 56);
       r.st.slice(0, 3).forEach((s, j) => drawLane(items.rails, 'r' + r.id + s.id, SS, offs[j], spreadStart, s, evFresh ? ev.ok[j] : undefined, tip, j));
-      if (r.label) items.rails.push({ k: 'rl' + r.id, t: 'text', a: { x: xr + 9, y: yS + 16, class: 'raillabel' }, x: r.label, tip });
+      if (r.label) items.rails.push({ k: 'rl' + r.id, t: 'text', a: { x: xr + 9, y: yS + 18 + (sc - 1) * 11, class: 'raillabel' }, x: r.label, tip });
       for (const tp of r.taps) {
         if (!this.visible(tp.row)) continue;
         const yT = this.rowY(tp.row) + (tp.to === 'chip' ? 10.5 : 27.5);
@@ -1124,18 +1125,28 @@ class Listing {
       items.over.push({ k: 'arrow', t: 'path', a: { d: `M${G.ARROW_X},${y - 4} L${G.ARROW_X + 10},${y - 4} L${G.ARROW_X + 10},${y - 8} L${G.ARROW_X + 19},${y} L${G.ARROW_X + 10},${y + 8} L${G.ARROW_X + 10},${y + 4} L${G.ARROW_X},${y + 4} Z`, class: 'arrow' }, tip: 'step ' + tr[cur].s + ': ' + tr[cur].op });
     }
     for (const n in items) reconcile(this.layers[n], items[n], A);
+    // spec bugs: a dotted leader from the failing badge row up to the offending conjunct in the header
+    for (const L in (m.spec || {})) { const row = m.spec[L][2]; const box = this.chipBox[row]; if (!box || !this.visible(+L)) continue;
+      const yH = this.rowY(+L) + 30, yC = box.y; reconcileLeader(this, items, L, box, yH, yC); }
+    for (const n of ['over']) reconcile(this.layers[n], items[n], A);
     // measure spec underline positions
     this.svg.querySelectorAll('line.specul').forEach(el => {
       const ln = +el.getAttribute('data-line'); const sub = el.getAttribute('data-sub'); const te = this.layers.text._map.get('t' + ln);
       if (!te) return; const txt = te.textContent; const i = txt.indexOf(sub); if (i < 0) return;
-      try { const x0 = te.getStartPositionOfChar(i).x; const x1 = te.getEndPositionOfChar(i + sub.length - 1).x; el.setAttribute('x1', x0); el.setAttribute('x2', x1); } catch (_) { }
+      try { const x0 = te.getStartPositionOfChar(i).x; const x1 = te.getEndPositionOfChar(i + sub.length - 1).x; el.setAttribute('x1', x0); el.setAttribute('x2', x1);
+        const ld = this.layers.over._map.get('lead' + ln); if (ld) { const d = ld.dataset.base.replace(/XU/g, ((x0 + x1) / 2).toFixed(1)); ld.style.d = 'path("' + d + '")'; } } catch (_) { }
     });
     this.animate = true;
     this.chipStateCache = chipState;
     return chipState;
   }
 }
-function fmtVal(v) { if (v === undefined || v === null) return ''; const s = String(v); return s.length > 7 ? (v < 0 ? '−' : '') + (Math.abs(v) / 1e9).toFixed(2) + 'G' : s.replace('-', '−'); }
+function reconcileLeader(L, items, ln, box, yH, yC) {
+  const x = box.x0 - 8;
+  const base = `M${box.x0 - 2},${yC} L${x},${yC} L${x},${yH + 6} L${x},${yH + 6} LXU,${yH + 6} LXU,${yH + 1}`;
+  items.over.push({ k: 'lead' + ln, t: 'path', a: { d: base.replace(/XU/g, x), class: 'ghostlane leader', 'data-base': base.replace(/XU/g, 'XU') }, tip: 'the badge’s missing fact is demanded by the spec itself (line ' + ln + '): fix the spec, not the code' });
+}
+function fmtVal(v) { if (v === undefined || v === null) return ''; const s = String(v); if (s.length <= 6) return s.replace('-', '−'); const a = Math.abs(v); const e = Math.floor(Math.log10(a)); return (v < 0 ? '−' : '') + (a / 10 ** e).toFixed(1) + 'e' + e; }
 function starD(cx, cy, r) { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5; const rr = i % 2 ? r * 0.45 : r; d += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1); } return d + 'Z'; }
 function stripeTip(s) {
   const kind = { par: 'parity (comb)', band: 'bound (band)', knot: 'equality (knot)' }[s.f.kind];
@@ -1150,14 +1161,15 @@ function drawLane(out, key, SS, off, spreadFn, s, okNow, tip, j) {
   const f = s.f; const bad = okNow === false;
   if (s.vacant && !s.fray) { out.push({ k: key, t: 'path', a: { d: polyD(lanePts(SS, off, spreadFn)), class: 'ghostlane' }, tip }); return; }
   if (s.fray) {
-    const L = Math.min(20, SS.len * 0.45);
+    const L = Math.min(24, SS.len * 0.4);
     const stub = lanePts(SS, off, spreadFn, 0, L);
     out.push({ k: key, t: 'path', a: { d: polyD(stub), class: laneClass(f, s, false) + ' stub' }, tip });
     const p = pointAt(SS, L); const sp = spreadFn(L, SS.len); const q = [p[0] + p[2][0] * off * sp, p[1] + p[2][1] * off * sp];
     const tg = [p[2][1], -p[2][0]]; // tangent
-    let d = ''; for (const a of [-0.65, 0, 0.65]) { const ca = Math.cos(a), sa = Math.sin(a); const vx = tg[0] * ca - tg[1] * sa, vy = tg[0] * sa + tg[1] * ca; d += `M${q[0].toFixed(1)},${q[1].toFixed(1)} L${(q[0] + vx * 6).toFixed(1)},${(q[1] + vy * 6).toFixed(1)} `; }
+    let d = ''; const fib = [[-1.5, 5.5], [-0.95, 7.5], [-0.4, 5], [0.15, 8], [0.7, 5.5], [1.25, 7], [1.7, 4.5]];
+    for (const [a, len] of fib) { const ca = Math.cos(a), sa = Math.sin(a); const vx = tg[0] * ca - tg[1] * sa, vy = tg[0] * sa + tg[1] * ca; const mx = q[0] + vx * len * 0.55 + vy * 1.2, my = q[1] + vy * len * 0.55 - vx * 1.2; d += `M${q[0].toFixed(1)},${q[1].toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${(q[0] + vx * len).toFixed(1)},${(q[1] + vy * len).toFixed(1)} `; }
     out.push({ k: key + 'w', t: 'path', a: { d, class: 'whisk' + (s.vacant ? ' root' : '') }, tip: 'fact dies here (frays): ' + f.text });
-    if (s.vacant) out.push({ k: key + 'g', t: 'path', a: { d: polyD(lanePts(SS, off, spreadFn, L + 6, SS.len)), class: 'ghostlane' }, tip });
+    if (s.vacant) out.push({ k: key + 'g', t: 'path', a: { d: polyD(lanePts(SS, off, spreadFn, L + 13, SS.len)), class: 'ghostlane' }, tip });
     return;
   }
   const d = polyD(lanePts(SS, off, spreadFn));
@@ -1253,7 +1265,7 @@ const sliders = [];
 function makeSlider(host, opts) {
   // opts: {listing, onStep(idx)}
   const wrap = document.createElement('div'); wrap.className = 'slider';
-  wrap.innerHTML = `<svg class="ticks" width="1010" height="34"></svg><input type="range" min="0" max="0" value="0" step="1"><div class="sinfo"></div>`;
+  wrap.innerHTML = `<svg class="ticks" width="1010" height="36"></svg><input type="range" min="0" max="0" value="0" step="1"><div class="sinfo"></div>`;
   host.appendChild(wrap);
   const S = { wrap, input: wrap.querySelector('input'), ticks: wrap.querySelector('svg'), info: wrap.querySelector('.sinfo'), opts, ghost: null };
   S.input.addEventListener('input', () => S.go(+S.input.value, true));
@@ -1265,10 +1277,10 @@ function makeSlider(host, opts) {
   S.draw = () => {
     const L = opts.listing; const n = L.n || 1; const W = 1000; const X = i => 8 + (n <= 1 ? 0 : i * (W - 16) / (n - 1));
     let h = '';
-    if (S.ghost) h += `<line x1="8" x2="${W - 8}" y1="5" y2="5" class="ghosttrack"/><text x="${W - 8}" y="4" class="ghosttxt" text-anchor="end">⚖ ${S.ghost}</text>`;
-    for (const cm of (L.T && L.T.callMarks) || []) { const i = L.idxOfStep(cm.s); if (i < 0 || i >= n) continue; h += `<line x1="${X(i)}" x2="${X(i)}" y1="21" y2="33" class="calltick"/><text x="${X(i) + 2}" y="31" class="calltxt">${cm.call}</text>`; }
-    for (const p of L.pills || []) h += `<g class="pill bad" data-jump="${p.idx}" data-tip="${p.why} — step ${L.T.trace[p.idx].s} (click to jump)"><rect x="${X(p.idx) - 13}" y="8" width="26" height="12" rx="6"/><text x="${X(p.idx)}" y="17.5">${L.T.trace[p.idx].s}</text></g>`;
-    if (L.n) { const s = L.T.trace[S.idx].s; const w = String(s).length * 6 + 12; h += `<g class="pill cur"><rect x="${X(S.idx) - w / 2}" y="8" width="${w}" height="12" rx="6"/><text x="${X(S.idx)}" y="17.5">${s}</text></g>`; }
+    if (S.ghost) h += `<line x1="8" x2="${W - 8}" y1="3" y2="3" class="ghosttrack"/><text x="12" y="14" class="ghosttxt">⚖ ${S.ghost}</text>`;
+    for (const cm of (L.T && L.T.callMarks) || []) { const i = L.idxOfStep(cm.s); if (i < 0 || i >= n) continue; h += `<line x1="${X(i)}" x2="${X(i)}" y1="23" y2="35" class="calltick"/><text x="${X(i) + 2}" y="33" class="calltxt">${cm.call}</text>`; }
+    for (const p of L.pills || []) h += `<g class="pill bad" data-jump="${p.idx}" data-tip="${p.why} — step ${L.T.trace[p.idx].s} (click to jump)"><rect x="${X(p.idx) - 13}" y="${S.ghost ? 17 : 8}" width="26" height="12" rx="6"/><text x="${X(p.idx)}" y="${S.ghost ? 26.5 : 17.5}">${L.T.trace[p.idx].s}</text></g>`;
+    if (L.n) { const s = L.T.trace[S.idx].s; const w = String(s).length * 6 + 12; h += `<g class="pill cur"><rect x="${X(S.idx) - w / 2}" y="${S.ghost ? 17 : 8}" width="${w}" height="12" rx="6"/><text x="${X(S.idx)}" y="${S.ghost ? 26.5 : 17.5}">${s}</text></g>`; }
     S.ticks.innerHTML = h;
     S.ticks.querySelectorAll('[data-jump]').forEach(el => el.onclick = () => S.go(+el.dataset.jump, true));
   };
@@ -1408,8 +1420,8 @@ function drawMemory(L, idx) {
     const [stt, k, v] = e.slots[s]; const x = X(s);
     h += `<rect x="${x}" y="12" width="98" height="40" class="slot ${['empty', 'full', 'tomb'][stt] || ''}"/><text x="${x + 49}" y="9" class="memidx">${s}</text>`;
     h += `<text x="${x + 6}" y="36" class="stt">${['E', 'F', 'T'][stt] ?? stt}</text>`;
-    h += `<rect x="${x + 22}" y="26" width="30" height="11" class="mshape"/><text x="${x + 37}" y="34.5" class="mval">${stt ? k : ''}</text>`;
-    h += `<rect x="${x + 58}" y="26" width="34" height="11" class="mshape"/><text x="${x + 75}" y="34.5" class="mval">${stt ? v : ''}</text>`;
+    h += `<rect x="${x + 22}" y="26" width="30" height="11" class="mshape${stt ? '' : ' mempty'}"/><text x="${x + 37}" y="34.5" class="mval">${stt ? k : ''}</text>`;
+    h += `<rect x="${x + 58}" y="26" width="34" height="11" class="mshape${stt ? '' : ' mempty'}"/><text x="${x + 75}" y="34.5" class="mval">${stt ? v : ''}</text>`;
   }
   h += `<line x1="${X(8) - 3}" x2="${X(8) - 3}" y1="6" y2="58" class="pageend"/><text x="${X(8) + 2}" y="64" class="memlab small">end of memory (65536)</text>`;
   if (bugA) h += `<rect x="${X(8) + 2}" y="12" width="98" height="40" class="slot phantom"/><text x="${X(8) + 51}" y="9" class="memidx bad">8?</text>`;

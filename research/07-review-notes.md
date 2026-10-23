@@ -45,3 +45,9 @@ followed by the coordinator's own observations from the screenshots and the file
 - The table ring and the i32 ring rhyme as hoped: bug (a) runs the probe arc off the table ring through the seam to a phantom "slot 8 = address 65536"; bug (d) closes the ring with a darkred inner circle and spirals the probe.
 - The builder's loupe (a linear integer strip under any ring whose values fit in ~200 consecutive integers) is a necessary addition: the fisheye alone cannot separate small integers, which is where S2/S3 live.
 - Weakness: 22 px margin rings only separate refuted from everything else in grayscale; the detail lives in the pinned lens rings. Predicates live beside the type shapes, not inside them (unlike 01).
+
+## 03 · Sequent fractions — self 4,4,4,5,4,4,5,3,4,3
+- Closest to Codillon's existing fraction: the rule itself is the verdict (solid / dashed-indigo-star / dotted-slate-with-count / snapped-apart darkred / hollow halves / faded ○). Facts are ~30 tiny iconic chips sitting on "seats" above and below the rule; a required fact floats off its seat when refuted; a missing fact is Codillon's empty fade-up cup holding the chip with a dotted wire to the line that should have supplied it.
+- Bug (b) at line 41: the broken rule shows k=11, i=3 and an empty cup for "st = EMPTY", plus the right panel's operation-level sequent "R at entry ⊢ R at exit" that stays open mid-operation. Bug (c) line 159 shows a *valid step resting on a false premise*: a solid rule with a darkred hypothesis, which no other prototype distinguishes.
+- Honest weakness, which I confirm from the zoomed shot: at normal size the snapped rule is subtle; the gutter ⚖ and commentary carry first glance. Chips are dense enough that the legend is required reading. Ink economy 3: the clean view has one indigo/dotted rule (the nonlinear lemma left as unknown on purpose).
+- Builder puts ⚖ at both the obligation site and the line to change; worth adopting as a rule.

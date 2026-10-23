@@ -992,7 +992,7 @@ Listing.prototype.render = function (S) {
       if (!g0 || !g1 || g0.kind === 'struck') continue;
       const x = this.codeX(s0) - 7;
       frameNodes.push(N('path', 'fr' + s0, { class: 'frame', d: `M${x + 5} ${g0.yc + 9}H${x}V${g1.yc - 2}H${x + 5}` }));
-      if (sd.kind === 'loop') frameNodes.push(N('text', 'frl' + s0, { class: 'framelab', x: x - 2, y: (g0.yc + g1.yc) / 2, 'text-anchor': 'end' }, { text: 'loop' }));
+      if (sd.kind === 'loop') frameNodes.push(N('text', 'frl' + s0, { class: 'framelab', x: 0, y: 0, 'text-anchor': 'middle', transform: `translate(${x - 3},${(g0.yc + g1.yc) / 2}) rotate(-90)` }, { text: 'loop' }));
     }
   }
   // dataflow connections (Codillon idiom, muted i32)

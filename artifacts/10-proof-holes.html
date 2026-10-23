@@ -241,11 +241,14 @@ footer li { margin-bottom: 5px; }
 .row.wrap2 .code { white-space: normal; line-height: 19px; padding-top: 6px; right: 6px; height: auto; }
 .row.wrap2 .gut { line-height: calc(var(--rh) * 1.1); }
 
+.mus { font-family: var(--music); font-size: 1.15em; line-height: 0; vertical-align: -0.1em; }
+.swi { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+
 </style></head>
 <body>
 <header>
   <h1><span class="num">10 —</span> Synthetic proof holes: goals as inserted lines</h1>
-  <p class="lede">Codillon already writes lines you did not type: when a frame is unclosed it inserts a synthetic <code>end</code>, drawn as a dashed darkred box with 𝄠 in the gutter. This prototype does the same for proofs. When an obligation at line <i>L</i> cannot be discharged, the editor <b>inserts a hole row right after <i>L</i></b>. The hole is the goal drawn as a fraction, the same glyph Codillon uses for stack types: <i>hypotheses</i> above the rule (i32 shapes holding values, with the facts known about them), the <i>goal</i> below (split into conjuncts). Next to the fraction sit up to three suggestion chips. The rule says what kind of hole it is. It is <b>broken and darkred</b> when a counterexample exists, and the counterexample values sit inside the shapes, ready to replay. It is <b>dashed indigo with ★?</b> when the checker merely cannot decide. Accepting a chip turns the hole into a real line: the box solidifies, flies to where the edit belongs, and the line reveals itself. Editing the code so the goal holds makes the hole vanish. Holes are read-only and never take the cursor. The reasoning failure becomes part of the program text, in reading order.</p>
+  <p class="lede">Codillon already writes lines you did not type: when a frame is unclosed it inserts a synthetic <code>end</code>, drawn as a dashed darkred box with <span class="mus">𝄠</span> in the gutter. This prototype does the same for proofs. When an obligation at line <i>L</i> cannot be discharged, the editor <b>inserts a hole row right after <i>L</i></b>. The hole is the goal drawn as a fraction, the same glyph Codillon uses for stack types: <i>hypotheses</i> above the rule (i32 shapes holding values, with the facts known about them), the <i>goal</i> below (split into conjuncts). Next to the fraction sit up to three suggestion chips. The rule says what kind of hole it is. It is <b>broken and darkred</b> when a counterexample exists, and the counterexample values sit inside the shapes, ready to replay. It is <b>dashed indigo with ★?</b> when the checker merely cannot decide. Accepting a chip turns the hole into a real line: the box solidifies, flies to where the edit belongs, and the line reveals itself. Editing the code so the goal holds makes the hole vanish. Holes are read-only and never take the cursor. The reasoning failure becomes part of the program text, in reading order.</p>
   <div class="legend" id="legend"></div>
 </header>
 
@@ -1029,6 +1032,7 @@ const PROGS = (() => {
       { key: 'L99', tip: 'click to edit: TOMB (2) ⇄ EMPTY (0)', apply: f => ({ ...f, code: f.code === 'bp' ? 'none' : 'bp' }) },
       { key: 'L125', tip: 'click to edit: 7 ⇄ 8', apply: f => ({ ...f, code: f.code === 'd' ? 'none' : 'd' }) }],
   };
+  parity.obl = FX.parity.obligations; isqrt.obl = FX.isqrt.obligations; hash.obl = FX.hashtable.obligations;
   return { parity, sign, sqeven, isqrt, hash, FX };
 })();
 
@@ -1305,7 +1309,10 @@ const PROGS = (() => {
     }
     fracSVG(r, d) {
       const [k, m] = r.eff, n = Math.max(k, m), w = n * 36, rh = this.o.rh, yc = rh / 2;
-      let s = `<svg class="frac" width="${w + 8}" height="${rh}" style="left:${this.o.fx}px">`;
+      const ST = { none: 'nothing to prove beyond Wasm typing', auto: 'proven automatically', inv: 'proven from the invariant / R', lemma: 'proven with the lemma hint' };
+      const ln = parseInt(r.key.slice(1)), ob = r.key.endsWith('p') ? null : (this.m.def.obl || []).find(o => o.lines.includes(ln));
+      const tipT = `${r.text.trim()} — i32 stack effect: ${k} in, ${m} out` + (ob ? `\nrefined stack after: ${ob.stack || '—'}\nobligation: ${ob.obligation}\nin the finished program: ${ST[ob.status] || ob.status}` : '');
+      let s = `<svg class="frac" width="${w + 8}" height="${rh}" style="left:${this.o.fx}px" data-tip="${esc(tipT)}">`;
       for (let i = 0; i < k; i++) { const x = 2 + i * 36; s += `<path class="cup" d="M${x},${yc - 13} V${yc - 2} H${x + 30} V${yc - 13}"/><text class="sv" x="${x + 15}" y="${yc - 7}" data-vi="${i}"></text>`; }
       s += `<line class="rule" x1="0" x2="${w}" y1="${yc}" y2="${yc}"/>`;
       const wrap = d.holes.some(h => (h.hyps || []).some(y => y.wrap && y.src === r.key));
@@ -1659,7 +1666,7 @@ const PROGS = (() => {
   const L = [
     ['sec', 'holes — lines the editor inserts, like synthetic <code>end</code>'],
     [`<span style="font-size:22px">${UI.restGlyph('false', true)} ${UI.restGlyph('false', false)} ${UI.restGlyph('unknown')} ${UI.restGlyph('vacuous')}</span><div class="small" style="font-size:9.5px;line-height:1.1">false · unreplayed<br>unknown · vacuous</div>`,
-      '<b>𝄽 hole glyph.</b> A quarter rest: a measured silence the bar still owes. It joins the clef family (𝄞 malformed, 𝄠 synthetic end) and marks a row <i>you did not type</i>. Its fill follows the hole\'s status.'],
+      '<b>𝄽 hole glyph.</b> A quarter rest: a measured silence the bar still owes. It joins the clef family (<span class="mus">𝄞</span> malformed, <span class="mus">𝄠</span> synthetic end) and marks a row <i>you did not type</i>. Its fill follows the hole\'s status.'],
     [box('false replayed', `<div class="hstat" style="color:darkred;font-size:9px">FALSE</div>${UI.hypShape(25, { cex: true })} ${UI.ruleSVG('false', true, 120)}<span class="cj bad" style="font-size:12px">r·r ≤ n<span class="inst">25 ≤ 3</span></span>`),
       '<b>Refuted, witness replayed.</b> Heavy dashes, a <i>broken</i> solid rule with ⚖, counterexample values inside the shapes, a solid ⚖ in the gutter of the line above, a darkred pill on the slider.'],
     [box('false', `<div class="hstat" style="color:darkred;font-size:9px">FALSE</div>${UI.hypShape(25, { cex: true, outline: true })} ${UI.ruleSVG('false', false, 120)}<span class="cj bad" style="font-size:12px;border-style:dashed;border-width:1px">r·r ≤ n</span>`),
@@ -1683,7 +1690,7 @@ const PROGS = (() => {
     [`<span style="font-family:var(--serif);color:#555;font-size:16px">15′</span>`, '<b>Primed number.</b> A line written by accepting a hole. It keeps a prime so the rest of the numbering (and the fixture\'s) does not jump.'],
     [`<span class="inf">∞?</span> &nbsp; 💣`, '<b>∞?</b> a loop without <code>(@decreases)</code>: partial correctness only. <b>💣</b> a trap reached in a replay. Clicking a hole body <i>shakes</i> it: holes are read-only.'],
   ];
-  $('#legend').innerHTML = L.map(([a, b]) => a === 'sec' ? `<div class="lgsec">${b}</div>` : `<div class="lg"><div class="sw">${a}</div><div>${b}</div></div>`).join('');
+  $('#legend').innerHTML = L.map(([a, b]) => a === 'sec' ? `<div class="lgsec">${b}</div>` : `<div class="lg"><div class="sw">${a.includes('class="small"') || a.includes('class="row hole') ? a : '<span class="swi">' + a + '</span>'}</div><div>${b}</div></div>`).join('');
 
   // ---------------- Section A ----------------
   const par = new UI.Model(PROGS.parity);
