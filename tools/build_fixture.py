@@ -115,7 +115,7 @@ if __name__ == '__main__':
     fx = build()
     s = dump(fx)
     json.loads(s)
-    open('fixture.json', 'w').write(s)
+    open('../research/fixture.json', 'w').write(s)
     for p in fx['programs']:
         for b in p['bugs']:
             print(p['id'], b['id'], 'frames', len(b['trace']), 'obs', b['observed_results'], 'first', b['first_dynamic_failure'])

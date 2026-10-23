@@ -1,5 +1,5 @@
 import json, data
-OUT = '/home/jmandel/hobby/codalon-dependent-viz/research/03-sample-programs.md'
+OUT = '../research/03-sample-programs.md'
 def esc(s): return str(s).replace('|', '\\|')
 def listing(f):
     lines = open(f).read().rstrip('\n').split('\n')
