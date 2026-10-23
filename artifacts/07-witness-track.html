@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>07 · Witness steps on the slider — refined Codillon prototype</title>
+<style>
+:root{
+  --ivory:#fffff0; --i32:#6A5ACD; --i32m:#d2cee4; --dr:darkred; --db:darkblue; --ind:indigo; --sg:slategray;
+  --serif:"Latin Modern Roman","CMU Serif","Computer Modern",Georgia,"Times New Roman",serif;
+  --sans:"Latin Modern Sans","Fira Sans Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+  --row:36px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ivory);color:#111;font-family:var(--serif)}
+body{padding:18px 26px 80px}
+h1{font-weight:normal;font-size:30px;margin:0 0 6px}
+h2{font-weight:normal;font-size:24px;margin:36px 0 4px;border-bottom:1px solid #bbb;padding-bottom:3px}
+h3{font-weight:normal;font-size:19px;margin:20px 0 4px}
+p.lede{font-size:16.5px;line-height:1.45;max-width:1180px;margin:6px 0 10px}
+.small,.lab{font-family:var(--sans);font-size:11.5px}
+.note{font-family:var(--sans);font-size:12px;color:#444;max-width:1200px;line-height:1.4}
+code,.mono{font-family:var(--serif)}
+
+/* ---------- legend ---------- */
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 22px;margin:10px 0 4px;max-width:1340px}
+.legend .it{display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:12px;line-height:1.25;min-height:30px}
+.legend .sw{flex:0 0 92px;display:flex;align-items:center;justify-content:center;font-family:var(--serif)}
+.legend h4{grid-column:1/-1;margin:8px 0 0;font-weight:normal;font-family:var(--sans);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#555;border-bottom:1px dotted #bbb}
+.states{border-collapse:collapse;font-family:var(--sans);font-size:12px;margin:6px 0 0}
+.states td,.states th{border-bottom:1px dotted #ccc;padding:3px 10px 3px 0;text-align:left;vertical-align:middle}
+.states th{font-weight:normal;color:#555}
+
+/* ---------- editor ---------- */
+.editor{position:relative;margin:8px 0 26px}
+.ed-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-family:var(--sans);font-size:13px;margin:4px 0 4px}
+.ed-head select{font-family:var(--sans);font-size:13px;background:var(--ivory);border:1px solid #999;padding:2px 4px}
+.ed-head label{cursor:pointer}
+.ed-head .radios{display:flex;gap:12px;flex-wrap:wrap}
+.slider-container{position:sticky;top:0;z-index:50;background:var(--ivory);padding:4px 20px 2px;margin:0 0 6px;border-bottom:1px solid #e6e3cf}
+.ghost-row{position:relative;height:30px;margin:0 8px;transition:opacity .25s,height .25s}
+.ghost-row.hidden{opacity:0;height:0;pointer-events:none}
+.ghost-line{position:absolute;left:0;right:0;top:15px;border-top:1.5px dashed var(--dr);opacity:.75}
+.ghost-label{position:absolute;top:0;font-family:var(--sans);font-size:11px;color:var(--dr);white-space:nowrap;background:var(--ivory);padding:0 4px}
+.gnode{position:absolute;top:5px;transform:translateX(-50%);height:20px;min-width:20px;border:1.5px dashed var(--dr);border-radius:10px;background:var(--ivory);color:var(--dr);font-family:var(--sans);font-size:11px;line-height:17px;padding:0 6px;cursor:pointer;white-space:nowrap;transition:left .45s ease,transform .45s ease,opacity .45s}
+.gnode.seal{font-size:13px}
+.gnode.sel{background:#f6e9e0}
+.gnode.drop{transform:translate(-50%,38px);opacity:0}
+.gnode.spurious{border-color:#999;color:#888;text-decoration:line-through}
+.replay-btn{position:absolute;top:4px;right:0;font-family:var(--sans);font-size:11px;border:1px solid var(--dr);background:var(--ivory);color:var(--dr);border-radius:10px;padding:2px 8px;cursor:pointer}
+.replay-btn:hover{background:#f6e9e0}
+.step-slider{width:100%;margin:0;accent-color:darkblue;display:block}
+.step-slider:disabled{opacity:.35}
+.slider-ticks{position:relative;height:24px;margin:0 8px}
+.slider-tick{position:absolute;transform:translateX(-50%);color:darkblue;font-size:12px;font-family:var(--sans);background:var(--ivory);white-space:nowrap;transition:left .45s ease;cursor:pointer;top:2px;line-height:16px}
+.bad-slider-tick{color:white;background:darkred;border-radius:10px;padding:0 6px}
+.witness-pill{box-shadow:0 0 0 1.5px var(--ivory),0 0 0 3px darkred}
+.minor-bad{color:darkred;font-size:12px;background:transparent}
+.current-slider-tick{color:white;background:darkblue;border-radius:10px;padding:0 6px;z-index:3}
+.held-tick{color:var(--sg);font-size:11px}
+.bands{position:relative;height:20px;margin:0 8px}
+.band{position:absolute;top:3px;height:15px;border-top:2px solid darkblue;font-family:var(--sans);font-size:11px;color:#223;white-space:nowrap;overflow:visible;transition:left .45s ease,width .45s ease}
+.band > span{position:relative;top:0;background:var(--ivory);padding-right:6px}
+.band.wit{border-top:2px solid darkred;color:darkred}
+.band.wit.loophead{border-image:repeating-linear-gradient(90deg,darkred 0 6px,transparent 6px 8px) 1;border-top-width:2px;border-top-style:solid}
+.slider-empty{font-family:var(--sans);font-size:11.5px;color:#666;padding:2px 8px}
+.shrunk{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:11px;color:darkred}
+
+/* listing */
+.listing-wrap{position:relative;display:flex}
+.listing-scroll{position:relative;flex:1}
+.listing-scroll.scroll{max-height:760px;overflow-y:auto;border-top:1px solid #eee;border-bottom:1px solid #eee}
+.listing{position:relative}
+.row{position:absolute;left:0;right:0;height:var(--row);white-space:pre;display:flex;align-items:center}
+.gut{position:absolute;left:0;width:52px;text-align:right;font-size:17px;color:gray;font-family:var(--serif);transition:opacity .25s}
+.gut.glyph{font-size:20px;color:darkred}
+.gut .hollow{color:transparent;-webkit-text-stroke:1px darkred}
+.gut .held{font-family:var(--sans);font-size:11px;color:var(--sg);margin-left:3px}
+.gut .vac{color:#888;font-size:15px}
+.code{position:absolute;font-size:22px;color:black;transition:color .25s}
+.code.spec,.code.meta{font-size:16.5px;color:indigo}
+.code.blank{color:#bbb}
+.code.close{color:indigo}
+.code.trapline,.code.badline{color:darkred}
+.code.vacuous{opacity:.5}
+.code.reveal{animation:reveal .3s ease}
+@keyframes reveal{0%{transform:scaleY(0);opacity:0}100%{transform:scaleY(1);opacity:1}}
+.clip{display:inline-block;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+u.ul{text-decoration:none;border-bottom:2px solid darkred;padding-bottom:0}
+u.ul.ghost{border-bottom:1.5px dashed darkred}
+u.ul.unknown{border-bottom:1.5px dashed indigo}
+u.ul.held{border-bottom:1.5px dotted slategray}
+u.ul.vac{border-bottom:1.5px solid #aaa;opacity:.6}
+u.ul.off{border-bottom-color:transparent}
+.overlay{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.overlay .tip,.overlay [data-tip]{pointer-events:auto}
+.slot-value{font-family:var(--sans);font-size:10px;text-anchor:middle;dominant-baseline:central}
+.shape{transition:opacity .25s, stroke .25s, fill .25s}
+.oldv{filter:grayscale(1);opacity:.55}
+.arrow{transition:transform .25s ease;}
+.chg{animation:chg .3s ease}
+@keyframes chg{0%{opacity:0}100%{opacity:1}}
+.stale .gut.glyph,.stale u.ul,.stale .card,.stale .bad-slider-tick,.stale .gnode{opacity:.4;text-decoration:underline wavy #999}
+.stale .card{filter:grayscale(.6)}
+
+/* cards (truth trees) */
+.card{position:absolute;background:var(--ivory);border:1.5px solid darkred;padding:3px 7px 5px;font-family:var(--sans);font-size:11px;max-width:560px;z-index:5;animation:chg .3s ease;pointer-events:auto;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+.card .ttl{color:darkred;font-size:11px;margin-bottom:2px;white-space:nowrap}
+.card.old{filter:grayscale(1);opacity:.55}
+.card.ghost{border:1.5px dashed darkred}
+.card.ghost .chip.bad .sub{color:darkred}
+.card.ghost .chip.bad{border-style:dashed}
+.card.unknown{border:1.5px dashed indigo}
+.card.unknown .ttl{color:indigo}
+.card.held{border:1.5px dotted slategray}
+.card.held .ttl{color:slategray}
+.card.vac{border:1.5px solid #aaa;opacity:.55}
+.card.vac .ttl{color:#666}
+.card.pass{border:1px solid #bbb}
+.card.pass .ttl{color:#555}
+.chips{display:flex;flex-wrap:wrap;gap:4px;align-items:stretch}
+.chip{display:inline-flex;flex-direction:column;border:1px solid #c9c6b5;padding:1px 5px;border-radius:3px;background:var(--ivory)}
+.chip .sub{font-family:var(--serif);font-size:15px;white-space:nowrap;color:#666}
+.chip .val{font-family:var(--serif);font-size:13px;white-space:nowrap;color:#888}
+.chip.bad{border:1.5px solid darkred}
+.chip.bad .sub{color:#111}
+.chip.bad .sub u{text-decoration:none;border-bottom:2px solid darkred}
+.chip.bad .val{color:darkred}
+.chip.skip{opacity:.4}
+.chip.unk{border:1.5px dashed indigo}
+.chip.unk .sub{color:indigo}
+.chip.held{border:1.5px dotted slategray}
+.chip.held .sub{color:slategray}
+.chip.vac{border:1.5px solid #aaa;opacity:.6}
+.or{align-self:center;font-family:var(--serif);font-size:15px;color:#555;padding:0 2px}
+.grp{display:inline-flex;gap:3px;border-left:1px solid #ccc;border-right:1px solid #ccc;padding:0 3px;border-radius:5px}
+.ba{display:flex;gap:8px;align-items:stretch}
+.ba .side{border:1px solid #c9c6b5;padding:2px 5px;min-width:150px}
+.ba .side .h{color:#555;font-size:10.5px}
+.ba .arrowr{align-self:center;font-size:16px;color:#555}
+.ba .st{display:flex;gap:6px;align-items:center;margin:2px 0}
+.ba .moved{display:inline-block;animation:slidein .5s ease}
+@keyframes slidein{0%{transform:translateX(-14px);opacity:0}100%{transform:none;opacity:1}}
+.shapebox{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:13px;padding:0 3px;font-family:var(--sans);font-size:10px;border:1px solid var(--i32);color:white;background:var(--i32)}
+.shapebox.out{background:transparent;color:var(--i32);border:1.2px dashed var(--i32)}
+.shapebox.any{background:transparent;color:#888;border:1px dotted #888}
+.shapebox.cup{background:var(--i32m);color:#222;border-top-color:transparent}
+.anyt{font-size:10px;color:#777;font-style:italic}
+
+/* memory view */
+.mem{display:flex;align-items:flex-start;gap:14px;margin:4px 8px 4px;font-family:var(--sans);font-size:11px;flex-wrap:wrap}
+.slots{display:flex;gap:4px}
+.slotc{border:1px solid #ccc8b0;padding:1px 3px 2px;display:flex;flex-direction:column;align-items:center;gap:1px;transition:border-color .25s}
+.slotc .ix{color:#777;font-size:10px}
+.slotc.probe{border:1.5px solid darkblue}
+.slotc.bad{border:1.5px solid darkred}
+.slotc.ghosty{border-style:dashed}
+.slotc .trip{display:flex;gap:2px}
+.stname{font-size:9.5px;color:#555;height:11px}
+.beads{display:flex;gap:4px;align-items:center;flex-wrap:wrap;max-width:260px}
+.bead{border:1px solid #6A5ACD;border-radius:9px;padding:0 6px;font-family:var(--serif);font-size:13px;background:#efedf7}
+.bead.bad{border:1.5px solid darkred}
+.rchips{display:flex;gap:3px}
+.rchip{border:1px solid #ccc;color:#888;padding:0 4px;border-radius:3px}
+.rchip.bad{border:1.5px solid darkred;color:darkred}
+.minimap{position:relative;width:14px;margin-left:4px;background:#f6f4e2;border-left:1px solid #e3dfc6}
+.minimap .mm{position:absolute;left:1px;width:12px;height:4px;background:darkred;cursor:pointer}
+.minimap .mm.hollow{background:transparent;border:1px dashed darkred}
+.minimap .mm.arrow{background:darkblue;height:3px}
+.minimap .mm.unk{background:transparent;border:1px dashed indigo}
+
+#tip{position:fixed;z-index:999;pointer-events:none;background:#fffff8;border:1px solid #666;font-family:var(--sans);font-size:12px;padding:4px 7px;max-width:460px;display:none;box-shadow:0 2px 6px rgba(0,0,0,.15);line-height:1.35}
+.footer li{font-size:15px;line-height:1.45;margin:5px 0;max-width:1220px}
+.score{border-collapse:collapse;font-family:var(--sans);font-size:12.5px;margin:6px 0}
+.score td,.score th{border:1px solid #d6d2bb;padding:3px 8px;text-align:left}
+.score th{font-weight:normal;background:#f6f4e2}
+.kbd{font-family:var(--sans);font-size:11px;border:1px solid #aaa;border-radius:3px;padding:0 4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.hollowg,.hollowt{color:transparent;-webkit-text-stroke:1px darkred}
+.current-slider-tick.cur-bad,.current-slider-tick.witness-pill{background:darkblue;color:white}
+.current-slider-tick.cur-bad{box-shadow:0 0 0 2px darkred}
+.card .foot{color:darkred;font-size:10.5px;margin-top:3px;border-top:1px dotted #d8b4b4;padding-top:2px;white-space:nowrap}
+.band.wit > span{position:absolute;right:0;top:0;white-space:nowrap;padding:0 0 0 6px}
+.noanim *{transition:none!important}
+
+</style>
+</head>
+<body class="noanim">
+<div id="tip"></div>
+<h1>07 · Witness steps on the slider <span style="font-size:18px;color:#555">— counterexamples as runs</span></h1>
+<p class="lede">A static counterexample is never shown as text: it is <b>run</b>. When the checker refutes an obligation, the solver’s
+witness first appears on a dashed <b>ghost track</b> above Codillon’s step slider, with its values in <i>outlined</i> shapes (a claim, not yet
+observed). <b>Replay</b> executes it with the ordinary interpreter: a genuine witness drops onto the real slider as a solid darkred <b>⚖ pill</b>
+on its own “witness” band, next to your run; a witness that does not reproduce is struck out as <i>spurious</i> and the obligation falls back
+to <i>unknown</i>. Scrubbing to the pill shows the normal Codillon runtime view (arrow, values inside shapes) <b>plus the violated predicate
+with the concrete values substituted</b> — a one-level truth tree of conjunct chips, the false one underlined — and blame curves back to the
+instruction that wrapped or produced the bad value. A contract that fails in your own run draws exactly the same card; the pill glyph says
+what happened (⚖ contract, 💣 trap) and the band says whose run it was. Input witnesses are full runs; loop-head witnesses
+(“invariant too weak”) are a jagged one-iteration replay with a before/after pair. Use <span class="kbd">←</span> <span class="kbd">→</span> to step the slider last touched.</p>
+
+<div class="legend" id="legend">
+  <h4>Slider (sticky, per program)</h4>
+  <div class="it"><span class="sw"><span class="slider-tick current-slider-tick" style="position:static;transform:none">17</span></span>current step (unchanged from Codillon)</div>
+  <div class="it"><span class="sw"><span class="slider-tick bad-slider-tick witness-pill" style="position:static;transform:none">⚖&nbsp;w13</span></span>replayed solver witness: violated at witness step 13 (ringed = a seal: it is a witness run)</div>
+  <div class="it"><span class="sw"><span class="slider-tick bad-slider-tick" style="position:static;transform:none">⚖&nbsp;45</span></span>contract failed in <i>your own</i> run at step 45 (same card when scrubbed)</div>
+  <div class="it"><span class="sw"><span class="slider-tick bad-slider-tick" style="position:static;transform:none">💣&nbsp;36</span></span>trap in your run (Codillon’s existing error pill)</div>
+  <div class="it"><span class="sw" style="position:relative;height:28px"><span style="position:absolute;left:4px;right:4px;top:13px;border-top:1.5px dashed darkred"></span><span class="gnode" style="left:30%;top:4px">▸</span><span class="gnode seal" style="left:72%;top:4px"><span class="hollowg">⚖</span></span></span>ghost track: a solver witness <b>not yet run</b> (inputs node, hollow seal at the claimed failure)</div>
+  <div class="it"><span class="sw"><span class="gnode spurious" style="position:static;transform:none">⚖ spurious</span></span>replayed, did not reproduce: discarded; obligation becomes unknown</div>
+  <div class="it"><span class="sw"><span style="display:inline-block;width:80px;border-top:2px solid darkred;font-family:var(--sans);font-size:10px;color:darkred;text-align:left">⚖ witness run</span></span>witness band: an input witness, replayed from entry (full run)</div>
+  <div class="it"><span class="sw"><span style="display:inline-block;width:80px;border-top:2px dashed darkred;font-family:var(--sans);font-size:10px;color:darkred;text-align:left">≈ ↻ 1 iteration</span></span>loop-head witness: starts mid-run, replays one iteration only</div>
+  <div class="it"><span class="sw"><span class="slider-tick minor-bad" style="position:static;transform:none">⚖</span> <span class="slider-tick held-tick" style="position:static;transform:none">∘</span></span>later failures in the same run · ∘ a dynamic check that held (not a proof)</div>
+
+  <h4>Gutter (precedence 💣 &gt; ⚖ &gt; unknown star &gt; number)</h4>
+  <div class="it"><span class="sw" style="font-size:17px;color:gray">17</span>proven — nothing extra (silence is success)</div>
+  <div class="it"><span class="sw" style="font-size:20px;color:darkred">⚖</span>spec violated, witness replayed (line text turns darkred; click → pill)</div>
+  <div class="it"><span class="sw" style="font-size:20px"><span style="color:transparent;-webkit-text-stroke:1px darkred">⚖</span></span>refuted by the solver, witness not yet replayed (darkred outline only)</div>
+  <div class="it"><span class="sw" style="font-size:20px">💣</span>runtime trap on this line</div>
+  <div class="it"><span class="sw" id="lg-star"></span>unknown / timeout / needs a hint — indigo, dashed, <b>never</b> darkred</div>
+  <div class="it"><span class="sw" style="font-size:17px;color:gray">4<span style="font-family:var(--sans);font-size:11px;color:slategray">∘3</span></span>held on this run only: checked 3×, not proven (slategray, dotted)</div>
+  <div class="it"><span class="sw" style="font-size:15px;color:#888">○</span>assumed / vacuous: ghosted 50%, hollow; everything downstream ghosted too</div>
+  <div class="it"><span class="sw"><span style="opacity:.4;text-decoration:underline wavy #999;font-size:20px;color:darkred">⚖</span></span>stale verdict (text edited since the check): faded, squiggled until re-checked</div>
+  <div class="it"><span class="sw"><span style="font-size:16px">x % 2 == 0</span></span><span>source underline of the violated conjunct: <u class="ul">solid</u> replayed · <u class="ul ghost">dashed</u> claimed · <u class="ul unknown">indigo</u> unknown · <u class="ul held">dotted</u> held</span></div>
+
+  <h4>Shapes (i32 only here; values always inside)</h4>
+  <div class="it"><span class="sw"><svg width="80" height="36"><path d="M8,4 L8,15 L44,15 L44,4" fill="#d9d5ea" stroke="#6A5ACD" stroke-width="1.2"/><text x="26" y="10" class="slot-value" fill="#222">46341</text><line x1="5" x2="47" y1="18" y2="18" stroke="#666"/><rect x="8" y="21" width="36" height="11" fill="#6A5ACD"/><text x="26" y="27" class="slot-value" fill="#fffff0">-2147…</text></svg></span>input cup above the rule, output below; runtime values inside</div>
+  <div class="it"><span class="sw"><svg width="80" height="20"><rect x="8" y="4" width="36" height="11" fill="none" stroke="#6A5ACD" stroke-dasharray="3 2" stroke-width="1.2"/><text x="26" y="10" class="slot-value" fill="#6A5ACD">4</text></svg></span>outlined value: what the solver <i>claims</i> (ghost preview), not an observed value</div>
+  <div class="it"><span class="sw"><svg width="80" height="20" style="filter:grayscale(1);opacity:.55"><rect x="8" y="4" width="36" height="11" fill="#6A5ACD"/><text x="26" y="10" class="slot-value" fill="#fffff0">3</text></svg></span>value from an earlier iteration / call (“old”, grayscaled)</div>
+  <div class="it"><span class="sw"><svg width="80" height="20"><path d="M8,4 L8,15 L44,15 L44,4" fill="#d9d5ea" stroke="#6A5ACD" stroke-width="1.2"/><rect x="6" y="2" width="40" height="15" fill="none" stroke="darkred" stroke-width="2"/><text x="26" y="10" class="slot-value" fill="#222">0</text></svg></span>wire obligation violated on this input cup (e.g. divisor ≠ 0)</div>
+  <div class="it"><span class="sw"><svg width="80" height="20"><rect x="8" y="4" width="36" height="11" fill="#e7e1f2" stroke="indigo" stroke-width="2.2" stroke-dasharray="4 2"/><text x="26" y="10" class="slot-value" fill="indigo">81</text><text x="53" y="10" class="slot-value" fill="indigo" style="font-size:13px">?</text></svg></span>output whose promised fact is unknown</div>
+  <div class="it"><span class="sw"><svg width="80" height="20"><rect x="8" y="4" width="36" height="11" fill="#e8ebef" stroke="slategray" stroke-width="2.2" stroke-dasharray="1.5 2"/><text x="26" y="10" class="slot-value" fill="#333">81</text><text x="53" y="10" class="slot-value" fill="slategray">∘</text></svg></span>output whose fact held at runtime only</div>
+  <div class="it"><span class="sw"><svg width="80" height="20"><defs><linearGradient id="lgfu" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6A5ACD" stop-opacity=".35"/><stop offset="1" stop-color="#6A5ACD" stop-opacity="0"/></linearGradient></defs><path d="M10,3 L10,16 L40,16 L40,3" fill="url(#lgfu)" stroke="darkred" stroke-width="1.5"/></svg></span>empty fade-up cup: the fact that should be here is missing (deleted code)</div>
+  <div class="it"><span class="sw"><span class="shapebox any">30<sup>∗</sup></span></span>shrunk witness: <b>∗</b> = could be anything; outlined = relevant</div>
+  <div class="it"><span class="sw"><svg width="80" height="20"><path d="M2,10 C30,10 50,10 78,10" stroke="darkred" stroke-width="2" stroke-dasharray="5 3" fill="none"/><text x="4" y="5" class="slot-value" text-anchor="start" fill="darkred" style="font-size:11px">↻</text></svg></span>wrap blame: from the false chip to the instruction whose i32 result wrapped</div>
+  <div class="it"><span class="sw"><svg width="80" height="20"><path d="M2,10 C30,10 50,10 78,10" stroke="darkred" stroke-width="2" fill="none"/><circle cx="2" cy="10" r="2.5" fill="darkred"/></svg></span>origin blame: from the false chip to where the bad value / missing fact came from</div>
+
+  <h4>Truth tree (card at the line where the check fires)</h4>
+  <div class="it" style="grid-column:span 2"><span class="sw" style="flex-basis:300px;justify-content:flex-start"><span class="chips"><span class="chip"><span class="sub">0 ≤ 46341</span><span class="val">0 ≤ 46341</span></span><span class="chip bad"><span class="sub"><u>46341 · 46341 ≤ 2147483647</u></span><span class="val">2147488281 ≰ 2147483647</span></span></span></span>conjunct chips: passing chip is quiet; the false one is darkred, underlined, with its sides evaluated (in ℤ, never wrapping)</div>
+  <div class="it"><span class="sw"><span class="chip skip"><span class="sub">key(−1) = 11</span><span class="val">…</span></span></span>not evaluated: an earlier conjunct is already false (ordered ∧)</div>
+  <div class="it"><span class="sw"><span class="chip unk"><span class="sub">0 ≤ r · r</span><span class="val">nonlinear</span></span></span>unknown chip (indigo dashed) — no counterexample, so no darkred</div>
+  <div class="it"><span class="sw"><span class="chip held"><span class="sub">0 ≤ 81</span><span class="val">0 ≤ 81</span></span></span>held here at runtime (slategray dotted)</div>
+  <div class="it"><span class="sw"><span class="chip vac"><span class="sub">v &lt; 0 ∧ v &gt; 0</span><span class="val">unsatisfiable</span></span></span>vacuous: hollow grey, everything below ghosted</div>
+  <div class="it"><span class="sw"><span class="card ghost" style="position:static;padding:1px 4px;font-size:10px;animation:none">⚖ claims</span></span>dashed card = the solver’s claim before replay</div>
+  <div class="it" style="grid-column:span 2"><span class="sw" style="flex-basis:300px;justify-content:flex-start"><span class="ba"><span class="side" style="min-width:90px;font-size:10px">k: r <span class="shapebox">46340</span></span><span class="arrowr">⟶</span><span class="side" style="min-width:90px;font-size:10px;border-color:darkred">k+1: r <span class="shapebox">46341</span></span></span></span>before/after pair for a loop-head witness: the state that satisfies the invariant, and the state one iteration later that breaks it</div>
+</div>
+<table class="states">
+<tr><th>state</th><th>color</th><th>line/shape style</th><th>glyph</th><th>where to see it here</th></tr>
+<tr><td>proven</td><td>none (ivory)</td><td>solid, quiet</td><td>gray line number</td><td>every “No bug” state; A3 “proven”</td></tr>
+<tr><td>refuted, witness replayed</td><td>darkred</td><td>solid; darkred pill; false chip underlined</td><td>⚖ in gutter; darkred slider pill</td><td>A1, A2, A3 “refuted”, B (S1–S3, G1), C (b, c)</td></tr>
+<tr><td>refuted, witness not yet replayed</td><td>darkred outline only</td><td>dashed ghost track above the slider; outlined shapes</td><td>⚖ hollow</td><td>any seeded bug for ~1.5 s, or click a ghost node; A3 “refuted?”</td></tr>
+<tr><td>held on this run only</td><td>slategray</td><td>dotted</td><td>∘ tick count, never a check mark</td><td>A3 “held on this run only”</td></tr>
+<tr><td>unknown / timeout / needs hint</td><td>indigo</td><td>dashed, ?</td><td>star (Codillon’s mystery star)</td><td>A3 “refuted? → spurious → unknown”</td></tr>
+<tr><td>assumed / admitted / vacuous</td><td>ghosted (50%)</td><td>hollow outline</td><td>○; downstream ghosted</td><td>A3 “vacuous”</td></tr>
+</table>
+
+<h2>Section A — the primitive in isolation</h2>
+<p class="note">A1: the solver finds an input that violates <code>$half</code>’s precondition at the call on line 21; replaying it puts a ⚖ pill on the slider and the blame on the caller’s input cup. A2: the same broken postcondition seen two ways — as a solver witness (ringed pill on a witness band) and as a failure in your own run (plain pill on your band); the card is identical. A3: one obligation in each of the six epistemic states (pick a radio; “refuted?” shows a spurious witness being discarded).</p>
+<div id="edA1"></div>
+<div id="edA2"></div>
+<div id="edA3"></div>
+
+<h2>Section B — number theory: isqrt (and gcd)</h2>
+<p class="note">Your run is <code>isqrt(10)</code>, which passes under every seeded bug — exactly the trap the bugs set. The witnesses come from the checker. <b>S1</b> is a loop-head witness (its real-run step, ≈695k, is beyond Codillon’s 100k log): watch the before/after pair and the dashed wrap-blame curve to line 15. <b>S2</b> is a spec bug (the program is right; the chip shows <code>4 &lt; 4</code>). <b>S3</b> fails only at <code>n = 0</code>; origin curve to line 3. Below it, gcd with <b>G1</b>: your own run traps (💣 36) and the solver’s minimal witness (⚖ w12) breaks the same divisor obligation — the same card, side by side on one slider.</p>
+<div id="edB1"></div>
+<div id="edB2"></div>
+
+<h2>Section C — open-addressing hash table</h2>
+<p class="note">Your run (no collisions) passes in every variant. <b>(b)</b> TOMB treated as EMPTY: the witness is the 247-step sequence insert 3, insert 11, delete 3, lookup 11; it ends in the failed postcondition of <code>$find</code> (w241) and of <code>lookup</code> (w247); the origin curve points at line 38. <b>(c)</b> no existing-key check: the witness breaks the <code>$free</code> loop invariant <code>¬(k ∈ M)</code> at w43 and later R1/R2/R4 at w86 (see the memory row: both slots holding key 3 go darkred). The listing scrolls with the arrow; the strip on its right marks ⚖ lines.</p>
+<div id="edC"></div>
+
+<h2>Footer — self-critique</h2>
+<div class="footer">
+<ul>
+<li><b>What it makes obvious.</b> That a refutation is a <i>fact about a run</i>: the student gets the exact arithmetic that lied (<code>46341 · 46341 ≤ 2147483647</code> → <code>2147488281 ≰ 2147483647</code>, with the wrapped <code>−2147479015</code> traced to line 15), scrubbable like any other run, and visibly separate from their own (band + ring + “w” step labels, R14). Static and dynamic failures share one card, so learning to read one teaches the other. The ghost → replay → (solid | spurious) pipeline makes “the solver said so” and “we observed it” different pictures, and a spurious model degrades to <i>unknown</i>, never to darkred (principle 3).</li>
+<li><b>What it hides.</b> Facts are not drawn <i>on</i> shapes: a proven or unknown predicate is invisible until something fails (rubric 5 is weak). The card explains <i>that</i> a conjunct is false on these values, not <i>why</i> the proof needed it; for spec bugs (S2, P3) the strongest mark still lands at the exit, with only an underline + link on the spec text. Cause–symptom gaps (hash (b): delete at w217, failure at w241) are shown only by the origin curve and the memory row, not by a mark at the delete.</li>
+<li><b>Scaling.</b> One ⚖ per obligation site and one pill per witness keep the gutter scannable (169-line hash table + minimap). Long witnesses compress on the slider (247 steps fit), but several witnesses would need the “shortest first, others collapsed” rule (only one per bug here; alternates are summarised in the shrunk-input card, e.g. “also 0, 1, 9, 16 · n = 5 passes”). Cards are overlays in the right margin, so row height never changes (R23); far-apart spec links become long curves.</li>
+<li><b>Cost in Codillon.</b> Cheap where it matters: the interpreter, slider, ticks, values-in-shapes and arrow already exist; a witness is just another execution log appended to the slider with a segment marker. New pieces: (1) solver model → concrete inputs or a loop-head state (needs “start at loop head with these locals” in the instrumented runner — about 50 lines in this prototype), (2) per-step evaluation of spec predicates on concrete values (an ℤ evaluator with spans for underlines), (3) wrap detection on add/mul (exact vs wrapped), (4) the card renderer (HTML overlay, like <code>data-commentary</code>). The ghost track is a second Slider component.</li>
+<li><b>Honest caveats.</b> Solver output is mocked: the witnesses are the fixture’s counterexamples (plus <code>gcd(1,0)</code> for G1, shrunk by hand, and a hand-written spurious model in A3); the runs themselves are real (embedded line-level interpreter, checked against the fixture: <span id="selfcheck" class="small"></span>). Listings use 03’s syntax verbatim (bare names, <code>v</code> binder) rather than 01’s <code>$</code>-prefixed names, so line numbers match the fixture traces exactly.</li>
+<li><b>Deviations.</b> The brief phrased the static/dynamic difference as “⚖ vs 💣”; I kept 💣 for traps only (R15: spec failures need their own pill), so a contract failure in your own run is a plain ⚖ pill and a witness is a ringed ⚖ pill on a witness band. Shapes widen to fit long values (e.g. −2147479015) instead of staying 30 px. Section A snippets show 5–12 lines (A1 needs the whole <code>$half_or_neg1</code>). Your run uses one input per program (isqrt(10), gcd(12,8), a collision-free hash sequence) so the witness is visibly the thing that finds the bug; the fixture’s multi-call runs are used only for the self-check.</li>
+</ul>
+<table class="score">
+<tr><th>#</th><th>criterion</th><th>score</th><th>why</th></tr>
+<tr><td>1</td><td>Salience</td><td>4</td><td>Darkred ⚖ in gutter + darkred line + darkred pill + card within ~1.5 s of seeding; during the ghost stage only hollow marks (by design).</td></tr>
+<tr><td>2</td><td>Blame locality</td><td>3</td><td>⚖ sits at the obligation site (caller cup for P1, divisor cup for G1, comparison for S1, loop entry for S3, early return for (b), loop entry for (c)); origin/wrap curves reach the instruction to change; spec bugs rely on the underline.</td></tr>
+<tr><td>3</td><td>Kind discrimination (grayscale)</td><td>4</td><td>Solid vs hollow ⚖, ringed vs plain pill, 💣, dashed star, ∘N, ○; chips solid/dashed/dotted/hollow. Try <a href="?gray=1&A3=held">?gray=1</a>.</td></tr>
+<tr><td>4</td><td>Vocabulary continuity</td><td>5</td><td>It <i>is</i> Codillon’s slider, arrow, fractions and values; ⚖ joins 💣/𝄞/✗ in the gutter.</td></tr>
+<tr><td>5</td><td>Predicate on shape</td><td>2</td><td>Shapes carry values and a darkred wire outline, but which <i>facts</i> a value carries is only visible in the card.</td></tr>
+<tr><td>6</td><td>Causal trail</td><td>4</td><td>Wrap blame (S1, A3), origin blame (S3, G1, P1, (b), (c) with an empty cup), spec-text link.</td></tr>
+<tr><td>7</td><td>Concrete witness</td><td>5</td><td>The core of the idea: one click (or automatic) replay; labeled as a witness band, ringed pill, “w” steps.</td></tr>
+<tr><td>8</td><td>Ink economy</td><td>5</td><td>No-bug states add nothing beyond Codillon today; proven is silent; held/unknown/vacuous only where they occur.</td></tr>
+<tr><td>9</td><td>Scale</td><td>3</td><td>169-line hash table in a scroll pane with a ⚖ minimap; the slider handles a 247-step witness; multiple witnesses per bug not yet designed beyond the summary.</td></tr>
+<tr><td>10</td><td>Edit continuity</td><td>3</td><td>Seeding: verdicts go stale (fade + squiggle), the edited line reveals, the ghost track appears, the hollow seal drops onto the slider and becomes the pill; no shake. Facts do not visibly detach from shapes.</td></tr>
+</table>
+</div>
+<script>
+const FIXTURE = {"parity":{"lines":["(func $is_even (param $x i32) (result (i32 | v == (x % 2 == 0 ? 1 : 0)))","  local.get $x","  i32.const 1","  i32.and","  i32.eqz",")","(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))","  local.get $x","  i32.const 1","  i32.shr_s",")","(func $half_or_neg1 (param $x i32) (result (i32 | (x % 2 == 0 && v + v == x) || (x % 2 == 1 && v == -1)))","  local.get $x","  call $is_even","  i32.eqz","  if (result i32)","    i32.const -1","  else","    (@assert x % 2 == 0)","    local.get $x","    call $half","  end",")"],"correct_runs":{"calls":[["half_or_neg1",[6]],["half_or_neg1",[7]],["half_or_neg1",[-4]],["is_even",[-3]]],"results":[3,-1,-2,0],"total_steps":44,"spec_checks_failed":0},"bugs":{"P1":{"id":"P1","title":"gate inverted (forgot the negation)","category":"code","flavor":"ordinary; blame lands on the CALLER","edit":"delete line 15 (`i32.eqz`)","edits":[["delete",15,15]],"calls":[["half_or_neg1",[3]]],"expected_results":[-1],"observed_results":[1],"static_failure":{"line":21,"obligation":"pre of $half: x % 2 == 0","why":"with line 15 gone the else-arm runs when is_even(x) == 0, so its path condition is x % 2 == 1; the precondition is refuted (the @assert on line 19 fails the same way)","status":"fails"},"first_dynamic_failure":{"s":8,"ln":19,"kind":"assert"},"frames":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":3}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[3,1],"loc":{"x":3}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[1],"loc":{"x":3}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[0],"loc":{"x":3}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[0],"loc":{"x":3},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":3},"checks":[{"ln":19,"kind":"assert","ok":false}]},{"s":9,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":10,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":3},"checks":[{"ln":7,"kind":"requires","ok":false}]},{"s":11,"fn":"half","ln":8,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":12,"fn":"half","ln":9,"op":"i32.const 1","stack":[3,1],"loc":{"x":3}},{"s":13,"fn":"half","ln":10,"op":"i32.shr_s","stack":[1],"loc":{"x":3}},{"s":14,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[1],"loc":{"x":3},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":false}]}]},"P3":{"id":"P3","title":"\"half is smaller\" (spec bug)","category":"spec","flavor":"spec bug: program right, spec wrong","edit":"line 7: result refinement `(i32 | v + v == x)` -> `(i32 | v + v == x && v < x)`","edits":[["replace",7,"(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))","(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x && v < x))"]],"calls":[["half_or_neg1",[0]]],"expected_results":[0],"observed_results":[0],"static_failure":{"line":10,"obligation":"post of $half: v + v == x && v < x","why":"v < x is false when x == 0 (0 < 0) and for every negative even x (-2 > -4)","status":"fails"},"first_dynamic_failure":{"s":15,"ln":7,"kind":"ensures"},"frames":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":0}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[0,1],"loc":{"x":0}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[0],"loc":{"x":0}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[1],"loc":{"x":0}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[1],"loc":{"x":0},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":15,"op":"i32.eqz","stack":[0],"loc":{"x":0}},{"s":9,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":0},"checks":[{"ln":19,"kind":"assert","ok":true}]},{"s":10,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":11,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":0},"checks":[{"ln":7,"kind":"requires","ok":true}]},{"s":12,"fn":"half","ln":8,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":13,"fn":"half","ln":9,"op":"i32.const 1","stack":[0,1],"loc":{"x":0}},{"s":14,"fn":"half","ln":10,"op":"i32.shr_s","stack":[0],"loc":{"x":0}},{"s":15,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[0],"loc":{"x":0},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":true}]}]}}},"isqrt":{"lines":["(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))","  (local $r i32)","  i32.const 0","  local.set $r","  block $done","    loop $grow","      (@invariant 0 <= r && r * r <= n)","      (@decreases n - r * r)","      local.get $r","      i32.const 1","      i32.add","      local.get $r","      i32.const 1","      i32.add","      i32.mul","      local.get $n","      i32.gt_u","      br_if $done","      local.get $r","      i32.const 1","      i32.add","      local.set $r","      br $grow","    end","  end","  local.get $r",")"],"correct_runs":{"calls":[["isqrt",[10]],["isqrt",[16]],["isqrt",[0]]],"results":[3,4,0],"total_steps":150,"spec_checks_failed":0},"bugs":{"S1":{"id":"S1","title":"signed comparison of a product that may exceed 2^31-1","category":"code","flavor":"subtle: correct for every n < 46340^2 = 2147395600","edit":"line 17: `i32.gt_u` -> `i32.gt_s`","edits":[["replace",17,"i32.gt_u","i32.gt_s"]],"calls":[["isqrt",[2147483647]]],"expected_results":[46340],"observed_results":["(does not terminate)"],"static_failure":{"line":17,"obligation":"the comparison must mean (r+1)^2 > n","why":"signed reading of the line-15 product is faithful only if (r+1)^2 <= 2^31-1, i.e. r <= 46339; the invariant r*r <= n only gives r <= 46340. At r = 46340 the product 2147488281 wraps to -2147479015","status":"fails"},"first_dynamic_failure":{"s":695119,"ln":7,"kind":"invariant"},"trace_note":"counterexample-to-induction: one loop iteration from the loop-head state n = 2147483647, r = 46340 (which satisfies the invariant). Real-run step = s + 695100.","frames":[{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":2147483647,"r":46340},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":5,"fn":"isqrt","ln":9,"op":"local.get $r","stack":[46340],"loc":{"n":2147483647,"r":46340}},{"s":6,"fn":"isqrt","ln":10,"op":"i32.const 1","stack":[46340,1],"loc":{"n":2147483647,"r":46340}},{"s":7,"fn":"isqrt","ln":11,"op":"i32.add","stack":[46341],"loc":{"n":2147483647,"r":46340}},{"s":8,"fn":"isqrt","ln":12,"op":"local.get $r","stack":[46341,46340],"loc":{"n":2147483647,"r":46340}},{"s":9,"fn":"isqrt","ln":13,"op":"i32.const 1","stack":[46341,46340,1],"loc":{"n":2147483647,"r":46340}},{"s":10,"fn":"isqrt","ln":14,"op":"i32.add","stack":[46341,46341],"loc":{"n":2147483647,"r":46340}},{"s":11,"fn":"isqrt","ln":15,"op":"i32.mul","stack":[-2147479015],"loc":{"n":2147483647,"r":46340}},{"s":12,"fn":"isqrt","ln":16,"op":"local.get $n","stack":[-2147479015,2147483647],"loc":{"n":2147483647,"r":46340}},{"s":13,"fn":"isqrt","ln":17,"op":"i32.gt_s","stack":[0],"loc":{"n":2147483647,"r":46340}},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":2147483647,"r":46340}},{"s":15,"fn":"isqrt","ln":19,"op":"local.get $r","stack":[46340],"loc":{"n":2147483647,"r":46340}},{"s":16,"fn":"isqrt","ln":20,"op":"i32.const 1","stack":[46340,1],"loc":{"n":2147483647,"r":46340}},{"s":17,"fn":"isqrt","ln":21,"op":"i32.add","stack":[46341],"loc":{"n":2147483647,"r":46340}},{"s":18,"fn":"isqrt","ln":22,"op":"local.set $r","stack":[],"loc":{"n":2147483647,"r":46341}},{"s":19,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":2147483647,"r":46341},"checks":[{"ln":7,"kind":"invariant","ok":false},{"ln":8,"kind":"decreases","ok":false}]}]},"S2":{"id":"S2","title":"strict/non-strict swapped in the postcondition (spec bug)","category":"spec","flavor":"spec bug: fails exactly on perfect squares","edit":"line 1: result `v * v <= n && n < (v + 1) * (v + 1)` -> `v * v < n && n <= (v + 1) * (v + 1)`","edits":[["replace",1,"(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))","(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v < n && n <= (v + 1) * (v + 1)))"]],"calls":[["isqrt",[4]]],"expected_results":[2],"observed_results":[2],"static_failure":{"line":26,"obligation":"post: r*r < n","why":"the invariant gives r*r <= n and the exit gives n < (r+1)^2; nothing excludes r*r == n","status":"fails"},"first_dynamic_failure":{"s":45,"ln":1,"kind":"ensures"},"frames":[{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":4,"r":0},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":0}},{"s":19,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":4,"r":1},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":29,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":1}},{"s":34,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":4,"r":2},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":44,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":2}},{"s":45,"fn":"isqrt","ln":26,"op":"local.get $r","stack":[2],"loc":{"n":4,"r":2},"checks":[{"ln":1,"kind":"ensures","ok":false}]}]},"S3":{"id":"S3","title":"off-by-one initial value","category":"code","flavor":"edge case: wrong only for n = 0","edit":"line 3: `i32.const 0` -> `i32.const 1`","edits":[["replace",3,"i32.const 0","i32.const 1"]],"calls":[["isqrt",[0]]],"expected_results":[0],"observed_results":[1],"static_failure":{"line":6,"obligation":"inv on entry: 1*1 <= n","why":"only 0 <= n is known","status":"fails"},"first_dynamic_failure":{"s":4,"ln":7,"kind":"invariant"},"frames":[{"s":1,"fn":"isqrt","ln":3,"op":"i32.const 1","stack":[1],"loc":{"n":0,"r":0},"checks":[{"ln":1,"kind":"requires","ok":true}]},{"s":2,"fn":"isqrt","ln":4,"op":"local.set $r","stack":[],"loc":{"n":0,"r":1}},{"s":3,"fn":"isqrt","ln":5,"op":"block $done","stack":[],"loc":{"n":0,"r":1}},{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":0,"r":1},"checks":[{"ln":7,"kind":"invariant","ok":false},{"ln":8,"kind":"decreases","ok":false}]},{"s":5,"fn":"isqrt","ln":9,"op":"local.get $r","stack":[1],"loc":{"n":0,"r":1}},{"s":6,"fn":"isqrt","ln":10,"op":"i32.const 1","stack":[1,1],"loc":{"n":0,"r":1}},{"s":7,"fn":"isqrt","ln":11,"op":"i32.add","stack":[2],"loc":{"n":0,"r":1}},{"s":8,"fn":"isqrt","ln":12,"op":"local.get $r","stack":[2,1],"loc":{"n":0,"r":1}},{"s":9,"fn":"isqrt","ln":13,"op":"i32.const 1","stack":[2,1,1],"loc":{"n":0,"r":1}},{"s":10,"fn":"isqrt","ln":14,"op":"i32.add","stack":[2,2],"loc":{"n":0,"r":1}},{"s":11,"fn":"isqrt","ln":15,"op":"i32.mul","stack":[4],"loc":{"n":0,"r":1}},{"s":12,"fn":"isqrt","ln":16,"op":"local.get $n","stack":[4,0],"loc":{"n":0,"r":1}},{"s":13,"fn":"isqrt","ln":17,"op":"i32.gt_u","stack":[1],"loc":{"n":0,"r":1}},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":0,"r":1}},{"s":15,"fn":"isqrt","ln":26,"op":"local.get $r","stack":[1],"loc":{"n":0,"r":1},"checks":[{"ln":1,"kind":"ensures","ok":false}]}]}}},"gcd":{"lines":["(@define gcd(x, y) = (y == 0 ? x : gcd(y, x % y)))","(func $gcd (param $a (i32 | 0 <= v)) (param $b (i32 | 0 <= v)) (result (i32 | v == gcd(a, b)))","  (local $x i32)","  (local $y i32)","  (local $t i32)","  local.get $a","  local.set $x","  local.get $b","  local.set $y","  block $done","    loop $euclid","      (@invariant 0 <= x && 0 <= y && gcd(x, y) == gcd(a, b))","      (@decreases y)","      local.get $y","      i32.eqz","      br_if $done","      local.get $x","      local.get $y","      i32.rem_u","      local.set $t","      local.get $y","      local.set $x","      local.get $t","      local.set $y","      br $euclid","    end","  end","  local.get $x",")"],"correct_runs":{"calls":[["gcd",[12,8]],["gcd",[1071,462]],["gcd",[0,5]]],"results":[4,21,5],"total_steps":102,"spec_checks_failed":0},"bugs":{"G1":{"id":"G1","title":"guard tests the wrong variable","category":"code","flavor":"trap (bomb glyph)","edit":"line 14: `local.get $y` -> `local.get $x`","edits":[["replace",14,"local.get $y","local.get $x"]],"calls":[["gcd",[12,8]]],"expected_results":[4],"observed_results":["trap: integer divide by zero"],"static_failure":{"line":19,"obligation":"no trap: y != 0 at i32.rem_u","why":"the guard now establishes x != 0, not y != 0","status":"fails"},"first_dynamic_failure":{"s":36,"ln":19,"kind":"trap: integer divide by zero"},"frames":[{"s":6,"fn":"gcd","ln":11,"op":"loop $euclid","stack":[],"loc":{"a":12,"b":8,"x":12,"y":8,"t":0},"checks":[{"ln":12,"kind":"invariant","ok":true},{"ln":13,"kind":"decreases","ok":true}]},{"s":12,"fn":"gcd","ln":19,"op":"i32.rem_u","stack":[4],"loc":{"a":12,"b":8,"x":12,"y":8,"t":0}},{"s":18,"fn":"gcd","ln":25,"op":"br $euclid","stack":[],"loc":{"a":12,"b":8,"x":8,"y":4,"t":4},"checks":[{"ln":12,"kind":"invariant","ok":true},{"ln":13,"kind":"decreases","ok":true}]},{"s":24,"fn":"gcd","ln":19,"op":"i32.rem_u","stack":[0],"loc":{"a":12,"b":8,"x":8,"y":4,"t":4}},{"s":30,"fn":"gcd","ln":25,"op":"br $euclid","stack":[],"loc":{"a":12,"b":8,"x":4,"y":0,"t":0},"checks":[{"ln":12,"kind":"invariant","ok":true},{"ln":13,"kind":"decreases","ok":true}]},{"s":36,"fn":"gcd","ln":19,"op":"i32.rem_u","stack":[4,0],"loc":{"a":12,"b":8,"x":4,"y":0,"t":0},"trap":"integer divide by zero"}]}}},"hashtable":{"lines":["(memory 1)","(global $used (mut i32) (i32.const 0))","(@ghost global $M (Map i32 i32))","(@define EMPTY = 0, FULL = 1, TOMB = 2, CAP = 8, BASE = 65440)","(@define st(s) = load(BASE + 12*s), key(s) = load(BASE + 12*s + 4), val(s) = load(BASE + 12*s + 8))","(@define h(k) = k & 7, at(k, d) = (h(k) + d) & 7, dist(k, s) = (s - h(k)) & 7)","(@define R0 = forall s in 0..7. st(s) in {EMPTY, FULL, TOMB})","(@define R1 = forall s. st(s) == FULL ==> key(s) in M && M[key(s)] == val(s))","(@define R2 = forall k in M. #{s | st(s) == FULL && key(s) == k} == 1)","(@define R3 = forall s. st(s) == FULL ==> forall d <= dist(key(s), s). st(at(key(s), d)) != EMPTY)","(@define R4 = #{s | st(s) == FULL} == |M| && used == #{s | st(s) != EMPTY} && used < CAP)","(@define R = R0 && R1 && R2 && R3 && R4)","(func $slot (param $i (i32 | 0 <= v && v < CAP)) (result (i32 | v == BASE + 12*i))","  local.get $i","  i32.const 12","  i32.mul","  i32.const 65440","  i32.add",")","(func $find (param $k i32) (result (i32 | (v == -1 && !(k in M)) || (0 <= v && v < CAP && st(v) == FULL && key(v) == k)))","  (@requires R)","  (local $i i32)","  (local $p i32)","  (@ghost local $j i32)","  local.get $k","  i32.const 7","  i32.and","  local.set $i","  loop $probe","    (@invariant 0 <= j && j <= used && i == at(k, j))","    (@invariant forall d < j. st(at(k, d)) == TOMB || (st(at(k, d)) == FULL && key(at(k, d)) != k))","    (@decreases CAP - j)","    local.get $i","    call $slot","    local.tee $p","    i32.load","    i32.const 1","    i32.lt_u","    if","      i32.const -1","      return","    end","    local.get $p","    i32.load","    i32.const 1","    i32.eq","    local.get $p","    i32.load offset=4","    local.get $k","    i32.eq","    i32.and","    if","      local.get $i","      return","    end","    local.get $i","    i32.const 1","    i32.add","    i32.const 7","    i32.and","    local.set $i","    (@ghost j := j + 1)","    br $probe","  end","  unreachable",")","(func $lookup (param $k i32) (param $dflt i32) (result (i32 | v == (k in M ? M[k] : dflt)))","  (@requires R)","  (@ensures R)","  (local $i i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.lt_s","  if","    local.get $dflt","    return","  end","  local.get $i","  call $slot","  i32.load offset=8",")","(func $delete (param $k i32) (result (i32 | v == (k in old(M) ? 1 : 0)))","  (@requires R)","  (@ensures R && M == old(M) \\ {k})","  (local $i i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.lt_s","  if","    i32.const 0","    return","  end","  local.get $i","  call $slot","  i32.const 2","  i32.store","  (@ghost M := M \\ {k})","  i32.const 1",")","(func $insert (param $k i32) (param $x i32) (result (i32 | v == 1 || (v == 0 && !(k in M) && used == CAP - 1)))","  (@requires R)","  (@ensures R && M == (result == 1 ? old(M)[k := x] : old(M)))","  (local $i i32)","  (local $p i32)","  (@ghost local $j i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.ge_s","  if","    local.get $i","    call $slot","    local.get $x","    i32.store offset=8","    (@ghost M := M[k := x])","    i32.const 1","    return","  end","  global.get $used","  i32.const 7","  i32.ge_u","  if","    i32.const 0","    return","  end","  local.get $k","  i32.const 7","  i32.and","  local.set $i","  loop $free","    (@invariant !(k in M) && 0 <= j && j <= used && i == at(k, j))","    (@invariant forall d < j. st(at(k, d)) != EMPTY)","    (@decreases CAP - j)","    local.get $i","    call $slot","    local.tee $p","    i32.load","    if","      local.get $i","      i32.const 1","      i32.add","      i32.const 7","      i32.and","      local.set $i","      (@ghost j := j + 1)","      br $free","    end","  end","  local.get $p","  i32.const 1","  i32.store","  local.get $p","  local.get $k","  i32.store offset=4","  local.get $p","  local.get $x","  i32.store offset=8","  global.get $used","  i32.const 1","  i32.add","  global.set $used","  (@ghost M := M[k := x])","  i32.const 1",")"],"correct_runs":{"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]],["lookup",[3,-1]]],"results":[1,1,1,110,-1],"total_steps":383,"spec_checks_failed":0},"bugs":{"Hb":{"id":"Hb","title":"(b) lookup treats TOMBSTONE as EMPTY","category":"code","flavor":"key becomes unreachable","edit":"line 38: `i32.lt_u` (state < FULL, i.e. EMPTY) -> `i32.ne` (state != FULL, i.e. EMPTY or TOMB)","edits":[["replace",38,"i32.lt_u","i32.ne"]],"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]]],"expected_results":[1,1,1,110],"observed_results":[1,1,1,-1],"static_failure":{"line":41,"obligation":"post of $find: !(k in M)","why":"the path condition at the early return is now st(i) in {EMPTY, TOMB}; R3 (iii) only promises no EMPTY on a key's probe path, so a TOMB there says nothing about k","status":"fails"},"first_dynamic_failure":{"s":241,"ln":20,"kind":"ensures"},"frames":[{"s":17,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":22,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":46,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":56,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":61,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}],"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":true},{"s":78,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":87,"fn":"find","ln":48,"op":"i32.load offset=4","stack":[1,3],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":108,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":11,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":113,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":137,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":11,"x":110,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":155,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":165,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":170,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}],"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":true},{"s":187,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":196,"fn":"find","ln":48,"op":"i32.load offset=4","stack":[1,3],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":202,"fn":"find","ln":54,"op":"return","stack":[3],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":217,"fn":"delete","ln":100,"op":"i32.store","stack":[],"loc":{"k":3,"i":3},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":218,"fn":"delete","ln":102,"op":"i32.const 1","stack":[1],"loc":{"k":3,"i":3},"checks":[{"ln":84,"kind":"ensures","ok":true},{"ln":86,"kind":"ensures","ok":true}],"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":false},{"s":235,"fn":"find","ln":36,"op":"i32.load","stack":[2],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":237,"fn":"find","ln":38,"op":"i32.ne","stack":[1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":240,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":241,"fn":"lookup","ln":72,"op":"call $find  (return)","stack":[-1],"loc":{"k":11,"dflt":-1,"i":0},"checks":[{"ln":20,"kind":"ensures","ok":false}],"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":247,"fn":"lookup","ln":78,"op":"return","stack":[-1],"loc":{"k":11,"dflt":-1,"i":-1},"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":true}],"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":false}]},"Hc":{"id":"Hc","title":"(c) insert does not check for an existing key","category":"code","flavor":"duplicate key","edit":"delete lines 110-123 (the find-and-update group at the top of $insert)","edits":[["delete",110,123]],"calls":[["insert",[3,30]],["insert",[3,31]],["lookup",[3,-1]]],"expected_results":[1,1,31],"observed_results":[1,1,30],"static_failure":{"line":135,"obligation":"inv on entry of $free: !(k in M)","why":"nothing establishes that k is absent any more","status":"fails"},"first_dynamic_failure":{"s":43,"ln":136,"kind":"invariant"},"frames":[{"s":43,"fn":"insert","ln":135,"op":"loop $free","stack":[],"loc":{"k":3,"x":31,"i":3,"p":0,"j":0},"checks":[{"ln":136,"kind":"invariant","ok":false},{"ln":137,"kind":"invariant","ok":true},{"ln":138,"kind":"decreases","ok":true}],"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":53,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":3,"x":31,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":71,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":78,"fn":"insert","ln":159,"op":"i32.store offset=4","stack":[],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":86,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":false}],"used":2,"M":[[3,31]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,31],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":false,"ii":false,"iii":true,"iv":false}},{"s":132,"fn":"lookup","ln":82,"op":"i32.load offset=8","stack":[30],"loc":{"k":3,"dflt":-1,"i":3},"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":false}],"used":2,"M":[[3,31]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,31],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":false,"ii":false,"iii":true,"iv":false}}]}}}};
+
+// ===================== ENGINE: parser, interpreter, spec evaluator =====================
+// A small line-level interpreter for the refined-WAT listings in 03-sample-programs.md.
+// It follows the fixture's step convention (block/loop/if/br*/return/call count; else/end
+// do not; call = enter + return) and evaluates every spec line on concrete values.
+
+const I32 = x => x | 0;
+const U32 = x => x >>> 0;
+const CONSTS = { EMPTY: 0, FULL: 1, TOMB: 2, CAP: 8, BASE: 65440 };
+
+function lineKind(t) {
+  const s = t.trim();
+  if (s === '') return 'blank';
+  if (s.startsWith('(func')) return 'header';
+  if (s === ')') return 'close';
+  if (s.startsWith('(local')) return 'local';
+  if (s.startsWith('(@ghost local')) return 'glocal';
+  if (s.startsWith('(@ghost global')) return 'meta';
+  if (s.startsWith('(@ghost')) return 'ghost';
+  if (s.startsWith('(@')) return 'spec';
+  if (s.startsWith('(memory') || s.startsWith('(global')) return 'meta';
+  return 'instr';
+}
+
+// Extract the predicate inside "(KEY (i32 | P))" starting at the first occurrence of `key` after `from`.
+function extractRefinement(text, key, from = 0) {
+  const at = text.indexOf(key, from);
+  if (at < 0) return null;
+  const bar = text.indexOf('| ', at);
+  if (bar < 0) return null;
+  // find closing paren of "(i32 | ..." : depth counting from the "(i32"
+  const open = text.lastIndexOf('(i32', bar);
+  let depth = 0, i = open;
+  for (; i < text.length; i++) {
+    if (text[i] === '(') depth++;
+    else if (text[i] === ')') { depth--; if (depth === 0) break; }
+  }
+  if (open < at) return null;
+  return { text: text.slice(bar + 2, i), offset: bar + 2 };
+}
+function extractSpec(text) { // "(@invariant P)" -> P with offset
+  const m = text.match(/^(\s*)\(@(\w+)\s+/);
+  if (!m) return null;
+  const off = m[0].length;
+  return { kw: m[2], text: text.slice(off, text.lastIndexOf(')')), offset: off };
+}
+
+function parseProgram(lines) {
+  const P = { lines, kinds: lines.map(lineKind), funcs: {}, match: {}, labelOf: {}, encl: {} };
+  const open = [];
+  let fn = null;
+  lines.forEach((t, i) => {
+    const ln = i + 1, k = P.kinds[i], s = t.trim();
+    if (k === 'header') {
+      const name = s.match(/^\(func \$(\w+)/)[1];
+      const params = [...s.matchAll(/\(param \$(\w+)/g)].map(m => m[1]);
+      const res = extractRefinement(s, '(result');
+      const hasResult = s.includes('(result');
+      fn = { name, line: ln, params, locals: [], glocals: [], hasResult, result: res, paramRef: {} };
+      // param refinements
+      let from = 0;
+      for (const p of params) {
+        const at = s.indexOf('(param $' + p, from);
+        const nextParen = s.indexOf('(param', at + 1);
+        const seg = s.slice(at, nextParen > 0 ? nextParen : s.indexOf('(result') > 0 ? s.indexOf('(result') : s.length);
+        if (seg.includes('|')) {
+          const r = extractRefinement(s, '(param $' + p, from);
+          if (r) fn.paramRef[p] = { text: r.text, offset: r.offset + (t.length - t.trimStart().length) };
+        }
+        from = at + 1;
+      }
+      if (fn.result) fn.result.offset += (t.length - t.trimStart().length);
+      P.funcs[name] = fn;
+      open.length = 0;
+    } else if (k === 'close') { if (fn) fn.endLine = ln; fn = null; }
+    else if (k === 'local') fn.locals.push(s.match(/\$(\w+)/)[1]);
+    else if (k === 'glocal') fn.glocals.push(s.match(/\$(\w+)/)[1]);
+    else if (k === 'instr') {
+      const op = s.split(/\s+/)[0];
+      if (fn) P.encl[ln] = { fn: fn.name, blocks: open.map(o => o.line) };
+      if (op === 'block' || op === 'loop' || op === 'if') {
+        const lab = (s.match(/\$(\w+)/) || [])[1];
+        open.push({ line: ln, op, label: lab });
+        P.labelOf[ln] = lab;
+      } else if (op === 'else') { open[open.length - 1].else = ln; }
+      else if (op === 'end') {
+        const o = open.pop();
+        P.match[o.line] = { end: ln, else: o.else, op: o.op };
+        P.match[ln] = { start: o.line };
+        if (o.else) P.match[o.else] = { start: o.line, end: ln };
+      }
+    }
+    if (fn && k !== 'header' && !P.encl[ln]) P.encl[ln] = { fn: fn.name, blocks: open.map(o => o.line) };
+  });
+  // spec lines attached to loops
+  P.loopSpecs = {};
+  lines.forEach((t, i) => {
+    const s = t.trim();
+    if (s.startsWith('loop')) {
+      const arr = []; let j = i + 1;
+      while (j < lines.length && /^\(@(invariant|decreases)/.test(lines[j].trim())) { arr.push(j + 1); j++; }
+      P.loopSpecs[i + 1] = arr;
+    }
+  });
+  // function-level requires/ensures lines
+  for (const f of Object.values(P.funcs)) {
+    f.requires = []; f.ensures = [];
+    for (let ln = f.line + 1; ln < (f.endLine || lines.length); ln++) {
+      const s = lines[ln - 1].trim();
+      if (s.startsWith('(@requires')) f.requires.push(ln);
+      else if (s.startsWith('(@ensures')) f.ensures.push(ln);
+      else if (P.kinds[ln - 1] === 'instr') break;
+    }
+  }
+  return P;
+}
+
+// ---------- predicate language: tiny parser + evaluator with source spans ----------
+function tokenize(src) {
+  const toks = []; let i = 0;
+  const two = ['<=', '>=', '==', '!=', '&&', '||', ':='];
+  while (i < src.length) {
+    const c = src[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (/[0-9]/.test(c)) { let j = i; while (j < src.length && /[0-9]/.test(src[j])) j++; toks.push({ t: 'num', v: src.slice(i, j), s: i, e: j }); i = j; continue; }
+    if (/[A-Za-z_$]/.test(c)) { let j = i; while (j < src.length && /[A-Za-z0-9_$]/.test(src[j])) j++; const w = src.slice(i, j); toks.push({ t: w === 'in' ? 'op' : 'id', v: w, s: i, e: j }); i = j; continue; }
+    const tw = src.slice(i, i + 2);
+    if (two.includes(tw)) { toks.push({ t: 'op', v: tw, s: i, e: i + 2 }); i += 2; continue; }
+    toks.push({ t: 'op', v: c, s: i, e: i + 1 }); i++;
+  }
+  return toks;
+}
+function parsePred(src) {
+  const T = tokenize(src); let p = 0;
+  const peek = () => T[p], eat = v => { const t = T[p]; if (!t || (v && t.v !== v)) throw new Error('parse ' + src + ' at ' + p + ' want ' + v); p++; return t; };
+  const node = (type, a, s, e, extra) => Object.assign({ type, a, s, e }, extra || {});
+  function ternary() {
+    const c = or();
+    if (peek() && peek().v === '?') { eat('?'); const a = ternary(); eat(':'); const b = ternary(); return node('?:', [c, a, b], c.s, b.e); }
+    return c;
+  }
+  function bin(next, ops) {
+    return function () {
+      let l = next();
+      while (peek() && ops.includes(peek().v)) { const op = eat().v; const r = next(); l = node('bin', [l, r], l.s, r.e, { op }); }
+      return l;
+    };
+  }
+  const unary = () => {
+    const t = peek();
+    if (t.v === '!') { eat('!'); const a = unary(); return node('!', [a], t.s, a.e); }
+    if (t.v === '-') { eat('-'); const a = unary(); return node('neg', [a], t.s, a.e); }
+    return primary();
+  };
+  function primary() {
+    const t = eat();
+    if (t.t === 'num') return node('num', [], t.s, t.e, { v: BigInt(t.v) });
+    if (t.v === '(') { const x = ternary(); const r = eat(')'); return node('paren', [x], t.s, r.e); }
+    if (t.t === 'id') {
+      if (peek() && peek().v === '(') {
+        eat('('); const args = [];
+        if (peek().v !== ')') { args.push(ternary()); while (peek().v === ',') { eat(','); args.push(ternary()); } }
+        const r = eat(')');
+        return node('call', args, t.s, r.e, { name: t.v });
+      }
+      if (peek() && peek().v === '[') { eat('['); const k = ternary(); const r = eat(']'); return node('index', [node('id', [], t.s, t.e, { name: t.v }), k], t.s, r.e); }
+      return node('id', [], t.s, t.e, { name: t.v });
+    }
+    throw new Error('bad primary ' + JSON.stringify(t) + ' in ' + src);
+  }
+  const mul = bin(unary, ['*', '%', '/']);
+  const add = bin(mul, ['+', '-']);
+  const band = bin(add, ['&']);
+  const inop = bin(band, ['in']);
+  const cmp = bin(inop, ['<=', '<', '>=', '>', '==', '!=']);
+  const and = bin(cmp, ['&&']);
+  const or = bin(and, ['||']);
+  const r = ternary();
+  if (p !== T.length) throw new Error('trailing in ' + src);
+  return r;
+}
+const emod = (a, m) => { const r = a % m; return r < 0n ? r + (m < 0n ? -m : m) : r; };
+function evalNode(n, env) {
+  switch (n.type) {
+    case 'num': return n.v;
+    case 'paren': return evalNode(n.a[0], env);
+    case 'neg': return -evalNode(n.a[0], env);
+    case '!': return !evalNode(n.a[0], env);
+    case '?:': return evalNode(n.a[0], env) ? evalNode(n.a[1], env) : evalNode(n.a[2], env);
+    case 'id': {
+      if (n.name in env.vars) { const v = env.vars[n.name]; return typeof v === 'number' ? BigInt(v) : v; }
+      if (n.name in CONSTS) return BigInt(CONSTS[n.name]);
+      if (n.name === 'M') return env.M;
+      throw new Error('unbound ' + n.name);
+    }
+    case 'index': { const M = evalNode(n.a[0], env); const k = Number(evalNode(n.a[1], env)); return BigInt(M.get(k)); }
+    case 'call': {
+      if (n.name === 'old') return evalNode(n.a[0], env.old || env);
+      if (n.name === 'u') { const v = evalNode(n.a[0], env); return BigInt(U32(Number(v))); }
+      const args = n.a.map(a => evalNode(a, env));
+      return BigInt(env.fns[n.name](...args.map(Number)));
+    }
+    case 'bin': {
+      const op = n.op;
+      if (op === '&&') return evalNode(n.a[0], env) && evalNode(n.a[1], env);
+      if (op === '||') return evalNode(n.a[0], env) || evalNode(n.a[1], env);
+      const l = evalNode(n.a[0], env), r = evalNode(n.a[1], env);
+      switch (op) {
+        case '+': return l + r; case '-': return l - r; case '*': return l * r;
+        case '%': return emod(l, r); case '/': return l / r; case '&': return l & r;
+        case '<=': return l <= r; case '<': return l < r; case '>=': return l >= r; case '>': return l > r;
+        case '==': return l === r; case '!=': return l !== r;
+        case 'in': return r.has(Number(l));
+      }
+    }
+  }
+  throw new Error('eval ' + n.type);
+}
+const PRETTY = { '<=': '≤', '>=': '≥', '!=': '≠', '&&': '∧', '||': '∨', '==': '=', 'in': '∈' };
+function fmtMap(M) { return '{' + [...M.entries()].sort((a, b) => a[0] - b[0]).map(([k, v]) => k + '↦' + v).join(', ') + '}'; }
+function fmtVal(v) { if (v instanceof Map) return fmtMap(v); if (typeof v === 'boolean') return v ? 'true' : 'false'; return String(v); }
+// substitute values for identifiers, keep structure
+function subst(n, env, src) {
+  switch (n.type) {
+    case 'num': return String(n.v);
+    case 'paren': return '(' + subst(n.a[0], env, src) + ')';
+    case 'neg': return '-' + subst(n.a[0], env, src);
+    case '!': return '¬' + subst(n.a[0], env, src);
+    case '?:': return subst(n.a[0], env, src) + ' ? ' + subst(n.a[1], env, src) + ' : ' + subst(n.a[2], env, src);
+    case 'id': {
+      if (n.name in env.vars) { const v = env.vars[n.name]; const s = fmtVal(v); return (typeof v !== 'object' && Number(v) < 0) ? s : s; }
+      if (n.name === 'M') return 'M';
+      return n.name;
+    }
+    case 'index': return subst(n.a[0], env, src) + '[' + subst(n.a[1], env, src) + ']';
+    case 'call': if (n.name === 'old') return 'old(' + subst(n.a[0], env, src) + ')'; return n.name + '(' + n.a.map(a => subst(a, env, src)).join(', ') + ')';
+    case 'bin': {
+      const op = n.op === '*' ? '·' : (PRETTY[n.op] || n.op);
+      return subst(n.a[0], env, src) + ' ' + op + ' ' + subst(n.a[1], env, src);
+    }
+  }
+}
+function isCmp(n) { return n.type === 'bin' && ['<=', '<', '>=', '>', '==', '!=', 'in'].includes(n.op); }
+function strip(n) { while (n.type === 'paren') n = n.a[0]; return n; }
+function splitTop(n, op) { n = strip(n); if (n.type === 'bin' && n.op === op) return [...splitTop(n.a[0], op), ...splitTop(n.a[1], op)]; return [n]; }
+// one-level evaluation: for a comparison show "evalL op evalR"
+function evalLevel(n, env) {
+  n = strip(n);
+  if (n.type === '!') { const inner = strip(n.a[0]); return '¬(' + evalLevel(inner, env) + ')'; }
+  if (isCmp(n)) {
+    const l = evalNode(n.a[0], env), r = evalNode(n.a[1], env);
+    const ok = evalNode(n, env);
+    let op = PRETTY[n.op] || n.op;
+    if (!ok) op = { '≤': '≰', '<': '≮', '≥': '≱', '>': '≯', '=': '≠', '≠': '=', '∈': '∉' }[op] || op;
+    if (n.op === 'in') return fmtVal(l) + ' ' + op + ' dom ' + fmtVal(r);
+    return fmtVal(l) + ' ' + op + ' ' + fmtVal(r);
+  }
+  return fmtVal(evalNode(n, env));
+}
+// build chips for a predicate: top-level || of && groups
+function chipsFor(src, env, offset = 0) {
+  const ast = parsePred(src);
+  const mk = n => { const ok = !!evalNode(n, env); return { src: src.slice(n.s, n.e), s: offset + n.s, e: offset + n.e, sub: subst(strip(n), env, src), val: evalLevel(n, env), ok }; };
+  const disj = splitTop(ast, '||');
+  if (disj.length > 1) {
+    const groups = disj.map(d => splitTop(d, '&&').map(mk));
+    const ok = groups.some(g => g.every(c => c.ok));
+    return { ok, groups };
+  }
+  const chips = splitTop(ast, '&&').map(mk);
+  return { ok: chips.every(c => c.ok), groups: [chips] };
+}
+
+// ---------- hash-table helpers ----------
+function htFns(mem) {
+  const ld = a => mem[a >> 2];
+  return {
+    st: s => ld(65440 + 12 * s), key: s => ld(65440 + 12 * s + 4), val: s => ld(65440 + 12 * s + 8),
+    h: k => k & 7, at: (k, d) => ((k & 7) + d) & 7, dist: (k, s) => (s - (k & 7)) & 7,
+    gcd: (x, y) => { x = Math.abs(x); y = Math.abs(y); while (y) { [x, y] = [y, x % y]; } return x; },
+  };
+}
+function slotsOf(mem) { const a = []; for (let s = 0; s < 8; s++) { const b = (65440 + 12 * s) >> 2; a.push([mem[b], mem[b + 1], mem[b + 2]]); } return a; }
+function evalR(mem, M, used) {
+  const S = slotsOf(mem), F = htFns(mem);
+  const o = S.every(x => x[0] === 0 || x[0] === 1 || x[0] === 2);
+  const i = S.every(x => x[0] !== 1 || (M.has(x[1]) && M.get(x[1]) === x[2]));
+  const ii = [...M.keys()].every(k => S.filter(x => x[0] === 1 && x[1] === k).length === 1);
+  const iii = S.every((x, s) => { if (x[0] !== 1) return true; const d = F.dist(x[1], s); for (let e = 0; e <= d; e++) if (S[F.at(x[1], e)][0] === 0) return false; return true; });
+  const nFull = S.filter(x => x[0] === 1).length, nNE = S.filter(x => x[0] !== 0).length;
+  const iv = nFull === M.size && used === nNE && used < 8;
+  return { o, i, ii, iii, iv, nFull, nNE };
+}
+function rChips(mem, M, used) {
+  const r = evalR(mem, M, used);
+  return [
+    { src: 'R0', sub: 'every st(s) ∈ {EMPTY, FULL, TOMB}', val: r.o ? 'well-formed' : 'bad state byte', ok: r.o, rk: 'o' },
+    { src: 'R1', sub: 'FULL slot ⇒ key ∈ M, M[key] = val', val: r.i ? 'all FULL slots agree with M' : 'a FULL slot disagrees with M = ' + fmtMap(M), ok: r.i, rk: 'i' },
+    { src: 'R2', sub: 'each k ∈ M in exactly one FULL slot', val: r.ii ? 'one slot per key' : 'a key sits in ≠ 1 FULL slots', ok: r.ii, rk: 'ii' },
+    { src: 'R3', sub: 'no EMPTY on any key’s probe path', val: r.iii ? 'paths intact' : 'EMPTY on a path', ok: r.iii, rk: 'iii' },
+    { src: 'R4', sub: '#FULL = |M| ∧ used = #non-EMPTY ∧ used < CAP', val: `${r.nFull} ${r.nFull === M.size ? '=' : '≠'} ${M.size} ∧ ${used} ${used === r.nNE ? '=' : '≠'} ${r.nNE} ∧ ${used} ${used < 8 ? '<' : '≮'} 8`, ok: r.iv, rk: 'iv' },
+  ];
+}
+
+// ---------- the interpreter ----------
+const BIN = {
+  'i32.add': (a, b) => [I32(a + b), BigInt(a) + BigInt(b)], 'i32.sub': (a, b) => [I32(a - b), BigInt(a) - BigInt(b)],
+  'i32.mul': (a, b) => [Math.imul(a, b), BigInt(a) * BigInt(b)],
+  'i32.and': (a, b) => [a & b], 'i32.or': (a, b) => [a | b], 'i32.xor': (a, b) => [a ^ b],
+  'i32.shl': (a, b) => [a << (b & 31)], 'i32.shr_s': (a, b) => [a >> (b & 31)], 'i32.shr_u': (a, b) => [I32(U32(a) >>> (b & 31))],
+  'i32.rem_u': (a, b) => { if (b === 0) throw { trap: 'integer divide by zero' }; return [I32(U32(a) % U32(b))]; },
+  'i32.rem_s': (a, b) => { if (b === 0) throw { trap: 'integer divide by zero' }; return [I32(a % b)]; },
+  'i32.div_u': (a, b) => { if (b === 0) throw { trap: 'integer divide by zero' }; return [I32(Math.floor(U32(a) / U32(b)))]; },
+  'i32.eq': (a, b) => [+(a === b)], 'i32.ne': (a, b) => [+(a !== b)],
+  'i32.lt_s': (a, b) => [+(a < b)], 'i32.lt_u': (a, b) => [+(U32(a) < U32(b))],
+  'i32.gt_s': (a, b) => [+(a > b)], 'i32.gt_u': (a, b) => [+(U32(a) > U32(b))],
+  'i32.le_s': (a, b) => [+(a <= b)], 'i32.le_u': (a, b) => [+(U32(a) <= U32(b))],
+  'i32.ge_s': (a, b) => [+(a >= b)], 'i32.ge_u': (a, b) => [+(U32(a) >= U32(b))],
+};
+
+function applyEdits(lines, edits) {
+  const L = lines.slice();
+  for (const e of edits || []) {
+    if (e[0] === 'replace') { const i = e[1] - 1; if (!L[i].includes(e[2]) && L[i].trim() !== e[2].trim()) throw new Error('edit mismatch ' + e); L[i] = L[i].includes(e[2]) ? L[i].replace(e[2], e[3]) : e[3]; }
+    else if (e[0] === 'delete') for (let i = e[1] - 1; i <= e[2] - 1; i++) L[i] = '';
+  }
+  return L;
+}
+
+// opts: {extraObligations: {line: {text, label, when:'before'}}, startAt:{line, locals, stepBase}, maxSteps, hash:true}
+function execute(P, calls, opts = {}) {
+  const steps = [];
+  const mem = new Int32Array(16384);
+  const glob = { used: 0 };
+  let M = new Map();
+  let s0 = opts.startAt ? opts.startAt.stepBase - 1 : 0;
+  const maxSteps = opts.maxSteps || 5000;
+  const isHash = !!P.funcs.find;
+  const fns = isHash ? htFns(mem) : htFns(mem);
+  let lastStep = null;
+  const results = [];
+  let trap = null;
+
+  function rec(frame, ln, op, ins, outs, extra) {
+    s0++;
+    if (s0 - (opts.startAt ? opts.startAt.stepBase - 1 : 0) > maxSteps) throw { cutoff: true };
+    const st = { s: s0, fn: frame.fn, ln, op, ins, outs, stack: frame.stack.slice(), loc: Object.assign({}, frame.locals), checks: [], callId: frame.callId };
+    if (isHash) { st.used = glob.used; st.M = [...M.entries()]; st.slots = slotsOf(mem); }
+    Object.assign(st, extra || {});
+    steps.push(st); lastStep = st; return st;
+  }
+  function envFor(frame, extraVars) {
+    const vars = Object.assign({}, frame.locals, { used: glob.used }, extraVars || {});
+    return { vars, M, fns, old: frame.oldEnv };
+  }
+  function check(stepRec, ln, kind, res, extra) {
+    stepRec.checks.push(Object.assign({ ln, kind, ok: res.ok, res }, extra || {}));
+  }
+  function specCheck(stepRec, frame, ln, kind, extraVars) {
+    const raw = P.lines[ln - 1];
+    const sp = extractSpec(raw.trim());
+    const indent = raw.length - raw.trimStart().length;
+    const env = envFor(frame, extraVars);
+    if (sp.text === 'R') { const ch = rChips(mem, M, glob.used); check(stepRec, ln, kind, { ok: ch.every(c => c.ok), groups: [ch], rk: true }); return; }
+    if (/^R && M == /.test(sp.text)) {
+      const ch = rChips(mem, M, glob.used);
+      const rest = sp.text.slice(5);
+      let expect;
+      const old = frame.oldEnv.M;
+      if (rest.includes('\\ {k}')) { expect = new Map(old); expect.delete(frame.locals.k); }
+      else { const r = extraVars.result; expect = new Map(old); if (r === 1) expect.set(frame.locals.k, frame.locals.x); }
+      const same = expect.size === M.size && [...expect].every(([k, v]) => M.get(k) === v);
+      const mchip = { src: rest, s: indent + sp.offset + 5, e: indent + sp.offset + sp.text.length, sub: 'M = ' + fmtMap(expect), val: fmtMap(M) + (same ? ' = ' : ' ≠ ') + fmtMap(expect), ok: same };
+      check(stepRec, ln, kind, { ok: ch.every(c => c.ok) && same, groups: [[...ch, mchip]], rk: true });
+      return;
+    }
+    if (sp.kw === 'decreases') return; // handled separately
+    if (/^forall d < j\./.test(sp.text)) {
+      const k = frame.locals.k, j = frame.locals.j, strict = sp.text.includes('TOMB ||');
+      let ok = true, bad = -1;
+      for (let d = 0; d < j; d++) { const sl = fns.at(k, d), stv = fns.st(sl); const good = strict ? (stv === 2 || (stv === 1 && fns.key(sl) !== k)) : stv !== 0; if (!good) { ok = false; bad = d; break; } }
+      const path = []; for (let d = 0; d < j; d++) path.push(fns.at(k, d));
+      check(stepRec, ln, kind, { ok, groups: [[{ src: sp.text, s: indent + sp.offset, e: indent + sp.offset + sp.text.length, sub: `slots passed for k=${k}: [${path.join(', ')}]`, val: ok ? (j === 0 ? 'no slots passed yet' : 'all skipped slots non-EMPTY, ≠ k') : 'slot ' + fns.at(k, bad) + ' breaks it', ok }]] });
+      return;
+    }
+    const res = chipsFor(sp.text, env, indent + sp.offset);
+    check(stepRec, ln, kind, res);
+  }
+  function measureOf(frame, ln) { const sp = extractSpec(P.lines[ln - 1].trim()); return evalNode(parsePred(sp.text), envFor(frame)); }
+  function arrival(frame, loopLine, stepRec, isEntry) {
+    for (const ln of P.loopSpecs[loopLine] || []) {
+      const sp = extractSpec(P.lines[ln - 1].trim());
+      if (sp.kw === 'invariant') specCheck(stepRec, frame, ln, 'invariant');
+      else if (sp.kw === 'decreases') {
+        const raw = P.lines[ln - 1]; const indent = raw.length - raw.trimStart().length;
+        const m = measureOf(frame, ln); const key = loopLine;
+        const prev = frame.measures[key];
+        const env = envFor(frame);
+        const chips = [{ src: sp.text + ' ≥ 0', s: indent + sp.offset, e: indent + sp.offset + sp.text.length, sub: subst(parsePred(sp.text), env) + ' ≥ 0', val: m + (m >= 0n ? ' ≥ 0' : ' ≱ 0'), ok: m >= 0n }];
+        if (!isEntry && prev !== undefined) chips.push({ src: sp.text + ' < before', s: indent + sp.offset, e: indent + sp.offset + sp.text.length, sub: subst(parsePred(sp.text), env) + ' < ' + prev, val: m + (m < prev ? ' < ' : ' ≮ ') + prev, ok: m < prev });
+        frame.measures[key] = m;
+        check(stepRec, ln, 'decreases', { ok: chips.every(c => c.ok), groups: [chips] });
+      }
+    }
+  }
+  function extraOb(frame, ln, stepRec, ins) {
+    const ob = opts.extraObligations && opts.extraObligations[ln];
+    if (!ob) return null;
+    const env = envFor(frame);
+    const res = chipsFor(ob.text, env, 0);
+    check(stepRec, ln, 'obligation', res, { label: ob.label, wire: ob.wire, obText: ob.text });
+    return res;
+  }
+  let callCounter = 0;
+  function invoke(fname, args, top) {
+    const F = P.funcs[fname];
+    const frame = { fn: fname, locals: {}, stack: [], labels: [], measures: {}, callId: ++callCounter };
+    F.params.forEach((p, i) => frame.locals[p] = args[i]);
+    F.locals.forEach(l => frame.locals[l] = 0); F.glocals.forEach(l => frame.locals[l] = 0);
+    frame.oldEnv = { vars: Object.assign({}, frame.locals, { used: glob.used }), M: new Map(M), fns };
+    let pc = F.line + 1;
+    let first = true;
+    const startStepIdx = steps.length;
+    if (opts.startAt && top) {
+      Object.assign(frame.locals, opts.startAt.locals);
+      pc = opts.startAt.line;
+      for (const b of P.encl[pc].blocks) frame.labels.push({ op: P.lines[b - 1].trim().split(/\s+/)[0], line: b, end: P.match[b].end, height: 0, label: P.labelOf[b] });
+    }
+    const topChecks = st => {
+      if (top && first) {
+        first = false;
+        for (const p of F.params) if (F.paramRef[p]) check(st, F.line, 'requires', chipsFor(F.paramRef[p].text, envFor(frame, { v: frame.locals[p] }), F.paramRef[p].offset), { param: p });
+        for (const ln of F.requires) specCheck(st, frame, ln, 'requires');
+      }
+    };
+    const doReturn = (val) => {
+      if (top) {
+        const st = lastStep;
+        if (F.result) check(st, F.line, 'ensures', chipsFor(F.result.text, envFor(frame, { v: val, result: val }), F.result.offset));
+        for (const ln of F.ensures) specCheck(st, frame, ln, 'ensures', { result: val, v: val });
+      }
+      frame.ret = val; return val;
+    };
+    while (true) {
+      if (pc === F.endLine) return doReturn(F.hasResult ? frame.stack[frame.stack.length - 1] : undefined);
+      const k = P.kinds[pc - 1], s = P.lines[pc - 1].trim();
+      if (k !== 'instr') {
+        if (k === 'ghost') {
+          let m;
+          if ((m = s.match(/^\(@ghost (\w+) := \1 \+ 1\)$/))) frame.locals[m[1]]++;
+          else if (/M := M\[k := x\]/.test(s)) { M = new Map(M); M.set(frame.locals.k, frame.locals.x); }
+          else if (/M := M \\ \{k\}/.test(s)) { M = new Map(M); M.delete(frame.locals.k); }
+        } else if (k === 'spec' && s.startsWith('(@assert') && lastStep) specCheck(lastStep, frame, pc, 'assert');
+        pc++; continue;
+      }
+      const parts = s.split(/\s+/), op = parts[0];
+      const stk = frame.stack;
+      const pop = () => stk.pop();
+      if (op === 'else') { pc = P.match[pc].end; continue; }
+      if (op === 'end') { frame.labels.pop(); pc++; continue; }
+      let st;
+      try {
+        if (op === 'local.get') { const v = frame.locals[parts[1].slice(1)]; stk.push(v); st = rec(frame, pc, s, [], [v]); }
+        else if (op === 'local.set') { const v = pop(); frame.locals[parts[1].slice(1)] = v; st = rec(frame, pc, s, [v], []); }
+        else if (op === 'local.tee') { const v = pop(); frame.locals[parts[1].slice(1)] = v; stk.push(v); st = rec(frame, pc, s, [v], [v]); }
+        else if (op === 'global.get') { const v = glob[parts[1].slice(1)]; stk.push(v); st = rec(frame, pc, s, [], [v]); }
+        else if (op === 'global.set') { const v = pop(); glob[parts[1].slice(1)] = v; st = rec(frame, pc, s, [v], []); }
+        else if (op === 'i32.const') { const v = I32(parseInt(parts[1])); stk.push(v); st = rec(frame, pc, s, [], [v]); }
+        else if (op === 'i32.eqz') { const a = pop(); stk.push(+(a === 0)); st = rec(frame, pc, s, [a], [+(a === 0)]); }
+        else if (BIN[op]) {
+          const b = stk[stk.length - 1], a = stk[stk.length - 2];
+          let r;
+          try { r = BIN[op](a, b); } catch (e) {
+            if (e.trap) { st = rec(frame, pc, s, [a, b], [], { trap: e.trap }); topChecks(st); extraOb(frame, pc, st); throw e; }
+            throw e;
+          }
+          pop(); pop(); stk.push(r[0]);
+          const extra = {};
+          if (r[1] !== undefined && BigInt(r[0]) !== r[1]) extra.wrap = { exact: r[1].toString(), wrapped: r[0], a, b, op };
+          st = rec(frame, pc, s, [a, b], [r[0]], extra);
+        }
+        else if (op === 'i32.load') {
+          const off = parts[1] ? parseInt(parts[1].split('=')[1]) : 0; const a = stk[stk.length - 1]; const ea = U32(a) + off;
+          if (ea + 4 > 65536) { st = rec(frame, pc, s, [a], [], { trap: 'out of bounds memory access' }); throw { trap: 'out of bounds memory access' }; }
+          pop(); const v = mem[ea >> 2]; stk.push(v); st = rec(frame, pc, s, [a], [v]);
+        }
+        else if (op === 'i32.store') {
+          const off = parts[1] ? parseInt(parts[1].split('=')[1]) : 0; const v = stk[stk.length - 1], a = stk[stk.length - 2]; const ea = U32(a) + off;
+          if (ea + 4 > 65536) { st = rec(frame, pc, s, [a, v], [], { trap: 'out of bounds memory access' }); throw { trap: 'out of bounds memory access' }; }
+          pop(); pop(); mem[ea >> 2] = v; st = rec(frame, pc, s, [a, v], []);
+        }
+        else if (op === 'block' || op === 'loop') {
+          frame.labels.push({ op, line: pc, end: P.match[pc].end, height: stk.length, label: P.labelOf[pc] });
+          st = rec(frame, pc, s, [], []);
+          topChecks(st);
+          if (op === 'loop') arrival(frame, pc, st, true);
+          pc++; continue;
+        }
+        else if (op === 'if') {
+          const c = pop(); st = rec(frame, pc, s, [c], []);
+          topChecks(st);
+          frame.labels.push({ op, line: pc, end: P.match[pc].end, height: stk.length });
+          if (c) pc++; else pc = P.match[pc].else ? P.match[pc].else + 1 : P.match[pc].end;
+          continue;
+        }
+        else if (op === 'br' || op === 'br_if') {
+          let c = 1; if (op === 'br_if') c = pop();
+          st = rec(frame, pc, s, op === 'br_if' ? [c] : [], []);
+          topChecks(st);
+          if (c) {
+            const name = parts[1].slice(1);
+            let idx = frame.labels.length - 1; while (idx >= 0 && frame.labels[idx].label !== name) idx--;
+            const L = frame.labels[idx];
+            stk.length = L.height;
+            if (L.op === 'loop') {
+              frame.labels.length = idx + 1; pc = L.line + 1; arrival(frame, L.line, st, false);
+              if (opts.startAt && opts.stopAtBackEdge) throw { stop: true };
+            } else { frame.labels.length = idx; pc = L.end + 1; }
+            continue;
+          }
+          pc++; continue;
+        }
+        else if (op === 'return') { const v = stk[stk.length - 1]; st = rec(frame, pc, s, [v], []); topChecks(st); return doReturn(v); }
+        else if (op === 'call') {
+          const g = parts[1].slice(1), G = P.funcs[g];
+          const args = stk.splice(stk.length - G.params.length, G.params.length);
+          const en = rec(frame, pc, 'call $' + g + '  (enter)', args, [], { call: 'enter' });
+          topChecks(en);
+          // callee requires attach to the enter step
+          const calleeEnv = { vars: {}, M, fns };
+          G.params.forEach((p, i) => calleeEnv.vars[p] = args[i]);
+          for (const p of G.params) if (G.paramRef[p]) check(en, G.line, 'requires', chipsFor(G.paramRef[p].text, { vars: Object.assign({}, calleeEnv.vars, { v: calleeEnv.vars[p] }), M, fns }, G.paramRef[p].offset), { param: p, callee: g });
+          for (const ln of G.requires) { const sp = extractSpec(P.lines[ln - 1].trim()); if (sp.text === 'R') { const ch = rChips(mem, M, glob.used); check(en, ln, 'requires', { ok: ch.every(c => c.ok), groups: [ch], rk: true }, { callee: g }); } }
+          const oldM = new Map(M);
+          const r = invoke(g, args, false);
+          if (G.hasResult) stk.push(r);
+          const rt = rec(frame, pc, 'call $' + g + '  (return)', [], G.hasResult ? [r] : [], { call: 'return' });
+          if (G.result) check(rt, G.line, 'ensures', chipsFor(G.result.text, { vars: Object.assign({}, calleeEnv.vars, { v: r, result: r, used: glob.used }), M, fns, old: { vars: calleeEnv.vars, M: oldM, fns } }, G.result.offset), { callee: g });
+          for (const ln of G.ensures) {
+            const fr2 = { locals: Object.assign({}, calleeEnv.vars), oldEnv: { vars: calleeEnv.vars, M: oldM, fns } };
+            specCheck(rt, fr2, ln, 'ensures', { result: r, v: r });
+            rt.checks[rt.checks.length - 1].callee = g;
+          }
+          pc++; continue;
+        }
+        else if (op === 'unreachable') { st = rec(frame, pc, s, [], [], { trap: 'unreachable' }); throw { trap: 'unreachable' }; }
+        else throw new Error('unknown op ' + op);
+      } catch (e) { throw e; }
+      topChecks(st);
+      extraOb(frame, pc, st);
+      pc++;
+    }
+  }
+  const callBounds = [];
+  for (const [fname, args] of calls) {
+    const startIdx = steps.length;
+    try { results.push(invoke(fname, args, true)); }
+    catch (e) {
+      if (e.trap) { trap = e.trap; results.push('trap: ' + e.trap); callBounds.push({ call: [fname, args], from: startIdx, to: steps.length - 1 }); break; }
+      if (e.cutoff) { results.push('(cut off)'); callBounds.push({ call: [fname, args], from: startIdx, to: steps.length - 1 }); break; }
+      if (e.stop) { results.push('(one iteration)'); callBounds.push({ call: [fname, args], from: startIdx, to: steps.length - 1 }); break; }
+      throw e;
+    }
+    callBounds.push({ call: [fname, args], from: startIdx, to: steps.length - 1 });
+  }
+  return { steps, results, trap, callBounds };
+}
+
+if (typeof module !== 'undefined') module.exports = { parseProgram, execute, applyEdits, chipsFor, parsePred, evalR, extractSpec, extractRefinement };
+
+// ===================== UI: Codillon-style listing + witness slider =====================
+const ROW = 36;
+const SVGNS = 'http://www.w3.org/2000/svg';
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const measureCtx = document.createElement('canvas').getContext('2d');
+function textW(t, font) { measureCtx.font = font || '10px "Fira Sans Condensed","Roboto Condensed","Arial Narrow",sans-serif'; return measureCtx.measureText(String(t)).width; }
+function svg(tag, attrs, parent) { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const fmtN = v => (v === undefined || v === null) ? '' : String(v);
+const STNAME = ['EMPTY', 'FULL', 'TOMB'];
+let ACTIVE = null;
+
+function stackEffect(P, ln) {
+  const s = P.lines[ln - 1].trim(); const op = s.split(/\s+/)[0];
+  switch (op) {
+    case 'local.get': case 'global.get': case 'i32.const': return [0, 1];
+    case 'local.set': case 'global.set': case 'br_if': case 'if': return [1, 0];
+    case 'local.tee': case 'i32.eqz': case 'i32.load': return [1, 1];
+    case 'i32.store': return [2, 0];
+    case 'return': return [1, 0];
+    case 'call': { const g = P.funcs[s.split(/\s+/)[1].slice(1)]; return [g.params.length, g.hasResult ? 1 : 0]; }
+    case 'block': case 'loop': case 'br': case 'else': case 'end': case 'unreachable': return [0, 0];
+    default: return BIN[op] ? [2, 1] : [0, 0];
+  }
+}
+function staticConnections(P) {
+  const conns = [];
+  for (const F of Object.values(P.funcs)) {
+    let stack = []; const frames = [];
+    for (let ln = F.line + 1; ln < F.endLine; ln++) {
+      if (P.kinds[ln - 1] !== 'instr') continue;
+      const op = P.lines[ln - 1].trim().split(/\s+/)[0];
+      if (op === 'block' || op === 'loop') { frames.push(stack); stack = []; continue; }
+      if (op === 'else') { stack = []; continue; }
+      if (op === 'end') { stack = frames.pop() || []; continue; }
+      const [nin, nout] = stackEffect(P, ln);
+      for (let i = nin - 1; i >= 0; i--) { const p = stack.pop(); if (p) conns.push({ from: p, to: { ln, slot: i } }); }
+      if (op === 'if') { frames.push(stack); stack = []; continue; }
+      for (let j = 0; j < nout; j++) stack.push({ ln, slot: j });
+      if (op === 'br' || op === 'return' || op === 'unreachable') stack = [];
+    }
+  }
+  return conns;
+}
+function brTargets(P) {
+  const t = {};
+  P.lines.forEach((l, i) => {
+    const s = l.trim(); const m = s.match(/^br(_if)? \$(\w+)/);
+    if (m && P.encl[i + 1]) { for (const b of P.encl[i + 1].blocks) if (P.labelOf[b] === m[2] && P.lines[b - 1].trim().startsWith('loop')) t[i + 1] = b; }
+  });
+  return t;
+}
+const tipEl = () => document.getElementById('tip');
+document.addEventListener('mouseover', e => {
+  const t = e.target.closest && e.target.closest('[data-tip]');
+  const tip = tipEl(); if (!tip) return;
+  if (t) { tip.innerHTML = t.getAttribute('data-tip'); tip.style.display = 'block'; }
+  else tip.style.display = 'none';
+});
+document.addEventListener('mousemove', e => { const tip = tipEl(); if (tip && tip.style.display === 'block') { tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 470) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; } });
+
+function chipHTML(c, mode) {
+  const cls = c.skip ? 'skip' : (!c.ok ? (mode === 'unknown' ? 'unk' : mode === 'held' ? 'held' : 'bad') : (mode === 'held' ? 'held' : ''));
+  const tip = esc(`${c.src} — ${c.skip ? 'not evaluated (ordered ∧: an earlier conjunct is false)' : c.ok ? 'holds on these values' : 'FALSE on these values'}`);
+  if (c.skip) return `<span class="chip skip" data-tip="${tip}"><span class="sub">${esc(c.sub)}</span><span class="val">…</span></span>`;
+  const sub = !c.ok && mode !== 'unknown' ? `<u>${esc(c.sub)}</u>` : esc(c.sub);
+  return `<span class="chip ${cls}" data-tip="${tip}"><span class="sub">${sub}</span><span class="val">${esc(c.val)}</span></span>`;
+}
+function groupsHTML(res, mode) {
+  const gs = res.groups.map(g => {
+    let seenFalse = false;
+    const items = g.map(c => { const cc = Object.assign({}, c); if (seenFalse && !res.rk) cc.skip = true; if (!c.ok) seenFalse = true; return chipHTML(cc, mode); });
+    return items.join('');
+  });
+  if (gs.length === 1) return `<div class="chips">${gs[0]}</div>`;
+  return `<div class="chips">${gs.map(g => `<span class="grp">${g}</span>`).join('<span class="or">∨</span>')}</div>`;
+}
+const KINDNAME = { invariant: '@invariant', decreases: '@decreases', ensures: 'ensures', requires: 'requires', assert: '@assert', obligation: 'obligation' };
+
+class Editor {
+  constructor(root, cfg) {
+    this.root = root; this.cfg = cfg; this.idx = 0; this.replayed = false; this.ghostSel = null; this.userTouched = false;
+    root.classList.add('editor');
+    root.innerHTML = `<div class="ed-head"></div><div class="slider-container"><div class="ghost-row hidden"></div><input type="range" class="step-slider" min="0" max="1" value="0"><div class="slider-ticks"></div><div class="bands"></div><div class="memwrap"></div></div><div class="listing-wrap"><div class="listing-scroll"><div class="listing"></div></div></div>`;
+    this.head = root.querySelector('.ed-head'); this.sc = root.querySelector('.slider-container');
+    this.ghostRow = root.querySelector('.ghost-row'); this.range = root.querySelector('.step-slider');
+    this.ticks = root.querySelector('.slider-ticks'); this.bands = root.querySelector('.bands'); this.memwrap = root.querySelector('.memwrap');
+    this.scroll = root.querySelector('.listing-scroll'); this.listing = root.querySelector('.listing'); this.wrap = root.querySelector('.listing-wrap');
+    if (cfg.scroll) { this.scroll.classList.add('scroll'); this.mini = document.createElement('div'); this.mini.className = 'minimap'; this.wrap.appendChild(this.mini); }
+    this.range.addEventListener('input', () => { this.ghostSel = null; this.idx = +this.range.value; ACTIVE = this; this.render(); });
+    root.addEventListener('mousedown', () => { ACTIVE = this; });
+    this.buildHead();
+    this.setVariant(cfg.initial || cfg.variants[0].id, false);
+  }
+  buildHead() {
+    const c = this.cfg;
+    let h = `<b style="font-family:var(--serif);font-size:17px;font-weight:normal">${c.title}</b>`;
+    if (c.radio) h += `<span class="radios">${c.variants.map(v => `<label><input type="radio" name="${c.id}-v" value="${v.id}"> ${v.label}</label>`).join('')}</span>`;
+    else h += `<label>Seed bug: <select>${c.variants.map(v => `<option value="${v.id}">${esc(v.label)}</option>`).join('')}</select></label>`;
+    h += `<span class="small" style="color:#555">${c.note || ''}</span>`;
+    this.head.innerHTML = h;
+    const onPick = val => { ACTIVE = this; this.userTouched = false; this.pickVariant(val); };
+    if (c.radio) this.head.querySelectorAll('input').forEach(r => r.addEventListener('change', () => onPick(r.value)));
+    else this.head.querySelector('select').addEventListener('change', e => onPick(e.target.value));
+  }
+  syncHead() {
+    if (this.cfg.radio) this.head.querySelectorAll('input').forEach(r => r.checked = r.value === this.vid);
+    else this.head.querySelector('select').value = this.vid;
+  }
+  pickVariant(id) {
+    // edit continuity: old verdicts go stale (fade + squiggle), then the re-check lands
+    this.root.classList.add('stale');
+    clearTimeout(this._t1); clearTimeout(this._t2);
+    this._t1 = setTimeout(() => {
+      this.root.classList.remove('stale');
+      this.setVariant(id, true);
+      const v = this.variant;
+      if (v.witness && !v.witness.byOwn && !this.cfg.manualReplay) this._t2 = setTimeout(() => { if (!this.userTouched && !this.replayed) this.replay(); }, 1500);
+    }, 380);
+  }
+  setVariant(id, animate) {
+    const c = this.cfg; const v = c.variants.find(x => x.id === id);
+    const prevLines = this.lines;
+    this.vid = id; this.variant = v; this.replayed = !!(v.witness && v.witness.byOwn); this.ghostSel = null;
+    this.lines = applyEdits(c.lines, v.edits || []);
+    this.P = parseProgram(this.lines);
+    this.brT = brTargets(this.P);
+    const xo = Object.assign({}, c.extraObligations || {}, v.extraObligations || {});
+    this.own = v.ownCalls && v.ownCalls.length ? execute(this.P, v.ownCalls, { extraObligations: xo }) : null;
+    this.wit = null;
+    if (v.witness) {
+      const w = v.witness;
+      this.wit = execute(this.P, w.calls, { extraObligations: xo, startAt: w.startAt, stopAtBackEdge: !!w.startAt, maxSteps: 2000 });
+      this.wit.firstFail = this.wit.steps.findIndex(s => s.trap || s.checks.some(ch => !ch.ok));
+      this.spurious = this.wit.firstFail < 0;
+    }
+    this.changed = new Set(); if (animate && prevLines) this.lines.forEach((l, i) => { if (l !== prevLines[i]) this.changed.add(i + 1); });
+    this.syncHead();
+    this.build();
+    this.makeSegments();
+    if (this.replayed && this.segs.length) { const wseg = this.segs.find(s => s.kind === 'witness'); this.idx = wseg ? wseg.start + 1 + Math.max(0, this.wit.firstFail) : this.lastIdx(); }
+    else if (c.startAtFail && this.own) { const f = this.own.steps.findIndex(s => s.trap || s.checks.some(ch => !ch.ok)); this.idx = f >= 0 ? f + 1 : this.own.steps.length; }
+    else this.idx = this.own ? Math.min(this.own.steps.length, c.startIdx || this.own.steps.length) : 0;
+    this.render();
+  }
+  lastIdx() { return this.segs.reduce((a, s) => Math.max(a, s.end), 0); }
+  makeSegments() {
+    this.segs = []; let off = 0;
+    if (this.own) { this.segs.push({ kind: 'own', run: this.own, start: off, end: off + this.own.steps.length, label: this.variant.ownLabel || this.cfg.ownLabel }); off += this.own.steps.length; }
+    if (this.wit && this.replayed && !this.spurious && !this.variant.witness.byOwn) { this.segs.push({ kind: 'witness', run: this.wit, start: off, end: off + this.wit.steps.length, label: this.variant.witness.label }); off += this.wit.steps.length; }
+    this.total = off;
+  }
+  locate(idx) { // -> {seg, k}
+    if (idx <= 0 || !this.segs.length) return { seg: this.segs[0] || null, k: -1 };
+    for (const s of this.segs) if (idx > s.start && idx <= s.end) return { seg: s, k: idx - s.start - 1 };
+    const s = this.segs[this.segs.length - 1]; return { seg: s, k: s.run.steps.length - 1 };
+  }
+  // ----------------------------------------------------------------- build (static per variant)
+  build() {
+    const c = this.cfg, P = this.P;
+    const [a, b] = c.range || [1, this.lines.length];
+    this.a = a; this.b = b;
+    const nrows = b - a + 1;
+    const H = nrows * ROW + (c.padBottom || 170);
+    this.listing.style.height = H + 'px';
+    this.listing.innerHTML = '';
+    this.rowEl = {}; this.codeEl = {}; this.gutEl = {};
+    const W = c.width || 1340;
+    const clipAt = c.xC - 14;
+    for (let ln = a; ln <= b; ln++) {
+      const t = this.lines[ln - 1]; const kind = P.kinds[ln - 1];
+      const row = document.createElement('div'); row.className = 'row'; row.style.top = ((ln - a) * ROW) + 'px';
+      const ind = t.length - t.trimStart().length;
+      const x = 70 + ind / 2 * 24;
+      const g = document.createElement('span'); g.className = 'gut'; g.textContent = kind === 'header' || kind === 'meta' ? '' : ln;
+      const code = document.createElement('span');
+      code.className = 'code ' + (kind === 'spec' || kind === 'ghost' || kind === 'glocal' ? 'spec' : kind === 'header' || kind === 'meta' ? 'meta' : kind === 'close' ? 'close' : kind === 'blank' ? 'blank' : '');
+      code.style.left = x + 'px';
+      if (kind === 'header' || kind === 'meta' || kind === 'spec' || kind === 'ghost') { code.classList.add('clip'); code.style.maxWidth = ((c.width || 1340) - x - 10) + 'px'; code.setAttribute('data-tip', esc(t.trim())); }
+      code.innerHTML = this.codeHTML(ln);
+      if (this.changed && this.changed.has(ln)) code.classList.add('reveal');
+      row.appendChild(g); row.appendChild(code);
+      this.listing.appendChild(row);
+      this.rowEl[ln] = row; this.codeEl[ln] = code; this.gutEl[ln] = g;
+      if (kind === 'blank') g.textContent = ln;
+      if (kind === 'header') { g.textContent = ln; g.style.color = 'indigo'; }
+    }
+    // overlay svg
+    const ov = svg('svg', { class: 'overlay', width: W, height: H });
+    this.listing.appendChild(ov); this.ov = ov;
+    this.gFrames = svg('g', {}, ov); this.gConn = svg('g', {}, ov); this.gShapes = svg('g', {}, ov); this.gCurves = svg('g', {}, ov); this.gArrow = svg('g', {}, ov);
+    this.cardLayer = document.createElement('div'); this.cardLayer.style.cssText = `position:absolute;left:0;top:0;width:${W}px;height:0;pointer-events:none`; this.listing.appendChild(this.cardLayer);
+    // frames (block/loop/if brackets)
+    for (const [k, m] of Object.entries(this.P.match)) {
+      const ln = +k; if (!m.end || m.start) continue; if (ln < a || m.end > b) continue;
+      const t = this.lines[ln - 1]; const ind = t.length - t.trimStart().length; const x = 70 + ind / 2 * 24 + 6;
+      svg('line', { x1: x, x2: x, y1: (ln - a) * ROW + ROW - 6, y2: (m.end - a) * ROW + 8, stroke: '#9a9a9a', 'stroke-width': 1 }, this.gFrames);
+      if (m.op === 'loop') { const tl = svg('text', { x: x - 4, y: (ln - a) * ROW + ROW + 14, class: 'slot-value', 'text-anchor': 'end', fill: '#888', style: 'font-size:9px;opacity:0', transform: `rotate(-90 ${x - 4} ${(ln - a) * ROW + ROW + 14})` }, this.gFrames); tl.textContent = 'loop'; this.loopLabel = this.loopLabel || {}; this.loopLabel[ln] = tl; }
+    }
+    // shape widths: stable over all runs of this variant
+    const runs = [this.own, this.wit].filter(Boolean);
+    const wid = {};
+    for (const r of runs) for (const st of r.steps) {
+      const w = wid[st.ln] || (wid[st.ln] = { ins: [], outs: [] });
+      (st.ins || []).forEach((v, i) => w.ins[i] = Math.max(w.ins[i] || 30, textW(v) + 9));
+      (st.outs || []).forEach((v, i) => w.outs[i] = Math.max(w.outs[i] || 30, textW(v) + 9));
+    }
+    this.shapes = {};
+    const xF = c.xF;
+    for (let ln = a; ln <= b; ln++) {
+      if (P.kinds[ln - 1] !== 'instr') continue;
+      const [nin, nout] = stackEffect(P, ln); if (!nin && !nout) continue;
+      const y0 = (ln - a) * ROW; const g = svg('g', {}, this.gShapes);
+      const ent = { ins: [], outs: [], g };
+      let x = xF; const wv = wid[ln] || { ins: [], outs: [] };
+      for (let i = 0; i < nin; i++) {
+        const w = wv.ins[i] || 30;
+        const p = svg('path', { d: `M${x},${y0 + 4} L${x},${y0 + 15} L${x + w},${y0 + 15} L${x + w},${y0 + 4}`, fill: '#d9d5ea', stroke: '#6A5ACD', 'stroke-width': 1.2, class: 'shape' }, g);
+        const bad = svg('rect', { x: x - 2, y: y0 + 2, width: w + 4, height: 15, fill: 'none', stroke: 'darkred', 'stroke-width': 2, opacity: 0, class: 'shape' }, g);
+        const tx = svg('text', { x: x + w / 2, y: y0 + 10, class: 'slot-value', fill: '#222' }, g);
+        ent.ins.push({ x, w, y: y0 + 4, p, tx, bad }); x += w + 4;
+      }
+      const ruleW = Math.max(x - xF - 4, (wv.outs.reduce((s, w) => s + (w || 30) + 4, 0)) - 4, 30);
+      svg('line', { x1: xF - 3, x2: xF + ruleW + 3, y1: y0 + 18, y2: y0 + 18, stroke: '#666', 'stroke-width': 1 }, g);
+      x = xF;
+      for (let j = 0; j < nout; j++) {
+        const w = wv.outs[j] || 30;
+        const r = svg('rect', { x, y: y0 + 21, width: w, height: 11, fill: '#6A5ACD', stroke: '#6A5ACD', 'stroke-width': 1.2, class: 'shape' }, g);
+        const tx = svg('text', { x: x + w / 2, y: y0 + 27, class: 'slot-value', fill: '#fffff0' }, g);
+        ent.outs.push({ x, w, y: y0 + 21, r, tx }); x += w + 4;
+      }
+      const opName = P.lines[ln - 1].trim();
+      g.setAttribute('data-tip', esc(`<b>${opName}</b>: i32 → stack effect ${nin} in / ${nout} out`));
+      g.style.pointerEvents = 'auto';
+      this.shapes[ln] = ent;
+    }
+    // connections
+    for (const cn of staticConnections(P)) {
+      const A = this.shapes[cn.from.ln], B = this.shapes[cn.to.ln];
+      if (!A || !B) continue; const o = A.outs[cn.from.slot], i = B.ins[cn.to.slot]; if (!o || !i) continue;
+      const sx = o.x + o.w, sy = o.y + 5.5, ex = i.x + i.w, ey = i.y + 5.5;
+      const d = cn.to.ln - cn.from.ln; const bow = Math.min(18 + 10 * d, 170);
+      svg('path', { d: `M${sx},${sy} C${sx + bow},${sy} ${ex + bow},${ey} ${ex},${ey}`, fill: 'none', stroke: '#6A5ACD', 'stroke-width': 2, opacity: .42 }, this.gConn);
+    }
+    // arrow
+    this.arrow = svg('g', { class: 'arrow' }, this.gArrow);
+    svg('path', { d: 'M0,-6 L10,-6 L10,-11 L19,0 L10,11 L10,6 L0,6 Z', fill: 'darkblue', class: 'arrowbody' }, this.arrow);
+    this.arrowTxt = svg('text', { x: 24, y: 0, class: 'slot-value', fill: 'darkblue', 'text-anchor': 'start', style: 'font-size:10px' }, this.arrow);
+    this.arrow.style.opacity = 0;
+    this.buildGhostRow();
+  }
+  codeHTML(ln) {
+    // text with underline spans for residue underlines on this line
+    const t = this.lines[ln - 1].trimStart();
+    const ind = this.lines[ln - 1].length - t.length;
+    const uls = [];
+    for (const r of this.variant.residue || []) for (const u of r.underline || []) if (u.line === ln) {
+      const s = this.lines[ln - 1].indexOf(u.text, u.after ? this.lines[ln - 1].indexOf(u.after) : 0); if (s >= 0) uls.push({ s: s - ind, e: s - ind + u.text.length, r });
+    }
+    if (!t) return this.variant.hollowAt === ln ? '' : '';
+    uls.sort((x, y) => x.s - y.s);
+    let out = '', p = 0;
+    for (const u of uls) { out += esc(t.slice(p, u.s)) + `<u class="ul" data-res="${(this.variant.residue || []).indexOf(u.r)}">${esc(t.slice(u.s, u.e))}</u>`; p = u.e; }
+    return out + esc(t.slice(p));
+  }
+  // ----------------------------------------------------------------- ghost track
+  buildGhostRow() {
+    const v = this.variant, w = v.witness;
+    const gr = this.ghostRow;
+    gr.innerHTML = '';
+    if (!w || w.byOwn) { gr.classList.add('hidden'); return; }
+    gr.classList.toggle('hidden', this.replayed && !this.spurious);
+    gr.innerHTML = `<div class="ghost-line"></div>`;
+    const lab = document.createElement('div'); lab.className = 'ghost-label'; lab.style.left = '0px';
+    lab.innerHTML = `${w.startAt ? '↻ loop-head state' : 'solver witness'}: ${this.shrunkHTML(true)}`;
+    gr.appendChild(lab); this.ghostLab = lab;
+    const n1 = document.createElement('div'); n1.className = 'gnode'; n1.textContent = w.startAt ? '↻ state' : '▸ inputs';
+    n1.style.left = '58%'; n1.setAttribute('data-tip', esc(w.startAt ? 'Loop-head counterexample (01 §2.8): a state that satisfies the invariant at the loop head; it is replayed for ONE iteration, not from entry.' : 'Input counterexample: a full run from entry with these inputs.') + '<br>Not yet run: values are what the solver <i>claims</i>; shapes are outlined.');
+    n1.onclick = () => { this.userTouched = true; this.ghostSel = 'inputs'; this.render(); };
+    const n2 = document.createElement('div'); n2.className = 'gnode seal'; n2.innerHTML = '<span class="hollowg">⚖</span>';
+    n2.style.left = '84%'; n2.setAttribute('data-tip', 'Hollow ⚖: refuted by the solver, witness NOT yet replayed. Click to preview the claimed failure; ▷ to run it.');
+    n2.onclick = () => { this.userTouched = true; this.ghostSel = 'claim'; this.render(); };
+    const btn = document.createElement('button'); btn.className = 'replay-btn'; btn.textContent = '▷ replay witness';
+    btn.onclick = () => { this.userTouched = true; this.replay(); };
+    gr.appendChild(n1); gr.appendChild(n2); gr.appendChild(btn);
+    this.gn1 = n1; this.gn2 = n2; this.gbtn = btn;
+    if (this.replayed && this.spurious) this.markSpurious();
+  }
+  shrunkHTML(ghost) {
+    const w = this.variant.witness; if (!w) return '';
+    const items = (w.shrunk || []).map(x => {
+      if (x.op) return `<span class="mono" style="font-size:13px;color:#222">${x.op}(</span>${x.args.map(a => `<span class="shapebox ${a.any ? 'any' : (ghost ? 'out' : '')}" data-tip="${esc(a.any ? 'could be anything (' + a.any + ')' : 'relevant: shrinking this changes the outcome')}">${a.v}${a.any ? '<sup>∗</sup>' : ''}</span>`).join('<span style="color:#222">,</span>')}<span class="mono" style="font-size:13px;color:#222">)</span>`;
+      return `<span class="mono" style="font-size:14px;color:#222">${x.name} =</span><span class="shapebox ${x.any ? 'any' : (ghost ? 'out' : '')}" data-tip="${esc(x.any ? 'could be anything (' + x.any + ')' : (x.note || 'relevant'))}">${x.v}${x.any ? '<sup>∗</sup>' : ''}</span>${x.note ? `<span class="anyt">${esc(x.note)}</span>` : ''}`;
+    }).join(' ');
+    return `<span class="shrunk">${items}${w.others ? `<span class="anyt">· ${esc(w.others)}</span>` : ''}</span>`;
+  }
+  markSpurious() {
+    if (!this.gn2) return;
+    this.gn2.classList.add('spurious'); this.gn2.innerHTML = '⚖ spurious';
+    this.gn2.setAttribute('data-tip', 'Replayed: the run does NOT violate the obligation, so the solver model was spurious (it treated r·r as an opaque atom). Discarded; the obligation falls back to UNKNOWN.');
+    if (this.gbtn) this.gbtn.style.display = 'none';
+    this.ghostRow.querySelector('.ghost-line').style.borderTopColor = '#aaa';
+    this.ghostLab.style.color = '#888';
+  }
+  replay() {
+    if (this.replayed || !this.wit) return;
+    clearTimeout(this._t2);
+    if (this.spurious) { this.replayed = true; this.ghostSel = null; this.markSpurious(); this.render(); return; }
+    // animate the hollow seal down onto the real slider, where its pill will sit
+    const N1 = this.own ? this.own.steps.length : 0, N2 = this.wit.steps.length;
+    const pillIdx = N1 + 1 + this.wit.firstFail;
+    this.gn2.style.left = (pillIdx / (N1 + N2) * 100) + '%';
+    this.gn2.classList.add('drop'); this.gn1.style.opacity = 0;
+    setTimeout(() => {
+      this.replayed = true; this.ghostSel = null;
+      this.makeSegments();
+      this.ghostRow.classList.add('hidden');
+      this.idx = pillIdx; this.render();
+    }, 460);
+  }
+  unreplay() { this.setVariant(this.vid, false); this.replayed = false; this.makeSegments(); this.buildGhostRow(); this.idx = this.own ? this.own.steps.length : 0; this.render(); }
+  // ----------------------------------------------------------------- per-render helpers
+  failuresOf(run) { const f = []; run.steps.forEach((s, k) => { const bad = s.checks.filter(c => !c.ok); if (bad.length || s.trap) f.push({ k, st: s, bad }); }); return f; }
+  latestValues(run, cur) {
+    const latest = {}, loopArr = {}, lastCall = {};
+    for (let k = 0; k <= cur; k++) {
+      const st = run.steps[k];
+      let r = latest[st.ln];
+      if (st.call === 'enter') r = latest[st.ln] = { ins: st.ins, outs: null, k, callId: st.callId, fn: st.fn };
+      else if (st.call === 'return') { r = latest[st.ln] || (latest[st.ln] = {}); r.outs = st.outs; r.k = k; r.callId = st.callId; r.fn = st.fn; }
+      else r = latest[st.ln] = { ins: st.ins, outs: st.outs, k, callId: st.callId, fn: st.fn };
+      const op = st.op.split(/\s+/)[0];
+      if (op === 'loop') loopArr[st.ln] = k;
+      if ((op === 'br' || op === 'br_if') && this.brT[st.ln] && (op === 'br' || st.ins[0])) loopArr[this.brT[st.ln]] = k;
+      lastCall[st.fn] = st.callId;
+    }
+    for (const [ln, r] of Object.entries(latest)) {
+      let old = r.callId !== lastCall[r.fn];
+      const enc = this.P.encl[ln]; if (enc) for (const b of enc.blocks) if (loopArr[b] !== undefined && loopArr[b] > r.k) old = true;
+      r.old = old;
+    }
+    return { latest, loopArr };
+  }
+  residueState(r) {
+    if (r.status === 'unknown') return 'unknown';
+    if (r.status === 'held') return 'held';
+    if (r.status === 'vacuous') return 'vac';
+    if (this.variant.witness && this.variant.witness.byOwn) return 'solid';
+    if (this.spurious && this.replayed) return 'unknown';
+    return this.replayed ? 'solid' : 'ghost';
+  }
+  // ----------------------------------------------------------------- render
+  render() {
+    const c = this.cfg, v = this.variant, P = this.P;
+    const { seg, k } = this.locate(this.idx);
+    const ghost = this.ghostSel && this.wit && !this.replayed ? this.ghostSel : null;
+    const run = seg ? seg.run : null;
+    const st = run && k >= 0 ? run.steps[k] : null;
+    // ---- values in shapes
+    let vals = { latest: {}, loopArr: {} };
+    if (run && k >= 0 && !ghost) vals = this.latestValues(run, k);
+    if (ghost) vals = this.ghostValues(ghost);
+    for (const [ln, ent] of Object.entries(this.shapes)) {
+      const r = vals.latest[ln];
+      const isOld = r && r.old;
+      ent.g.classList.toggle('oldv', !!isOld);
+      ent.ins.forEach((s, i) => {
+        const val = r && r.ins ? r.ins[i] : undefined;
+        const txt = fmtN(val); if (s.tx.textContent !== txt) { s.tx.textContent = txt; s.tx.classList.remove('chg'); void s.tx.getBBox; s.tx.classList.add('chg'); }
+        s.p.setAttribute('stroke-dasharray', ghost && txt ? '3 2' : 'none');
+        s.p.setAttribute('fill', ghost && txt ? 'none' : '#d9d5ea');
+        s.bad.setAttribute('opacity', 0);
+      });
+      ent.outs.forEach((s, j) => {
+        const val = r && r.outs ? r.outs[j] : undefined; const txt = fmtN(val);
+        if (s.tx.textContent !== txt) { s.tx.textContent = txt; s.tx.classList.remove('chg'); s.tx.classList.add('chg'); }
+        const outlined = ghost && txt;
+        s.r.setAttribute('fill', outlined ? 'none' : '#6A5ACD'); s.r.setAttribute('stroke-dasharray', outlined ? '3 2' : 'none');
+        s.tx.setAttribute('fill', outlined ? '#6A5ACD' : '#fffff0');
+        s.r.removeAttribute('data-tip');
+      });
+    }
+    // vacuous: everything ghosted
+    const vac = (v.residue || []).some(r => r.status === 'vacuous');
+    this.gShapes.style.opacity = vac ? .5 : 1;
+    this.gConn.style.opacity = vac ? .5 : 1;
+    if (vac) for (const ent of Object.values(this.shapes)) { ent.outs.forEach(s => { s.r.setAttribute('fill', 'none'); s.tx.setAttribute('fill', '#6A5ACD'); }); }
+    // loop labels: loops taken in this run
+    if (this.loopLabel) for (const [ln, el] of Object.entries(this.loopLabel)) el.style.opacity = (run && Object.values(run.steps).some((s, i) => i <= k && this.brT[s.ln] == ln)) ? 1 : 0;
+    // ---- gutter + line colors + underlines
+    this.renderGutter(seg, k, ghost);
+    // ---- arrow
+    this.renderArrow(seg, k, st, ghost);
+    // ---- cards + curves
+    this.renderCards(seg, k, ghost, vals);
+    // ---- slider
+    this.renderSlider(seg, k);
+    if (c.memory) this.renderMemory(seg, k, st, ghost);
+    if (this.mini) this.renderMini(st);
+  }
+  ghostValues(which) {
+    // the solver's claim: only the witness inputs and the claimed failing site carry (outlined) values
+    const w = this.variant.witness, run = this.wit; const latest = {};
+    if (which === 'inputs') {
+      const st0 = run.steps[0];
+      for (const s of run.steps) { if (/^local\.get \$/.test(s.op) && w.calls[0] && this.P.funcs[s.fn] && this.P.funcs[s.fn].params.includes(s.op.split('$')[1])) { if (!latest[s.ln]) latest[s.ln] = { ins: s.ins, outs: s.outs }; } }
+      if (w.startAt) { /* loop-head state shown in before/after card */ }
+      return { latest, loopArr: {}, at: w.startAt ? w.startAt.line : st0.ln };
+    }
+    const f = run.steps[run.firstFail >= 0 ? run.firstFail : run.steps.length - 1];
+    if (w.model && w.model.outs) latest[f.ln] = { ins: w.model.ins || f.ins, outs: w.model.outs };
+    else latest[f.ln] = { ins: f.ins, outs: f.outs };
+    return { latest, loopArr: {}, at: f.ln };
+  }
+  renderGutter(seg, k, ghost) {
+    const v = this.variant, P = this.P;
+    const status = {};
+    // traps in any visible run
+    for (const s of this.segs) { const t = s.run.steps.find(x => x.trap); if (t) status[t.ln] = { g: 'trap' }; }
+    for (const r of v.residue || []) {
+      const stt = this.residueState(r);
+      if (!status[r.line]) status[r.line] = { g: stt, r };
+    }
+    for (let ln = this.a; ln <= this.b; ln++) {
+      const g = this.gutEl[ln], code = this.codeEl[ln]; if (!g) continue;
+      const s = status[ln]; const kind = P.kinds[ln - 1];
+      g.className = 'gut'; g.removeAttribute('data-tip'); g.onclick = null; g.style.cursor = '';
+      code.classList.remove('trapline', 'badline', 'vacuous');
+      const num = kind === 'header' || kind === 'blank' || kind === 'instr' || kind === 'close' || kind === 'local' || kind === 'spec' || kind === 'ghost' || kind === 'glocal' ? ln : '';
+      if (!s) { g.innerHTML = num; if (kind === 'header') g.style.color = 'indigo'; if (v.vacuousLines && v.vacuousLines.includes(ln)) { g.innerHTML = '<span class="vac">○</span>'; code.classList.add('vacuous'); } continue; }
+      g.style.color = '';
+      if (s.g === 'trap') { g.className = 'gut glyph'; g.innerHTML = '💣'; code.classList.add('trapline'); g.setAttribute('data-tip', 'runtime trap on this line (💣 outranks ⚖)'); g.onclick = () => this.jumpToTrap(ln); g.style.cursor = 'pointer'; }
+      else if (s.g === 'solid') { g.className = 'gut glyph'; g.innerHTML = '⚖'; code.classList.add('badline'); g.setAttribute('data-tip', esc(`⚖ spec violated — ${s.r.what || ''}. Witness replayed: click to jump to its darkred pill.`)); g.onclick = () => this.jumpToPill(); g.style.cursor = 'pointer'; }
+      else if (s.g === 'ghost') { g.className = 'gut glyph'; g.innerHTML = '<span class="hollow">⚖</span>'; g.setAttribute('data-tip', esc(`hollow ⚖ — ${s.r.what || ''}: refuted by the solver, witness not yet run. Click to preview.`)); g.onclick = () => { this.userTouched = true; this.ghostSel = 'claim'; this.render(); }; g.style.cursor = 'pointer'; }
+      else if (s.g === 'unknown') { g.className = 'gut'; g.innerHTML = STAR_SVG; g.setAttribute('data-tip', esc(`unknown — ${s.r.what || ''}: no proof, no (genuine) counterexample. Needs a hint (e.g. ${s.r.hint || '@use lemma'}). Never darkred.`)); }
+      else if (s.g === 'held') { g.className = 'gut'; const n = this.heldCount(s.r); g.innerHTML = `${ln}<span class="held">∘${n}</span>`; g.setAttribute('data-tip', esc(`held on this run only — ${s.r.what || ''}: unproven statically; the runtime check passed ${n}× so far. Not a proof.`)); }
+      else if (s.g === 'vac') { g.className = 'gut'; g.innerHTML = '<span class="vac">○</span>'; g.setAttribute('data-tip', esc(`vacuous — ${s.r.what || ''}`)); }
+      if (v.vacuousLines && v.vacuousLines.includes(ln)) code.classList.add('vacuous');
+    }
+    // underline states
+    this.listing.querySelectorAll('u.ul').forEach(u => {
+      const r = (v.residue || [])[+u.dataset.res]; const stt = this.residueState(r);
+      u.className = 'ul ' + (stt === 'solid' ? '' : stt === 'ghost' ? 'ghost' : stt === 'unknown' ? 'unknown' : stt === 'held' ? 'held' : 'vac');
+      u.setAttribute('data-tip', esc(`${r.what || ''} — ${stt === 'solid' ? 'FALSE (witness replayed)' : stt === 'ghost' ? 'refuted by solver, not yet replayed' : stt}`));
+    });
+  }
+  heldCount(r) { if (!this.own) return 0; const { k } = this.locate(this.idx); let n = 0; const seg = this.segs[0]; const upto = seg && seg.kind === 'own' ? Math.min(k, seg.run.steps.length - 1) : -1; for (let i = 0; i <= upto; i++) for (const c of this.own.steps[i].checks) if (c.ln === r.checkLine && c.kind === 'ensures' && c.ok) n++; return n; }
+  jumpToPill() {
+    const w = this.segs.find(s => s.kind === 'witness');
+    if (w) { this.idx = w.start + 1 + w.run.firstFail; this.ghostSel = null; this.render(); return; }
+    const o = this.segs.find(s => s.kind === 'own'); if (o) { const f = o.run.steps.findIndex(s => s.checks.some(c => !c.ok) || s.trap); if (f >= 0) { this.idx = o.start + 1 + f; this.render(); } }
+  }
+  jumpToTrap(ln) { for (const s of this.segs) { const i = s.run.steps.findIndex(x => x.trap && x.ln === ln); if (i >= 0) { this.idx = s.start + 1 + i; this.ghostSel = null; this.render(); return; } } }
+  rowY(ln) { return (ln - this.a) * ROW; }
+  inRange(ln) { return ln >= this.a && ln <= this.b; }
+  renderArrow(seg, k, st, ghost) {
+    let ln = null, dashed = false, label = '';
+    if (ghost) { ln = this.ghostValues(ghost).at; dashed = true; }
+    else if (st) {
+      ln = st.ln;
+      if (!this.inRange(ln)) { // executing in a function not shown: point at the visible call
+        dashed = true; label = 'in $' + st.fn;
+        for (let i = k; i >= 0; i--) { const s2 = seg.run.steps[i]; if (this.inRange(s2.ln)) { ln = s2.ln; break; } }
+      }
+    }
+    if (!ln || !this.inRange(ln)) { this.arrow.style.opacity = 0; return; }
+    this.arrow.style.opacity = 1;
+    const t = this.lines[ln - 1]; const ind = t.length - t.trimStart().length;
+    const x = 64; const y = this.rowY(ln) + ROW / 2;
+    this.arrow.setAttribute('transform', `translate(${x},${y})`); this.arrow.style.transform = `translate(${x}px,${y}px)`;
+    const body = this.arrow.querySelector('.arrowbody');
+    body.setAttribute('fill', dashed ? 'none' : 'darkblue'); body.setAttribute('stroke', 'darkblue'); body.setAttribute('stroke-dasharray', dashed ? '2 2' : 'none');
+    this.arrowTxt.textContent = '';
+    this.arrowLabel = label;
+    if (this.cfg.scroll && st && !ghost) {
+      const y0 = this.rowY(ln), sc = this.scroll; if (y0 < sc.scrollTop + 40 || y0 > sc.scrollTop + sc.clientHeight - 140) sc.scrollTop = Math.max(0, y0 - sc.clientHeight / 3);
+    }
+  }
+  // cards: the violated predicate with values substituted, conjunct chips, blame curves
+  renderCards(seg, k, ghost, vals) {
+    const v = this.variant, c = this.cfg;
+    this.cardLayer.innerHTML = ''; this.gCurves.innerHTML = '';
+    const cards = [];
+    if (ghost) {
+      const w = v.witness, run = this.wit;
+      if (ghost === 'claim' || w.startAt) {
+        const f = run.steps[run.firstFail >= 0 ? run.firstFail : run.steps.length - 1];
+        let checks = f.checks.filter(ch => !ch.ok);
+        if (w.model && w.model.check) checks = [w.model.check];
+        if (ghost === 'claim') cards.push({ ln: this.anchorOf(f, checks[0]), checks, mode: 'ghost', title: `<span class="hollowt">⚖</span> solver claims · not yet run` });
+      }
+      if (w.startAt) cards.push(this.beforeAfterCard(run, run.steps.length && ghost === 'inputs' ? 0 : 0, true));
+    } else if (seg) {
+      const run = seg.run;
+      const fails = this.failuresOf(run).filter(f => f.k <= k);
+      const shown = [];
+      if (fails.length) shown.push(fails[0]);
+      const curF = fails.find(f => f.k === k); if (curF && curF !== fails[0]) shown.push(curF);
+      const lastF = fails[fails.length - 1]; if (lastF && !shown.includes(lastF) && !curF) shown.push(lastF);
+      for (const f of shown) {
+        const isCur = f.k === k;
+        const pre = seg.kind === 'witness' ? 'witness · w' : 'your run · step ';
+        const glyph = seg.kind === 'witness' ? '⚖' : (f.st.trap ? '💣' : '⚖');
+        const checks = f.bad;
+        cards.push({ ln: this.anchorOf(f.st, checks[0]), checks, trap: f.st.trap, mode: 'bad', old: !isCur, title: `${glyph} ${pre}${f.st.s}`, f, seg });
+      }
+      // dynamic "held on this run only" (A3)
+      for (const r of v.residue || []) if (this.residueState(r) === 'held' && run.steps[k]) {
+        const ch = run.steps[k].checks.find(x => x.ln === r.checkLine && x.kind === 'ensures');
+        if (ch && ch.ok) cards.push({ ln: r.line, checks: [ch], mode: 'held', title: `∘ held at step ${run.steps[k].s} (checked, not proven)` });
+      }
+      if (seg.kind === 'witness' && v.witness.startAt) cards.push(this.beforeAfterCard(run, k, false));
+    }
+    // unknown / vacuous residue cards (no witness: never darkred)
+    for (const r of v.residue || []) {
+      const stt = this.residueState(r);
+      if (stt === 'unknown' && r.card) cards.push({ ln: r.line, html: r.card, mode: 'unknown', title: `${STAR_TXT} unknown · needs a hint` });
+      if (stt === 'vac' && r.card) cards.push({ ln: r.line, html: r.card, mode: 'vac', title: '○ vacuous · requires is unsatisfiable' });
+    }
+    // place
+    const placed = [];
+    cards.sort((a, b) => a.ln - b.ln);
+    for (const cd of cards) {
+      if (!this.inRange(cd.ln)) cd.ln = Math.min(Math.max(cd.ln, this.a), this.b);
+      const el = document.createElement('div');
+      el.className = 'card ' + (cd.mode === 'ghost' ? 'ghost' : cd.mode === 'unknown' ? 'unknown' : cd.mode === 'held' ? 'held' : cd.mode === 'vac' ? 'vac' : cd.mode === 'pass' ? 'pass' : '') + (cd.old ? ' old' : '');
+      let inner = `<div class="ttl">${cd.title}</div>`;
+      if (cd.html) inner += cd.html;
+      else {
+        if (cd.trap) inner += `<div style="color:darkred;font-size:11px;margin-bottom:2px">trap: ${esc(cd.trap)}</div>`;
+        for (const ch of cd.checks || []) {
+          const where = ch.kind === 'obligation' ? (ch.label || 'obligation') : `${KINDNAME[ch.kind] || ch.kind}${ch.callee ? ' of $' + ch.callee : ''} · line ${ch.ln}`;
+          inner += `<div style="color:#555;font-size:10.5px;margin-top:2px">${esc(where)}</div>` + groupsHTML(ch.res, cd.mode === 'ghost' ? 'ghost' : cd.mode);
+        }
+      }
+      el.innerHTML = inner;
+      el.style.left = c.xC + 'px';
+      this.cardLayer.appendChild(el);
+      let y = this.rowY(cd.ln) - 2;
+      for (const p of placed) if (y < p.y + p.h + 4 && y + 20 > p.y) y = p.y + p.h + 4;
+      el.style.top = y + 'px';
+      const h = el.offsetHeight;
+      placed.push({ y, h });
+      cd.el = el; cd.y = y; cd.h = h;
+    }
+    // curves: spec link, wrap blame, origin blame
+    const lrect = this.listing.getBoundingClientRect();
+    for (const cd of cards) {
+      if (!cd.checks || cd.mode === 'held') continue;
+      const dash = cd.mode === 'ghost' ? '4 3' : 'none';
+      const cx = c.xC, cy = cd.y + 12;
+      // origin for the replayed/claimed failure
+      // 1. link to underline of the violated conjunct in the spec text
+      for (const ch of cd.checks) {
+        const u = [...this.listing.querySelectorAll('u.ul')].find(u => { const r = (v.residue || [])[+u.dataset.res]; return r && r.underline.some(x => x.line === ch.ln || x.alsoFor === ch.ln); });
+        if (u) {
+          const ur = u.getBoundingClientRect(); const ux = ur.right - lrect.left, uy = ur.bottom - lrect.top;
+          if (Math.abs(uy - cy) > 6 || ux < cx) this.curve(ux, uy, cx, cy, { w: 1, dash, op: cd.old ? .45 : .85 });
+          break;
+        }
+      }
+      if (cd.mode === 'ghost' || !cd.f) continue;
+      const run = cd.seg.run;
+      // 2. wrap blame: latest wrapped arithmetic in the same activation before the failure
+      let wr = null; for (let i = cd.f.k; i >= 0; i--) { const s = run.steps[i]; if (s.wrap && s.callId === cd.f.st.callId) { wr = s; break; } }
+      if (wr && this.shapes[wr.ln]) {
+        const o = this.shapes[wr.ln].outs[0];
+        this.curve(o.x + o.w + 2, o.y + 5.5, cx, cy, { w: 2, dash: '5 3', op: cd.old ? .45 : 1, label: '↻', tip: `wrap blame (01 §2.4): line ${wr.ln} computed ${wr.wrap.exact} in ℤ, but i32 holds ${wr.wrap.wrapped}` });
+        this.cardFoot(cd, `↻ wrap blame · line ${wr.ln}: ${wr.wrap.a} · ${wr.wrap.b} = ${wr.wrap.exact} in ℤ → i32 ${wr.wrap.wrapped}`);
+        o.r.setAttribute('stroke', 'darkred'); o.r.setAttribute('stroke-width', 2);
+      }
+      // 3. origin blame configured per bug
+      const og = v.witness && v.witness.origin;
+      if (og && (cd.seg.kind === 'witness' || v.witness.byOwn || og.alsoOwn)) {
+        let tx, ty;
+        if (og.hollow) { tx = 70 + 2 * 24 + 40; ty = this.rowY(og.line) + ROW / 2; this.hollowCup(tx - 32, this.rowY(og.line) + 6); }
+        else { const sh = this.shapes[og.line]; if (sh) { const s = og.slot === 'in' ? sh.ins[og.i || 0] : sh.outs[og.i || 0]; if (s) { tx = s.x + s.w + 2; ty = s.y + 5.5; } } }
+        if (tx !== undefined) { this.curve(tx, ty, cx, cy + 8, { w: 2, dash: 'none', op: cd.old ? .45 : 1, tip: og.tip || '' }); this.cardFoot(cd, `● origin · line ${og.line}: ${og.label}`); }
+      }
+      // 4. wire obligation: the input cup that carries the violated predicate
+      const wire = (v.residue || []).find(r => r.wire !== undefined && (r.line === cd.f.st.ln));
+      if (wire && this.shapes[wire.line]) { const s = this.shapes[wire.line].ins[wire.wire]; if (s) s.bad.setAttribute('opacity', cd.old ? .5 : 1); }
+    }
+    // ghost: outlined cup too
+    if (ghost === 'claim') { const wire = (v.residue || []).find(r => r.wire !== undefined); if (wire && this.shapes[wire.line]) { const s = this.shapes[wire.line].ins[wire.wire]; s.bad.setAttribute('opacity', 1); s.bad.setAttribute('stroke-dasharray', '3 2'); } }
+    else for (const ent of Object.values(this.shapes)) ent.ins.forEach(s => s.bad.setAttribute('stroke-dasharray', 'none'));
+    // unknown residue: the output shape gets an indigo dashed outline and "?"
+    for (const r of v.residue || []) {
+      const stt = this.residueState(r);
+      if ((stt === 'unknown' || stt === 'held') && this.shapes[r.shapeLine || r.line]) {
+        const o = this.shapes[r.shapeLine || r.line].outs[0];
+        o.r.setAttribute('stroke', stt === 'unknown' ? 'indigo' : 'slategray'); o.r.setAttribute('stroke-dasharray', stt === 'unknown' ? '4 2' : '1.5 2'); o.r.setAttribute('stroke-width', 2.2);
+        o.r.setAttribute('fill', stt === 'unknown' ? '#e7e1f2' : '#e8ebef'); o.tx.setAttribute('fill', stt === 'unknown' ? 'indigo' : '#333');
+        if (stt === 'unknown') { const t = svg('text', { x: o.x + o.w + 9, y: o.y + 6, class: 'slot-value', fill: 'indigo', style: 'font-size:13px' }, this.gCurves); t.textContent = '?'; }
+        else { const t = svg('text', { x: o.x + o.w + 10, y: o.y + 6, class: 'slot-value', fill: 'slategray', style: 'font-size:11px' }, this.gCurves); t.textContent = '∘'; }
+      } else if (this.shapes[r.shapeLine || r.line]) {
+        const o = this.shapes[r.shapeLine || r.line].outs[0]; if (o && !(o.r.getAttribute('stroke') === 'darkred')) { o.r.setAttribute('stroke', '#6A5ACD'); o.r.setAttribute('stroke-width', 1.2); }
+      }
+    }
+    if (this.arrowLabel) { const t = this.lines[0]; }
+  }
+  cardFoot(cd, text) {
+    if (!cd.el) return; const d = document.createElement('div'); d.className = 'foot'; d.textContent = text; cd.el.appendChild(d);
+  }
+  hollowCup(x, y) {
+    const g = svg('g', {}, this.gCurves);
+    const defs = svg('defs', {}, g); const lg = svg('linearGradient', { id: 'fadeup-' + this.cfg.id, x1: 0, y1: 1, x2: 0, y2: 0 }, defs);
+    svg('stop', { offset: '0', 'stop-color': '#6A5ACD', 'stop-opacity': .35 }, lg); svg('stop', { offset: '1', 'stop-color': '#6A5ACD', 'stop-opacity': 0 }, lg);
+    svg('path', { d: `M${x},${y} L${x},${y + 13} L${x + 30},${y + 13} L${x + 30},${y}`, fill: `url(#fadeup-${this.cfg.id})`, stroke: 'darkred', 'stroke-width': 1.5 }, g);
+  }
+  curve(x1, y1, x2, y2, o) {
+    const dx = Math.max(40, Math.abs(x2 - x1) * .45);
+    const p = svg('path', { d: `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`, fill: 'none', stroke: 'darkred', 'stroke-width': o.w, 'stroke-dasharray': o.dash, opacity: o.op }, this.gCurves);
+    svg('circle', { cx: x1, cy: y1, r: o.w + .5, fill: 'darkred', opacity: o.op }, this.gCurves);
+    if (o.label) {
+      const tx = x1 + 8, ty = y1 + (y2 < y1 ? 14 : -9);
+      const t = svg('text', { x: tx, y: ty, class: 'slot-value', fill: 'darkred', 'text-anchor': 'start', style: 'font-size:10.5px;paint-order:stroke;stroke:#fffff0;stroke-width:3px', opacity: o.op }, this.gCurves);
+      t.textContent = o.label; t.setAttribute('x', x1 + 6); t.setAttribute('y', y1 + 4); t.style.fontSize = '13px'; if (o.tip) { t.setAttribute('data-tip', esc(o.tip)); t.style.pointerEvents = 'auto'; }
+    }
+    return p;
+  }
+  anchorOf(st, ch) { if (ch && (ch.kind === 'assert')) return ch.ln; return st.ln; }
+  beforeAfterCard(run, k, ghost) {
+    const w = this.variant.witness; const s0 = run.steps[0]; const last = run.steps[run.steps.length - 1];
+    const reached = !ghost && k >= run.steps.length - 1;
+    const inv0 = s0.checks.filter(c => c.kind === 'invariant');
+    const invN = last.checks.filter(c => c.kind === 'invariant');
+    const stateHTML = (loc, cls, movedKey) => Object.entries(loc).map(([n, val]) => `<span class="mono" style="font-size:13px">${n}</span><span class="shapebox ${cls}${n === movedKey ? ' moved' : ''}">${val}</span>`).join(' ');
+    const moved = Object.keys(s0.loc).find(n => s0.loc[n] !== last.loc[n]);
+    const before = `<div class="side"><div class="h">loop head, iteration k (solver state)</div><div class="st">${stateHTML(s0.loc, ghost ? 'out' : '')}</div>${inv0.map(c => groupsHTML(c.res, 'pass')).join('')}</div>`;
+    const after = reached ? `<div class="side" style="border-color:darkred"><div class="h">after one iteration, k+1</div><div class="st">${stateHTML(last.loc, '', moved)}</div>${invN.map(c => groupsHTML(c.res, 'bad')).join('')}</div>`
+      : `<div class="side" style="border-style:dashed;color:#888"><div class="h">after one iteration, k+1</div><div style="font-size:16px;padding:6px 0">${ghost ? '?' : '… run to w' + last.s}</div></div>`;
+    return { ln: w.startAt.line, html: `<div class="ba">${before}<span class="arrowr">⟶</span>${after}</div>`, mode: ghost ? 'ghost' : (reached ? 'bad' : 'pass'), title: `↻ loop-head replay: one iteration from a state that satisfies @invariant${ghost ? ' · not yet run' : ''}` };
+  }
+  // ----------------------------------------------------------------- slider
+  renderSlider(seg, k) {
+    const total = this.total; const r = this.range;
+    r.max = Math.max(1, total); r.value = this.idx; r.disabled = total === 0;
+    const pct = i => (total ? i / total * 100 : 0);
+    const want = new Map();
+    const add = (id, i, cls, label, tip, onclick) => want.set(id, { i, cls, label, tip, onclick });
+    for (const s of this.segs) {
+      const n = s.run.steps.length; const iv = niceIv(n, total);
+      for (let j = 0; j < n; j += iv) if (j > 0) add(s.kind + 't' + j, s.start + j, 'slider-tick', (s.kind === 'witness' ? 'w' : '') + s.run.steps[j - 1].s);
+      add(s.kind + 'end', s.end, 'slider-tick', (s.kind === 'witness' ? 'w' : '') + s.run.steps[n - 1].s);
+      const fails = this.failuresOf(s.run);
+      fails.forEach((f, fi) => {
+        const glyph = s.kind === 'witness' ? '⚖' : (f.st.trap ? '💣' : '⚖');
+        if (fi === 0) add(s.kind + 'F', s.start + 1 + f.k, 'slider-tick bad-slider-tick' + (s.kind === 'witness' ? ' witness-pill' : ''), `${glyph} ${s.kind === 'witness' ? 'w' : ''}${f.st.s}`, esc(`${f.st.trap ? 'trap: ' + f.st.trap : 'spec violated'} at ${s.kind === 'witness' ? 'witness step w' : 'your step '}${f.st.s} (line ${f.st.ln})${s.kind === 'witness' ? ' — replayed solver witness' : ' — your own run'}`));
+        else add(s.kind + 'f' + fi, s.start + 1 + f.k, 'slider-tick minor-bad', glyph, esc(`also fails at ${f.st.s} (line ${f.st.ln})`));
+      });
+      // held-on-this-run ticks
+      for (const rr of this.variant.residue || []) if (this.residueState(rr) === 'held') s.run.steps.forEach((st, j) => { if (st.checks.some(c => c.ln === rr.checkLine && c.kind === 'ensures' && c.ok)) add(s.kind + 'h' + j, s.start + 1 + j, 'slider-tick held-tick', '∘', 'dynamic check held here (not a proof)'); });
+    }
+    if (total) {
+      const cur = this.locate(this.idx); const lab = this.idx === 0 ? '0' : (cur.seg.kind === 'witness' ? 'w' : '') + cur.seg.run.steps[cur.k].s;
+      const atFail = [...want.entries()].find(([id, t]) => t.i === this.idx && /bad-slider/.test(t.cls));
+      if (atFail) { want.delete(atFail[0]); add('cur', this.idx, 'slider-tick current-slider-tick' + (/witness-pill/.test(atFail[1].cls) ? ' witness-pill' : ' cur-bad'), atFail[1].label, atFail[1].tip); }
+      else add('cur', this.idx, 'slider-tick current-slider-tick', lab);
+      // drop interval ticks colliding with pills
+      const pills = [...want.values()].filter(t => /bad-slider|current|minor-bad/.test(t.cls));
+      for (const [id, t] of [...want]) if ((t.cls === 'slider-tick' || /held-tick/.test(t.cls)) && pills.some(p => Math.abs(pct(p.i) - pct(t.i)) < 3.2)) want.delete(id);
+      const majors = [...want.values()].filter(t => /bad-slider|current/.test(t.cls));
+      for (const [id, t] of [...want]) if (/minor-bad/.test(t.cls) && majors.some(p => Math.abs(pct(p.i) - pct(t.i)) < 2.2)) want.delete(id);
+      let lastMinor = -99; for (const [id, t] of [...want].filter(([id, t]) => /minor-bad/.test(t.cls)).sort((a, b) => a[1].i - b[1].i)) { if (pct(t.i) - lastMinor < 1.6) want.delete(id); else lastMinor = pct(t.i); }
+    }
+    this.tickEls = this.tickEls || new Map();
+    for (const [id, el] of this.tickEls) if (!want.has(id)) { el.remove(); this.tickEls.delete(id); }
+    for (const [id, t] of want) {
+      let el = this.tickEls.get(id);
+      if (!el) { el = document.createElement('span'); this.ticks.appendChild(el); this.tickEls.set(id, el); el.style.left = pct(t.i) + '%'; el.onclick = () => { this.idx = t.i; this.ghostSel = null; ACTIVE = this; this.render(); }; }
+      el.className = t.cls; el.textContent = t.label; el.style.left = pct(t.i) + '%';
+      if (t.tip) el.setAttribute('data-tip', t.tip); else el.removeAttribute('data-tip');
+    }
+    // bands
+    this.bands.innerHTML = '';
+    if (!total) { this.bands.innerHTML = `<div class="slider-empty">${this.variant.emptyNote || this.cfg.emptyNote || 'no run of yours yet'}</div>`; }
+    for (const s of this.segs) {
+      const b = document.createElement('div'); b.className = 'band' + (s.kind === 'witness' ? ' wit' + (this.variant.witness.startAt ? ' loophead' : '') : '');
+      b.style.left = pct(s.start) + '%'; b.style.width = (pct(s.end) - pct(s.start)) + '%';
+      if (s.kind === 'own') { const res = s.run.results.map(x => typeof x === 'number' ? x : x).join(', '); b.innerHTML = `<span>your run · ${esc(s.label)} → ${esc(res)}</span>`; b.setAttribute('data-tip', 'The student’s own run (what Codillon runs today).'); }
+      else { b.innerHTML = `<span>${this.variant.witness.startAt ? '≈ ↻ one-iteration replay' : '⚖ witness run'} · ${this.shrunkHTML(false)}</span>`; b.setAttribute('data-tip', esc(this.variant.witness.startAt ? 'Loop-head counterexample replayed for ONE iteration (it starts mid-run: jagged band). ' + (this.variant.witness.others || '') : 'Solver input counterexample, replayed from entry (a full run).')); }
+      this.bands.appendChild(b);
+    }
+  }
+  // ----------------------------------------------------------------- memory view (hash table)
+  renderMemory(seg, k, st, ghost) {
+    const mw = this.memwrap;
+    let slots, M, used, loc = {};
+    if (ghost || !st) { slots = null; }
+    else { slots = st.slots; M = new Map(st.M); used = st.used; loc = st.loc; }
+    const badSlots = new Set(), badKeys = new Set();
+    const rch = [];
+    if (st && !ghost) {
+      const failing = st.checks.filter(c => !c.ok);
+      const mem = new Int32Array(16384); slots.forEach((t, s) => { const b = (65440 + 12 * s) >> 2; mem[b] = t[0]; mem[b + 1] = t[1]; mem[b + 2] = t[2]; });
+      const R = evalR(mem, M, used);
+      for (const c of failing) {
+        if (c.res && c.res.rk) {
+          if (!R.i) slots.forEach((t, s) => { if (t[0] === 1 && (!M.has(t[1]) || M.get(t[1]) !== t[2])) badSlots.add(s); });
+          if (!R.ii) slots.forEach((t, s) => { if (t[0] === 1 && slots.filter(u => u[0] === 1 && u[1] === t[1]).length > 1) badSlots.add(s); });
+        }
+        if (loc.k !== undefined && M.has(loc.k)) badKeys.add(loc.k);
+      }
+      if (failing.length && loc.k !== undefined && M.has(loc.k)) slots.forEach((t, s) => { if (t[0] === 1 && t[1] === loc.k) badSlots.add(s); });
+      ['o', 'i', 'ii', 'iii', 'iv'].forEach((key, i) => rch.push(`<span class="rchip ${R[key] ? '' : 'bad'}" data-tip="${esc(['R0 well-formed states', 'R1 FULL slots agree with M', 'R2 each key of M in exactly one FULL slot', 'R3 no EMPTY on any key’s probe path', 'R4 counts agree and used < CAP'][i] + (R[key] ? ' — proven to hold at every operation boundary (quiet)' : ' — FALSE here'))}">R${i}</span>`));
+    }
+    const probe = st && !ghost && (st.fn === 'find' || st.fn === 'insert') && loc.i !== undefined ? loc.i : -1;
+    let h = `<div class="slots">`;
+    for (let s = 0; s < 8; s++) {
+      const t = slots ? slots[s] : null;
+      const cls = (probe === s ? ' probe' : '') + (badSlots.has(s) ? ' bad' : '') + (!slots ? ' ghosty' : '');
+      const box = (val, isState) => {
+        if (!t) return `<span class="shapebox out" style="min-width:22px">?</span>`;
+        const empty = t[0] === 0 && !isState;
+        return `<span class="shapebox" style="min-width:22px;${empty ? 'opacity:.25' : ''}">${val}</span>`;
+      };
+      h += `<div class="slotc${cls}" data-tip="${esc(t ? `slot ${s} @ ${65440 + 12 * s}: state ${t[0]} (${STNAME[t[0]]}), key ${t[1]}, val ${t[2]}` : 'solver model: memory not yet run')}"><span class="ix">${s}</span><span class="trip">${box(t && t[0], true)}${box(t && t[1])}${box(t && t[2])}</span><span class="stname">${t ? (t[0] === 0 ? '·' : STNAME[t[0]]) : ''}</span></div>`;
+    }
+    h += `</div>`;
+    if (slots) {
+      h += `<div><div class="lab" style="color:#555">ghost M</div><div class="beads">${M.size ? [...M].sort((a, b) => a[0] - b[0]).map(([kk, vv]) => `<span class="bead${badKeys.has(kk) ? ' bad' : ''}" data-tip="ghost map entry ${kk} ↦ ${vv}">${kk}↦${vv}</span>`).join('') : '<span class="bead" style="opacity:.5">∅</span>'}</div></div>`;
+      h += `<div><div class="lab" style="color:#555">used</div><span class="shapebox">${used}</span></div>`;
+      h += `<div><div class="lab" style="color:#555">rep. invariant R</div><div class="rchips">${rch.join('')}</div></div>`;
+    } else h += `<div class="lab" style="color:#888;max-width:300px">${ghost ? 'solver model — memory shown once the witness is replayed' : 'memory: run not started'}</div>`;
+    mw.innerHTML = `<div class="mem">${h}</div>`;
+  }
+  renderMini(st) {
+    const m = this.mini; m.innerHTML = ''; const H = this.scroll.clientHeight || 760; m.style.height = H + 'px';
+    const n = this.b - this.a + 1;
+    const add = (ln, cls, tip) => { const d = document.createElement('div'); d.className = 'mm ' + cls; d.style.top = ((ln - this.a) / n * (H - 4)) + 'px'; d.setAttribute('data-tip', tip); d.onclick = () => { this.scroll.scrollTop = this.rowY(ln) - 200; }; m.appendChild(d); };
+    for (const r of this.variant.residue || []) { const s = this.residueState(r); add(r.line, s === 'solid' ? '' : s === 'ghost' ? 'hollow' : 'unk', `line ${r.line}: ${s === 'solid' ? '⚖' : s === 'ghost' ? 'hollow ⚖' : s}`); }
+    if (st && this.inRange(st.ln)) add(st.ln, 'arrow', 'current line ' + st.ln);
+  }
+  step(d) { if (!this.total) return; this.ghostSel = null; this.idx = Math.max(0, Math.min(this.total, this.idx + d)); this.render(); }
+}
+function niceIv(n, total) { const target = Math.max(1, n * 7 / Math.max(total, 1)); const want = n / Math.max(2, target); for (const c of [1, 2, 5, 10, 20, 25, 50, 100, 200]) if (c >= want) return c; return 500; }
+const STAR_SVG = `<svg width="20" height="20" viewBox="-10 -10 20 20" style="vertical-align:-4px"><polygon points="0,-9 2.6,-3 9,-2.8 4,1.6 5.6,8.2 0,4.6 -5.6,8.2 -4,1.6 -9,-2.8 -2.6,-3" fill="none" stroke="indigo" stroke-width="1.3" stroke-dasharray="2.5 1.6"/><text x="0" y="2.6" text-anchor="middle" font-size="8" fill="indigo" font-family="sans-serif">?</text></svg>`;
+const STAR_TXT = `<svg width="13" height="13" viewBox="-10 -10 20 20" style="vertical-align:-2px"><polygon points="0,-9 2.6,-3 9,-2.8 4,1.6 5.6,8.2 0,4.6 -5.6,8.2 -4,1.6 -9,-2.8 -2.6,-3" fill="none" stroke="indigo" stroke-width="1.6" stroke-dasharray="2.5 1.6"/></svg>`;
+
+document.addEventListener('keydown', e => {
+  if (!ACTIVE) return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'select' || (tag === 'input' && e.target.type === 'range')) return;
+  if (e.key === 'ArrowRight') { ACTIVE.step(1); e.preventDefault(); }
+  if (e.key === 'ArrowLeft') { ACTIVE.step(-1); e.preventDefault(); }
+});
+
+// ===================== configurations: programs, seeded bugs, residues, witnesses =====================
+const FX = FIXTURE;
+const SQ_LINES = ['(func $sq (param $r (i32 | 0 <= v && v <= 46340)) (result (i32 | 0 <= v))', '  local.get $r', '  local.get $r', '  i32.mul', ')'];
+const SQ_HDR = SQ_LINES[0];
+const CFG = {
+  A1: {
+    id: 'A1', title: 'A1 · static, input witness — the caller is blamed', lines: FX.parity.lines, range: [12, 23], xF: 300, xC: 520, padBottom: 70,
+    emptyNote: 'no run of yours here — the solver works without one', manualReplay: false,
+    note: 'parity gate, lines 12–23 ($is_even, $half live above)',
+    variants: [
+      { id: 'none', label: 'No bug (gate negated on line 15)', ownCalls: [], residue: [] },
+      { id: 'P1', label: 'P1 · delete line 15 (gate inverted)', edits: FX.parity.bugs.P1.edits, ownCalls: [],
+        residue: [
+          { line: 21, wire: 0, what: 'requires of $half at this call: x % 2 == 0' },
+          { line: 19, underline: [{ line: 19, text: 'x % 2 == 0' }], what: '@assert x % 2 == 0 (else-arm path condition)' }],
+        witness: { calls: [['half_or_neg1', [3]]], label: 'half_or_neg1(3)', shrunk: [{ name: 'x', v: 3, note: 'any odd x' }],
+          origin: { line: 16, slot: 'in', label: 'else-arm entered on is_even = 0', tip: 'origin: with line 15 gone, the if consumes is_even(x) directly, so the else-arm runs when x is ODD' } } },
+    ] },
+  A2: {
+    id: 'A2', title: 'A2 · dynamic vs static — one picture', lines: FX.parity.lines, range: [7, 11], xF: 300, xC: 520, padBottom: 70, radio: true,
+    note: '$half alone (lines 7–11)',
+    variants: [
+      { id: 'none', label: 'spec v + v == x · your run half(6)', ownCalls: [['half', [6]]], ownLabel: 'half(6)', residue: [] },
+      { id: 'P3', label: 'P3 spec “&& v < x” · your run half(6) → solver witness', edits: FX.parity.bugs.P3.edits, ownCalls: [['half', [6]]], ownLabel: 'half(6)',
+        residue: [{ line: 10, underline: [{ line: 7, text: 'v < x' }], what: 'ensures of $half: v < x' }],
+        witness: { calls: [['half', [0]]], label: 'half(0)', shrunk: [{ name: 'x', v: 0, note: 'or any even x < 0' }], others: 'also −2, −4, …' } },
+      { id: 'P3own', label: 'P3 spec · your run half(0) fails by itself', edits: FX.parity.bugs.P3.edits, ownCalls: [['half', [0]]], ownLabel: 'half(0)',
+        residue: [{ line: 10, underline: [{ line: 7, text: 'v < x' }], what: 'ensures of $half: v < x (your run already witnesses it)' }],
+        witness: { byOwn: true, calls: [['half', [0]]] } },
+    ] },
+  A3: {
+    id: 'A3', title: 'A3 · one obligation, six epistemic states', lines: SQ_LINES, range: [1, 5], xF: 300, xC: 520, padBottom: 100, radio: true,
+    note: 'result 0 <= v of $sq (nonlinear)',
+    variants: [
+      { id: 'proven', label: 'proven', ownCalls: [['sq', [9]], ['sq', [46340]]], ownLabel: 'sq(9), sq(46340)', residue: [] },
+      { id: 'spur', label: 'refuted? → replay → spurious → unknown', ownCalls: [], residue: [{ line: 4, underline: [{ line: 1, text: '0 <= v', after: '(result' }], what: 'ensures 0 <= v', hint: '(@use sq_nonneg r)',
+          card: `<div class="chips"><span class="chip unk"><span class="sub">0 ≤ r · r</span><span class="val">for 0 ≤ r ≤ 46340 — nonlinear, outside the fragment</span></span><span class="chip" style="border-style:dashed;border-color:indigo;color:indigo">+ (@use sq_nonneg r)</span></div>` }],
+        witness: { calls: [['sq', [3]]], label: 'sq(3)', shrunk: [{ name: 'r', v: 3 }, { name: 'r·r', v: -1, note: 'opaque atom in the model' }],
+          model: { outs: [-1], check: { ln: 1, kind: 'ensures', res: { ok: false, groups: [[{ src: '0 <= v', sub: '0 ≤ r·r', val: '0 ≰ −1   (model: r = 3, r·r ↦ −1)', ok: false }]] } } } } },
+      { id: 'refuted', label: 'refuted, witness replayed (param v <= 46341)', edits: [['replace', 1, SQ_HDR, SQ_HDR.replace('v <= 46340', 'v <= 46341')]], ownCalls: [],
+        residue: [{ line: 4, underline: [{ line: 1, text: '0 <= v', after: '(result' }], what: 'ensures 0 <= v' }],
+        witness: { calls: [['sq', [46341]]], label: 'sq(46341)', shrunk: [{ name: 'r', v: 46341, note: 'the only failing r' }] } },
+      { id: 'held', label: 'held on this run only', ownCalls: [['sq', [9]], ['sq', [100]], ['sq', [46340]]], ownLabel: 'sq(9), sq(100), sq(46340)',
+        residue: [{ line: 4, status: 'held', checkLine: 1, underline: [{ line: 1, text: '0 <= v', after: '(result' }], what: 'ensures 0 <= v' }] },
+      { id: 'vac', label: 'vacuous (requires v < 0 && v > 0)', edits: [['replace', 1, SQ_HDR, SQ_HDR.replace('0 <= v && v <= 46340', 'v < 0 && v > 0')]], ownCalls: [],
+        residue: [{ line: 1, status: 'vacuous', underline: [{ line: 1, text: 'v < 0 && v > 0' }], what: 'requires v < 0 && v > 0 is unsatisfiable: every obligation below holds vacuously',
+          card: `<div class="chips"><span class="chip vac"><span class="sub">v &lt; 0 ∧ v &gt; 0</span><span class="val">no i32 satisfies this — nothing below is really checked</span></span></div>` }],
+        vacuousLines: [2, 3, 4], emptyNote: 'no input satisfies requires — there is nothing to run' },
+    ] },
+  B1: {
+    id: 'B1', title: 'B · isqrt (linear search)', lines: FX.isqrt.lines, xF: 390, xC: 610, ownLabel: 'isqrt(10)',
+    note: 'your run: isqrt(10) — passes in every variant',
+    variants: [
+      { id: 'none', label: 'No bug', ownCalls: [['isqrt', [10]]], residue: [] },
+      { id: 'S1', label: 'S1 · line 17 gt_u → gt_s (signed compare)', edits: FX.isqrt.bugs.S1.edits, ownCalls: [['isqrt', [10]]],
+        extraObligations: { 17: { text: '(r + 1) * (r + 1) <= 2147483647', label: 'line 17 · i32.gt_s reads input 1 as SIGNED: (r+1)·(r+1) must be < 2³¹' } },
+        residue: [{ line: 17, wire: 0, what: 'i32.gt_s must compare (r+1)·(r+1) with n faithfully' }],
+        witness: { calls: [['isqrt', [2147483647]]], startAt: { line: 6, locals: { n: 2147483647, r: 46340 }, stepBase: 4 }, label: 'loop-head state',
+          shrunk: [{ name: 'n', v: 2147483647, note: '' }, { name: 'r', v: 46340, note: 'satisfies r·r ≤ n' }],
+          others: 'from entry this state is first reached at step ≈695,104 — past the 100k log' } },
+      { id: 'S2', label: 'S2 · spec: v*v < n && n <= (v+1)^2 (spec bug)', edits: FX.isqrt.bugs.S2.edits, ownCalls: [['isqrt', [10]]],
+        residue: [{ line: 26, underline: [{ line: 1, text: 'v * v < n' }], what: 'ensures v·v < n at the exit' }],
+        witness: { calls: [['isqrt', [4]]], label: 'isqrt(4)', shrunk: [{ name: 'n', v: 4, note: 'any perfect square' }], others: 'also 0, 1, 9, 16 · n = 5 passes' } },
+      { id: 'S3', label: 'S3 · line 3: i32.const 0 → 1 (start at 1)', edits: FX.isqrt.bugs.S3.edits, ownCalls: [['isqrt', [10]]],
+        residue: [{ line: 6, underline: [{ line: 7, text: 'r * r <= n' }], what: '@invariant on loop entry: r·r ≤ n' }],
+        witness: { calls: [['isqrt', [0]]], label: 'isqrt(0)', shrunk: [{ name: 'n', v: 0, note: 'the only failing n' }],
+          origin: { line: 3, slot: 'out', label: 'r starts at 1', tip: 'origin: the value of r at loop entry was produced here' } } },
+    ] },
+  B2: {
+    id: 'B2', title: 'B′ · gcd (Euclid) — trap 💣 vs witness ⚖', lines: FX.gcd.lines, xF: 390, xC: 610, ownLabel: 'gcd(12, 8)',
+    extraObligations: { 19: { text: 'y != 0', label: 'line 19 · i32.rem_u needs its divisor (input 2) ≠ 0' } },
+    note: 'your run: gcd(12, 8)',
+    variants: [
+      { id: 'none', label: 'No bug', ownCalls: [['gcd', [12, 8]]], residue: [] },
+      { id: 'G1', label: 'G1 · line 14: guard reads $x, not $y', edits: FX.gcd.bugs.G1.edits, ownCalls: [['gcd', [12, 8]]],
+        residue: [{ line: 19, wire: 1, what: 'i32.rem_u divisor y ≠ 0' }],
+        witness: { calls: [['gcd', [1, 0]]], label: 'gcd(1, 0)', shrunk: [{ name: 'a', v: 1, any: 'any a ≠ 0' }, { name: 'b', v: 0, note: 'must be 0' }],
+          origin: { line: 14, slot: 'out', label: 'guard reads x', alsoOwn: true, tip: 'origin: the br_if guard on line 16 tests this value (x), so nothing establishes y ≠ 0' } } },
+    ] },
+  C: {
+    id: 'C', title: 'C · open-addressing hash table (8 slots, tombstones)', lines: FX.hashtable.lines, xF: 470, xC: 735, scroll: true, memory: true,
+    ownLabel: 'insert(5,50) · insert(6,60) · lookup(5) · delete(6)',
+    note: 'your run never collides, so it passes in every variant',
+    variants: [
+      { id: 'none', label: 'No bug', ownCalls: [['insert', [5, 50]], ['insert', [6, 60]], ['lookup', [5, -1]], ['delete', [6]]], residue: [] },
+      { id: 'Hb', label: '(b) line 38: lt_u → ne (TOMB treated as EMPTY)', edits: FX.hashtable.bugs.Hb.edits, ownCalls: [['insert', [5, 50]], ['insert', [6, 60]], ['lookup', [5, -1]], ['delete', [6]]],
+        residue: [{ line: 41, underline: [{ line: 20, text: '!(k in M)' }], what: 'post of $find at this early return: ¬(k ∈ M)' }],
+        witness: { calls: FX.hashtable.bugs.Hb.calls, label: '4 operations',
+          shrunk: [{ op: 'insert', args: [{ v: 3 }, { v: 30, any: 'any value' }] }, { op: 'insert', args: [{ v: 11 }, { v: 110, any: 'any value' }] }, { op: 'delete', args: [{ v: 3 }] }, { op: 'lookup', args: [{ v: 11 }, { v: -1, any: 'any default' }] }],
+          others: '11 ≡ 3 (mod 8)',
+          origin: { line: 38, slot: 'out', label: 'TOMB ≠ FULL → 1: stop as if EMPTY', tip: 'origin: this comparison decided to stop probing at slot 3, which is a TOMB, not EMPTY' } } },
+      { id: 'Hc', label: '(c) delete lines 110–123 (no existing-key check)', edits: FX.hashtable.bugs.Hc.edits, ownCalls: [['insert', [5, 50]], ['insert', [6, 60]], ['lookup', [5, -1]], ['delete', [6]]],
+        residue: [{ line: 135, underline: [{ line: 136, text: '!(k in M)' }], what: '@invariant on entry to loop $free: ¬(k ∈ M)' }],
+        witness: { calls: FX.hashtable.bugs.Hc.calls, label: '3 operations',
+          shrunk: [{ op: 'insert', args: [{ v: 3 }, { v: 30, any: 'any value' }] }, { op: 'insert', args: [{ v: 3 }, { v: 31, any: 'any value ≠ 30' }] }, { op: 'lookup', args: [{ v: 3 }, { v: -1, any: 'any default' }] }],
+          origin: { line: 110, hollow: true, label: 'lines 110–123 deleted: nothing establishes k ∉ M', tip: 'origin: the find-and-update group that proved k ∉ M is gone (empty cup = missing fact)' } } },
+    ] },
+};
+
+const EDS = {};
+function forceStage(ed, stage) {
+  if (!ed.wit || ed.variant.witness.byOwn) return;
+  if (stage === 'ghost' || stage === 'claim' || stage === 'inputs') { ed.replayed = false; ed.makeSegments(); ed.buildGhostRow(); ed.ghostSel = stage === 'ghost' ? null : stage; ed.userTouched = true; ed.idx = ed.own ? ed.own.steps.length : 0; ed.render(); return; }
+  ed.replayed = true; ed.ghostSel = null; ed.makeSegments(); ed.buildGhostRow();
+  if (ed.spurious) ed.markSpurious();
+  const w = ed.segs.find(s => s.kind === 'witness'); ed.idx = w ? w.start + 1 + ed.wit.firstFail : ed.idx;
+  ed.render();
+}
+function initAll() {
+  const q = new URLSearchParams(location.search);
+  const initial = { A1: 'P1', A2: 'P3', A3: 'spur', B1: 'none', B2: 'none', C: 'none' };
+  for (const id of Object.keys(CFG)) {
+    const vv = (q.get(id) || initial[id]).split(':');
+    CFG[id].initial = vv[0];
+    EDS[id] = new Editor(document.getElementById('ed' + id), CFG[id]);
+    const ed = EDS[id];
+    if (ed.wit && !ed.variant.witness.byOwn) forceStage(ed, vv[1] || 'replayed');
+    if (vv[2] !== undefined) { ed.idx = +vv[2]; ed.render(); }
+  }
+  ACTIVE = EDS.B1;
+  setTimeout(() => document.body.classList.remove('noanim'), 700);
+  document.querySelectorAll('.legend .it').forEach(it => { const sw = it.querySelector('.sw'); const rest = [...it.childNodes].filter(n => n !== sw); const sp = document.createElement('span'); rest.forEach(n => sp.appendChild(n)); it.appendChild(sp); });
+  const ls = document.getElementById('lg-star'); if (ls) ls.innerHTML = STAR_SVG;
+  if (q.get('pick')) { const [e, v] = q.get('pick').split(':'); setTimeout(() => EDS[e].pickVariant(v), 50); }
+  if (q.get('gray')) document.body.style.filter = 'grayscale(1)';
+  if (q.get('only')) { const keep = q.get('only').split(','); document.body.querySelectorAll(':scope > *').forEach(el => { if (el.id !== 'tip' && el.tagName !== 'SCRIPT' && !keep.some(k => el.id === 'ed' + k)) el.style.display = 'none'; }); }
+  // self-check: interpreter vs. fixture key frames
+  const out = [];
+  const chk = (pid, bid, opts) => {
+    const b = FX[pid].bugs[bid]; const P = parseProgram(applyEdits(FX[pid].lines, b.edits)); const r = execute(P, b.calls, opts || {});
+    const by = {}; r.steps.forEach(s => by[s.s] = s);
+    const ok = b.frames.filter(f => by[f.s] && by[f.s].ln === f.ln && JSON.stringify(by[f.s].stack) === JSON.stringify(f.stack) && (!f.slots || JSON.stringify(by[f.s].slots) === JSON.stringify(f.slots))).length;
+    out.push(`${bid} ${ok}/${b.frames.length}`);
+  };
+  chk('parity', 'P1'); chk('parity', 'P3'); chk('isqrt', 'S2'); chk('isqrt', 'S3');
+  chk('isqrt', 'S1', { startAt: { line: 6, locals: { n: 2147483647, r: 46340 }, stepBase: 4 }, stopAtBackEdge: true });
+  chk('gcd', 'G1'); chk('hashtable', 'Hb'); chk('hashtable', 'Hc');
+  const el = document.getElementById('selfcheck'); if (el) el.textContent = out.join(' · ');
+}
+window.addEventListener('DOMContentLoaded', initAll);
+
+</script>
+</body>
+</html>

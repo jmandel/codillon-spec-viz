@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>01 · Shape-as-value-space: containment typing with the spill glyph</title>
+<style>
+:root { --ivory:#fffff0; --i32:#6A5ACD; --i32m:#d0cbe7; --dark:darkred; --unk:indigo; --dyn:slategray; --navy:#000080; --gray:#999;
+  --serif:"Latin Modern Roman","CMU Serif","Computer Modern",Georgia,"Times New Roman",serif;
+  --sans:"Latin Modern Sans","Fira Sans Condensed","Roboto Condensed","Arial Narrow",sans-serif; }
+html, body { background: var(--ivory); margin: 0; color: #1a1a1a; font-family: var(--serif); }
+body.gray { filter: grayscale(1); }
+.wrap { width: 1360px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+h1 { font-weight: normal; font-size: 30px; margin: 22px 0 6px; }
+h1 .num { color: var(--i32); }
+h2 { font-weight: normal; font-size: 24px; margin: 34px 0 6px; border-bottom: 1px solid #d8d4b8; padding-bottom: 4px; }
+h3 { font-family: var(--sans); font-weight: normal; font-size: 14px; margin: 0 0 4px; color: #333; letter-spacing: .02em; }
+p.lede { font-size: 17px; line-height: 1.45; max-width: 1240px; margin: 6px 0 10px; }
+.sans { font-family: var(--sans); }
+.small { font-family: var(--sans); font-size: 12px; color: #444; }
+.note { font-family: var(--sans); font-size: 12.5px; color: #333; line-height: 1.4; max-width: 1280px; }
+code, .mono { font-family: var(--serif); font-size: 15px; }
+button, select, input { font-family: var(--sans); font-size: 13px; }
+button { background: var(--ivory); border: 1px solid #8a86a8; border-radius: 3px; padding: 2px 8px; cursor: pointer; color: #222; }
+button:hover { background: #f3f0dc; }
+button.on { background: #e6e2f6; border-color: var(--i32); }
+select { background: var(--ivory); border: 1px solid #8a86a8; border-radius: 3px; padding: 1px 4px; }
+label.ctl { font-family: var(--sans); font-size: 13px; margin-right: 14px; color: #222; white-space: nowrap; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; margin: 6px 0 4px; }
+
+/* legend */
+.legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px 18px; margin: 10px 0 6px; }
+.lg { display: flex; align-items: center; gap: 8px; min-height: 30px; }
+.lg svg { flex: none; }
+.lg .t { font-family: var(--sans); font-size: 12px; line-height: 1.25; color: #222; }
+.lg .t b { font-weight: 600; }
+.lgsec { grid-column: 1 / -1; font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #777; margin-top: 6px; border-bottom: 1px dotted #ccc; }
+
+/* listing */
+.listing { position: relative; }
+.row { position: relative; height: 34px; display: flex; align-items: center; white-space: pre; }
+.row .arrow { width: 16px; flex: none; }
+.row .gut { width: 40px; flex: none; text-align: right; padding-right: 10px; font-family: var(--sans); font-size: 12px; color: var(--gray); }
+.row .gut.glyph { font-size: 20px; color: var(--dark); font-family: var(--serif); cursor: pointer; }
+.row .gut.ghostg { color: transparent; -webkit-text-stroke: 1px darkred; }
+.row .gut.unkg { color: var(--unk); font-size: 17px; }
+.row .gut.meta { color: indigo; }
+.row .code { width: 610px; flex: none; overflow: hidden; text-overflow: ellipsis; font-size: 22px; transition: opacity .25s, color .25s; }
+.row .code.spec { font-size: 15px; color: #303030; }
+.row .code.hdr { font-size: 15px; color: indigo; }
+.row .code.meta { font-size: 15px; color: indigo; }
+.row .code.blank { color: #b5b0a0; text-decoration: line-through; font-size: 15px; opacity: .55; }
+.row .code.edited { text-decoration: underline dotted #00008b; text-underline-offset: 4px; }
+.row .code.trap { color: var(--dark); }
+.row.cur .code { }
+.stale .row .code.edited { text-decoration: underline wavy #888; }
+.row .comm { position: absolute; right: 2px; top: 7px; font-family: var(--sans); font-size: 11px; color: var(--dark); border: 1px solid var(--dark); border-radius: 2px; padding: 1px 5px; background: var(--ivory); max-width: 330px; overflow: hidden; text-overflow: ellipsis; transition: opacity .25s; z-index: 2; }
+.row .comm.ghostc { border-style: dashed; }
+.arrowmark { position: absolute; left: 0; width: 16px; height: 34px; display: flex; align-items: center; color: var(--navy); font-size: 15px; transition: transform .25s, opacity .25s; pointer-events: none; }
+svg.margin { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+svg.margin .hit { pointer-events: all; cursor: crosshair; }
+.anim { transition: x .25s, y .25s, width .25s, height .25s, cx .25s, cy .25s, r .25s, d .25s, opacity .25s, transform .25s, fill .25s, stroke .25s; }
+.stale svg.margin { opacity: .4; transition: opacity .2s; }
+svg.margin { transition: opacity .25s; }
+.fn-band { position: absolute; left: 56px; width: 2px; background: #c9c4e0; }
+
+/* sticky bar & slider */
+.bar { position: sticky; top: 0; z-index: 20; background: var(--ivory); border-bottom: 1px solid #d8d4b8; padding: 6px 0 4px; }
+.slider { position: relative; height: 62px; }
+.slider svg { position: absolute; left: 0; top: 0; overflow: visible; }
+.slider input[type=range] { position: absolute; left: 0; top: 38px; width: 100%; margin: 0; height: 16px; background: transparent; -webkit-appearance: none; appearance: none; }
+.slider input[type=range]::-webkit-slider-runnable-track { height: 2px; background: #9a96b8; }
+.slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 6px; background: #00008b; margin-top: -5px; cursor: pointer; }
+.slider .ghostbtn { position: absolute; right: 0; top: 0; }
+.status-line { font-family: var(--sans); font-size: 12px; color: #333; height: 16px; white-space: nowrap; overflow: hidden; }
+
+/* memory panel */
+.mem { position: relative; height: 158px; }
+.mem svg { position: absolute; left: 0; top: 0; overflow: visible; }
+
+/* snippet cards */
+.cards { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.card { border: 1px solid #e0dcc4; border-radius: 4px; padding: 8px 10px 6px; }
+.card .listing .row .code { width: 470px; }
+
+/* inspector */
+#insp { position: fixed; z-index: 100; display: none; background: var(--ivory); border: 1px solid #8a86a8; border-radius: 4px; box-shadow: 0 3px 14px rgba(0,0,0,.18); padding: 8px 10px; width: 600px; pointer-events: none; }
+#insp.pinned { pointer-events: all; border-color: #00008b; }
+#insp .p { font-family: var(--serif); font-size: 16px; margin-bottom: 2px; }
+#insp .s { font-family: var(--sans); font-size: 12px; color: #333; margin-bottom: 4px; }
+#insp .s b { font-weight: 600; }
+footer ul { font-size: 16px; line-height: 1.45; }
+footer li { margin-bottom: 6px; }
+table.score { border-collapse: collapse; font-family: var(--sans); font-size: 12.5px; margin: 6px 0 30px; }
+table.score td, table.score th { border: 1px solid #ddd8c0; padding: 3px 8px; text-align: left; vertical-align: top; }
+table.score th { font-weight: 600; background: #f6f3df; }
+.kbd { font-family: var(--sans); font-size: 11px; border: 1px solid #aaa; border-radius: 3px; padding: 0 4px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="hatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="4" height="4" fill="#f4dcdc"/><rect width="1.8" height="4" fill="darkred"/>
+    </pattern>
+    <pattern id="hatchbig" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="#f4dcdc"/><rect width="2.4" height="6" fill="darkred"/>
+    </pattern>
+    <pattern id="qhatch" width="9" height="11" patternUnits="userSpaceOnUse">
+      <rect width="9" height="11" fill="#efeaf7"/>
+      <text x="1.5" y="9" font-size="9" font-family="Arial Narrow, sans-serif" fill="indigo">?</text>
+    </pattern>
+    <pattern id="combp" width="3" height="4" patternUnits="userSpaceOnUse"><rect width="1.3" height="4" fill="#6A5ACD"/></pattern>
+    <pattern id="combl" width="3" height="4" patternUnits="userSpaceOnUse"><rect width="1.1" height="4" fill="#6A5ACD" opacity=".35"/></pattern>
+    <pattern id="combd" width="3" height="4" patternUnits="userSpaceOnUse"><rect width="3" height="4" fill="#f4dcdc"/><rect width="1.5" height="4" fill="darkred"/></pattern>
+  </defs>
+</svg>
+
+<header class="wrap">
+  <h1><span class="num">01</span> · Shape-as-value-space <span class="small" style="font-size:15px">— containment typing with the spill glyph</span></h1>
+  <p class="lede">Codillon already draws an <i>i32</i> as a little rectangle. Here that rectangle is taken literally: <b>it is the i32 number line</b>,
+  INT_MIN at its left wall, INT_MAX at its right wall, on a piecewise scale (linear around 0, logarithmic toward the walls) so that 0, small
+  integers and the extremes all stay legible. A refinement <code>(i32 | P)</code> is a <b>region carved out of the shape</b>: an interval between fence posts,
+  a comb for parity, sockets for a finite set, a socket tethered to another value for a dependent bound. An <b>input cup</b> shows the region the
+  instruction <i>requires</i> (its rim); an <b>output</b> shows the region the instruction <i>provides</i>. Subtyping is literal containment: whatever
+  pours in must fit under the rim. When it does not, the excess <b>spills over the rim</b> as a darkred hatched sliver, and that sliver is exactly the set
+  of counterexamples. The value at the current step is a dot inside the shape. Hover any shape to zoom it; click to pin.</p>
+  <div class="controls"><button id="grayBtn">grayscale self-test</button><span class="small">&nbsp;Keys: <span class="kbd">←</span> <span class="kbd">→</span> step the slider of the section you last touched.</span></div>
+  <div class="legend" id="legend"></div>
+</header>
+
+<section class="wrap" id="secA">
+  <h2>A · The primitive on single values</h2>
+  <div class="cards" id="cardsA"></div>
+</section>
+
+<section class="wrap" id="secB">
+  <h2>B · Number theory: <code>$isqrt</code> (integer square root by linear search)</h2>
+  <div class="note">Spec: <code>(param $n (i32 | 0 &lt;= v))</code>, <code>(result (i32 | 0 &lt;= v &amp;&amp; v*v &lt;= n &amp;&amp; n &lt; (v+1)*(v+1)))</code>; loop invariant <code>0 &lt;= r &amp;&amp; r*r &lt;= n</code>, measure <code>n − r*r</code>.
+   The result cup on the closing line is a one-integer window tethered to <i>n</i> (between √n−1, open, and √n, closed). It slides when you change <i>n</i>. Listing, line numbers and traces are those of the shared fixture (03-sample-programs.md A2).</div>
+  <div class="controls">
+    <label class="ctl">Seed bug <select id="bugB"></select></label>
+    <label class="ctl">n = <input id="nB" type="number" min="0" max="20000" value="10" style="width:76px"></label>
+    <span id="nPresets"></span>
+    <label class="ctl" style="margin-left:14px">nonlinear obligations (lines 11, 14, 15, 21):
+      <select id="lemB"><option value="proven">solver finds the lemma (proven)</option><option value="unknown">linear-only solver (unknown)</option><option value="dynamic">linear-only, checked at run time</option></select></label>
+  </div>
+  <div class="bar" id="barB"><div class="status-line" id="statB"></div><div class="slider" id="sliderB"></div></div>
+  <div class="listing" id="listB"></div>
+</section>
+
+<section class="wrap" id="secC">
+  <h2>C · Hash table: 8 slots, linear probing, tombstones, ghost map <code>M</code></h2>
+  <div class="note">Every memory slot is a triple of i32 cups (state, key, value). The <b>state</b> cup has exactly three sockets (EMPTY 0, FULL 1, TOMB 2); while a slot lies on some key's probe path, R3 removes the EMPTY socket.
+   A FULL slot's <b>key</b> cup has one socket per key of <code>M</code> (a socket already claimed by an earlier slot is hollow: R2). Its <b>value</b> cup has the single socket <code>M[key]</code> (R1).
+   <code>used</code> must sit in <code>[0, CAP)</code> on the socket <code>#non-EMPTY</code> (R4). R1 and R4's counts are only required between operations; mid-operation they are drawn as thin sockets and are not enforced.</div>
+  <div class="controls">
+    <label class="ctl">Seed bug <select id="bugC"></select></label>
+    <label class="ctl">counting lemma <code style="font-size:13px">j+1 &lt;= used</code> (lines 63, 151):
+      <select id="lemC"><option value="proven">proven (lemma found)</option><option value="unknown">unknown</option><option value="dynamic">checked at run time</option></select></label>
+  </div>
+  <div class="bar" id="barC"><div class="status-line" id="statC"></div><div class="slider" id="sliderC"></div><div class="mem" id="memC"></div></div>
+  <div class="listing" id="listC"></div>
+</section>
+
+<footer class="wrap" id="foot">
+  <h2>Self-critique</h2>
+  
+</footer>
+
+<div id="insp"></div>
+
+<script>
+// Embedded subset of research/fixture.json (programs parity, isqrt, hashtable; bug metadata; the S1 loop-head witness trace).
+const FX = {"version": 1, "programs": [{"id": "parity", "title": "Parity gate: is_even / half / half_or_neg1", "lines": ["(func $is_even (param $x i32) (result (i32 | v == (x % 2 == 0 ? 1 : 0)))", "  local.get $x", "  i32.const 1", "  i32.and", "  i32.eqz", ")", "(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))", "  local.get $x", "  i32.const 1", "  i32.shr_s", ")", "(func $half_or_neg1 (param $x i32) (result (i32 | (x % 2 == 0 && v + v == x) || (x % 2 == 1 && v == -1)))", "  local.get $x", "  call $is_even", "  i32.eqz", "  if (result i32)", "    i32.const -1", "  else", "    (@assert x % 2 == 0)", "    local.get $x", "    call $half", "  end", ")"], "correct_runs": {"calls": [["half_or_neg1", [6]], ["half_or_neg1", [7]], ["half_or_neg1", [-4]], ["is_even", [-3]]], "results": [3, -1, -2, 0], "total_steps": 44, "spec_checks_failed": 0}, "obligations": [{"lines": [2, 3], "code": "local.get $x; i32.const 1", "stack": "[x, 1]", "obligation": "-", "status": "none"}, {"lines": [4], "code": "i32.and", "stack": "[(i32 | v == x & 1 && 0 <= v <= 1)]", "obligation": "-", "status": "none"}, {"lines": [5], "code": "i32.eqz", "stack": "[(i32 | v == (x & 1 == 0 ? 1 : 0))]", "obligation": "post of $is_even: v == (x % 2 == 0 ? 1 : 0)", "status": "auto", "kind": "post"}, {"lines": [8, 9], "code": "local.get $x; i32.const 1", "stack": "[(i32 | v == x && v % 2 == 0), 1]", "obligation": "-", "status": "none"}, {"lines": [10], "code": "i32.shr_s", "stack": "[(i32 | v == floor(x / 2))]", "obligation": "post of $half: v + v == x", "status": "auto", "kind": "post"}, {"lines": [13, 14], "code": "local.get $x; call $is_even", "stack": "[(i32 | v == (x % 2 == 0 ? 1 : 0))]", "obligation": "pre of $is_even: none", "status": "auto", "kind": "pre"}, {"lines": [15], "code": "i32.eqz", "stack": "[(i32 | v == (x % 2 == 0 ? 0 : 1))]", "obligation": "-", "status": "none"}, {"lines": [16], "code": "if (result i32)", "stack": "then: path x % 2 == 1 / else: path x % 2 == 0", "obligation": "-", "status": "auto", "kind": "branch"}, {"lines": [17], "code": "i32.const -1", "stack": "[(i32 | v == -1)]", "obligation": "post (then-arm): x % 2 == 1 && v == -1", "status": "auto", "kind": "post"}, {"lines": [19], "code": "(@assert x % 2 == 0)", "obligation": "x % 2 == 0", "status": "auto", "kind": "assert"}, {"lines": [20, 21], "code": "local.get $x; call $half", "stack": "[(i32 | v + v == x)]", "obligation": "pre of $half: x % 2 == 0;  post (else-arm): x % 2 == 0 && v + v == x", "status": "auto", "kind": "pre"}], "bugs": [{"id": "P1", "title": "gate inverted (forgot the negation)", "category": "code", "flavor": "ordinary; blame lands on the CALLER", "edit": "delete line 15 (`i32.eqz`)", "edits": [["delete", 15, 15]], "calls": [["half_or_neg1", [3]]], "expected_results": [-1], "observed_results": [1], "runtime": "no trap; $half(3) computes 3 >> 1 = 1 and $half_or_neg1 returns 1 (should be -1). For x = 4 it returns -1 (should be 2).", "static_failure": {"line": 21, "obligation": "pre of $half: x % 2 == 0", "why": "with line 15 gone the else-arm runs when is_even(x) == 0, so its path condition is x % 2 == 1; the precondition is refuted (the @assert on line 19 fails the same way)", "status": "fails"}, "first_dynamic_failure": {"s": 8, "ln": 19, "kind": "assert"}}, {"id": "P2", "title": "logical instead of arithmetic shift", "category": "code", "flavor": "subtle: every non-negative input is fine", "edit": "line 10: `i32.shr_s` -> `i32.shr_u`", "edits": [["replace", 10, "i32.shr_s", "i32.shr_u"]], "calls": [["half_or_neg1", [-4]]], "expected_results": [-2], "observed_results": [2147483646], "runtime": "no trap; returns 2147483646 for x = -4. Also x = INT_MIN returns 1073741824 (positive).", "static_failure": {"line": 10, "obligation": "post of $half: v + v == x", "why": "shr_u gives v == u(x) / 2, which equals x / 2 only when 0 <= x; for x < 0, v + v == x + 2^32", "status": "fails"}, "first_dynamic_failure": {"s": 15, "ln": 7, "kind": "ensures"}}, {"id": "P3", "title": "\"half is smaller\" (spec bug)", "category": "spec", "flavor": "spec bug: program right, spec wrong", "edit": "line 7: result refinement `(i32 | v + v == x)` -> `(i32 | v + v == x && v < x)`", "edits": [["replace", 7, "(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))", "(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x && v < x))"]], "calls": [["half_or_neg1", [0]]], "expected_results": [0], "observed_results": [0], "runtime": "no trap; returns the correct 0. Only the dynamic ensures check of $half fires. Fix the spec (drop `v < x`), not the code.", "static_failure": {"line": 10, "obligation": "post of $half: v + v == x && v < x", "why": "v < x is false when x == 0 (0 < 0) and for every negative even x (-2 > -4)", "status": "fails"}, "first_dynamic_failure": {"s": 15, "ln": 7, "kind": "ensures"}}]}, {"id": "isqrt", "title": "Integer square root (linear search)", "lines": ["(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))", "  (local $r i32)", "  i32.const 0", "  local.set $r", "  block $done", "    loop $grow", "      (@invariant 0 <= r && r * r <= n)", "      (@decreases n - r * r)", "      local.get $r", "      i32.const 1", "      i32.add", "      local.get $r", "      i32.const 1", "      i32.add", "      i32.mul", "      local.get $n", "      i32.gt_u", "      br_if $done", "      local.get $r", "      i32.const 1", "      i32.add", "      local.set $r", "      br $grow", "    end", "  end", "  local.get $r", ")"], "correct_runs": {"calls": [["isqrt", [10]], ["isqrt", [16]], ["isqrt", [0]]], "results": [3, 4, 0], "total_steps": 150, "spec_checks_failed": 0}, "obligations": [{"lines": [3, 4], "code": "i32.const 0; local.set $r", "stack": "r == 0", "obligation": "-", "status": "none"}, {"lines": [6], "code": "loop $grow", "obligation": "inv on entry: 0 <= 0 && 0*0 <= n;  measure n - 0 >= 0", "status": "auto", "kind": "inv-entry"}, {"lines": [9, 10, 11], "code": "local.get $r; i32.const 1; i32.add", "stack": "[(i32 | v == r + 1)]", "obligation": "no signed overflow: r + 1 <= 2^31-1", "status": "lemma", "kind": "overflow"}, {"lines": [12, 13, 14], "code": "local.get $r; i32.const 1; i32.add", "stack": "[r+1, r+1]", "obligation": "same as 9-11", "status": "lemma", "kind": "overflow"}, {"lines": [15], "code": "i32.mul", "stack": "[(i32 | u(v) == (r+1)*(r+1))]", "obligation": "no UNSIGNED overflow: (r+1)^2 < 2^32", "status": "lemma", "kind": "overflow"}, {"lines": [16, 17], "code": "local.get $n; i32.gt_u", "stack": "[(i32 | v == ((r+1)^2 > n ? 1 : 0))]", "obligation": "u(n) == n", "status": "auto", "kind": "type"}, {"lines": [18], "code": "br_if $done", "stack": "taken: n < (r+1)^2 / fallthrough: (r+1)^2 <= n", "obligation": "-", "status": "auto", "kind": "branch"}, {"lines": [19, 20, 21, 22], "code": "r := r + 1", "stack": "r' == r + 1", "obligation": "no signed overflow (as 9-11)", "status": "lemma", "kind": "overflow"}, {"lines": [23], "code": "br $grow", "obligation": "inv preserved: 0 <= r' && r'*r' <= n;  measure: 0 <= n - r'^2 < n - r^2", "status": "auto", "kind": "inv-preserve"}, {"lines": [26], "code": "local.get $r  (exit via br_if)", "stack": "[(i32 | v == r)]", "obligation": "post: 0 <= r && r*r <= n && n < (r+1)^2", "status": "inv", "kind": "post"}], "bugs": [{"id": "S1", "title": "signed comparison of a product that may exceed 2^31-1", "category": "code", "flavor": "subtle: correct for every n < 46340^2 = 2147395600", "edit": "line 17: `i32.gt_u` -> `i32.gt_s`", "edits": [["replace", 17, "i32.gt_u", "i32.gt_s"]], "calls": [["isqrt", [2147483647]]], "expected_results": [46340], "observed_results": ["(does not terminate)"], "runtime": "n = 2147483647: never terminates (no i32 is signed-greater than INT_MAX). n = 2147395600 (smallest failing input): returns 289398 after ~4.3M steps. The real run reaches the bad loop-head state (r = 46340) only at step 695,104, far past Codillon's 100k-step log, so the trace below is the counterexample-to-induction: start at a loop head satisfying the invariant and run one iteration (add 695,100 to each step number to get the real-run step).", "static_failure": {"line": 17, "obligation": "the comparison must mean (r+1)^2 > n", "why": "signed reading of the line-15 product is faithful only if (r+1)^2 <= 2^31-1, i.e. r <= 46339; the invariant r*r <= n only gives r <= 46340. At r = 46340 the product 2147488281 wraps to -2147479015", "status": "fails"}, "first_dynamic_failure": {"s": 695119, "ln": 7, "kind": "invariant"}, "trace_note": "counterexample-to-induction: one loop iteration from the loop-head state n = 2147483647, r = 46340 (which satisfies the invariant). Real-run step = s + 695100.", "trace": [{"s": 4, "fn": "isqrt", "ln": 6, "op": "loop $grow", "stack": [], "loc": {"n": 2147483647, "r": 46340}, "checks": [{"ln": 7, "kind": "invariant", "ok": true}, {"ln": 8, "kind": "decreases", "ok": true}]}, {"s": 5, "fn": "isqrt", "ln": 9, "op": "local.get $r", "stack": [46340], "loc": {"n": 2147483647, "r": 46340}}, {"s": 6, "fn": "isqrt", "ln": 10, "op": "i32.const 1", "stack": [46340, 1], "loc": {"n": 2147483647, "r": 46340}}, {"s": 7, "fn": "isqrt", "ln": 11, "op": "i32.add", "stack": [46341], "loc": {"n": 2147483647, "r": 46340}}, {"s": 8, "fn": "isqrt", "ln": 12, "op": "local.get $r", "stack": [46341, 46340], "loc": {"n": 2147483647, "r": 46340}}, {"s": 9, "fn": "isqrt", "ln": 13, "op": "i32.const 1", "stack": [46341, 46340, 1], "loc": {"n": 2147483647, "r": 46340}}, {"s": 10, "fn": "isqrt", "ln": 14, "op": "i32.add", "stack": [46341, 46341], "loc": {"n": 2147483647, "r": 46340}}, {"s": 11, "fn": "isqrt", "ln": 15, "op": "i32.mul", "stack": [-2147479015], "loc": {"n": 2147483647, "r": 46340}}, {"s": 12, "fn": "isqrt", "ln": 16, "op": "local.get $n", "stack": [-2147479015, 2147483647], "loc": {"n": 2147483647, "r": 46340}}, {"s": 13, "fn": "isqrt", "ln": 17, "op": "i32.gt_s", "stack": [0], "loc": {"n": 2147483647, "r": 46340}}, {"s": 14, "fn": "isqrt", "ln": 18, "op": "br_if $done", "stack": [], "loc": {"n": 2147483647, "r": 46340}}, {"s": 15, "fn": "isqrt", "ln": 19, "op": "local.get $r", "stack": [46340], "loc": {"n": 2147483647, "r": 46340}}, {"s": 16, "fn": "isqrt", "ln": 20, "op": "i32.const 1", "stack": [46340, 1], "loc": {"n": 2147483647, "r": 46340}}, {"s": 17, "fn": "isqrt", "ln": 21, "op": "i32.add", "stack": [46341], "loc": {"n": 2147483647, "r": 46340}}, {"s": 18, "fn": "isqrt", "ln": 22, "op": "local.set $r", "stack": [], "loc": {"n": 2147483647, "r": 46341}}, {"s": 19, "fn": "isqrt", "ln": 23, "op": "br $grow", "stack": [], "loc": {"n": 2147483647, "r": 46341}, "checks": [{"ln": 7, "kind": "invariant", "ok": false}, {"ln": 8, "kind": "decreases", "ok": false}]}]}, {"id": "S2", "title": "strict/non-strict swapped in the postcondition (spec bug)", "category": "spec", "flavor": "spec bug: fails exactly on perfect squares", "edit": "line 1: result `v * v <= n && n < (v + 1) * (v + 1)` -> `v * v < n && n <= (v + 1) * (v + 1)`", "edits": [["replace", 1, "(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))", "(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v < n && n <= (v + 1) * (v + 1)))"]], "calls": [["isqrt", [4]]], "expected_results": [2], "observed_results": [2], "runtime": "no trap; returns the correct 2 for n = 4 (also fails for n = 0, 1, 9, ...). n = 5 passes.", "static_failure": {"line": 26, "obligation": "post: r*r < n", "why": "the invariant gives r*r <= n and the exit gives n < (r+1)^2; nothing excludes r*r == n", "status": "fails"}, "first_dynamic_failure": {"s": 45, "ln": 1, "kind": "ensures"}}, {"id": "S3", "title": "off-by-one initial value", "category": "code", "flavor": "edge case: wrong only for n = 0", "edit": "line 3: `i32.const 0` -> `i32.const 1`", "edits": [["replace", 3, "i32.const 0", "i32.const 1"]], "calls": [["isqrt", [0]]], "expected_results": [0], "observed_results": [1], "runtime": "no trap; isqrt(0) returns 1. Every n >= 1 is answered correctly, so tests on 1..100 all pass.", "static_failure": {"line": 6, "obligation": "inv on entry: 1*1 <= n", "why": "only 0 <= n is known", "status": "fails"}, "first_dynamic_failure": {"s": 4, "ln": 7, "kind": "invariant"}}]}, {"id": "hashtable", "title": "Open-addressing hash table (8 slots, linear probing, tombstones)", "lines": ["(memory 1)", "(global $used (mut i32) (i32.const 0))", "(@ghost global $M (Map i32 i32))", "(@define EMPTY = 0, FULL = 1, TOMB = 2, CAP = 8, BASE = 65440)", "(@define st(s) = load(BASE + 12*s), key(s) = load(BASE + 12*s + 4), val(s) = load(BASE + 12*s + 8))", "(@define h(k) = k & 7, at(k, d) = (h(k) + d) & 7, dist(k, s) = (s - h(k)) & 7)", "(@define R0 = forall s in 0..7. st(s) in {EMPTY, FULL, TOMB})", "(@define R1 = forall s. st(s) == FULL ==> key(s) in M && M[key(s)] == val(s))", "(@define R2 = forall k in M. #{s | st(s) == FULL && key(s) == k} == 1)", "(@define R3 = forall s. st(s) == FULL ==> forall d <= dist(key(s), s). st(at(key(s), d)) != EMPTY)", "(@define R4 = #{s | st(s) == FULL} == |M| && used == #{s | st(s) != EMPTY} && used < CAP)", "(@define R = R0 && R1 && R2 && R3 && R4)", "(func $slot (param $i (i32 | 0 <= v && v < CAP)) (result (i32 | v == BASE + 12*i))", "  local.get $i", "  i32.const 12", "  i32.mul", "  i32.const 65440", "  i32.add", ")", "(func $find (param $k i32) (result (i32 | (v == -1 && !(k in M)) || (0 <= v && v < CAP && st(v) == FULL && key(v) == k)))", "  (@requires R)", "  (local $i i32)", "  (local $p i32)", "  (@ghost local $j i32)", "  local.get $k", "  i32.const 7", "  i32.and", "  local.set $i", "  loop $probe", "    (@invariant 0 <= j && j <= used && i == at(k, j))", "    (@invariant forall d < j. st(at(k, d)) == TOMB || (st(at(k, d)) == FULL && key(at(k, d)) != k))", "    (@decreases CAP - j)", "    local.get $i", "    call $slot", "    local.tee $p", "    i32.load", "    i32.const 1", "    i32.lt_u", "    if", "      i32.const -1", "      return", "    end", "    local.get $p", "    i32.load", "    i32.const 1", "    i32.eq", "    local.get $p", "    i32.load offset=4", "    local.get $k", "    i32.eq", "    i32.and", "    if", "      local.get $i", "      return", "    end", "    local.get $i", "    i32.const 1", "    i32.add", "    i32.const 7", "    i32.and", "    local.set $i", "    (@ghost j := j + 1)", "    br $probe", "  end", "  unreachable", ")", "(func $lookup (param $k i32) (param $dflt i32) (result (i32 | v == (k in M ? M[k] : dflt)))", "  (@requires R)", "  (@ensures R)", "  (local $i i32)", "  local.get $k", "  call $find", "  local.tee $i", "  i32.const 0", "  i32.lt_s", "  if", "    local.get $dflt", "    return", "  end", "  local.get $i", "  call $slot", "  i32.load offset=8", ")", "(func $delete (param $k i32) (result (i32 | v == (k in old(M) ? 1 : 0)))", "  (@requires R)", "  (@ensures R && M == old(M) \\ {k})", "  (local $i i32)", "  local.get $k", "  call $find", "  local.tee $i", "  i32.const 0", "  i32.lt_s", "  if", "    i32.const 0", "    return", "  end", "  local.get $i", "  call $slot", "  i32.const 2", "  i32.store", "  (@ghost M := M \\ {k})", "  i32.const 1", ")", "(func $insert (param $k i32) (param $x i32) (result (i32 | v == 1 || (v == 0 && !(k in M) && used == CAP - 1)))", "  (@requires R)", "  (@ensures R && M == (result == 1 ? old(M)[k := x] : old(M)))", "  (local $i i32)", "  (local $p i32)", "  (@ghost local $j i32)", "  local.get $k", "  call $find", "  local.tee $i", "  i32.const 0", "  i32.ge_s", "  if", "    local.get $i", "    call $slot", "    local.get $x", "    i32.store offset=8", "    (@ghost M := M[k := x])", "    i32.const 1", "    return", "  end", "  global.get $used", "  i32.const 7", "  i32.ge_u", "  if", "    i32.const 0", "    return", "  end", "  local.get $k", "  i32.const 7", "  i32.and", "  local.set $i", "  loop $free", "    (@invariant !(k in M) && 0 <= j && j <= used && i == at(k, j))", "    (@invariant forall d < j. st(at(k, d)) != EMPTY)", "    (@decreases CAP - j)", "    local.get $i", "    call $slot", "    local.tee $p", "    i32.load", "    if", "      local.get $i", "      i32.const 1", "      i32.add", "      i32.const 7", "      i32.and", "      local.set $i", "      (@ghost j := j + 1)", "      br $free", "    end", "  end", "  local.get $p", "  i32.const 1", "  i32.store", "  local.get $p", "  local.get $k", "  i32.store offset=4", "  local.get $p", "  local.get $x", "  i32.store offset=8", "  global.get $used", "  i32.const 1", "  i32.add", "  global.set $used", "  (@ghost M := M[k := x])", "  i32.const 1", ")"], "correct_runs": {"calls": [["insert", [3, 30]], ["insert", [11, 110]], ["delete", [3]], ["lookup", [11, -1]], ["lookup", [3, -1]]], "results": [1, 1, 1, 110, -1], "total_steps": 383, "spec_checks_failed": 0}, "obligations": [{"lines": [14, 15, 16, 17, 18], "code": "$slot: i*12 + 65440", "stack": "[(i32 | v == BASE + 12*i)]", "obligation": "no overflow; post v == BASE + 12*i", "status": "auto", "kind": "post"}, {"lines": [25, 26, 27, 28], "code": "find: i := k & 7", "stack": "i == h(k), 0 <= i < 8", "obligation": "-", "status": "auto", "kind": "type"}, {"lines": [29], "code": "loop $probe", "obligation": "inv on entry: j == 0 <= used, i == at(k,0), path-so-far vacuous;  measure CAP - 0 >= 0", "status": "auto", "kind": "inv-entry"}, {"lines": [33, 34, 35], "code": "call $slot; local.tee $p", "stack": "[(i32 | v == BASE + 12*i)]", "obligation": "pre of $slot: 0 <= i < CAP", "status": "inv", "kind": "pre"}, {"lines": [36], "code": "i32.load", "stack": "[(i32 | v == st(i))]", "obligation": "in bounds: p + 4 <= 65536", "status": "auto", "kind": "trap"}, {"lines": [37, 38, 39, 40, 41], "code": "st(i) < FULL ? return -1", "stack": "[(i32 | v == -1)]", "obligation": "post of $find: !(k in M)", "status": "inv", "kind": "post"}, {"lines": [43, 44, 45, 46, 47, 48, 49, 50, 51], "code": "(st(i) == FULL) & (key(i) == k)", "stack": "[(i32 | v == (st(i) == FULL && key(i) == k ? 1 : 0))]", "obligation": "in bounds: p + 8 <= 65536", "status": "auto", "kind": "trap"}, {"lines": [52, 53, 54], "code": "match ? return i", "stack": "[(i32 | v == i)]", "obligation": "post of $find: 0 <= i < CAP && st(i) == FULL && key(i) == k", "status": "auto", "kind": "post"}, {"lines": [56, 57, 58, 59, 60, 61], "code": "i := (i + 1) & 7", "stack": "i' == at(k, j + 1)", "obligation": "-", "status": "auto", "kind": "type"}, {"lines": [62, 63], "code": "j := j + 1; br $probe", "obligation": "inv preserved: slot at distance j is TOMB or FULL-with-other-key; j + 1 <= used;  measure CAP - (j+1) < CAP - j, >= 0", "status": "lemma", "kind": "inv-preserve"}, {"lines": [65], "code": "unreachable", "obligation": "this point is dead", "status": "auto", "kind": "dead"}, {"lines": [71, 72, 73, 74, 75, 76, 77, 78], "code": "lookup: i := find(k); i < 0 ? return dflt", "stack": "[(i32 | v == dflt)]", "obligation": "pre of $find: R;  post: !(k in M) so result == dflt", "status": "auto", "kind": "post"}, {"lines": [80, 81, 82], "code": "lookup: load val(i)", "stack": "[(i32 | v == val(i))]", "obligation": "post: val(i) == M[k];  R preserved", "status": "inv", "kind": "post"}, {"lines": [88, 89, 90, 91, 92, 93, 94, 95, 96], "code": "delete: i := find(k); absent ? return 0", "stack": "[(i32 | v == 0)]", "obligation": "post: k not in old(M), M unchanged, R unchanged", "status": "auto", "kind": "post"}, {"lines": [97, 98, 99, 100, 101], "code": "delete: st(i) := TOMB; M := M \\ {k}", "obligation": "R after: R1 (slot i no longer FULL), R2 (k had exactly one slot), R3 (TOMB is not EMPTY, so no probe path gains an EMPTY), R4 (#FULL - 1 == |M| - 1; used unchanged)", "status": "inv", "kind": "R"}, {"lines": [110, 111, 112, 113, 114, 115], "code": "insert: i := find(k); i >= 0 ?", "stack": "then: st(i) == FULL && key(i) == k / else: !(k in M)", "obligation": "pre of $find: R", "status": "auto", "kind": "pre"}, {"lines": [116, 117, 118, 119, 120], "code": "insert(update): val(i) := x; M := M[k := x]", "obligation": "R1 for slot i with the new M; other clauses untouched", "status": "auto", "kind": "R"}, {"lines": [124, 125, 126, 127, 128, 129, 130], "code": "used >= CAP-1 ? return 0", "stack": "[(i32 | v == 0)]", "obligation": "post: !(k in M) && used == CAP - 1", "status": "auto", "kind": "post"}, {"lines": [131, 132, 133, 134, 135], "code": "i := h(k); loop $free", "obligation": "inv on entry: !(k in M) (from find), j == 0, i == at(k, 0)", "status": "auto", "kind": "inv-entry"}, {"lines": [139, 140, 141, 142, 143], "code": "st(i) != EMPTY ?", "obligation": "pre of $slot: 0 <= i < CAP;  load in bounds", "status": "inv", "kind": "pre"}, {"lines": [144, 145, 146, 147, 148, 149, 150, 151], "code": "i := (i+1) & 7; j := j + 1; br $free", "obligation": "inv preserved (path so far non-EMPTY; j + 1 <= used);  measure", "status": "lemma", "kind": "inv-preserve"}, {"lines": [154, 155, 156, 157, 158, 159, 160, 161, 162], "code": "write FULL, k, x into EMPTY slot i", "obligation": "stores in bounds", "status": "auto", "kind": "trap"}, {"lines": [163, 164, 165, 166, 167], "code": "used := used + 1; M := M[k := x]", "obligation": "R after: R1 (new slot maps k to x), R2 (k was absent: inv), R3 (path h(k)..i was non-EMPTY: inv; turning an EMPTY into FULL never breaks another key's path), R4 (#FULL + 1 == |M| + 1; used + 1 == #non-EMPTY because slot i WAS EMPTY; used + 1 < CAP because the check at 124-126 gave used < CAP - 1)", "status": "inv", "kind": "R"}], "bugs": [{"id": "Ha", "title": "(a) probe index not wrapped", "category": "code", "flavor": "out-of-bounds trap", "edit": "delete lines 147-148 (`i32.const 7`, `i32.and`) in $insert's free-slot loop", "edits": [["delete", 147, 148]], "calls": [["insert", [7, 70]], ["insert", [15, 150]]], "expected_results": [1, 1], "observed_results": [1, "trap: out of bounds memory access"], "runtime": "insert(15, 150) traps \"out of bounds memory access\" at line 142 (address 65536 = BASE + 12*8).", "static_failure": {"line": 140, "obligation": "pre of $slot: 0 <= i < CAP", "why": "after line 146 i == at(k, j) + 1, which is 8 when at(k, j) == 7. The back-edge invariant i == at(k, j+1) (line 136) fails first", "status": "fails"}, "first_dynamic_failure": {"s": 143, "ln": 136, "kind": "invariant"}, "R_violation": "none: the trap fires before any write. With BASE = 0 instead of 65440 there would be no trap: \"slot 8\" (bytes 96..107) reads as EMPTY, the entry is written outside the table, and R2 (ii) fails because 15 is in M but in no FULL slot"}, {"id": "Hb", "title": "(b) lookup treats TOMBSTONE as EMPTY", "category": "code", "flavor": "key becomes unreachable", "edit": "line 38: `i32.lt_u` (state < FULL, i.e. EMPTY) -> `i32.ne` (state != FULL, i.e. EMPTY or TOMB)", "edits": [["replace", 38, "i32.lt_u", "i32.ne"]], "calls": [["insert", [3, 30]], ["insert", [11, 110]], ["delete", [3]], ["lookup", [11, -1]]], "expected_results": [1, 1, 1, 110], "observed_results": [1, 1, 1, -1], "runtime": "lookup(11, -1) returns -1 (expected 110). No trap. Cascade: a later insert(11, 111) sees \"absent\" and writes a second FULL slot for 11 (slot 5), now breaking R2 (ii).", "static_failure": {"line": 41, "obligation": "post of $find: !(k in M)", "why": "the path condition at the early return is now st(i) in {EMPTY, TOMB}; R3 (iii) only promises no EMPTY on a key's probe path, so a TOMB there says nothing about k", "status": "fails"}, "first_dynamic_failure": {"s": 241, "ln": 20, "kind": "ensures"}, "R_violation": "R stays TRUE at every step (delete correctly writes TOMB). What breaks is the stronger invariant the buggy lookup silently relies on, iii_strong = \"no non-FULL slot on any key's probe path\". It becomes false at step 217 (delete's i32.store, line 100), when slot 3 on key 11's path turns TOMB. The first obligation to fail at runtime is $find's postcondition, at step 241 (find returns -1 to lookup)"}, {"id": "Hb_prime", "title": "(b') delete writes EMPTY instead of TOMBSTONE", "category": "code", "flavor": "the same symptom, caused on the delete side", "edit": "line 99: `i32.const 2` -> `i32.const 0`", "edits": [["replace", 99, "i32.const 2", "i32.const 0"]], "calls": [["insert", [3, 30]], ["insert", [11, 110]], ["delete", [3]], ["lookup", [11, -1]]], "expected_results": [1, 1, 1, 110], "observed_results": [1, 1, 1, -1], "runtime": "lookup(11, -1) returns -1 (expected 110).", "static_failure": {"line": 100, "obligation": "R3 (iii) after delete's store", "why": "writing EMPTY into slot 3 places an EMPTY on key 11's path h(11)=3 .. 4", "status": "fails"}, "first_dynamic_failure": {"s": 218, "ln": 86, "kind": "ensures"}, "R_violation": "R3 (iii) and R4 (iv: used == #non-EMPTY) become false at step 217 (line 100, the store)"}, {"id": "Hc", "title": "(c) insert does not check for an existing key", "category": "code", "flavor": "duplicate key", "edit": "delete lines 110-123 (the find-and-update group at the top of $insert)", "edits": [["delete", 110, 123]], "calls": [["insert", [3, 30]], ["insert", [3, 31]], ["lookup", [3, -1]]], "expected_results": [1, 1, 31], "observed_results": [1, 1, 30], "runtime": "insert(3, 31) returns 1 but leaves two FULL slots with key 3; lookup(3, -1) returns the stale 30 (expected 31). No trap.", "static_failure": {"line": 135, "obligation": "inv on entry of $free: !(k in M)", "why": "nothing establishes that k is absent any more", "status": "fails"}, "first_dynamic_failure": {"s": 43, "ln": 136, "kind": "invariant"}, "R_violation": "R2 (ii): from step 78 (line 159, key store) slots 3 and 4 are both FULL with key 3. At insert's return (step 86) R1 (i) is false too (ghost M[3] = 31 but slot 3 still holds 30) and so is R4 (iv) (#FULL = 2 but |M| = 1)"}, {"id": "Hd", "title": "(d) load-factor check off by one", "category": "code", "flavor": "probe loop never terminates", "edit": "line 125: `i32.const 7` -> `i32.const 8` (refuse only when used >= 8)", "edits": [["replace", 125, "i32.const 7", "i32.const 8"]], "calls": [["insert", [0, 0]], ["insert", [1, 10]], ["insert", [2, 20]], ["insert", [3, 30]], ["insert", [4, 40]], ["insert", [5, 50]], ["insert", [6, 60]], ["insert", [7, 70]], ["lookup", [8, -1]]], "expected_results": [1, 1, 1, 1, 1, 1, 1, 0, -1], "observed_results": [1, 1, 1, 1, 1, 1, 1, 1, "(lookup does not terminate)"], "runtime": "The 8th insert succeeds (correct program refuses it with 0). lookup(8, -1) then probes slots 0,1,...,7,0,1,... forever: no trap, no result; Codillon's 100k-step log fills up.", "static_failure": {"line": 166, "obligation": "R4 (iv) after insert: used + 1 < CAP", "why": "the check at 124-126 now only gives used < 8, which R4 already guaranteed; used + 1 <= 8 is all that follows", "status": "fails"}, "first_dynamic_failure": {"s": 488, "ln": 106, "kind": "ensures"}, "R_violation": "R4 (iv): used < CAP. False from step 487 (line 166, global.set $used = 8) of the 8th insert; checked false at its return, step 488"}]}]};
+// ---- tiny line-level interpreter for the refined WAT listings (erased semantics + ghost updates) ----
+// Step convention follows 03-sample-programs.md §1: one step per executed instruction line; block/loop/if/br*/
+// return/call count; else/end do not; call = enter + return; spec/ghost lines are not steps.
+function wasmParse(lines) {
+  const info = lines.map((raw, i) => {
+    const t = raw.trim();
+    const L = { ln: i + 1, raw, t, kind: 'instr' };
+    if (t === '') L.kind = 'blank';
+    else if (t.startsWith('(func')) {
+      L.kind = 'func';
+      L.name = t.match(/\(func (\$\S+)/)[1].replace('$', '');
+      L.params = [...t.matchAll(/\(param (\$\w+)/g)].map(m => m[1].slice(1));
+      L.hasResult = t.includes('(result');
+    } else if (t.startsWith('(local')) { L.kind = 'local'; L.name = t.match(/\$(\w+)/)[1]; }
+    else if (t.startsWith('(@ghost local')) { L.kind = 'glocal'; L.name = t.match(/\$(\w+)/)[1]; }
+    else if (t.startsWith('(@ghost global')) L.kind = 'meta';
+    else if (t.startsWith('(@ghost')) { L.kind = 'ghost'; L.stmt = t.slice(8, -1).trim(); }
+    else if (t.startsWith('(@')) L.kind = 'spec';
+    else if (t === ')') L.kind = 'fend';
+    else if (t.startsWith('(memory') || t.startsWith('(global')) L.kind = 'meta';
+    else { const sp = t.split(/\s+/); L.op = sp[0]; L.arg = sp.slice(1).join(' '); }
+    return L;
+  });
+  const funcs = {}; let cur = null; const open = [];
+  for (const L of info) {
+    if (L.kind === 'func') { cur = { name: L.name, start: L.ln, params: L.params, locals: [], hasResult: L.hasResult }; funcs[L.name] = cur; }
+    else if (L.kind === 'local' || L.kind === 'glocal') cur.locals.push(L.name);
+    else if (L.kind === 'fend') { cur.end = L.ln; cur = null; }
+    if (cur) L.fn = cur.name;
+    if (L.kind === 'instr') {
+      if (['block', 'loop', 'if'].includes(L.op)) { const m = L.arg.match(/^\$(\w+)/); L.label = m ? m[1] : null; open.push(L); }
+      else if (L.op === 'else') { open[open.length - 1].elseLn = L.ln; L.opener = open[open.length - 1].ln; }
+      else if (L.op === 'end') { const o = open.pop(); o.endLn = L.ln; L.opener = o.ln; }
+    }
+  }
+  return { info, funcs };
+}
+
+function wasmRun(prog, calls, opts = {}) {
+  const { info, funcs } = prog; const maxSteps = opts.maxSteps || 5000;
+  const mem = new DataView(new ArrayBuffer(65536));
+  const globals = { used: 0 }; const M = new Map();
+  const steps = []; let s = 0; const callBounds = [];
+  const BASE = 65440;
+  const snapSlots = () => { const r = []; for (let k = 0; k < 8; k++) r.push([mem.getInt32(BASE + 12 * k, true), mem.getInt32(BASE + 12 * k + 4, true), mem.getInt32(BASE + 12 * k + 8, true)]); return r; };
+  class Trap extends Error {}
+  class Halt extends Error {}
+  function emit(fr, ln, op, ins, outs, extra) {
+    s++;
+    const st = { s, fn: fr.fn, ln, op, stack: fr.stack.slice(), loc: Object.assign({}, fr.loc), ins, outs, depth: fr.depth, call: callBounds.length - 1 };
+    if (opts.memory) { st.used = globals.used; st.M = [...M.entries()]; st.slots = snapSlots(); }
+    Object.assign(st, extra || {});
+    steps.push(st);
+    if (s >= maxSteps) throw new Halt();
+    return st;
+  }
+  const L = ln => info[ln - 1];
+  function load(a) { if (a < 0 || a + 4 > 65536) throw new Trap('out of bounds memory access'); return mem.getInt32(a, true); }
+  function store(a, v) { if (a < 0 || a + 4 > 65536) throw new Trap('out of bounds memory access'); mem.setInt32(a, v, true); }
+  const bin = {
+    'i32.add': (a, b) => (a + b) | 0, 'i32.sub': (a, b) => (a - b) | 0, 'i32.mul': (a, b) => Math.imul(a, b),
+    'i32.and': (a, b) => a & b, 'i32.shr_s': (a, b) => a >> b, 'i32.shr_u': (a, b) => (a >>> b) | 0,
+    'i32.lt_u': (a, b) => +((a >>> 0) < (b >>> 0)), 'i32.gt_u': (a, b) => +((a >>> 0) > (b >>> 0)),
+    'i32.ge_u': (a, b) => +((a >>> 0) >= (b >>> 0)), 'i32.lt_s': (a, b) => +(a < b), 'i32.gt_s': (a, b) => +(a > b),
+    'i32.ge_s': (a, b) => +(a >= b), 'i32.eq': (a, b) => +(a === b), 'i32.ne': (a, b) => +(a !== b),
+  };
+  function invoke(fname, args, caller) {
+    const F = funcs[fname];
+    const fr = { fn: fname, stack: [], loc: {}, labels: [], depth: caller ? caller.depth + 1 : 0 };
+    F.params.forEach((p, i) => fr.loc[p] = args[i]);
+    F.locals.forEach(p => fr.loc[p] = 0);
+    let pc = F.start + 1;
+    while (true) {
+      const I = L(pc);
+      if (I.kind === 'fend') break;
+      if (I.kind === 'ghost') {
+        const g = I.stmt;
+        let m;
+        if ((m = g.match(/^(\w+) := \1 \+ 1$/))) fr.loc[m[1]]++;
+        else if ((m = g.match(/^M := M\[(\w+) := (\w+)\]$/))) M.set(fr.loc[m[1]], fr.loc[m[2]]);
+        else if ((m = g.match(/^M := M \\ \{(\w+)\}$/))) M.delete(fr.loc[m[1]]);
+        pc++; continue;
+      }
+      if (I.kind !== 'instr') { pc++; continue; }
+      const op = I.op, arg = I.arg, st = fr.stack;
+      if (op === 'end') { fr.labels.pop(); pc++; continue; }
+      if (op === 'else') { const o = L(I.opener); fr.labels.pop(); pc = o.endLn + 1; continue; }
+      const branch = (lab) => {
+        let idx; const nm = lab.replace('$', '');
+        if (/^\d+$/.test(nm)) idx = fr.labels.length - 1 - +nm; else { idx = fr.labels.length - 1; while (idx >= 0 && fr.labels[idx].label !== nm) idx--; }
+        const tgt = fr.labels[idx];
+        if (tgt.op === 'loop') { fr.labels.length = idx + 1; return tgt.ln + 1; }
+        fr.labels.length = idx; return tgt.endLn + 1;
+      };
+      if (op === 'block' || op === 'loop') { fr.labels.push(I); emit(fr, pc, I.t, [], []); pc++; continue; }
+      if (op === 'if') { const c = st.pop(); emit(fr, pc, I.t, [c], []); if (c) { fr.labels.push(I); pc++; } else if (I.elseLn) { fr.labels.push(I); pc = I.elseLn + 1; } else pc = I.endLn + 1; continue; }
+      if (op === 'br') { emit(fr, pc, I.t, [], []); pc = branch(arg); continue; }
+      if (op === 'br_if') { const c = st.pop(); emit(fr, pc, I.t, [c], []); pc = c ? branch(arg) : pc + 1; continue; }
+      if (op === 'return') { const v = F.hasResult ? st[st.length - 1] : undefined; emit(fr, pc, I.t, F.hasResult ? [v] : [], []); return v; }
+      if (op === 'unreachable') { emit(fr, pc, I.t, [], [], { trap: 'unreachable' }); throw new Trap('unreachable'); }
+      if (op === 'call') {
+        const callee = funcs[arg.replace('$', '')]; const n = callee.params.length;
+        const a = st.splice(st.length - n, n);
+        emit(fr, pc, 'call ' + arg + '  (enter)', a, []);
+        const r = invoke(callee.name, a, fr);
+        if (callee.hasResult) st.push(r);
+        emit(fr, pc, 'call ' + arg + '  (return)', [], callee.hasResult ? [r] : []);
+        pc++; continue;
+      }
+      let ins = [], outs = [];
+      try {
+        if (op === 'i32.const') { outs = [parseInt(arg, 10) | 0]; }
+        else if (op === 'local.get') { outs = [fr.loc[arg.slice(1)]]; }
+        else if (op === 'global.get') { outs = [globals[arg.slice(1)]]; }
+        else if (op === 'local.set') { ins = [st.pop()]; fr.loc[arg.slice(1)] = ins[0]; }
+        else if (op === 'global.set') { ins = [st.pop()]; globals[arg.slice(1)] = ins[0]; }
+        else if (op === 'local.tee') { ins = [st.pop()]; fr.loc[arg.slice(1)] = ins[0]; outs = [ins[0]]; }
+        else if (op === 'i32.eqz') { ins = [st.pop()]; outs = [+(ins[0] === 0)]; }
+        else if (bin[op]) { const b = st.pop(), a = st.pop(); ins = [a, b]; outs = [bin[op](a, b)]; }
+        else if (op === 'i32.load') { const off = +(arg.match(/offset=(\d+)/) || [0, 0])[1]; const a = st[st.length - 1]; const v = load(a + off); st.pop(); ins = [a]; outs = [v]; }
+        else if (op === 'i32.store') { const off = +(arg.match(/offset=(\d+)/) || [0, 0])[1]; const v = st[st.length - 1], a = st[st.length - 2]; store(a + off, v); st.pop(); st.pop(); ins = [a, v]; }
+        else throw new Error('unknown op ' + op + ' at line ' + pc);
+      } catch (e) {
+        if (e instanceof Trap) emit(fr, pc, I.t, [], [], { trap: e.message });
+        throw e;
+      }
+      st.push(...outs);
+      emit(fr, pc, I.t, ins, outs);
+      pc++;
+    }
+    return F.hasResult ? fr.stack[fr.stack.length - 1] : undefined;
+  }
+  const results = []; let status = 'ok';
+  for (const [fname, args] of calls) {
+    callBounds.push({ fn: fname, args, from: s + 1 });
+    try { results.push(invoke(fname, args, null)); }
+    catch (e) {
+      if (e instanceof Trap) { status = 'trap: ' + e.message; results.push(status); callBounds[callBounds.length - 1].to = s; break; }
+      if (e instanceof Halt) { status = 'halt'; results.push('(does not terminate)'); callBounds[callBounds.length - 1].to = s; break; }
+      throw e;
+    }
+    callBounds[callBounds.length - 1].to = s; callBounds[callBounds.length - 1].result = results[results.length - 1];
+  }
+  return { steps, results, status, callBounds };
+}
+
+function applyEdits(lines, edits) {
+  const out = lines.slice();
+  for (const e of edits || []) {
+    if (e[0] === 'replace') out[e[1] - 1] = out[e[1] - 1].replace(e[2], e[3]);
+    else if (e[0] === 'delete') for (let l = e[1]; l <= e[2]; l++) out[l - 1] = '';
+  }
+  return out;
+}
+
+
+// =====================================================================================================
+//  Core: value-space scale, regions, containment (spill), shape drawing, reconciler, inspector
+// =====================================================================================================
+const NS = 'http://www.w3.org/2000/svg';
+const I32MIN = -2147483648, I32MAX = 2147483647, U32 = 4294967296;
+const COL = { i32: '#6A5ACD', dark: 'darkred', unk: 'indigo', dyn: 'slategray', navy: '#000080', ivory: '#fffff0' };
+const SANS = '"Latin Modern Sans","Fira Sans Condensed","Roboto Condensed","Arial Narrow",sans-serif';
+function mix(hex, t = 0.7) { const c = parseInt(hex.slice(1), 16), iv = [255, 255, 240]; const rgb = [c >> 16, (c >> 8) & 255, c & 255].map((v, i) => Math.round(v * (1 - t) + iv[i] * t)); return '#' + rgb.map(v => v.toString(16).padStart(2, '0')).join(''); }
+const MUTED = mix(COL.i32);
+const TAB = 0.15;          // width (fraction of W) of the zone beyond each wall (math values that do not fit in i32)
+// piecewise scale: |v|<=16 linear (40% of the width), 16..65536 log (34%), 65536..2^31 log (26%)
+function half(a) {
+  if (a <= 16) return 0.20 * a / 16;
+  if (a <= 65536) return 0.20 + 0.17 * Math.log2(a / 16) / 12;
+  return 0.37 + 0.13 * Math.log2(Math.min(a, 2147483648) / 65536) / 15;
+}
+function fx(v) {
+  if (v > I32MAX) return 1 + TAB * Math.min(1, Math.log2(1 + v - I32MAX) / 31);
+  if (v < I32MIN) return -TAB * Math.min(1, Math.log2(1 + I32MIN - v) / 31);
+  return v >= 0 ? 0.5 + half(v) : 0.5 - half(-v);
+}
+const linScale = (lo, hi) => v => (v - lo) / (hi - lo);
+const CORE = 16;
+const emod = (v, m) => ((v % m) + m) % m;
+
+// ---------------- regions ----------------
+const RG = {
+  all: () => ({ t: 'all' }),
+  iv: (lo, hi, lo_o = false, hi_o = false, lab) => ({ t: 'iv', lo, hi, lo_o, hi_o, lab: lab || {} }),
+  set: (v, x) => ({ t: 'set', v: [...new Set(v)].sort((a, b) => a - b), x: x || [] }),
+  comb: (m, r, lab) => ({ t: 'comb', m, r, lab }),
+  holes: (h) => ({ t: 'holes', h: [...new Set(h)].sort((a, b) => a - b) }),
+  uns: () => ({ t: 'iv', lo: 0, hi: U32 - 1, lo_o: false, hi_o: false, lab: {} }),
+};
+function inR(R, v) {
+  if (!R) return true;
+  switch (R.t) {
+    case 'all': return v >= I32MIN && v <= I32MAX;
+    case 'iv': return (R.lo_o ? v > R.lo : v >= R.lo) && (R.hi_o ? v < R.hi : v <= R.hi);
+    case 'set': return R.v.includes(v) && !R.x.includes(v);
+    case 'comb': return v >= I32MIN && v <= I32MAX && emod(v, R.m) === R.r;
+    case 'holes': return v >= I32MIN && v <= I32MAX && !R.h.includes(v);
+  }
+  return true;
+}
+function effIv(R) {
+  const a = R.lo === -Infinity ? I32MIN - 1e10 : (R.lo_o ? Math.floor(R.lo) + 1 : Math.ceil(R.lo));
+  const b = R.hi === Infinity ? I32MAX + 1e10 : (R.hi_o ? Math.ceil(R.hi) - 1 : Math.floor(R.hi));
+  return [a, b];
+}
+function toRanges(R) {
+  switch (R.t) {
+    case 'all': return { rs: [[I32MIN, I32MAX]], mod: null };
+    case 'iv': { const [a, b] = effIv(R); return { rs: a <= b ? [[a, b]] : [], mod: null }; }
+    case 'set': return { rs: R.v.filter(v => !R.x.includes(v)).map(v => [v, v]), mod: null };
+    case 'comb': return { rs: [[I32MIN, I32MAX]], mod: { m: R.m, r: R.r } };
+    case 'holes': { const rs = []; let a = I32MIN; for (const h of R.h) { if (h > a) rs.push([a, h - 1]); a = h + 1; } if (a <= I32MAX) rs.push([a, I32MAX]); return { rs, mod: null }; }
+  }
+}
+function subRanges(A, B) {
+  let out = A.map(r => r.slice());
+  for (const [c, d] of B) {
+    const nx = [];
+    for (const [a, b] of out) { if (d < a || c > b) { nx.push([a, b]); continue; } if (a < c) nx.push([a, c - 1]); if (b > d) nx.push([d + 1, b]); }
+    out = nx;
+  }
+  return out;
+}
+function interRanges(A, B) { const out = []; for (const [a, b] of A) for (const [c, d] of B) { const lo = Math.max(a, c), hi = Math.min(b, d); if (lo <= hi) out.push([lo, hi]); } return out; }
+// P \ Q : the provided values that the required region does not admit (the spill)
+function spill(P, Q) {
+  if (!P || !Q) return [];
+  const p = toRanges(P), q = toRanges(Q);
+  const out = subRanges(p.rs, q.rs).map(([a, b]) => ({ a, b, mod: p.mod }));
+  if (q.mod) {
+    const inter = interRanges(p.rs, q.rs);
+    if (!p.mod) inter.forEach(([a, b]) => out.push({ a, b, mod: { m: q.mod.m, r: q.mod.m === 2 ? 1 - q.mod.r : -1 } }));
+    else if (p.mod.r !== q.mod.r) inter.forEach(([a, b]) => out.push({ a, b, mod: p.mod }));
+  }
+  return out;
+}
+
+// ---------------- spec helpers (elements are described, then reconciled or serialized) ----------------
+const E = {
+  rect: (k, L, x, y, w, h, a) => ({ k, L, tag: 'rect', g: { x, y, width: Math.max(0, w), height: Math.max(0, h) }, a }),
+  circ: (k, L, cx, cy, r, a) => ({ k, L, tag: 'circle', g: { cx, cy, r }, a }),
+  path: (k, L, d, a) => ({ k, L, tag: 'path', g: { d }, a }),
+  text: (k, L, x, y, s, a) => ({ k, L, tag: 'text', g: { tx: x, ty: y }, a, text: s }),
+};
+const fmt = v => (v === undefined || v === null) ? '' : String(v).replace('-', '−');
+
+// sh: { kind:'cup'|'out', req, prov, status, val, reading, math, tab, unk:{lo,hi}, n (dyn count), pred, old, spillOverride, ghostLab, label }
+function shapeSpecs(sh, o) {
+  const S = [];
+  const { x, y, W, H, k } = o;
+  const sc = o.sc || fx;
+  const X = v => x + W * sc(v);
+  const clampV = v => o.sc ? v : Math.max(I32MIN - 4e9, Math.min(v, I32MAX + 4e9));
+  const col = sh.color || COL.i32;
+  const st = sh.status || 'proven';
+  const isCup = sh.kind === 'cup';
+  const tabW = TAB * W;
+  const ghostAll = st === 'vacuous' || st === 'assumed';
+  const fade = ghostAll ? 0.5 : (sh.dim ? 0.32 : 1);
+  const op = a => (fade < 1 ? Object.assign({ opacity: fade }, a) : a);
+  const zoom = !!o.sc;
+  const right = isCup && sh.tab ? x + W + tabW : x + W;
+  // hit target
+  if (!o.noHit) S.push(E.rect(k + ':hit', 6, x - 3, y - 8, (right - x) + 6, H + 11, { fill: 'transparent', class: 'hit', 'data-sh': k }));
+  // ---- base shape ----
+  if (isCup) {
+    if (zoom) S.push(E.path(k + ':cup', 2, `M ${x} ${y + H} L ${x + W} ${y + H}`, op({ fill: 'none', stroke: col, 'stroke-width': 1.3 })));
+    else S.push(E.path(k + ':cup', 2, `M ${x} ${y - 0.5} L ${x} ${y + H} L ${right} ${y + H} L ${right} ${y - 0.5}`, op({ fill: 'none', stroke: col, 'stroke-width': 1.3, 'stroke-dasharray': ghostAll ? '2 2' : 'none' })));
+    if (sh.tab) { const wx = X(I32MAX); if (wx >= x - 1 && wx <= x + W + tabW + 1) S.push(E.path(k + ':wall', 2, `M ${wx} ${y + 2} L ${wx} ${y + H}`, op({ fill: 'none', stroke: col, 'stroke-width': 0.8, 'stroke-dasharray': '1.5 1.5' }))); }
+  } else {
+    const unref = !sh.prov || sh.prov.t === 'all';
+    S.push(E.rect(k + ':box', 0, x, y, W, H, op({ fill: ghostAll ? 'none' : (unref ? MUTED : COL.ivory), stroke: col, 'stroke-width': 1, 'stroke-dasharray': ghostAll ? '2 2' : 'none' })));
+  }
+  if (zoom) { // walls inside the magnifier window
+    for (const wv of [I32MAX, I32MIN]) { const wx = X(wv); if (wx > x && wx < x + W) S.push(E.path(k + ':zw' + wv, 2, `M ${wx} ${y - 6} L ${wx} ${y + H + 4}`, { fill: 'none', stroke: col, 'stroke-width': 1.6 })); }
+  }
+  const visLo = zoom ? -Infinity : I32MIN - 4e9, visHi = zoom ? Infinity : I32MAX + 4e9;
+  const inView = v => { const px = X(v); return px >= x - 0.5 && px <= x + W + (isCup && sh.tab ? tabW : (zoom ? 0 : tabW)) + 0.5; };
+  const wallish = v => v === I32MAX || v === I32MIN || v === U32 - 1 || !isFinite(v);
+  // ---- region drawing ----
+  function region(R, mode, kp) {
+    // mode: 'well' (required, in a cup), 'pc' (provided, in a cup), 'po' (provided, in an output)
+    if (!R || R.t === 'all' || ghostAll) { if (R && R.t === 'all' && mode === 'pc') S.push(E.rect(kp + 'all', 1, x + 1, y + 3, W - 2, H - 4, op({ fill: MUTED }))); return; }
+    const isWell = mode === 'well';
+    const yT = mode === 'pc' ? y + 3 : y + 1, hh = mode === 'pc' ? H - 4 : H - 2;
+    const fillA = isWell ? { fill: col, 'fill-opacity': 0.13 } : { fill: MUTED };
+    if (R.t === 'iv') {
+      let lo = R.lo === -Infinity ? I32MIN : R.lo, hi = R.hi === Infinity ? I32MAX : R.hi;
+      if (zoom) { lo = Math.max(lo, o.zlo); hi = Math.min(hi, o.zhi); }
+      const x1 = X(clampV(lo)), x2 = X(clampV(hi));
+      if (x2 >= x1) S.push(E.rect(kp + 'reg', 1, x1, yT, Math.max(x2 - x1, 1.2), hh, op(fillA)));
+      if (!isWell && hi > I32MAX && !zoom && !(isCup && sh.tab)) S.push(E.rect(kp + 'nub', 1, X(I32MAX), y + 2, X(clampV(hi)) - X(I32MAX), H - 4, op({ fill: MUTED, stroke: col, 'stroke-width': .8 })));
+      // fence posts: filled = inclusive, hollow = exclusive
+      [['lo', R.lo, R.lo_o], ['hi', R.hi, R.hi_o]].forEach(([side, v, open]) => {
+        if (wallish(v) || !inView(v)) return;
+        const px = X(v);
+        if (isWell) {
+          S.push(E.rect(kp + 'post' + side, 3, px - 0.6, y - 4, 1.2, H + 4, op({ fill: col })));
+          S.push(E.circ(kp + 'cap' + side, 3, px, y - 4, 2.3, op({ fill: open ? COL.ivory : col, stroke: col, 'stroke-width': 1 })));
+        } else if (mode === 'pc') {
+          S.push(E.circ(kp + 'cap' + side, 3, px, y + H, 2.0, op({ fill: open ? COL.ivory : col, stroke: col, 'stroke-width': 0.9 })));
+        } else {
+          S.push(E.rect(kp + 'post' + side, 3, px - 0.5, y - 1, 1, H + 2, op({ fill: col })));
+          S.push(E.circ(kp + 'cap' + side, 3, px, y - 1.5, 1.9, op({ fill: open ? COL.ivory : col, stroke: col, 'stroke-width': 0.9 })));
+        }
+      });
+    } else if (R.t === 'set') {
+      R.v.forEach((v, i) => {
+        if (!inView(v)) return;
+        const px = X(v), excl = R.x.includes(v);
+        if (isWell) S.push(E.circ(kp + 'sock' + i, 3, px, y + H / 2, 2.5, op({ fill: excl ? COL.ivory : col, 'fill-opacity': excl ? 1 : 0.13, stroke: col, 'stroke-width': excl ? 0.8 : 1.1, 'stroke-dasharray': excl ? '1 1' : 'none' })));
+        else S.push(E.circ(kp + 'dot' + i, 3, px, y + H / 2, 2.0, op({ fill: col, 'fill-opacity': 0.55 })));
+      });
+    } else if (R.t === 'comb') {
+      for (let v = -CORE; v <= CORE; v++) {
+        if (emod(v, R.m) !== R.r || !inView(v)) continue;
+        const px = X(v);
+        if (isWell) S.push(E.rect(kp + 'tooth' + v, 3, px - 0.7, y - 4, 1.4, 5.5, op({ fill: col })));
+        else S.push(E.rect(kp + 'tooth' + v, 1, px - 0.8, yT, 1.6, hh, op({ fill: col, 'fill-opacity': 0.75 })));
+      }
+      if (!zoom) {
+        const pat = isWell ? 'url(#combl)' : 'url(#combp)';
+        S.push(E.rect(kp + 'cl', 1, X(I32MIN), yT, X(-CORE - 0.5) - X(I32MIN), hh, op({ fill: pat })));
+        S.push(E.rect(kp + 'cr', 1, X(CORE + 0.5), yT, X(I32MAX) - X(CORE + 0.5), hh, op({ fill: pat })));
+      }
+    } else if (R.t === 'holes') {
+      S.push(E.rect(kp + 'reg', 1, x + 1, yT, W - 2, hh, op(fillA)));
+      R.h.forEach((v, i) => { if (!inView(v)) return; const px = X(v); S.push(E.circ(kp + 'hole' + i, 3, px, y + H / 2, 2.4, op({ fill: COL.ivory, stroke: col, 'stroke-width': 1, 'stroke-dasharray': '1 1' }))); });
+    }
+  }
+  if (isCup) { region(sh.req, 'well', k + ':w'); region(sh.prov, 'pc', k + ':p'); }
+  else region(sh.prov, 'po', k + ':p');
+  // ---- unknown / dynamic tails (the part the checker could not bound) ----
+  if (sh.unk && (st === 'unknown' || st === 'dynamic')) {
+    const x1 = X(clampV(sh.unk.lo)), x2 = X(clampV(sh.unk.hi));
+    if (st === 'unknown') S.push(E.rect(k + ':unk', 4, x1, y + 0.5, Math.max(4, x2 - x1), H - 1, { fill: 'url(#qhatch)', stroke: COL.unk, 'stroke-width': 1, 'stroke-dasharray': '2.5 1.5' }));
+    else S.push(E.rect(k + ':unk', 4, x1, y + 0.5, Math.max(4, x2 - x1), H - 1, { fill: 'none', stroke: COL.dyn, 'stroke-width': 1.2, 'stroke-dasharray': '0.6 1.8', 'stroke-linecap': 'round' }));
+  }
+  // ---- spill (P \ Q), drawn above the rim ----
+  const pieces = sh.spill || [];
+  const ghostSpill = st === 'refuted-ghost';
+  let spillCovers = () => false;
+  pieces.forEach((pc, i) => {
+    const spA = ghostSpill ? { fill: 'none', stroke: COL.dark, 'stroke-width': 1, 'stroke-dasharray': '2 1.5' } : { fill: 'url(#hatch)', stroke: COL.dark, 'stroke-width': 0.8 };
+    let a = pc.a, b = pc.b;
+    if (zoom) { a = Math.max(a, o.zlo); b = Math.min(b, o.zhi); if (a > b) return; }
+    const coreTeeth = pc.mod && pc.mod.r >= 0 && a <= CORE && b >= -CORE;
+    if (coreTeeth) {
+      for (let v = Math.max(a, -CORE); v <= Math.min(b, CORE); v++) {
+        if (emod(v, pc.mod.m) !== pc.mod.r || !inView(v)) continue;
+        S.push(E.rect(k + ':sp' + i + 't' + v, 5, X(v) - 1.1, y - 7, 2.2, H + 7, ghostSpill ? spA : { fill: COL.dark }));
+      }
+      if (!zoom) [[a, -CORE - 1], [CORE + 1, b]].forEach(([c, d], j) => { if (c <= d) { const x1 = X(clampV(c)), x2 = X(clampV(d)); S.push(E.rect(k + ':sp' + i + 'r' + j, 5, x1, y - 7, Math.max(3, x2 - x1), H + 7, ghostSpill ? spA : { fill: 'url(#combd)', stroke: COL.dark, 'stroke-width': 0.6 })); } });
+    } else {
+      let x1 = X(clampV(a)), x2 = X(clampV(b));
+      if (!zoom && a <= I32MAX && b > I32MAX && !(isCup && sh.tab)) x1 = Math.min(x1, X(I32MAX) - 1);
+      if (x2 - x1 < 4) { const c = (x1 + x2) / 2; x1 = c - 2; x2 = c + 2; }
+      S.push(E.rect(k + ':sp' + i, 5, x1, y - 7, x2 - x1, H + 7, spA));
+    }
+  });
+  spillCovers = v => pieces.some(pc => v >= pc.a && v <= pc.b && (!pc.mod || pc.mod.r < 0 || emod(v, pc.mod.m) === pc.mod.r));
+  if (sh.ghostLab && pieces.length) {
+    const pc = pieces[0]; const px = Math.min(Math.max(X(clampV(pc.a)), x + 4), right + 30);
+    S.push(E.text(k + ':glab', 5, Math.min(px, right + 2) + 6, y - 3, sh.ghostLab, { 'font-size': 8, fill: COL.dark, 'font-family': SANS }));
+  }
+  // ---- runtime dot ----
+  if (sh.val !== undefined && sh.val !== null && !ghostAll) {
+    let v = sh.val; if (sh.reading === 'u') v = v >>> 0;
+    const m = sh.math !== undefined ? sh.math : v;
+    const unfaithful = sh.math !== undefined && sh.math !== v;
+    const R = isCup ? sh.req : sh.prov;
+    const ok = sh.dotOk !== undefined ? sh.dotOk : (inR(R, m) && !unfaithful);
+    const px = X(clampV(v)), pm = X(clampV(m));
+    const dc = sh.old ? '#9a9a9a' : (ok ? COL.navy : COL.dark);
+    if (!ok && !spillCovers(m) && !sh.old) { // a runtime-only violation: the value itself is the sliver
+      const c = unfaithful ? pm : px;
+      S.push(E.rect(k + ':rv', 5, c - 2.5, y - 7, 5, H + 7, { fill: 'url(#hatch)', stroke: COL.dark, 'stroke-width': 0.8 }));
+    }
+    if (unfaithful && inView(m) && !zoom) {
+      S.push(E.circ(k + ':math', 6, pm, y + H / 2, 2.4, { fill: 'none', stroke: dc, 'stroke-width': 1, 'stroke-dasharray': '1.2 1' }));
+      S.push(E.path(k + ':wrap', 6, `M ${pm} ${y + H + 1} C ${pm} ${y + H + 8}, ${px} ${y + H + 8}, ${px} ${y + H + 1}`, { fill: 'none', stroke: dc, 'stroke-width': 1, 'stroke-dasharray': '1.5 1.5' }));
+    }
+    if (inView(v) || !zoom) S.push(E.circ(k + ':dot', 6, px, y + H / 2, o.big ? 4 : 2.7, { fill: dc, stroke: COL.ivory, 'stroke-width': 0.8 }));
+    if (!o.noText) {
+      const leftSide = px > x + W * 0.55;
+      const tx = leftSide ? x + 2 : x + W - 2;
+      S.push(E.text(k + ':val', 6, tx, y + H - 2.2, fmt(sh.val), { 'font-size': o.big ? 13 : 8, 'text-anchor': leftSide ? 'start' : 'end', fill: sh.old ? '#9a9a9a' : (ok ? '#111' : COL.dark), 'font-family': SANS, 'font-weight': ok ? 'normal' : 'bold' }));
+    }
+  }
+  // ---- side glyphs ----
+  let sx = right + 5 + (o.sideShift || 0);
+  const side = (key, s, a) => { S.push(E.text(k + ':side' + key, 6, sx, y + H - 1, s, Object.assign({ 'font-size': o.big ? 14 : 10, 'font-family': SANS }, a))); sx += (o.big ? 9 : 6.5) * s.length + 4; };
+  if (st === 'vacuous') side('v', '○', { fill: '#555' });
+  if (st === 'assumed') side('a', '○ assumed', { fill: '#555' });
+  if (st === 'unknown') side('u', '★?', { fill: COL.unk });
+  if (st === 'dynamic') side('d', '∘' + (sh.n || 0), { fill: COL.dyn });
+  if (st === 'stale') S.push(E.path(k + ':sq', 6, `M ${x} ${y + H + 3} q 2 -2 4 0 t 4 0 t 4 0 t 4 0 t 4 0 t 4 0 t 4 0 t 4 0 t 4 0 t 4 0 t 4 0 t 4 0`, { fill: 'none', stroke: '#888', 'stroke-width': 0.8 }));
+  if (sh.label) side('l', sh.label, { fill: '#555', 'font-size': o.big ? 12 : 8.5 });
+  return S;
+}
+
+// chips: conjunct-by-conjunct status
+function chipSpecs(chips, x, y, k) {
+  const S = []; let cx = x;
+  chips.forEach((c, i) => {
+    const txt = c.t + (c.s === 'unknown' ? ' ?' : '') + (c.s === 'dynamic' ? ' ∘' + (c.n || 0) : '') + (c.s === 'vacuous' ? ' ○' : '');
+    const w = txt.length * 5.1 + 10;
+    const sty = {
+      proven: { fill: 'none', stroke: '#c9c5b0', tf: '#555' }, refuted: { fill: COL.dark, stroke: COL.dark, tf: COL.ivory },
+      'refuted-ghost': { fill: COL.ivory, stroke: COL.dark, dash: '2 1.5', tf: COL.dark }, unknown: { fill: '#f1edf8', stroke: COL.unk, dash: '2.5 1.5', tf: COL.unk },
+      dynamic: { fill: 'none', stroke: COL.dyn, dash: '0.6 1.8', tf: COL.dyn }, vacuous: { fill: 'none', stroke: '#999', tf: '#999', op: .5 },
+      runtime: { fill: COL.dark, stroke: COL.dark, tf: COL.ivory }, pending: { fill: 'none', stroke: '#d8d4c0', dash: '1 2', tf: '#aaa' },
+    }[c.s || 'proven'];
+    S.push(E.rect(k + ':chip' + i, 4, cx, y, w, 13, { rx: 6.5, fill: sty.fill, stroke: sty.stroke, 'stroke-width': c.s === 'dynamic' ? 1.3 : 0.9, 'stroke-dasharray': sty.dash || 'none', 'stroke-linecap': 'round', opacity: sty.op || 1, class: 'hit', 'data-chip': k + ':' + i }));
+    S.push(E.text(k + ':chipt' + i, 4, cx + 5, y + 9.7, txt, { 'font-size': 9, fill: sty.tf, 'font-family': SANS, opacity: sty.op || 1 }));
+    cx += w + 4;
+  });
+  return S;
+}
+
+// ---------------- reconciler (keyed, CSS-transitioned geometry) ----------------
+let fadeQ = [];
+function setGeom(el, sp) {
+  const g = sp.g;
+  if (sp.tag === 'rect') { el.style.x = g.x + 'px'; el.style.y = g.y + 'px'; el.style.width = g.width + 'px'; el.style.height = g.height + 'px'; }
+  else if (sp.tag === 'circle') { el.style.cx = g.cx + 'px'; el.style.cy = g.cy + 'px'; el.style.r = g.r + 'px'; }
+  else if (sp.tag === 'path') { el.style.d = `path("${g.d}")`; }
+  else if (sp.tag === 'text') { el.style.transform = `translate(${g.tx}px, ${g.ty}px)`; }
+}
+function reconcile(layers, specs) {
+  for (let L = 0; L < layers.length; L++) {
+    const g = layers[L]; const old = g._kids || new Map(); const next = new Map();
+    for (const sp of specs) {
+      if (sp.L !== L) continue;
+      let el = old.get(sp.k);
+      if (el && el.tagName !== sp.tag) { el.remove(); el = null; }
+      const fresh = !el;
+      if (fresh) { el = document.createElementNS(NS, sp.tag); el._a = {}; g.appendChild(el); }
+      else old.delete(sp.k);
+      const a = sp.a || {};
+      for (const key in el._a) if (!(key in a)) el.removeAttribute(key);
+      for (const key in a) if (el._a[key] !== a[key]) el.setAttribute(key, a[key]);
+      el._a = a;
+      if (sp.text !== undefined && el.textContent !== sp.text) el.textContent = sp.text;
+      if (fresh) { setGeom(el, sp); el.style.opacity = 0; fadeQ.push(el); }
+      else { if (!el.classList.contains('anim')) el.classList.add('anim'); setGeom(el, sp); }
+      next.set(sp.k, el);
+    }
+    for (const el of old.values()) { el.classList.add('anim'); el.style.opacity = 0; setTimeout(() => el.remove(), 260); }
+    g._kids = next;
+  }
+  if (fadeQ.length) { const q = fadeQ; fadeQ = []; requestAnimationFrame(() => requestAnimationFrame(() => q.forEach(el => { el.classList.add('anim'); el.style.opacity = ''; }))); }
+}
+function specsToSVG(specs) {
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  return specs.slice().sort((p, q) => p.L - q.L).filter(sp => !(sp.a && sp.a.class === 'hit')).map(sp => {
+    const a = Object.assign({}, sp.a || {}); const g = sp.g;
+    if (sp.tag === 'text') { a.x = g.tx; a.y = g.ty; } else Object.assign(a, g);
+    const at = Object.entries(a).map(([kk, v]) => `${kk}="${esc(v)}"`).join(' ');
+    return sp.tag === 'text' ? `<text ${at}>${esc(sp.text)}</text>` : `<${sp.tag} ${at}/>`;
+  }).join('');
+}
+function staticShapeSVG(sh, W = 96, H = 11, extra = {}) {
+  const pad = 12, w = W + TAB * W + 70;
+  const specs = shapeSpecs(sh, Object.assign({ x: pad, y: 9, W, H, k: 's', noHit: true }, extra));
+  return `<svg width="${w}" height="${H + 20}" viewBox="0 0 ${w} ${H + 20}">${specsToSVG(specs)}</svg>`;
+}
+
+// ---------------- inspector (zoom on hover, click to pin) ----------------
+const STATUS_TXT = {
+  proven: 'proven: the provided region fits under the rim (silence is success)',
+  refuted: 'refuted, witness replayed: the darkred sliver is the set of counterexamples; the slider can show one',
+  'refuted-ghost': 'refuted, witness not yet replayed: counterexample known, run it from the dashed track above the slider',
+  dynamic: 'held on this run only (checked at run time, never proven); ∘N = times it held so far',
+  unknown: 'unknown / needs a hint: the checker cannot bound the ?-hatched part',
+  vacuous: 'vacuous: the region is the whole shape; the spec excludes nothing',
+  assumed: 'assumed / admitted: not checked; everything downstream is ghosted too',
+  stale: 'stale: the text changed since this verdict; re-checking',
+};
+const LANDMARKS = [[I32MIN, 'INT_MIN'], [-65536, '−2¹⁶'], [-16, '−16'], [-8, '−8'], [0, '0'], [8, '8'], [16, '16'], [65536, '2¹⁶'], [I32MAX, 'INT_MAX']];
+const Insp = {
+  el: null, pinned: false, reg: new Map(),
+  init() {
+    this.el = document.getElementById('insp');
+    document.addEventListener('mousemove', e => {
+      if (this.pinned) return;
+      const t = e.target.closest && e.target.closest('[data-sh]');
+      if (t) this.show(t.getAttribute('data-sh'), e); else this.hide();
+    });
+    document.addEventListener('click', e => {
+      const t = e.target.closest && e.target.closest('[data-sh]');
+      if (t) { this.pinned = false; this.show(t.getAttribute('data-sh'), e); this.pinned = true; this.el.classList.add('pinned'); }
+      else if (this.pinned && !this.el.contains(e.target)) { this.pinned = false; this.el.classList.remove('pinned'); this.hide(); }
+    });
+  },
+  hide() { this.el.style.display = 'none'; },
+  show(key, e) {
+    const sh = this.reg.get(key); if (!sh) return;
+    const W = 540, H = 22;
+    const main = shapeSpecs(sh, { x: 20, y: 18, W, H, k: 'I', noHit: true, big: true, sideShift: 2 });
+    let axis = '';
+    LANDMARKS.forEach(([v, l]) => { const px = 20 + W * fx(v); axis += `<path d="M ${px} ${18 + H + 3} L ${px} ${18 + H + 7}" stroke="#888"/><text x="${px}" y="${18 + H + 17}" font-size="9" text-anchor="middle" fill="#666" font-family='${SANS}'>${l}</text>`; });
+    const lab = (sh.req && sh.req.lab) || (sh.prov && sh.prov.lab) || {};
+    const labs = [];
+    [sh.req, sh.prov].forEach(R => { if (R && R.t === 'iv') [['lo', R.lo], ['hi', R.hi]].forEach(([s, v]) => { if (isFinite(v) && v !== I32MAX && v !== I32MIN && v !== U32 - 1) labs.push([v, (R.lab && R.lab[s]) ? R.lab[s] + ' = ' + (+v.toFixed(2)) : String(+v.toFixed(2))]); }); });
+    let fl = ''; labs.slice(0, 4).forEach(([v, l], i) => { const px = Math.min(20 + W * fx(v), 20 + W + TAB * W); fl += `<text x="${px}" y="${10 - (i % 2) * 0}" font-size="9" text-anchor="middle" fill="${COL.i32}" font-family='${SANS}' dy="${i % 2 ? 0 : 0}">${l.replace('-', '−')}</text>`; });
+    // magnifier: a linear window around the most interesting value (spill, else dot, else a fence)
+    let focus = null, span = 8;
+    if (sh.spill && sh.spill.length) { const p = sh.spill[0]; focus = p.a === p.b ? p.a : (p.b - p.a > 64 ? (p.a > 0 ? p.a : p.b) : (p.a + p.b) / 2); span = Math.max(8, Math.min(p.b - p.a, 1e4) * 0.75); }
+    else if (sh.val !== undefined && sh.val !== null) { focus = sh.reading === 'u' ? sh.val >>> 0 : sh.val; }
+    else if (labs.length) focus = labs[0][0];
+    if (focus !== null && Math.abs(focus) > 64) span = Math.max(span, 8);
+    let mag = '';
+    if (focus !== null) {
+      const zlo = Math.floor(focus - span), zhi = Math.ceil(focus + span);
+      const ms = shapeSpecs(sh, { x: 20, y: 14, W, H: 18, k: 'M', noHit: true, sc: linScale(zlo - 0.5, zhi + 0.5), zlo, zhi, big: true, noText: true });
+      let ticks = ''; const step = Math.max(1, Math.round((zhi - zlo) / 16));
+      for (let v = zlo; v <= zhi; v += step) { const px = 20 + W * (v - zlo + 0.5) / (zhi - zlo + 1); ticks += `<path d="M ${px} ${36} L ${px} ${39}" stroke="#aaa"/><text x="${px}" y="${48}" font-size="8.5" text-anchor="middle" fill="#777" font-family='${SANS}'>${fmt(v)}</text>`; }
+      mag = `<div class="s" style="margin-top:4px">magnified, linear scale around ${fmt(focus)}:</div><svg width="600" height="52">${specsToSVG(ms)}${ticks}</svg>`;
+    }
+    const stTxt = STATUS_TXT[sh.status || 'proven'];
+    const rd = sh.val !== undefined && sh.val !== null ? `<br>runtime value ${fmt(sh.val)}${sh.val < 0 ? ` (bits read unsigned: ${sh.val >>> 0})` : ''}${sh.math !== undefined && sh.math !== (sh.reading === 'u' ? sh.val >>> 0 : sh.val) ? `; mathematical value ${sh.math}: <b style="color:darkred">the machine word wrapped</b>` : ''}${sh.old ? ' (from an earlier operation: gray)' : ''}` : '';
+    const sp = sh.spill && sh.spill.length ? `<br><b style="color:darkred">spill</b> (provided but not admitted): ${sh.spill.slice(0, 3).map(p => p.a === p.b ? fmt(p.a) : `[${fmt(p.a)} … ${fmt(p.b)}]${p.mod && p.mod.r >= 0 ? ` ≡ ${p.mod.r} mod ${p.mod.m}` : ''}`).join(', ')}${sh.ghostLab ? ' at ' + sh.ghostLab : ''}` : '';
+    this.el.innerHTML = `<div class="p">${sh.pred || ''}</div><div class="s"><b>${sh.kind === 'cup' ? 'input cup: rim = required region' : 'output: provided region'}</b> · ${stTxt}${rd}${sp}</div>
+      <svg width="600" height="64">${fl}${specsToSVG(main)}${axis}</svg>${mag}`;
+    this.el.style.display = 'block';
+    const r = this.el.getBoundingClientRect();
+    let lx = e.clientX + 18, ly = e.clientY + 18;
+    if (lx + r.width > innerWidth - 8) lx = e.clientX - r.width - 18;
+    if (ly + r.height > innerHeight - 8) ly = e.clientY - r.height - 18;
+    this.el.style.left = Math.max(4, lx) + 'px'; this.el.style.top = Math.max(4, ly) + 'px';
+  },
+};
+// =====================================================================================================
+//  Listing (Codillon idiom: one instruction per row, gutter, fraction of shapes in the right margin)
+// =====================================================================================================
+const ROW = 34, CODEW = 610, MXOFF = 16 + 40 + 10 + CODEW + 58; // margin x inside a listing
+const STRIDE = 132, SW = 96, SH = 11;
+const BIN = new Set(['i32.add', 'i32.sub', 'i32.mul', 'i32.and', 'i32.shr_s', 'i32.shr_u', 'i32.lt_u', 'i32.gt_u', 'i32.ge_u', 'i32.lt_s', 'i32.gt_s', 'i32.ge_s', 'i32.eq', 'i32.ne']);
+function arity(prog, I) {
+  const op = I.op;
+  if (op === 'call') { const f = prog.funcs[I.arg.replace('$', '')]; return [f.params.length, f.hasResult ? 1 : 0]; }
+  if (op === 'return') return [prog.funcs[I.fn].hasResult ? 1 : 0, 0];
+  if (['local.set', 'global.set', 'br_if', 'if'].includes(op)) return [1, 0];
+  if (['i32.const', 'local.get', 'global.get'].includes(op)) return [0, 1];
+  if (['local.tee', 'i32.eqz', 'i32.load'].includes(op)) return [1, 1];
+  if (op === 'i32.store') return [2, 0];
+  if (BIN.has(op)) return [2, 1];
+  return [0, 0];
+}
+// static operand-stack pass: which line produced each input of each line
+function dataflow(prog) {
+  const ins = {};
+  for (const F of Object.values(prog.funcs)) {
+    let stack = []; const saves = [];
+    for (let ln = F.start + 1; ln <= F.end; ln++) {
+      const I = prog.info[ln - 1];
+      if (I.kind === 'fend') { if (F.hasResult && stack.length) ins[ln] = [stack.pop()]; break; }
+      if (I.kind !== 'instr') continue;
+      const op = I.op;
+      if (op === 'block' || op === 'loop') { saves.push({ stack: stack.slice() }); continue; }
+      if (op === 'if') { ins[ln] = [stack.pop()]; saves.push({ stack: stack.slice(), result: /result/.test(I.arg) }); continue; }
+      if (op === 'else') { const sv = saves[saves.length - 1]; sv.thenTop = stack[stack.length - 1]; stack = sv.stack.slice(); continue; }
+      if (op === 'end') { const sv = saves.pop(); const top = stack.length > sv.stack.length ? stack[stack.length - 1] : sv.thenTop; stack = sv.stack.slice(); if (sv.result && top !== undefined) stack.push(top); continue; }
+      const [ni, no] = arity(prog, I);
+      ins[ln] = ni ? stack.splice(Math.max(0, stack.length - ni), ni) : [];
+      for (let q = 0; q < no; q++) stack.push(ln);
+      if (['br', 'return', 'unreachable'].includes(op)) stack = [];
+    }
+  }
+  return ins;
+}
+// latest execution of each line at or before step index `cur`
+function lineValues(steps, cur) {
+  const res = {};
+  const curCall = steps[cur] ? steps[cur].call : 0;
+  for (let i = Math.min(cur, steps.length - 1); i >= 0; i--) {
+    const st = steps[i];
+    const enter = st.op.includes('(enter)'), ret = st.op.includes('(return)');
+    let r = res[st.ln];
+    if (!r) r = res[st.ln] = { idx: i, old: st.call !== curCall, loc: st.loc, st, noOuts: enter };
+    if (ret) { if (!r.outs && !r.noOuts) r.outs = st.outs; }
+    else if (enter) { if (!r.ins) r.ins = st.ins; }
+    else { if (!r.ins) r.ins = st.ins; if (!r.outs) r.outs = st.outs; }
+  }
+  return res;
+}
+
+class Listing {
+  constructor(root, lines, opts = {}) {
+    this.root = root; this.n = lines.length; this.opts = opts;
+    this.codeW = opts.codeW || CODEW; this.mx = 16 + 40 + 10 + this.codeW + (opts.chan || 58);
+    root.innerHTML = '';
+    root.style.height = (this.n * ROW) + 'px';
+    this.rows = []; this.codes = []; this.guts = []; this.comms = [];
+    for (let i = 0; i < this.n; i++) {
+      const r = document.createElement('div'); r.className = 'row';
+      const a = document.createElement('span'); a.className = 'arrow';
+      const g = document.createElement('span'); g.className = 'gut';
+      const c = document.createElement('span'); c.className = 'code'; c.style.width = this.codeW + 'px';
+      const m = document.createElement('span'); m.className = 'comm'; m.style.display = 'none';
+      r.append(a, g, c, m); root.appendChild(r);
+      this.rows.push(r); this.codes.push(c); this.guts.push(g); this.comms.push(m);
+    }
+    this.arrow = document.createElement('div'); this.arrow.className = 'arrowmark'; this.arrow.textContent = '➜'; root.appendChild(this.arrow);
+    this.svg = document.createElementNS(NS, 'svg'); this.svg.setAttribute('class', 'margin');
+    this.svg.setAttribute('width', 1320); this.svg.setAttribute('height', this.n * ROW + 10);
+    root.appendChild(this.svg);
+    this.layers = []; for (let L = 0; L < 7; L++) { const g = document.createElementNS(NS, 'g'); this.svg.appendChild(g); this.layers.push(g); }
+    this.key = opts.key || 'L';
+  }
+  // view: { text[], cls[], gut[] ({g, cls, title, jump}), arrowLn, comm{ln:{t,ghost}}, ann{ln:{ins,outs,chips}}, conns{ln:[producer ln]} }
+  update(view) {
+    for (let i = 0; i < this.n; i++) {
+      const ln = i + 1, c = this.codes[i];
+      const t = view.text[i];
+      if (c.textContent !== t) c.textContent = t;
+      c.className = 'code ' + (view.cls[i] || '');
+      const g = view.gut[i] || { g: String(ln) }; const ge = this.guts[i];
+      ge.textContent = g.g; ge.className = 'gut ' + (g.cls || ''); ge.title = g.title || '';
+      ge.onclick = g.jump ? g.jump : null;
+      const cm = view.comm && view.comm[ln]; const me = this.comms[i];
+      if (cm) { me.style.display = ''; me.textContent = cm.t; me.className = 'comm' + (cm.ghost ? ' ghostc' : ''); me.title = cm.t; } else me.style.display = 'none';
+    }
+    if (view.arrowLn) { this.arrow.style.opacity = 1; this.arrow.style.transform = `translateY(${(view.arrowLn - 1) * ROW}px)`; } else this.arrow.style.opacity = 0;
+    // margin
+    const specs = []; const pos = {};
+    const reg = Insp.reg;
+    for (const lnS in view.ann) {
+      const ln = +lnS, A = view.ann[ln]; if (!A) continue;
+      const top = (ln - 1) * ROW;
+      (A.ins || []).forEach((sh, j) => {
+        if (!sh) return; const x = this.mx + j * STRIDE, y = top + 5; const k = `${this.key}${ln}i${j}`;
+        sh.kind = 'cup'; reg.set(k, sh); specs.push(...shapeSpecs(sh, { x, y, W: SW, H: SH, k }));
+        pos[`${ln}i${j}`] = [x, y + SH / 2];
+      });
+      const nIns = (A.ins || []).length;
+      if (nIns && (A.outs || []).length || A.rule) specs.push(E.path(`${this.key}${ln}rule`, 2, `M ${this.mx - 4} ${top + 19} L ${this.mx + Math.max(1, nIns, (A.outs || []).length) * STRIDE - 30} ${top + 19}`, { stroke: '#333', 'stroke-width': 1, fill: 'none' }));
+      (A.outs || []).forEach((sh, j) => {
+        if (!sh) return; const x = this.mx + j * STRIDE, y = top + 22; const k = `${this.key}${ln}o${j}`;
+        sh.kind = 'out'; reg.set(k, sh); specs.push(...shapeSpecs(sh, { x, y, W: SW, H: SH, k }));
+        pos[`${ln}o${j}`] = [x, y + SH / 2];
+      });
+      if (A.chips && A.chips.length) {
+        const cx = this.mx + Math.max(nIns, (A.outs || []).length, A.chipCol || 0) * STRIDE + (nIns || (A.outs || []).length ? 6 : 0);
+        specs.push(...chipSpecs(A.chips, cx, top + (A.chipY || 11), `${this.key}${ln}c`));
+      }
+    }
+    // connections: output (left edge) -> input cup (left edge), bulging into the channel
+    for (const lnS in view.conns || {}) {
+      const ln = +lnS; (view.conns[ln] || []).forEach((p, j) => {
+        const a = pos[`${p}o0`], b = pos[`${ln}i${j}`]; if (!a || !b) return;
+        const sh = view.ann[ln].ins[j]; const bad = sh && sh.spill && sh.spill.length;
+        const dx = 14 + Math.min(40, Math.abs(b[1] - a[1]) * 0.12) + j * 4;
+        const d = `M ${a[0]} ${a[1]} C ${a[0] - dx} ${a[1]}, ${b[0] - dx} ${b[1]}, ${b[0] + (j ? 0 : 0)} ${b[1]}`;
+        specs.push(E.path(`${this.key}cn${ln}_${j}`, 0, d, bad ? { fill: 'none', stroke: COL.dark, 'stroke-width': 1, 'stroke-dasharray': '1.5 2' } : { fill: 'none', stroke: COL.i32, 'stroke-width': 2, opacity: 0.55 }));
+      });
+    }
+    reconcile(this.layers, specs);
+  }
+}
+
+// =====================================================================================================
+//  Step slider (sticky): ticks, darkred pills at failing checks, darkblue pill at the current step,
+//  dashed ghost track for a counterexample that has not been replayed yet
+// =====================================================================================================
+class Slider {
+  constructor(root, onChange) {
+    this.root = root; this.onChange = onChange; root.innerHTML = '';
+    this.svg = document.createElementNS(NS, 'svg'); this.svg.setAttribute('height', 40); root.appendChild(this.svg);
+    this.inp = document.createElement('input'); this.inp.type = 'range'; root.appendChild(this.inp);
+    this.inp.addEventListener('input', () => this.onChange(+this.inp.value));
+    this.btn = document.createElement('button'); this.btn.className = 'ghostbtn'; this.btn.style.display = 'none'; root.appendChild(this.btn);
+  }
+  // cfg: { min, max, val, steps:[s numbers], labels:[{s, t}], bad:[{s, t}], ghost:{t, onclick}|null, offset }
+  set(cfg) {
+    this.cfg = cfg;
+    const W = this.root.clientWidth || 1320; this.svg.setAttribute('width', W);
+    const n = cfg.max - cfg.min;
+    this.inp.min = cfg.min; this.inp.max = cfg.max; this.inp.value = cfg.val;
+    const X = s => 6 + (W - 12) * (n ? (s - cfg.min) / n : 0);
+    let h = '';
+    // fine ticks
+    const every = Math.max(1, Math.ceil(n / 120));
+    for (let s = cfg.min; s <= cfg.max; s += every) h += `<path d="M ${X(s)} 34 L ${X(s)} 38" stroke="#bbb"/>`;
+    (cfg.labels || []).forEach(l => { h += `<path d="M ${X(l.s)} 30 L ${X(l.s)} 39" stroke="#666"/><text x="${X(l.s) + 3}" y="31" font-size="10" fill="#444" font-family='${SANS}'>${l.t}</text>`; });
+    if (cfg.ghost) {
+      h += `<path d="M 6 6 L ${W - 150} 6" stroke="darkred" stroke-dasharray="5 4" stroke-width="1.2" fill="none"/><text x="10" y="17" font-size="10" fill="darkred" font-family='${SANS}'>${cfg.ghost.t}</text>`;
+      this.btn.style.display = ''; this.btn.textContent = cfg.ghost.btn || '▶ replay witness'; this.btn.onclick = cfg.ghost.onclick;
+    } else if (cfg.back) { this.btn.style.display = ''; this.btn.textContent = cfg.back.t; this.btn.onclick = cfg.back.onclick; }
+    else this.btn.style.display = 'none';
+    const seen = new Set();
+    (cfg.bad || []).forEach(b => {
+      if (seen.has(b.s)) return; seen.add(b.s);
+      h += `<g style="cursor:pointer" data-jump="${b.s}"><rect x="${X(b.s) - 9}" y="19" width="18" height="12" rx="6" fill="darkred"/><text x="${X(b.s)}" y="28.5" font-size="8.5" text-anchor="middle" fill="#fffff0" font-family='${SANS}'>${b.t || '⚖'}</text><title>${b.title || ''}</title></g>`;
+    });
+    const cs = cfg.val; const lbl = `step ${cs}${cfg.offsetNote ? cfg.offsetNote(cs) : ''}`;
+    const w = lbl.length * 5.6 + 12;
+    h += `<g><rect x="${X(cs) - w / 2}" y="${cfg.ghost ? 20 : 4}" width="${w}" height="14" rx="7" fill="${(cfg.bad || []).some(b => b.s === cs) ? 'darkred' : '#00008b'}"/><text x="${X(cs)}" y="${cfg.ghost ? 30.5 : 14.5}" font-size="10" text-anchor="middle" fill="#fffff0" font-family='${SANS}'>${lbl}</text></g>`;
+    this.svg.innerHTML = h;
+    this.svg.querySelectorAll('[data-jump]').forEach(g => g.addEventListener('click', () => this.onChange(+g.getAttribute('data-jump'))));
+  }
+}
+
+// shared bits
+const plainCup = (val, extra) => Object.assign({ kind: 'cup', req: null, prov: null, val, pred: 'unrefined i32 operand' }, extra || {});
+const plainOut = (val, extra) => Object.assign({ kind: 'out', prov: RG.all(), val, pred: 'unrefined i32 result' }, extra || {});
+function defaultAnn(prog, ln, lv) {
+  const I = prog.info[ln - 1]; if (I.kind !== 'instr') return null;
+  const [ni, no] = arity(prog, I); if (!ni && !no) return null;
+  const v = lv[ln] || {};
+  const ins = []; for (let j = 0; j < ni; j++) ins.push(plainCup(v.ins ? v.ins[j] : undefined, { old: v.old }));
+  const outs = []; for (let j = 0; j < no; j++) outs.push(plainOut(v.outs ? v.outs[j] : undefined, { old: v.old }));
+  return { ins, outs };
+}
+function codeClass(I, edited) {
+  let c = I.kind === 'func' ? 'hdr' : (I.kind === 'spec' || I.kind === 'ghost' || I.kind === 'glocal') ? 'spec' : (I.kind === 'meta' || I.kind === 'local') ? 'meta' : (I.kind === 'fend' ? 'hdr' : '');
+  if (edited) c += ' edited';
+  return c;
+}
+let ACTIVE = 'B';
+const SECTIONS = {};
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' && e.target.type === 'number') return;
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const S = SECTIONS[ACTIVE]; if (!S || !S.step) return;
+  e.preventDefault(); S.step(e.key === 'ArrowRight' ? 1 : -1);
+});
+// =====================================================================================================
+//  Legend
+// =====================================================================================================
+function buildLegend() {
+  const el = document.getElementById('legend');
+  const sec = t => `<div class="lgsec">${t}</div>`;
+  const item = (svg, t) => `<div class="lg">${svg}<div class="t">${t}</div></div>`;
+  const S = (sh, ex) => staticShapeSVG(sh, 96, 11, ex);
+  const axis = (() => {
+    let h = `<svg width="150" height="34"><rect x="12" y="6" width="96" height="11" fill="${MUTED}" stroke="${COL.i32}"/>`;
+    [[I32MIN, 'MIN'], [0, '0'], [16, '16'], [I32MAX, 'MAX']].forEach(([v, l]) => { const px = 12 + 96 * fx(v); h += `<path d="M ${px} 17 L ${px} 21" stroke="#555"/><text x="${px}" y="30" font-size="8" text-anchor="middle" font-family='${SANS}' fill="#444">${l}</text>`; });
+    return h + '</svg>';
+  })();
+  const tether = `<svg width="150" height="40"><rect x="12" y="4" width="96" height="11" fill="#fffff0" stroke="${COL.i32}"/><rect x="${12 + 96 * fx(0)}" y="5" width="${96 * (fx(I32MAX) - fx(0))}" height="9" fill="${MUTED}"/><circle cx="${12 + 96 * fx(10)}" cy="9.5" r="2.7" fill="${COL.navy}"/>
+     <path d="M 12 24 L 12 35 L 108 35 L 108 24" fill="none" stroke="${COL.i32}" stroke-width="1.3"/><rect x="${12 + 96 * fx(0)}" y="25" width="${96 * (fx(3.16) - fx(0))}" height="9" fill="${COL.i32}" fill-opacity=".13"/>
+     <rect x="${12 + 96 * fx(3.16) - .6}" y="20" width="1.2" height="15" fill="${COL.i32}"/><circle cx="${12 + 96 * fx(3.16)}" cy="20" r="2.3" fill="${COL.i32}"/>
+     <path d="M ${12 + 96 * fx(10)} 12 C ${12 + 96 * fx(10)} 18, ${12 + 96 * fx(3.16)} 13, ${12 + 96 * fx(3.16)} 19" stroke="${COL.i32}" stroke-dasharray="1.5 1.5" fill="none"/><text x="114" y="30" font-size="8" font-family='${SANS}' fill="${COL.i32}">√n</text></svg>`;
+  const glyph = (g, cls) => `<svg width="150" height="26"><text x="40" y="20" font-size="20" fill="${cls || 'darkred'}" ${cls === 'ghost' ? 'fill="none" stroke="darkred" stroke-width="1"' : ''} font-family="Georgia, serif">${g}</text></svg>`;
+  const chipLeg = `<svg width="150" height="20">${specsToSVG(chipSpecs([{ t: 'r·r≤n' }, { t: 'v·v<n', s: 'refuted' }], 4, 3, 'lg'))}</svg>`;
+  const chipLeg2 = `<svg width="150" height="20">${specsToSVG(chipSpecs([{ t: 'j≤used', s: 'unknown' }, { t: 'j≤used', s: 'dynamic', n: 3 }], 4, 3, 'lg2'))}</svg>`;
+  const conn = `<svg width="150" height="34"><path d="M 60 6 C 30 6, 30 28, 60 28" stroke="${COL.i32}" stroke-width="2" opacity=".55" fill="none"/><path d="M 110 6 C 80 6, 80 28, 110 28" stroke="darkred" stroke-width="1" stroke-dasharray="1.5 2" fill="none"/></svg>`;
+  el.innerHTML = [
+    sec('shapes = value spaces'),
+    item(axis, '<b>the i32 rectangle is the number line</b>: INT_MIN at the left wall, INT_MAX at the right; linear for |v| ≤ 16, logarithmic beyond'),
+    item(S({ kind: 'out', prov: RG.all(), val: 42 }), '<b>output, unrefined</b>: whole value space (Codillon today); the dot + number is the value at this step'),
+    item(S({ kind: 'out', prov: RG.iv(0, I32MAX), val: 10 }), '<b>output = provided region</b>: carved out of the shape, here <code>0 ≤ v</code>'),
+    item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 7), val: 3 }), '<b>input cup = required region</b>: posts on the rim; what flows in (bottom) must fit under it'),
+    item(S({ kind: 'cup', req: RG.iv(-3, 5, true, false) }), '<b>fence posts</b>: filled cap = inclusive (≤), hollow cap = exclusive (&lt;); no post = the wall'),
+    item(S({ kind: 'out', prov: RG.comb(2, 0), val: 6 }), '<b>congruence comb</b> <code>v % 2 == 0</code>: a tooth per admitted integer; stripes where too dense to draw'),
+    item(S({ kind: 'cup', req: RG.set([0, 1, 2]), val: 1 }), '<b>finite set</b>: one socket per admitted value ({EMPTY, FULL, TOMB})'),
+    item(S({ kind: 'cup', req: RG.holes([3, 11]), prov: RG.holes([3, 11]), val: 7 }), '<b>all but…</b>: hollow dashed sockets are excluded points (<code>k ∉ M</code>)'),
+    item(tether, '<b>dependent bound</b>: a fence tethered to another value (√n); it slides when that value changes'),
+    item(S({ kind: 'out', prov: RG.iv(1, 2147488281) }), '<b>beyond the wall</b>: a mathematical value larger than INT_MAX sticks out as a nub'),
+    item(S({ kind: 'cup', req: RG.uns(), tab: true, prov: RG.iv(1, 2147488281) }), '<b>unsigned reading</b> (<code>gt_u</code>, <code>lt_u</code>): the cup grows a tab past the wall for 2³¹ … 2³²−1'),
+    item(S({ kind: 'cup', req: RG.all(), reading: 's', prov: RG.iv(1, 2147488281), val: -2147479015, math: 2147488281, spill: [{ a: 2147483648, b: 2147488281 }], status: 'refuted' }), '<b>wrap</b>: hollow dot = the mathematical value, solid dot = what a signed instruction reads'),
+    sec('verdicts (six states; all readable in grayscale)'),
+    item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 7) }), '<b>proven</b>: fits under the rim; nothing else is drawn (silence is success)'),
+    item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 8), spill: [{ a: 8, b: 8 }], val: 8, status: 'refuted' }), '<b>refuted, witness replayed</b>: darkred hatched spill over the rim, ⚖ in the gutter, darkred slider pill'),
+    item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 8), spill: [{ a: 8, b: 8 }], val: 3, status: 'refuted-ghost', ghostLab: 'i=8' }), '<b>refuted, not yet replayed</b>: dashed darkred outline, hollow ⚖, dashed ghost track above the slider'),
+    item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 7), unk: { lo: 8, hi: I32MAX }, status: 'dynamic', n: 12, val: 5 }), '<b>held on this run only</b>: dotted slategray where it could spill; ∘N = times the run-time check held'),
+    item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 7), unk: { lo: 8, hi: I32MAX }, status: 'unknown' }), '<b>unknown / needs a hint</b>: indigo dashed ?-hatch where it could spill; ★? (the mystery star)'),
+    item(S({ kind: 'cup', req: RG.all(), status: 'vacuous' }), '<b>vacuous</b>: the region is the whole shape (spec excludes nothing): hollow, half-transparent, ○'),
+    item(S({ kind: 'out', prov: RG.iv(0, 8, false, true), status: 'assumed' }), '<b>assumed / admitted</b>: ghosted at 50% with ○; everything downstream ghosted too'),
+    item(S({ kind: 'out', prov: RG.iv(0, 3.16), val: 4 }), '<b>run-time violation</b>: the value lands outside its region; darkred dot on a one-value sliver'),
+    item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 7), status: 'stale' }), '<b>stale</b>: text edited since this verdict; fades to 40% with a squiggle until re-checked'),
+    sec('gutter, lines, chips'),
+    item(glyph('⚖'), '<b>⚖</b> spec violated at this site (refuted); click it to jump to the witness step'),
+    item(glyph('⚖', 'ghost'), '<b>hollow ⚖</b> refuted, counterexample known but not replayed'),
+    item(glyph('💣 𝄞 ✗ 𝄠'), 'Codillon\'s own: trap · malformed · invalid · synthetic end (precedence 💣 > 𝄞 > ⚖ > ✗ > ★?)'),
+    item(glyph('★?', 'indigo'), 'unknown obligation on this line (needs a hint / lemma)'),
+    item(conn, '<b>connections</b>: producer → cup (type color); dotted darkred when the cup spills'),
+    item(chipLeg, '<b>conjunct chips</b> on spec lines: quiet when proven, solid darkred when that conjunct is refuted'),
+    item(chipLeg2, 'chips that are unknown (indigo dashed, ?) or run-time-checked only (slategray dotted, ∘N)'),
+    item(`<svg width="150" height="26"><text x="10" y="18" font-size="15" font-family="Georgia,serif" text-decoration="underline" style="text-decoration:underline dotted #00008b">i32.gt_s</text><text x="80" y="18" font-size="12" fill="#b5b0a0" text-decoration="line-through" font-family="Georgia,serif">i32.and</text></svg>`, 'a seeded bug\'s <b>edited</b> line (dotted underline) and <b>deleted</b> lines (ghost strikethrough; numbering kept)'),
+  ].join('');
+}
+
+// =====================================================================================================
+//  Section A: the primitive on single values
+// =====================================================================================================
+function makeCard(parent, title, note) {
+  const c = document.createElement('div'); c.className = 'card';
+  c.innerHTML = `<h3>${title}</h3><div class="note">${note}</div><div class="controls"></div><div class="listing"></div>`;
+  parent.appendChild(c);
+  c.addEventListener('mouseenter', () => { ACTIVE = 'A'; });
+  return { el: c, ctl: c.querySelector('.controls'), lst: c.querySelector('.listing') };
+}
+function rangeCtl(ctl, label, values, idx, on) {
+  const w = document.createElement('label'); w.className = 'ctl';
+  w.innerHTML = `${label} <input type="range" min="0" max="${values.length - 1}" value="${idx}" style="width:220px;vertical-align:middle"> <b class="mono"></b>`;
+  const inp = w.querySelector('input'), out = w.querySelector('b');
+  const upd = () => { out.textContent = fmt(values[+inp.value]); on(values[+inp.value]); };
+  inp.addEventListener('input', upd); ctl.appendChild(w);
+  return { set: v => { inp.value = values.indexOf(v); upd(); }, init: upd };
+}
+function toggleCtl(ctl, label, on) {
+  const b = document.createElement('button'); b.textContent = label; let st = false;
+  b.addEventListener('click', () => { st = !st; b.classList.toggle('on', st); on(st); }); ctl.appendChild(b); return b;
+}
+function staleThen(listing, render) { // edit continuity: old verdicts go stale (40%, squiggle) and are re-checked
+  listing.root.classList.add('stale'); render(true);
+  setTimeout(() => { listing.root.classList.remove('stale'); render(false); }, 420);
+}
+
+function buildSectionA() {
+  const parent = document.getElementById('cardsA');
+  // ---------- A1: comb + tether + P2 ----------
+  {
+    const card = makeCard(parent, 'A·1  <code>$half</code>: an even comb in, a tethered point out, and a postcondition that spills (bug P2)',
+      'The parameter refinement <code>v % 2 == 0</code> is a comb. The result <code>v + v == x</code> is a single socket tethered to <i>x</i> (at x/2). With <code>i32.shr_u</code> the provided point is <code>u(x)/2</code>, which for negative <i>x</i> lands near INT_MAX: the point spills over the rim. Move <i>x</i>: non-negative <i>x</i> is not a witness, so the verdict stays a dashed ghost until you pick a negative one.');
+    const lines = ['(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))', '  local.get $x', '  i32.const 1', '  i32.shr_s', ')'];
+    const L = new Listing(card.lst, lines, { codeW: 470, key: 'A1_' });
+    let x = 6, bug = false;
+    const XS = [I32MIN, -1000, -6, -4, -2, 0, 2, 4, 6, 1000, 2147483646];
+    const render = (stale) => {
+      const r = bug ? (x >>> 1) | 0 : x >> 1;
+      const want = x / 2;
+      const wit = bug && x < 0;
+      const status = !bug ? 'proven' : (stale ? 'stale' : (wit ? 'refuted' : 'refuted-ghost'));
+      const provAt = xx => RG.set([bug ? (xx >>> 1) | 0 : xx >> 1]);
+      const reqAt = xx => RG.set([xx / 2], []);
+      let sp = spill(provAt(x), reqAt(x)); let ghostLab;
+      if (bug && !sp.length) { sp = spill(provAt(-4), reqAt(-4)); ghostLab = 'x = −4'; }
+      const ann = {
+        1: { outs: [{ prov: RG.comb(2, 0), val: x, pred: 'param $x : (i32 | v % 2 == 0): assumed in the body; each caller must prove it' }], chips: [{ t: 'v+v == x', s: bug ? (stale ? 'pending' : (wit ? 'refuted' : 'refuted-ghost')) : 'proven' }], chipCol: 1 },
+        2: { outs: [{ prov: RG.comb(2, 0), val: x, pred: 'local.get $x : (i32 | v == x && v % 2 == 0)' }] },
+        3: { outs: [{ prov: RG.set([1]), val: 1, pred: 'i32.const 1 : (i32 | v == 1)' }] },
+        4: { ins: [plainCup(x), plainCup(1)], outs: [{ prov: RG.set([r]), val: r, pred: bug ? 'i32.shr_u : (i32 | v == u(x) / 2): tethered to x' : 'i32.shr_s : (i32 | v == floor(x / 2)): tethered to x' }] },
+        5: { ins: [{ req: reqAt(x), prov: provAt(x), val: r, dotOk: !bug || r === want, spill: status === 'stale' ? [] : (bug ? sp : []), status, ghostLab, pred: 'result cup (i32 | v + v == x): one socket at x/2, tethered to x' }] },
+      };
+      L.update({
+        text: lines.map((t, i) => i === 3 && bug ? '  i32.shr_u' : t), cls: lines.map((t, i) => codeClass(wasmParse(lines).info[i], i === 3 && bug)),
+        gut: { 4: bug && !stale ? { g: '⚖', cls: 'glyph' + (wit ? '' : ' ghostg'), title: 'post of $half refuted; click: x = −4', jump: () => xr.set(-4) } : null },
+        arrowLn: 5, ann, conns: { 4: [2, 3], 5: [4] },
+        comm: bug && !stale ? { 5: { t: 'shr_u halves the unsigned reading: v+v = x+2³² when x < 0', ghost: !wit } } : {},
+      });
+    };
+    const xr = rangeCtl(card.ctl, 'x =', XS, 8, v => { x = v; render(false); });
+    toggleCtl(card.ctl, 'seed P2: line 4 i32.shr_s → i32.shr_u', v => { bug = v; staleThen(L, render); });
+    xr.init();
+  }
+  // ---------- A2: the gate ----------
+  {
+    const card = makeCard(parent, 'A·2  The gate: an <code>if</code> refines <i>x</i> into the even comb; deleting the negation (bug P1) feeds the odd comb into <code>$half</code>',
+      'Inside <code>$half_or_neg1</code>, the flag is <code>!is_even(x)</code>, so the else-arm only runs for even <i>x</i>: <code>local.get $x</code> there provides the even comb, which slots into the even rim of <code>call $half</code>. Without line 1 the else-arm runs for odd <i>x</i>: every provided tooth sits where the rim has none, and all of them spill (darkred teeth). Blame lands on the caller\'s cup.');
+    const lines = ['  i32.eqz', '  if (result i32)', '    i32.const -1', '  else', '    local.get $x', '    call $half'];
+    const L = new Listing(card.lst, lines, { codeW: 470, key: 'A2_' });
+    let x = 6, bug = false;
+    const XS = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7];
+    const render = (stale) => {
+      const ev = emod(x, 2) === 0 ? 1 : 0;           // is_even(x)
+      const flag = bug ? ev : 1 - ev;                // value tested by the if
+      const elseRuns = flag === 0;
+      const prov = RG.comb(2, bug ? 1 : 0);
+      const wit = bug && emod(x, 2) === 1;
+      const status = !bug ? 'proven' : (stale ? 'stale' : (wit ? 'refuted' : 'refuted-ghost'));
+      const ann = {
+        1: bug ? null : { ins: [plainCup(ev)], outs: [{ prov: RG.set([0, 1]), val: 1 - ev, pred: 'i32.eqz : (i32 | v == (x % 2 == 0 ? 0 : 1))' }] },
+        2: { ins: [{ req: null, prov: RG.set([0, 1]), val: flag, pred: 'if: then-arm assumes the flag is 1, else-arm that it is 0' }], chips: [{ t: bug ? 'else-arm: x % 2 == 1' : 'else-arm: x % 2 == 0', s: 'proven' }] },
+        3: { outs: [{ prov: RG.set([-1]), val: elseRuns ? undefined : -1, pred: 'i32.const -1' }] },
+        5: { outs: [{ prov, val: elseRuns ? x : undefined, pred: bug ? 'local.get $x in the else-arm: (i32 | v == x && x % 2 == 1)' : 'local.get $x in the else-arm: (i32 | v == x && x % 2 == 0)' }] },
+        6: { ins: [{ req: RG.comb(2, 0), prov, val: elseRuns ? x : undefined, spill: bug && !stale ? spill(prov, RG.comb(2, 0)) : [], status, pred: 'call $half: argument cup (i32 | v % 2 == 0), the precondition of $half' }], outs: [{ prov: RG.all(), val: elseRuns ? x >> 1 : undefined }] },
+      };
+      L.update({
+        text: lines.map((t, i) => i === 0 && bug ? '' : t), cls: lines.map((t, i) => i === 0 && bug ? 'blank' : ''),
+        gut: { 5: bug && !stale ? { g: '⚖', cls: 'glyph' + (wit ? '' : ' ghostg'), title: 'pre of $half refuted; click: x = 3', jump: () => xr.set(3) } : null },
+        arrowLn: elseRuns ? 6 : 3, ann, conns: { 6: [5] },
+        comm: bug && !stale ? { 6: { t: 'else-arm carries odd x; $half requires even', ghost: !wit } } : {},
+      });
+      if (bug) L.codes[0].textContent = '  i32.eqz';
+    };
+    const xr = rangeCtl(card.ctl, 'x =', XS, 11, v => { x = v; render(false); });
+    toggleCtl(card.ctl, 'seed P1: delete line 1 (i32.eqz)', v => { bug = v; staleThen(L, render); });
+    xr.init();
+  }
+  // ---------- A3: interval with fences (masking) ----------
+  {
+    const card = makeCard(parent, 'A·3  An interval between fences: <code>$slot</code> requires <code>0 &lt;= v &lt; 8</code> (filled post at 0, hollow post at 8)',
+      'The mask <code>k &amp; 7</code> provides <code>[0, 7]</code>, which fits under the rim. Delete the mask and the unrefined key pours the whole value space into the cup: everything left of 0 and from 8 to INT_MAX spills. A run-time value outside the rim is a darkred dot inside the spill.');
+    const lines = ['  local.get $k', '  i32.const 7', '  i32.and', '  call $slot'];
+    const L = new Listing(card.lst, lines, { codeW: 470, key: 'A3_' });
+    let k = 11, bug = false;
+    const KS = [I32MIN, -5, -1, 0, 3, 7, 8, 11, 100, I32MAX];
+    const render = (stale) => {
+      const i = bug ? k : k & 7;
+      const prov = bug ? RG.all() : RG.iv(0, 7);
+      const wit = bug && (k < 0 || k >= 8);
+      const status = !bug ? 'proven' : (stale ? 'stale' : (wit ? 'refuted' : 'refuted-ghost'));
+      const req = RG.iv(0, 8, false, true, { hi: 'CAP' });
+      const ann = {
+        1: { outs: [plainOut(k, { pred: 'local.get $k : any i32' })] },
+        2: bug ? null : { outs: [{ prov: RG.set([7]), val: 7 }] },
+        3: bug ? null : { ins: [plainCup(k), plainCup(7)], outs: [{ prov: RG.iv(0, 7), val: k & 7, pred: 'i32.and 7 : (i32 | 0 <= v <= 7) (bit-vector fact, negative k included)' }] },
+        4: { ins: [{ req, prov, val: i, spill: bug && !stale ? spill(prov, req) : [], status, ghostLab: wit ? undefined : 'k = 8', pred: 'call $slot: argument cup (i32 | 0 <= v && v < CAP)' }], outs: [{ prov: RG.iv(65440, 65524), val: wit ? undefined : 65440 + 12 * i, pred: '$slot result: v == BASE + 12*i' }] },
+      };
+      L.update({
+        text: lines.map((t, i2) => bug && (i2 === 1 || i2 === 2) ? '' : t), cls: lines.map((t, i2) => bug && (i2 === 1 || i2 === 2) ? 'blank' : ''),
+        gut: { 3: bug && !stale ? { g: '⚖', cls: 'glyph' + (wit ? '' : ' ghostg'), title: 'pre of $slot refuted; click: k = 8', jump: () => kr.set(8) } : null },
+        arrowLn: 4, ann, conns: bug ? { 4: [1] } : { 3: [1, 2], 4: [3] },
+        comm: bug && !stale ? { 4: { t: 'unmasked k can be anything; $slot needs 0 ≤ i < 8', ghost: !wit } } : {},
+      });
+      if (bug) { L.codes[1].textContent = '  i32.const 7'; L.codes[2].textContent = '  i32.and'; }
+    };
+    const kr = rangeCtl(card.ctl, 'k =', KS, 7, v => { k = v; render(false); });
+    toggleCtl(card.ctl, 'delete the mask (lines 2–3)', v => { bug = v; staleThen(L, render); });
+    kr.init();
+  }
+  // ---------- A4: the six verdicts on one cup ----------
+  {
+    const card = makeCard(parent, 'A·4  One obligation, every verdict: the cup of <code>call $slot</code> (rim <code>0 ≤ v &lt; 8</code>) as the checker might leave it',
+      'Same rim in every row; only the verdict changes. Each row keeps its own glyph and line style so that the rows can be told apart with color removed (press <i>grayscale self-test</i> at the top).');
+    const rows = [
+      ['  call $slot', 'proven', { prov: RG.iv(0, 7), val: 3 }, null],
+      ['  call $slot', 'refuted', { prov: RG.iv(0, 8), spill: [{ a: 8, b: 8 }], val: 8 }, { g: '⚖', cls: 'glyph' }],
+      ['  call $slot', 'refuted-ghost', { prov: RG.iv(0, 8), spill: [{ a: 8, b: 8 }], val: 3, ghostLab: 'i = 8' }, { g: '⚖', cls: 'glyph ghostg' }],
+      ['  call $slot', 'dynamic', { prov: RG.iv(0, 7), unk: { lo: 8, hi: I32MAX }, n: 12, val: 5 }, null],
+      ['  call $slot', 'unknown', { prov: RG.iv(0, 7), unk: { lo: 8, hi: I32MAX }, val: 5 }, { g: '★?', cls: 'unkg' }],
+      ['  call $log      ;; param (i32 | true)', 'vacuous', { req: RG.all(), val: 5 }, null],
+      ['  (@assume 0 <= i && i < 8)', 'assumed', { val: 5 }, null],
+      ['  call $slot', 'stale', { prov: RG.iv(0, 7), val: 3 }, null],
+    ];
+    const names = { proven: 'proven', refuted: 'refuted · witness replayed', 'refuted-ghost': 'refuted · not replayed', dynamic: 'held on this run only', unknown: 'unknown · needs hint', vacuous: 'vacuous', assumed: 'assumed / admitted', stale: 'stale (edited)' };
+    const L = new Listing(card.lst, rows.map(r => r[0]), { codeW: 470, key: 'A4_' });
+    const ann = {}, gut = {};
+    rows.forEach(([t, st, sh, g], i) => {
+      const s = Object.assign({ req: RG.iv(0, 8, false, true, { hi: 'CAP' }), status: st, pred: 'call $slot: argument cup (i32 | 0 <= v && v < CAP) · ' + names[st] }, sh);
+      if (st === 'assumed') { ann[i + 1] = { outs: [{ prov: RG.iv(0, 8, false, true), status: 'assumed', pred: 'assumed fact (i32 | 0 <= i < 8): not checked' }], chips: [{ t: names[st], s: 'vacuous' }], chipCol: 1 }; }
+      else ann[i + 1] = { ins: [s], chips: [{ t: names[st], s: st === 'refuted-ghost' ? 'refuted-ghost' : st === 'stale' ? 'pending' : st === 'assumed' ? 'vacuous' : st }], chipCol: 1, chipY: 4 };
+      if (g) gut[i] = g;
+    });
+    L.update({ text: rows.map(r => r[0]), cls: rows.map((r, i) => i === 7 ? 'edited' : ''), gut, arrowLn: 0, ann, conns: {} });
+    L.root.querySelectorAll('.row')[7].querySelector('.code').style.textDecoration = 'underline wavy #888';
+  }
+}
+// =====================================================================================================
+//  Section B: isqrt
+// =====================================================================================================
+function buildSectionB() {
+  const P = FX.programs.find(p => p.id === 'isqrt');
+  const BUGS = { none: null }; P.bugs.forEach(b => BUGS[b.id] = b);
+  const sel = document.getElementById('bugB');
+  sel.innerHTML = `<option value="none">no bug</option>` + P.bugs.map(b => `<option value="${b.id}">${b.id}: ${b.title}</option>`).join('');
+  const nIn = document.getElementById('nB'), lemSel = document.getElementById('lemB');
+  const presets = document.getElementById('nPresets');
+  [0, 4, 10, 16, 99, 400].forEach(v => { const b = document.createElement('button'); b.textContent = v; b.style.marginRight = '3px'; b.onclick = () => { nIn.value = v; S.n = v; S.step = null; recompute(); }; presets.appendChild(b); });
+  const WIT = { S1: { n: I32MAX, r: 46340 }, S2: { n: 4, r: 2 }, S3: { n: 0, r: 1 } };
+  const SITE = { S1: 17, S2: 27, S3: 6 };
+  const JUMP = { S1: 13, S2: 45, S3: 4 };
+  const COMM = { S1: 'gt_s reads (r+1)² signed: past 2³¹−1 it wraps negative', S2: 'cup excludes v·v = n; the loop provides it (perfect squares)', S3: 'r = 1 does not fit 0 ≤ r ≤ √n when n = 0' };
+  const S = { bug: 'none', n: 10, lem: 'proven', replay: false, step: null };
+  let T = null, L = null, slider = null, checks = [];
+  const listEl = document.getElementById('listB');
+  L = new Listing(listEl, P.lines, { key: 'B' });
+  slider = new Slider(document.getElementById('sliderB'), v => { S.step = v; render(); });
+  document.getElementById('secB').addEventListener('mouseenter', () => { ACTIVE = 'B'; });
+  const prog0 = wasmParse(P.lines);
+  const conns = dataflow(prog0);
+
+  function deriveIO(trace, prog) { // fixture key frames (contiguous for S1) -> ins/outs from the stack
+    return trace.map((f, i) => {
+      const I = prog.info[f.ln - 1]; const [ni, no] = arity(prog, I); const prev = i ? trace[i - 1].stack : [];
+      return Object.assign({}, f, { ins: ni ? prev.slice(prev.length - ni) : [], outs: no ? f.stack.slice(f.stack.length - no) : [], call: 0 });
+    });
+  }
+  function checkIsqrt(steps, bug) {
+    const out = []; let prevM;
+    steps.forEach((st, i) => {
+      const { n, r } = st.loc;
+      if (st.checks) { st.checks.forEach(c => out.push({ s: st.s, ln: c.ln, kind: c.kind, ok: c.ok })); return; }
+      if (i === 0) out.push({ s: st.s, ln: 1, kind: 'requires', ok: n >= 0 });
+      if (st.ln === 6 || st.ln === 23) {
+        const m = n - r * r;
+        out.push({ s: st.s, ln: 7, kind: 'invariant', ok: r >= 0 && r * r <= n, c: r >= 0 ? 1 : 0 });
+        out.push({ s: st.s, ln: 8, kind: 'decreases', ok: m >= 0 && (prevM === undefined || m < prevM) });
+        prevM = m;
+      }
+      if (i === steps.length - 1 && st.ln === 26) {
+        const v = st.stack[st.stack.length - 1];
+        const ok = bug === 'S2' ? (0 <= v && v * v < n && n <= (v + 1) * (v + 1)) : (0 <= v && v * v <= n && n < (v + 1) * (v + 1));
+        out.push({ s: st.s, ln: 1, kind: 'ensures', ok });
+      }
+    });
+    return out;
+  }
+  function recompute() {
+    const bug = BUGS[S.bug];
+    const lines = applyEdits(P.lines, bug ? bug.edits : []);
+    S.lines = lines;
+    if (S.bug === 'S1' && S.replay) {
+      T = { steps: deriveIO(bug.trace, wasmParse(lines)), results: [], replay: true };
+    } else {
+      const n = S.bug === 'S2' ? 4 : S.bug === 'S3' ? 0 : S.n;
+      const prog = wasmParse(lines);
+      const r = wasmRun(prog, [['isqrt', [n]]], { maxSteps: 20000 });
+      T = { steps: r.steps, results: r.results, n };
+      if (S.bug === 'S2' || S.bug === 'S3') nIn.value = n;
+    }
+    checks = checkIsqrt(T.steps, S.bug);
+    nIn.disabled = S.bug === 'S2' || S.bug === 'S3' || (S.bug === 'S1' && S.replay);
+    const s0 = T.steps[0].s, s1 = T.steps[T.steps.length - 1].s;
+    if (S.step === null || S.step < s0 || S.step > s1) S.step = S.bug !== 'none' && (S.bug !== 'S1' || S.replay) ? JUMP[S.bug] : s1;
+    render();
+  }
+  function idxOf(s) { const st = T.steps; let lo = 0; for (let i = 0; i < st.length; i++) if (st[i].s <= s) lo = i; return lo; }
+  function render(stale) {
+    const bug = S.bug, b = BUGS[bug];
+    const cur = idxOf(S.step); const cs = T.steps[cur];
+    const lv = lineValues(T.steps, cur);
+    const replayed = bug === 'S2' || bug === 'S3' || (bug === 'S1' && S.replay);
+    const site = bug !== 'none' ? SITE[bug] : 0;
+    const envOf = ln => (lv[ln] && lv[ln].loc) || cs.loc;
+    const ann = {};
+    const lemSt = S.lem; // proven | unknown | dynamic
+    const execCount = ln => T.steps.slice(0, cur + 1).filter(st => st.ln === ln).length;
+    const siteStatus = stale ? 'stale' : (replayed ? 'refuted' : 'refuted-ghost');
+    const sq = n => Math.sqrt(n);
+    const latestArrival = () => { for (let i = cur; i >= 0; i--) if (T.steps[i].ln === 6 || T.steps[i].ln === 23) return i; return -1; };
+    const ai = latestArrival();
+    const arrivals = T.steps.slice(0, cur + 1).filter(st => st.ln === 6 || st.ln === 23);
+    const prevM = arrivals.length >= 2 ? (() => { const a = arrivals[arrivals.length - 2].loc; return a.n - a.r * a.r; })() : undefined;
+    const chkAt = (ln, upto) => { let last = null; checks.forEach(c => { if (c.ln === ln && c.s <= upto) last = c; }); return last; };
+    const lemma = (sh, hiKnown, hiUnk) => { if (lemSt !== 'proven') { sh.status = lemSt; sh.unk = { lo: hiKnown, hi: hiUnk }; sh.n = execCount(sh._ln); } return sh; };
+    const r0 = bug === 'S3' ? 1 : 0;
+    const gtu = bug !== 'S1';
+    for (let ln = 1; ln <= P.lines.length; ln++) {
+      const e = envOf(ln), n = e.n, r = e.r, s = sq(n), v = lv[ln] || {};
+      const iv0 = RG.iv(0, s, false, false, { hi: '√n' });
+      let A = null;
+      switch (ln) {
+        case 1: {
+          const conj = bug === 'S2' ? ['0 ≤ v', 'v·v < n', 'n ≤ (v+1)²'] : ['0 ≤ v', 'v·v ≤ n', 'n < (v+1)²'];
+          const ens = chkAt(1, S.step);
+          const chips = conj.map((t, i) => ({ t, s: bug === 'S2' && i === 1 ? (stale ? 'pending' : 'refuted') : (ens && ens.kind === 'ensures' && !ens.ok ? 'runtime' : 'proven') }));
+          if (bug === 'S3' && ens && ens.kind === 'ensures' && !ens.ok) chips.forEach((c, i) => c.s = i === 2 ? 'runtime' : 'proven');
+          A = { outs: [{ prov: RG.iv(0, I32MAX), val: cs.loc.n, pred: 'param $n : (i32 | 0 <= v): assumed in the body, proved by every caller' }], chips, chipCol: 1, chipY: 4 };
+          break;
+        }
+        case 3: A = { outs: [{ prov: RG.set([r0]), val: v.outs && v.outs[0], pred: `i32.const ${r0}` }] }; break;
+        case 4: A = { ins: [plainCup(v.ins && v.ins[0], { pred: 'local.set $r (unrefined local, tracked flow-sensitively)' })] }; break;
+        case 6: {
+          const st = lv[6] ? lv[6].loc : null;
+          const status = site === 6 ? siteStatus : 'proven';
+          const req = iv0, prov = RG.set([r0]);
+          const wenv = WIT.S3;
+          const spA = site === 6 && !stale ? (spill(prov, req).length ? spill(prov, req) : spill(prov, RG.iv(0, sq(wenv.n)))) : [];
+          const mreq = RG.iv(0, Infinity), mprov = RG.set([n - r0 * r0]);
+          A = { ins: [
+            { req, prov, val: st ? st.r : undefined, status, spill: spA, pred: 'loop $grow, on entry: r must fit the invariant region 0 ≤ r ≤ √n (tethered to n)' },
+            { req: mreq, prov: mprov, val: st ? st.n - st.r * st.r : undefined, status, spill: site === 6 && !stale ? spill(mprov, mreq) : [], pred: 'decreases on entry: n − r·r ≥ 0' },
+          ], rule: true };
+          break;
+        }
+        case 7: {
+          const a = ai >= 0 ? T.steps[ai].loc : null;
+          const ck = chkAt(7, S.step);
+          const bad = ck && !ck.ok;
+          A = { outs: [{ prov: iv0, val: a ? a.r : undefined, pred: '(@invariant 0 <= r && r * r <= n): r at the loop head lives in [0, √n]' }],
+            chips: [{ t: '0 ≤ r', s: bad && a && a.r < 0 ? 'runtime' : 'proven' }, { t: 'r·r ≤ n', s: bad && a && a.r * a.r > a.n ? 'runtime' : 'proven' }], chipCol: 1, chipY: 20 };
+          break;
+        }
+        case 8: {
+          const a = ai >= 0 ? T.steps[ai].loc : null;
+          const m = a ? a.n - a.r * a.r : undefined;
+          const ck = chkAt(8, S.step);
+          A = { outs: [{ prov: prevM !== undefined ? RG.iv(0, prevM, false, true, { hi: 'previous measure' }) : RG.iv(0, Infinity), val: m, pred: '(@decreases n - r * r): ≥ 0 at every arrival, strictly below the previous arrival (hollow post)' }],
+            chips: [{ t: 'n − r·r ≥ 0, decreasing', s: ck && !ck.ok ? 'runtime' : 'proven' }], chipCol: 1, chipY: 20 };
+          break;
+        }
+        case 9: case 12: A = { outs: [{ prov: iv0, val: v.outs && v.outs[0], pred: 'local.get $r : (i32 | 0 <= v <= √n), from the invariant' }] }; break;
+        case 10: case 13: case 20: A = { outs: [{ prov: RG.set([1]), val: v.outs && v.outs[0], pred: 'i32.const 1' }] }; break;
+        case 11: case 14: {
+          const sh = { prov: RG.iv(1, s + 1, false, false, { hi: '√n+1' }), val: v.outs && v.outs[0], pred: 'i32.add : (i32 | v == r + 1); no signed overflow needs r ≤ 46340 (nonlinear: r·r ≤ n ≤ 2³¹−1)', _ln: ln };
+          A = { ins: [plainCup(v.ins && v.ins[0]), plainCup(v.ins && v.ins[1])], outs: [lemma(sh, s + 1, I32MAX + 1)] };
+          break;
+        }
+        case 15: {
+          const hi = (Math.floor(s) + 1) ** 2;
+          const sh = { prov: RG.iv(1, hi, false, false, { hi: '(⌊√n⌋+1)²' }), val: v.outs && v.outs[0], math: v.outs ? (r + 1) * (r + 1) : undefined, reading: gtu ? 'u' : 's', pred: 'i32.mul : u(v) == (r+1)·(r+1). As a mathematical value it can reach 46341² = 2147488281 > INT_MAX: only an unsigned reading is faithful', _ln: ln };
+          A = { ins: [plainCup(v.ins && v.ins[0]), plainCup(v.ins && v.ins[1])], outs: [lemma(sh, hi, U32 - 1)] };
+          break;
+        }
+        case 16: A = { outs: [{ prov: RG.iv(0, I32MAX), val: v.outs && v.outs[0], pred: 'local.get $n : (i32 | 0 <= v)' }] }; break;
+        case 17: {
+          const req = gtu ? RG.uns() : RG.all();
+          const hiAt = nn => (Math.floor(sq(nn)) + 1) ** 2;
+          const prov = RG.iv(1, hiAt(n), false, false, { hi: '(⌊√n⌋+1)²' });
+          let sp = [], ghostLab;
+          if (site === 17 && !stale) { sp = spill(prov, req); if (!sp.length) { sp = spill(RG.iv(1, hiAt(WIT.S1.n)), req); ghostLab = 'n = 2³¹−1'; } }
+          const status = site === 17 ? siteStatus : 'proven';
+          A = { ins: [
+            { req, tab: gtu, reading: gtu ? 'u' : 's', prov, val: v.ins && v.ins[0], math: v.ins ? (r + 1) * (r + 1) : undefined, spill: sp, ghostLab, status,
+              pred: gtu ? 'i32.gt_u reads its operand unsigned: the rim is 0 … 2³²−1 (tab past the wall), so (r+1)² up to 2147488281 still fits' : 'i32.gt_s reads its operand signed: the rim is INT_MIN … INT_MAX; (r+1)² can be 2147488281, which spills past the wall' },
+            { req, tab: gtu, reading: gtu ? 'u' : 's', prov: RG.iv(0, I32MAX), val: v.ins && v.ins[1], status: 'proven', pred: 'n read ' + (gtu ? 'unsigned (u(n) == n because 0 <= n)' : 'signed') },
+          ], outs: [{ prov: RG.set([0, 1]), val: v.outs && v.outs[0], pred: 'comparison flag: (i32 | v == ((r+1)² > n ? 1 : 0))' }] };
+          break;
+        }
+        case 18: A = { ins: [{ req: null, prov: RG.set([0, 1]), val: v.ins && v.ins[0], pred: 'br_if $done: taken ⇒ n < (r+1)²; fall-through ⇒ (r+1)² ≤ n' }] }; break;
+        case 19: A = { outs: [{ prov: RG.iv(0, s - 1, false, false, { hi: '√n−1' }), val: v.outs && v.outs[0], pred: 'local.get $r on the fall-through path: (r+1)² ≤ n, so r ≤ √n − 1' }] }; break;
+        case 21: {
+          const sh = { prov: RG.iv(1, s, false, false, { hi: '√n' }), val: v.outs && v.outs[0], pred: "i32.add : r' == r + 1 ≤ √n (no overflow: nonlinear)", _ln: ln };
+          A = { ins: [plainCup(v.ins && v.ins[0]), plainCup(v.ins && v.ins[1])], outs: [lemma(sh, s, I32MAX + 1)] };
+          break;
+        }
+        case 22: A = { ins: [plainCup(v.ins && v.ins[0], { pred: 'local.set $r' })] }; break;
+        case 23: {
+          const st = lv[23] ? lv[23].loc : null;
+          A = { ins: [
+            { req: iv0, prov: RG.iv(1, s, false, false, { hi: '√n' }), val: st ? st.r : undefined, pred: "br $grow (back-edge): r' must fit the invariant region 0 ≤ r' ≤ √n" },
+            { req: prevM !== undefined && T.steps[cur].ln === 23 ? RG.iv(0, prevM, false, true, { hi: 'previous measure' }) : RG.iv(0, Infinity), val: st ? st.n - st.r * st.r : undefined, pred: "decreases at the back-edge: 0 ≤ n − r'² < n − r²" },
+          ], rule: true };
+          break;
+        }
+        case 26: A = { outs: [{ prov: RG.iv(s - 1, s, true, false, { lo: '√n−1', hi: '√n' }), val: v.outs && v.outs[0], pred: 'local.get $r after the exit: invariant gives r ≤ √n (closed), the exit test gives r > √n − 1 (open)' }] }; break;
+        case 27: {
+          const req = bug === 'S2' ? RG.iv(s - 1, s, false, true, { lo: '√n−1', hi: '√n' }) : RG.iv(s - 1, s, true, false, { lo: '√n−1', hi: '√n' });
+          const prov = RG.iv(s - 1, s, true, false, { lo: '√n−1', hi: '√n' });
+          let sp = [], ghostLab;
+          if (site === 27 && !stale) { sp = spill(prov, req); if (!sp.length) { const w = sq(4); sp = spill(RG.iv(w - 1, w, true, false), RG.iv(w - 1, w, false, true)); ghostLab = 'n = 4'; } }
+          const val = lv[26] && lv[26].outs ? lv[26].outs[0] : undefined;
+          A = { ins: [{ req, prov, val, spill: sp, ghostLab, status: site === 27 ? siteStatus : 'proven', pred: bug === 'S2' ? 'result cup (S2): v·v < n ∧ n ≤ (v+1)², i.e. √n−1 ≤ v < √n: the hollow post at √n excludes perfect-square roots' : 'result cup: 0 ≤ v ∧ v·v ≤ n ∧ n < (v+1)², i.e. √n−1 < v ≤ √n (one integer, tethered to n)' }] };
+          break;
+        }
+      }
+      if (A) ann[ln] = A;
+    }
+    // gutter
+    const gut = {};
+    if (bug !== 'none' && !stale) gut[site - 1] = { g: '⚖', cls: 'glyph' + (replayed ? '' : ' ghostg'), title: 'spec violated here; click to see the witness', jump: () => jumpWitness() };
+    if (lemSt === 'unknown') [11, 14, 15, 21].forEach(l => { if (!gut[l - 1]) gut[l - 1] = { g: '★?', cls: 'unkg', title: 'unknown: needs a nonlinear lemma (r·r ≤ n ≤ 2³¹−1 ⇒ r ≤ 46340)' }; });
+    const edited = new Set((b ? b.edits : []).map(e => e[1]));
+    L.update({
+      text: S.lines.map((t, i) => t || P.lines[i]),
+      cls: S.lines.map((t, i) => codeClass(prog0.info[i], edited.has(i + 1))),
+      gut, arrowLn: cs.ln, ann, conns,
+      comm: bug !== 'none' && !stale ? { [site]: { t: COMM[bug], ghost: !replayed } } : {},
+    });
+    // slider
+    const fails = checks.filter(c => !c.ok);
+    const s0 = T.steps[0].s, s1 = T.steps[T.steps.length - 1].s;
+    slider.set({
+      min: s0, max: s1, val: S.step,
+      labels: T.replay ? [{ s: s0, t: 'loop-head witness: n = 2147483647, r = 46340 (one-iteration replay)' }] : [{ s: s0, t: `isqrt(${T.n}) → ${T.results[0]}` }],
+      bad: fails.map(c => ({ s: c.s, t: '⚖', title: `${c.kind} (line ${c.ln}) fails` })),
+      ghost: bug === 'S1' && !S.replay ? { t: 'counterexample to induction: loop-head state n = 2147483647, r = 46340 (reached only at step 695,104 of a real run)', btn: '▶ replay one iteration', onclick: () => jumpWitness() } : null,
+      back: bug === 'S1' && S.replay ? { t: '◀ back to your run', onclick: () => { S.replay = false; S.step = null; recompute(); } } : null,
+      offsetNote: T.replay ? s => ` (real run: ${s + 695100})` : null,
+    });
+    const op = cs.op;
+    document.getElementById('statB').innerHTML = `${T.replay ? '<b style="color:darkred">witness replay</b> (loop-head state, not a run from entry) · ' : ''}line ${cs.ln} <i>${op}</i> · stack [${cs.stack.map(fmt).join(', ')}] · n = ${fmt(cs.loc.n)}, r = ${fmt(cs.loc.r)}${b ? ` · <span style="color:#555">${b.id} (${b.category === 'spec' ? 'spec bug' : 'code bug'}): ${b.edit}</span>` : ''}`;
+  }
+  function jumpWitness() {
+    if (S.bug === 'S1' && !S.replay) { S.replay = true; S.step = JUMP.S1; recompute(); return; }
+    S.step = JUMP[S.bug]; render();
+  }
+  sel.addEventListener('change', () => {
+    S.bug = sel.value; S.replay = false; S.step = null;
+    S.lines = applyEdits(P.lines, BUGS[S.bug] ? BUGS[S.bug].edits : []);
+    const prevStale = () => { listEl.classList.add('stale'); render(true); };
+    prevStale();
+    setTimeout(() => { listEl.classList.remove('stale'); recompute(); }, 420);
+  });
+  nIn.addEventListener('change', () => { S.n = Math.max(0, Math.min(20000, +nIn.value || 0)); nIn.value = S.n; S.step = null; recompute(); });
+  lemSel.addEventListener('change', () => { S.lem = lemSel.value; render(); });
+  SECTIONS.B = { step: d => { const st = T.steps; const i = idxOf(S.step); const j = Math.max(0, Math.min(st.length - 1, i + d)); S.step = st[j].s; render(); },
+    set: (bug, step, replay, lem) => { S.bug = bug; sel.value = bug; S.replay = !!replay; S.step = step; if (lem) { S.lem = lem; lemSel.value = lem; } recompute(); } };
+  recompute();
+}
+// =====================================================================================================
+//  Section C: hash table
+// =====================================================================================================
+const BASE = 65440, CAP = 8;
+function Rclauses(slots, M, used) {
+  const m = new Map(M);
+  const full = slots.map((s, i) => [s, i]).filter(([s]) => s[0] === 1);
+  const o = slots.every(s => s[0] >= 0 && s[0] <= 2);
+  const i = full.every(([s]) => m.has(s[1]) && m.get(s[1]) === s[2]);
+  const ii = [...m.keys()].every(k => full.filter(([s]) => s[1] === k).length === 1);
+  const pathOK = strong => full.every(([s, idx]) => { const d = (idx - (s[1] & 7)) & 7; for (let q = 0; q < d; q++) { const st = slots[((s[1] & 7) + q) & 7][0]; if (st === 0 || (strong && st !== 1)) return false; } return true; });
+  const nonEmpty = slots.filter(s => s[0] !== 0).length;
+  const iv = full.length === m.size && used === nonEmpty && used < CAP;
+  return { o, i, ii, iii: pathOK(false), iv, strong: pathOK(true), nonEmpty, nFull: full.length };
+}
+function buildSectionC() {
+  const P = FX.programs.find(p => p.id === 'hashtable');
+  const BUGS = { none: null }; P.bugs.forEach(b => BUGS[b.id] = b);
+  const NAMES = { Ha: '(a) probe index not wrapped', Hb: '(b) lookup treats TOMB as EMPTY', Hb_prime: "(b′) delete writes EMPTY", Hc: '(c) insert skips the existing-key check', Hd: '(d) load-factor check off by one' };
+  const sel = document.getElementById('bugC');
+  sel.innerHTML = `<option value="none">no bug</option>` + P.bugs.map(b => `<option value="${b.id}">${NAMES[b.id] || b.title}</option>`).join('');
+  const lemSel = document.getElementById('lemC');
+  const SITE = { Ha: [140, 151], Hb: [41], Hb_prime: [100], Hc: [135], Hd: [166] };
+  const JUMP = { Ha: 145, Hb: 240, Hb_prime: 217, Hc: 43, Hd: 487 };
+  const COMM = { Ha: 'i reaches 8: outside 0 ≤ i < CAP', Hb: 'exits on TOMB too; only EMPTY proves k ∉ M', Hb_prime: 'stores EMPTY on a probe path (R3)', Hc: 'k may already be in M', Hd: 'used + 1 can reach CAP (R4)' };
+  const S = { bug: 'none', lem: 'proven', step: null };
+  let T = null, checks = [];
+  const listEl = document.getElementById('listC');
+  const prog0 = wasmParse(P.lines);
+  const L = new Listing(listEl, P.lines, { key: 'C' });
+  const slider = new Slider(document.getElementById('sliderC'), v => { S.step = v; render(); });
+  document.getElementById('secC').addEventListener('mouseenter', () => { ACTIVE = 'C'; });
+  // memory panel
+  const memEl = document.getElementById('memC');
+  const msvg = document.createElementNS(NS, 'svg'); msvg.setAttribute('width', 1320); msvg.setAttribute('height', 158); memEl.appendChild(msvg);
+  const mlayers = []; for (let q = 0; q < 7; q++) { const g = document.createElementNS(NS, 'g'); msvg.appendChild(g); mlayers.push(g); }
+  msvg.querySelectorAll('g').forEach(g => g.style.pointerEvents = 'none');
+  msvg.style.pointerEvents = 'none';
+
+  function checkHash(steps, cb, bug) {
+    const out = []; const prevM = {};
+    const at = (k, j) => ((k & 7) + j) & 7;
+    steps.forEach((st, idx) => {
+      const R = Rclauses(st.slots, st.M, st.used); const Rall = R.o && R.i && R.ii && R.iii && R.iv;
+      const l = st.loc, M = new Map(st.M);
+      if (st.op === 'call $slot  (enter)') out.push({ s: st.s, ln: 13, c: 0, kind: 'requires', ok: st.ins[0] >= 0 && st.ins[0] < 8 });
+      if (st.op === 'call $find  (enter)') out.push({ s: st.s, ln: 21, c: 0, kind: 'requires', ok: Rall });
+      const loopFind = st.fn === 'find' && (st.ln === 29 || st.ln === 63), loopIns = st.fn === 'insert' && (st.ln === 135 || st.ln === 151);
+      if (loopFind || loopIns) {
+        const j = l.j, key = st.fn + st.call; const m = CAP - j;
+        const base = loopFind ? 30 : 136;
+        if (loopIns) out.push({ s: st.s, ln: 136, c: 0, kind: 'invariant', ok: !M.has(l.k) });
+        out.push({ s: st.s, ln: base, c: loopFind ? 0 : 1, kind: 'invariant', ok: 0 <= j && j <= st.used, lemma: true });
+        out.push({ s: st.s, ln: base, c: 2, kind: 'invariant', ok: l.i === at(l.k, j) });
+        let path = true; for (let d = 0; d < j; d++) { const sl = st.slots[at(l.k, d)]; path = path && (loopFind ? (sl[0] === 2 || (sl[0] === 1 && sl[1] !== l.k)) : sl[0] !== 0); }
+        out.push({ s: st.s, ln: base + 1, c: 0, kind: 'invariant', ok: path });
+        out.push({ s: st.s, ln: base + 2, c: 0, kind: 'decreases', ok: m >= 0 && (st.ln === 29 || st.ln === 135 || prevM[key] === undefined || m < prevM[key]) });
+        prevM[key] = m;
+      }
+      if (st.op === 'call $find  (return)') {
+        const v = st.outs[0], k = l.k;
+        out.push({ s: st.s, ln: 20, c: 0, kind: 'ensures', ok: (v === -1 && !M.has(k)) || (v >= 0 && v < 8 && st.slots[v][0] === 1 && st.slots[v][1] === k) });
+      }
+    });
+    cb.forEach(c => {
+      const first = steps[c.from - 1], last = steps[c.to - 1]; if (!first) return;
+      const RS = s => { const R = Rclauses(s.slots, s.M, s.used); return R.o && R.i && R.ii && R.iii && R.iv; };
+      const req = { lookup: 68, delete: 85, insert: 105 }[c.fn];
+      out.push({ s: first.s, ln: req, c: 0, kind: 'requires', ok: RS(first) });
+      if (c.result === undefined || typeof c.result === 'string') return;
+      const v = c.result, k = c.args[0], M0 = new Map(first.M), M1 = new Map(last.M);
+      if (c.fn === 'lookup') { out.push({ s: last.s, ln: 67, c: 0, kind: 'ensures', ok: v === (M0.has(k) ? M0.get(k) : c.args[1]) }); out.push({ s: last.s, ln: 69, c: 0, kind: 'ensures', ok: RS(last) }); }
+      if (c.fn === 'delete') { out.push({ s: last.s, ln: 84, c: 0, kind: 'ensures', ok: v === (M0.has(k) ? 1 : 0) }); out.push({ s: last.s, ln: 86, c: 0, kind: 'ensures', ok: RS(last) }); out.push({ s: last.s, ln: 86, c: 1, kind: 'ensures', ok: !M1.has(k) && M1.size === M0.size - (M0.has(k) ? 1 : 0) }); }
+      if (c.fn === 'insert') { out.push({ s: last.s, ln: 104, c: 0, kind: 'ensures', ok: v === 1 || (v === 0 && !M0.has(k) && last.used === 7) }); out.push({ s: last.s, ln: 106, c: 0, kind: 'ensures', ok: RS(last) }); out.push({ s: last.s, ln: 106, c: 1, kind: 'ensures', ok: v === 1 ? M1.get(k) === c.args[1] : true }); }
+    });
+    out.sort((a, b) => a.s - b.s);
+    return out;
+  }
+  function recompute() {
+    const bug = BUGS[S.bug];
+    S.lines = applyEdits(P.lines, bug ? bug.edits : []);
+    const prog = wasmParse(S.lines);
+    const calls = bug ? bug.calls : P.correct_runs.calls;
+    const r = wasmRun(prog, calls, { memory: true, maxSteps: S.bug === 'Hd' ? 900 : 5000 });
+    T = { steps: r.steps, results: r.results, cb: r.callBounds, status: r.status };
+    checks = checkHash(T.steps, T.cb, S.bug);
+    if (S.step === null || S.step < 1 || S.step > T.steps.length) S.step = S.bug !== 'none' ? JUMP[S.bug] : T.steps.length;
+    render();
+  }
+  const opName = c => `${c.fn}(${c.args.map(fmt).join(', ')})`;
+  function render(stale) {
+    const bug = S.bug, b = BUGS[bug];
+    const cur = Math.max(0, Math.min(T.steps.length - 1, S.step - 1)); const cs = T.steps[cur];
+    const lv = lineValues(T.steps, cur);
+    const sites = bug !== 'none' ? SITE[bug] : [];
+    const isSite = ln => sites.includes(ln);
+    const stOf = ln => stale ? 'stale' : (isSite(ln) ? 'refuted' : 'proven');
+    const envOf = ln => (lv[ln] && lv[ln].st) || cs;
+    const chkAt = (ln, c) => { let last = null; for (const k of checks) { if (k.s > S.step) break; if (k.ln === ln && (c === undefined || k.c === c)) last = k; } return last; };
+    const chip = (t, ln, c, lemma) => { const k = chkAt(ln, c); let s = k && !k.ok ? 'runtime' : 'proven'; if (s === 'proven' && lemma && S.lem !== 'proven') s = S.lem; const n = lemma ? checks.filter(q => q.ln === ln && q.c === c && q.s <= S.step && q.ok).length : 0; return { t, s, n }; };
+    const execCount = ln => { let n = 0; for (let i = 0; i <= cur; i++) if (T.steps[i].ln === ln) n++; return n; };
+    const ann = {};
+    const v = ln => lv[ln] || {};
+    const addr = (ln, j, hiOK, prov, extra) => Object.assign({ req: RG.iv(0, hiOK, false, false, { hi: '65536 − width' }), prov: prov || RG.iv(BASE, BASE + 84), val: v(ln).ins && v(ln).ins[j], pred: `address cup: the access must stay inside the 64 KiB page (a ≤ ${hiOK})` }, extra || {});
+    const idxReq = RG.iv(0, CAP, false, true, { hi: 'CAP' });
+    const findRes = (ln) => { const e = envOf(ln); const M = new Map(e.M); const k = e.loc.k; const s = e.slots.findIndex(q => q[0] === 1 && q[1] === k); return M.has(k) && s >= 0 ? RG.set([s]) : RG.set([-1]); };
+    const keysOf = e => e.M.map(p => p[0]);
+    // ---- per-line annotations ----
+    for (let ln = 1; ln <= P.lines.length; ln++) {
+      const I = prog0.info[ln - 1]; let A = null; const e = envOf(ln), V = v(ln);
+      switch (ln) {
+        case 13: A = { outs: [{ prov: idxReq, val: (lv[14] && lv[14].outs) ? lv[14].outs[0] : undefined, pred: 'param $i : (i32 | 0 <= v && v < CAP): assumed in $slot; each call site must prove it' }], chips: [chip('v = BASE + 12·i', 13, 0)], chipCol: 1 }; break;
+        case 18: A = { ins: [plainCup(V.ins && V.ins[0]), plainCup(V.ins && V.ins[1])], outs: [{ prov: RG.iv(BASE, BASE + 84), val: V.outs && V.outs[0], pred: '$slot result: v == BASE + 12·i, so 65440 ≤ v ≤ 65524 while 0 ≤ i < 8' }] }; break;
+        case 20: A = { chips: [chip('v = −1 ∧ k ∉ M  ∨  slot holding k', 20, 0)], chipY: 11 }; break;
+        case 21: case 68: case 69: case 85: case 105: A = { chips: [chip('R', ln, 0)], chipY: 11 }; break;
+        case 86: case 106: A = { chips: [chip('R', ln, 0), chip(ln === 86 ? 'M = old(M) \\ {k}' : 'M = old(M)[k := x]', ln, 1)], chipY: 11 }; break;
+        case 67: A = { chips: [chip('v = (k ∈ M ? M[k] : dflt)', 67, 0)], chipY: 11 }; break;
+        case 84: A = { chips: [chip('v = (k ∈ old(M))', 84, 0)], chipY: 11 }; break;
+        case 104: A = { chips: [chip('v = 1 ∨ (v = 0 ∧ k ∉ M ∧ used = CAP−1)', 104, 0)], chipY: 11 }; break;
+        case 30: A = { chips: [chip('0 ≤ j', 30, 9), chip('j ≤ used', 30, 0, true), chip('i = at(k, j)', 30, 2)], chipY: 11 }; break;
+        case 31: A = { chips: [chip('slots passed: TOMB, or FULL with key ≠ k', 31, 0)], chipY: 11 }; break;
+        case 32: case 138: A = { chips: [chip('CAP − j ≥ 0, decreasing', ln, 0)], chipY: 11 }; break;
+        case 136: A = { chips: [chip('k ∉ M', 136, 0), chip('0 ≤ j ≤ used', 136, 1, true), chip('i = at(k, j)', 136, 2)], chipY: 11 }; break;
+        case 137: A = { chips: [chip('slots passed: non-EMPTY', 137, 0)], chipY: 11 }; break;
+        case 27: case 133: case 60: case 148: A = (bug === 'Ha' && ln === 148) ? null : { ins: [plainCup(V.ins && V.ins[0]), plainCup(V.ins && V.ins[1])], outs: [{ prov: RG.iv(0, 7), val: V.outs && V.outs[0], pred: 'i32.and 7 : (i32 | 0 <= v <= 7), a bit-vector fact that holds for negative keys too' }] }; break;
+        case 33: case 139: case 144: case 116: case 97: case 80: case 53: {
+          const prov = bug === 'Ha' && (ln === 139 || ln === 144) ? RG.iv(0, 8) : RG.iv(0, 7);
+          A = { outs: [{ prov, val: V.outs && V.outs[0], pred: 'local.get $i : ' + (prov.hi === 8 ? '(i32 | 0 <= v <= 8): the back-edge no longer masks' : '(i32 | 0 <= v < CAP), from the loop invariant i == at(k, j)') }] }; break;
+        }
+        case 34: case 140: case 81: case 98: case 117: {
+          const prov = bug === 'Ha' && ln === 140 ? RG.iv(0, 8) : RG.iv(0, 7);
+          let sp = [];
+          if (isSite(ln) && !stale) sp = spill(prov, idxReq);
+          A = { ins: [{ req: idxReq, prov, val: V.ins && V.ins[0], spill: sp, status: stOf(ln), pred: 'call $slot: argument cup (i32 | 0 <= v && v < CAP), the precondition of $slot' }], outs: [{ prov: RG.iv(BASE, BASE + 84), val: V.outs && V.outs[0], pred: 'address of slot i' }] };
+          break;
+        }
+        case 36: case 44: case 142: {
+          const prov = bug === 'Ha' && ln === 142 ? RG.iv(BASE, BASE + 96) : RG.iv(BASE, BASE + 84);
+          A = { ins: [addr(ln, 0, 65532, prov)], outs: [{ prov: RG.set([0, 1, 2]), val: V.outs && V.outs[0], pred: 'st(i) : (i32 | v ∈ {EMPTY 0, FULL 1, TOMB 2}) by R0' }] }; break;
+        }
+        case 48: A = { ins: [addr(48, 0, 65528)], outs: [plainOut(V.outs && V.outs[0], { pred: 'key(i)' })] }; break;
+        case 82: { const M = new Map(e.M); const k = e.loc.k; A = { ins: [addr(82, 0, 65524)], outs: [{ prov: M.has(k) ? RG.set([M.get(k)]) : RG.all(), val: V.outs && V.outs[0], pred: 'val(i) : (i32 | v == M[k]) by R1 (slot i is FULL with key k)' }] }; break; }
+        case 37: case 45: case 155: case 102: case 168: case 121: A = { outs: [{ prov: RG.set([1]), val: V.outs && V.outs[0], pred: 'i32.const 1' }] }; break;
+        case 38: {
+          A = { ins: [{ req: null, prov: RG.set([0, 1, 2]), val: V.ins && V.ins[0], pred: 'state operand' }, plainCup(V.ins && V.ins[1])], outs: [{ prov: RG.set([0, 1]), val: V.outs && V.outs[0], pred: bug === 'Hb' ? 'i32.ne 1: flag is 1 for EMPTY and for TOMB' : 'i32.lt_u 1: flag is 1 exactly for EMPTY' }] }; break;
+        }
+        case 39: case 52: case 76: case 93: case 115: case 127: case 143: A = { ins: [{ req: null, prov: RG.set([0, 1]), val: V.ins && V.ins[0], pred: 'if: the then-arm may assume the flag is 1' }] }; break;
+        case 40: A = { outs: [{ prov: RG.set([-1]), val: V.outs && V.outs[0], pred: 'i32.const -1 ("absent")' }] }; break;
+        case 41: {
+          const prov = bug === 'Hb' ? RG.set([0, 2]) : RG.set([0]);
+          const req = RG.set([0]);
+          const sl = V.st ? V.st.slots[V.st.loc.i] : null;
+          A = { ins: [{ req: RG.set([-1]), prov: RG.set([-1]), val: V.ins && V.ins[0], pred: 'return value −1' },
+            { req, prov, val: sl ? sl[0] : undefined, spill: isSite(41) && !stale ? spill(prov, req) : [], status: stOf(41), label: 'st(i)',
+              pred: 'return −1 claims k ∉ M. By R3 only an EMPTY slot ends every probe path, so the state that triggered the exit must sit in the EMPTY socket' }] };
+          break;
+        }
+        case 54: A = { ins: [{ req: idxReq, prov: RG.iv(0, 7), val: V.ins && V.ins[0], pred: 'return i: 0 ≤ i < CAP ∧ st(i) = FULL ∧ key(i) = k (path condition)' }] }; break;
+        case 63: case 151: {
+          const st = V.st; const j = st ? st.loc.j : undefined, used = st ? st.used : 0;
+          const lem = S.lem;
+          const iv = RG.iv(0, used, false, false, { hi: 'used' });
+          const shJ = { req: iv, prov: RG.iv(1, used), val: j, pred: 'j at the loop head: 0 ≤ j ≤ used. Needs a counting lemma: the j slots passed are distinct and non-EMPTY', status: lem === 'proven' ? 'proven' : lem, n: checks.filter(q => q.ln === (ln === 63 ? 30 : 136) && q.c === (ln === 63 ? 0 : 1) && q.s <= S.step && q.ok).length };
+          if (lem !== 'proven') { shJ.unk = { lo: used, hi: I32MAX }; shJ.prov = RG.iv(1, used); }
+          const ins = [shJ, { req: RG.iv(0, Infinity), val: st ? CAP - j : undefined, pred: 'decreases CAP − j: ≥ 0 (and smaller than at the previous arrival)' }];
+          if (ln === 151) {
+            const prov = bug === 'Ha' ? RG.iv(1, 8) : RG.iv(0, 7);
+            ins.unshift({ req: idxReq, prov, val: st ? st.loc.i : undefined, spill: isSite(151) && !stale ? spill(prov, idxReq) : [], status: stOf(151), pred: "back-edge: i' must equal at(k, j+1), so 0 ≤ i' < CAP" });
+          }
+          A = { ins, rule: true }; break;
+        }
+        case 59: case 147: case 26: case 132: A = (bug === 'Ha' && ln === 147) ? null : { outs: [{ prov: RG.set([7]), val: V.outs && V.outs[0], pred: 'i32.const 7 (the mask CAP − 1)' }] }; break;
+        case 58: case 146: A = { ins: [plainCup(V.ins && V.ins[0]), plainCup(V.ins && V.ins[1])], outs: [{ prov: RG.iv(1, 8), val: V.outs && V.outs[0], pred: 'i + 1 : (i32 | 1 <= v <= 8): needs the mask before it is used as an index' }] }; break;
+        case 72: case 89: case 111: { A = { ins: [plainCup(V.ins && V.ins[0], { pred: 'k' })], outs: [{ prov: findRes(ln), val: V.outs && V.outs[0], pred: "$find's dependent result, instantiated: the slot holding k if k ∈ M, else −1" }] }; break; }
+        case 78: { const M = new Map(e.M); const k = e.loc.k; A = { ins: [{ req: RG.set([M.has(k) ? M.get(k) : e.loc.dflt]), prov: RG.set([e.loc.dflt]), val: V.ins && V.ins[0], pred: "lookup's result cup: v == (k ∈ M ? M[k] : dflt). Provided: dflt, on the path where $find said k ∉ M" }] }; break; }
+        case 99: {
+          const c = bug === 'Hb_prime' ? 0 : 2;
+          A = { outs: [{ prov: RG.set([c]), val: V.outs && V.outs[0], pred: `i32.const ${c} (${c === 2 ? 'TOMB' : 'EMPTY'})` }] }; break;
+        }
+        case 100: {
+          const prov = RG.set([bug === 'Hb_prime' ? 0 : 2]), req = RG.set([1, 2]);
+          A = { ins: [addr(100, 0, 65532), { req, prov, val: V.ins && V.ins[1], spill: isSite(100) && !stale ? spill(prov, req) : [], status: stOf(100), pred: 'new st(i): slot i lies on the probe path of every key stored after it, so R3 removes the EMPTY socket: only FULL or TOMB may be written here' }] };
+          break;
+        }
+        case 124: case 163: A = { outs: [{ prov: ln === 124 ? idxReq : (bug === 'Hd' ? RG.iv(0, 7) : RG.iv(0, 6)), val: V.outs && V.outs[0], pred: ln === 124 ? 'global $used : 0 ≤ used < CAP (R4)' : 'used after the load-factor check: used < ' + (bug === 'Hd' ? '8' : '7') }] }; break;
+        case 125: { const c = bug === 'Hd' ? 8 : 7; A = { outs: [{ prov: RG.set([c]), val: V.outs && V.outs[0], pred: `i32.const ${c}: refuse when used ≥ ${c}` }] }; break; }
+        case 126: case 114: case 75: case 92: case 46: case 50: case 51: A = { ins: [plainCup(V.ins && V.ins[0]), plainCup(V.ins && V.ins[1])], outs: [{ prov: RG.set([0, 1]), val: V.outs && V.outs[0], pred: 'comparison flag' }] }; break;
+        case 135: {
+          const M = keysOf(e); const prov = bug === 'Hc' ? RG.all() : RG.holes(M); const req = RG.holes(M);
+          let sp = [], ghostLab;
+          if (isSite(135) && !stale) { sp = spill(prov, req); if (!sp.length) { sp = spill(RG.all(), RG.holes([3])); ghostLab = 'M = {3↦30}, k = 3'; } }
+          const st = lv[135] ? lv[135].st : null;
+          A = { ins: [{ req, prov, val: st ? st.loc.k : undefined, spill: sp, ghostLab, status: stOf(135), pred: 'loop $free on entry: k must avoid every key of M (hollow sockets); $find\'s result normally provides exactly that' }], rule: true };
+          break;
+        }
+        case 165: A = { ins: [plainCup(V.ins && V.ins[0]), plainCup(V.ins && V.ins[1])], outs: [{ prov: bug === 'Hd' ? RG.iv(1, 8) : RG.iv(1, 7), val: V.outs && V.outs[0], pred: 'used + 1' }] }; break;
+        case 166: {
+          const prov = bug === 'Hd' ? RG.iv(1, 8) : RG.iv(1, 7), req = RG.iv(0, CAP, false, true, { hi: 'CAP' });
+          A = { ins: [{ req, prov, val: V.ins && V.ins[0], spill: isSite(166) && !stale ? spill(prov, req) : [], status: stOf(166), pred: 'global.set $used: R4 requires used < CAP, so at least one EMPTY slot remains and every probe terminates' }] }; break;
+        }
+      }
+      if (!A && I.kind === 'instr') A = defaultAnn(prog0, ln, lv);
+      if (A) {
+        if (V.old) { (A.ins || []).forEach(s => s && (s.old = true)); (A.outs || []).forEach(s => s && (s.old = true)); }
+        ann[ln] = A;
+      }
+    }
+    // gutter
+    const gut = {};
+    if (T.status.startsWith('trap')) { const ts = T.steps[T.steps.length - 1]; gut[ts.ln - 1] = { g: '💣', cls: 'glyph', title: ts.trap + ' (step ' + ts.s + ')', jump: () => { S.step = ts.s; render(); } }; }
+    if (!stale) sites.forEach(l => { if (!gut[l - 1]) gut[l - 1] = { g: '⚖', cls: 'glyph', title: 'spec violated here; click for the witness step', jump: () => { S.step = JUMP[bug]; render(); } }; });
+    if (S.lem === 'unknown') [63, 151].forEach(l => { if (!gut[l - 1]) gut[l - 1] = { g: '★?', cls: 'unkg', title: 'unknown: needs the counting lemma j + 1 <= used' }; });
+    const edited = new Set(); (b ? b.edits : []).forEach(e => { if (e[0] === 'replace') edited.add(e[1]); });
+    const trapLn = T.status.startsWith('trap') && S.step >= T.steps.length ? T.steps[T.steps.length - 1].ln : 0;
+    L.update({
+      text: S.lines.map((t, i) => t || P.lines[i]),
+      cls: S.lines.map((t, i) => (t === '' && P.lines[i] !== '' ? 'blank' : codeClass(prog0.info[i], edited.has(i + 1))) + (i + 1 === trapLn ? ' trap' : '')),
+      gut, arrowLn: cs.ln, ann, conns: dataflow(prog0),
+      comm: bug !== 'none' && !stale ? Object.fromEntries([[sites[0], { t: COMM[bug] }]]) : {},
+    });
+    renderMem(cs, cur, stale);
+    // slider
+    const fails = checks.filter(c => !c.ok);
+    const bad = fails.map(c => ({ s: c.s, t: '⚖', title: `${c.kind} (line ${c.ln}) fails` }));
+    if (T.status.startsWith('trap')) bad.push({ s: T.steps.length, t: '💣', title: T.steps[T.steps.length - 1].trap });
+    slider.set({ min: 1, max: T.steps.length, val: S.step, labels: T.cb.map(c => ({ s: c.from, t: opName(c) + (c.result !== undefined ? ' → ' + fmt(c.result) : '') })), bad });
+    const callIdx = cs.call, c = T.cb[callIdx];
+    document.getElementById('statC').innerHTML = `${c ? `<b>${opName(c)}</b>${c.result !== undefined ? ' → ' + fmt(c.result) : ' …'} · ` : ''}${cs.fn}: line ${cs.ln} <i>${cs.op}</i> · stack [${cs.stack.map(fmt).join(', ')}] · ${Object.entries(cs.loc).map(([k, x]) => `${k} = ${fmt(x)}`).join(', ')}${cs.trap ? ' · <b style="color:darkred">💣 ' + cs.trap + '</b>' : ''}${b ? ` · <span style="color:#555">${b.edit}</span>` : ''}`;
+    S.lastStale = stale;
+  }
+  function renderMem(cs, cur, stale) {
+    const specs = []; const reg = Insp.reg;
+    const boundary = T.cb.some(c => c.to === cs.s) || cur === 0 && false;
+    const R = Rclauses(cs.slots, cs.M, cs.used);
+    const M = new Map(cs.M); const keys = [...M.keys()];
+    // which slots lie on some FULL key's probe path (before its home)?
+    const onPath = new Array(8).fill(false);
+    cs.slots.forEach((s, idx) => { if (s[0] !== 1) return; const h = s[1] & 7; const d = (idx - h) & 7; for (let q = 0; q < d; q++) onPath[(h + q) & 7] = true; });
+    // first FULL slot (in probe order from h(k)) claims k; later duplicates find a hollow socket
+    const claimedBy = {};
+    keys.forEach(k => { for (let q = 0; q < 8; q++) { const s = ((k & 7) + q) & 7; if (cs.slots[s][0] === 1 && cs.slots[s][1] === k) { claimedBy[k] = s; break; } } });
+    const W = 112, X0 = 6, CW = 163;
+    const probe = (cs.fn === 'find' || cs.fn === 'insert') && cs.loc.i !== undefined ? cs.loc.i : -1;
+    const stName = ['EMPTY', 'FULL', 'TOMB'];
+    const strong = bug => bug === 'Hb';
+    for (let s = 0; s < 8; s++) {
+      const x = X0 + s * CW + 26, sl = cs.slots[s];
+      const full = sl[0] === 1;
+      specs.push(E.text(`m${s}lab`, 6, x - 24, 9, `slot ${s}`, { 'font-size': 10, fill: '#333', 'font-family': SANS, 'font-weight': 600 }));
+      specs.push(E.text(`m${s}st`, 6, x + 20, 9, stName[sl[0]] || '?', { 'font-size': 9.5, fill: sl[0] === 1 ? '#333' : '#888', 'font-family': SANS }));
+      ['st', 'key', 'val'].forEach((r, j) => specs.push(E.text(`m${s}r${j}`, 6, x - 22, 24 + j * 24, r, { 'font-size': 8.5, fill: '#888', 'font-family': SANS })));
+      // state cup
+      const reqSt = onPath[s] ? (strong(S.bug) ? RG.set([0, 1, 2], [0, 2]) : RG.set([0, 1, 2], [0])) : RG.set([0, 1, 2]);
+      const shS = { kind: 'cup', req: reqSt, val: sl[0], pred: onPath[s] ? (strong(S.bug) ? `st(${s}): on a key's probe path. The buggy line 38 treats TOMB as end-of-path, so it silently needs FULL here ((iii)-strong)` : `st(${s}): on a key's probe path, so R3 forbids EMPTY (FULL or TOMB only)`) : `st(${s}) ∈ {EMPTY, FULL, TOMB} (R0)` };
+      reg.set(`m${s}s`, shS); specs.push(...shapeSpecs(shS, { x, y: 16, W, H: SH, k: `m${s}s` }));
+      // key cup
+      const ex = keys.filter(k => claimedBy[k] !== undefined && claimedBy[k] !== s);
+      const shK = full ? { kind: 'cup', req: RG.set(keys.length ? keys : [], ex), val: sl[1], dotOk: (!ex.includes(sl[1])) && (boundary ? M.has(sl[1]) : true), pred: `key(${s}): a FULL slot's key must be a key of M (R1) not already held by an earlier slot (R2, hollow sockets)` }
+        : { kind: 'cup', req: null, val: sl[0] === 2 ? sl[1] : undefined, dim: true, pred: `key(${s}): ignored while the slot is not FULL` };
+      reg.set(`m${s}k`, shK); specs.push(...shapeSpecs(shK, { x, y: 40, W, H: SH, k: `m${s}k` }));
+      const shV = full && M.has(sl[1]) ? { kind: 'cup', req: RG.set([M.get(sl[1])]), val: sl[2], dotOk: boundary ? M.get(sl[1]) === sl[2] : true, pred: `val(${s}) must equal M[key(${s})] = ${M.get(sl[1])} (R1; enforced between operations)` }
+        : { kind: 'cup', req: null, val: full || sl[0] === 2 ? sl[2] : undefined, dim: !full, pred: `val(${s})` };
+      reg.set(`m${s}v`, shV); specs.push(...shapeSpecs(shV, { x, y: 64, W, H: SH, k: `m${s}v` }));
+      if (s === probe) specs.push(E.path('mprobe', 6, `M ${x + W / 2 - 6} 88 L ${x + W / 2 + 6} 88 L ${x + W / 2} 81 Z`, { fill: COL.navy }));
+      if (s === probe) specs.push(E.text('mprobet', 6, x + W / 2 + 9, 89, 'probe i', { 'font-size': 8.5, fill: COL.navy, 'font-family': SANS }));
+    }
+    // used, M, R
+    const shU = { kind: 'cup', req: RG.iv(0, CAP, false, true, { hi: 'CAP' }), val: cs.used, pred: 'global $used (FULL + TOMB slots): R4 requires used < CAP' };
+    reg.set('mU', shU); specs.push(E.text('mUl', 6, 6, 110, 'used', { 'font-size': 10, fill: '#333', 'font-family': SANS, 'font-weight': 600 }));
+    specs.push(...shapeSpecs(shU, { x: 36, y: 101, W, H: SH, k: 'mU' }));
+    specs.push(E.text('mMl', 6, 190, 110, 'ghost M =', { 'font-size': 10, fill: '#333', 'font-family': SANS, 'font-weight': 600 }));
+    const beads = cs.M.length ? cs.M.map(([k, x]) => ({ t: `${fmt(k)} ↦ ${fmt(x)}` })) : [{ t: '∅' }];
+    specs.push(...chipSpecs(beads, 244, 100, 'mM'));
+    const Rs = (ok, always) => ok ? 'proven' : ((boundary || always) ? 'runtime' : 'pending');
+    const rchips = [
+      { t: '(o) st ∈ {0,1,2}', s: Rs(R.o, true) }, { t: '(i) FULL ⇒ entry of M', s: Rs(R.i) }, { t: '(ii) one slot per key', s: Rs(R.ii, true) },
+      { t: '(iii) no EMPTY on a path', s: Rs(R.iii, true) }, { t: '(iv) #FULL=|M|, used=#non-EMPTY, used<CAP', s: Rs(R.iv, cs.used >= CAP) },
+    ];
+    if (S.bug === 'Hb') rchips.push({ t: "(iii)-strong: no TOMB on a path (what line 38 assumes)", s: R.strong ? 'proven' : 'runtime' });
+    specs.push(E.text('mRl', 6, 6, 140, boundary ? 'R (between operations: required)' : 'R (mid-operation: not required)', { 'font-size': 10, fill: '#333', 'font-family': SANS, 'font-weight': 600 }));
+    specs.push(...chipSpecs(rchips, 190, 130, 'mR'));
+    reconcile(mlayers, specs);
+    msvg.querySelectorAll('.hit').forEach(h => h.style.pointerEvents = 'all');
+    memEl.style.opacity = stale ? .4 : 1;
+  }
+  sel.addEventListener('change', () => {
+    S.bug = sel.value; S.step = null;
+    S.lines = applyEdits(P.lines, BUGS[S.bug] ? BUGS[S.bug].edits : []);
+    listEl.classList.add('stale'); render(true);
+    setTimeout(() => { listEl.classList.remove('stale'); recompute(); }, 420);
+  });
+  lemSel.addEventListener('change', () => { S.lem = lemSel.value; render(); });
+  SECTIONS.C = {
+    step: d => { S.step = Math.max(1, Math.min(T.steps.length, S.step + d)); render(); scrollToCur(); },
+    set: (bug, step, lem) => { S.bug = bug; sel.value = bug; S.step = step; if (lem) { S.lem = lem; lemSel.value = lem; } recompute(); },
+  };
+  function scrollToCur() {
+    const cs = T.steps[S.step - 1]; const row = L.rows[cs.ln - 1]; const r = row.getBoundingClientRect();
+    const barH = document.getElementById('barC').getBoundingClientRect().height;
+    if (r.top < barH + 10 || r.bottom > innerHeight - 10) window.scrollBy({ top: r.top - barH - innerHeight * 0.3, behavior: 'smooth' });
+  }
+  slider.inp.addEventListener('change', scrollToCur);
+  recompute();
+}
+
+// =====================================================================================================
+//  init (+ URL hash for reproducible screenshots: #b=S1&bs=13&br=1&c=Hb&cs=240&lem=unknown&gray=1)
+// =====================================================================================================
+window.addEventListener('DOMContentLoaded', () => {
+  Insp.init();
+  buildLegend();
+  buildSectionA();
+  buildSectionB();
+  buildSectionC();
+  document.getElementById('grayBtn').addEventListener('click', () => document.body.classList.toggle('gray'));
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get('b')) SECTIONS.B.set(h.get('b'), h.get('bs') ? +h.get('bs') : null, h.get('br') === '1', h.get('lem'));
+  else if (h.get('lem')) SECTIONS.B.set('none', null, false, h.get('lem'));
+  if (h.get('c')) SECTIONS.C.set(h.get('c'), h.get('cs') ? +h.get('cs') : null, h.get('lemc'));
+  if (h.get('gray')) document.body.classList.add('gray');
+  if (h.get('scroll')) setTimeout(() => window.scrollTo(0, +h.get('scroll')), 50);
+});
+
+</script>
+</body>
+</html>
