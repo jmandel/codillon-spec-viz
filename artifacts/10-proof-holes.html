@@ -99,18 +99,19 @@ section { margin-top: 26px; border-top: 1px solid #cfcfb8; padding-top: 10px; po
 /* ---------------- holes ---------------- */
 .row.hole { padding: 3px 0 5px 0; }
 .row.hole .gut { height: 100%; line-height: normal; padding-top: 10px; }
-.hbox { position: relative; margin-left: 82px; width: var(--hw); padding: 5px 10px 6px 10px; font-family: var(--sans); font-size: 12px; color: #222; transform-origin: top left; transition: transform .28s ease, opacity .28s ease, background .2s; cursor: default; user-select: none; }
+.row.hole { z-index: 4; }
+.hbox { position: relative; z-index: 4; background: var(--ivory); margin-left: 82px; width: var(--hw); padding: 5px 10px 6px 10px; font-family: var(--sans); font-size: 12px; color: #222; transform-origin: top left; transition: transform .28s ease, opacity .28s ease, background .2s; cursor: default; user-select: none; }
 .hbox > svg.hborder { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
 .hborder rect { fill: none; width: calc(100% - 2px); height: calc(100% - 2px); }
 .hole.false .hborder rect { stroke: var(--dr); stroke-width: 1; stroke-dasharray: 3 3; }
 .hole.false.replayed .hborder rect { stroke-width: 2.2; stroke-dasharray: 8 3; }
-.hole.false.replayed .hbox { background: rgba(139, 0, 0, .035); }
+.hole.false.replayed .hbox { background: #fbf6e8; }
 .hole.unknown .hborder rect { stroke: var(--ind); stroke-width: 1.2; stroke-dasharray: 11 5; }
 .hole.vacuous .hborder rect { stroke: #888; stroke-width: 1; }
 .hole.vacuous .hborder rect.in { width: calc(100% - 8px); height: calc(100% - 8px); }
 .hole.vacuous .hbox { opacity: .75; }
 .hole.solid .hborder rect { stroke: #222 !important; stroke-dasharray: none !important; stroke-width: 1.2 !important; }
-.hole.solid .hbox { background: rgba(255,255,255,.6); }
+.hole.solid .hbox { background: #fffffa; }
 .hhead { display: flex; gap: 10px; align-items: baseline; white-space: nowrap; font-size: 11px; color: #444; }
 .hstat { font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 10.5px; }
 .hole.false .hstat { color: var(--dr); }
@@ -235,6 +236,10 @@ footer li { margin-bottom: 5px; }
 
 .row.srchl { background: rgba(106,90,205,.12); }
 .siteblank.s-unknown { border-color: indigo; }
+
+.row.line.wrap2 { height: calc(var(--rh) * 1.65); }
+.row.wrap2 .code { white-space: normal; line-height: 19px; padding-top: 6px; right: 6px; height: auto; }
+.row.wrap2 .gut { line-height: calc(var(--rh) * 1.1); }
 
 </style></head>
 <body>
@@ -1104,8 +1109,8 @@ const PROGS = (() => {
       s += `<path d="${d}" fill="none" stroke="#483D8B" stroke-width="1.3"/>`;
       if (m.stop != null) { const x = 2 + m.stop * cw + (cw - 3) / 2; s += `<path d="M${x - 5},4 l10,10 M${x + 5},4 l-10,10" stroke="darkred" stroke-width="1.6"/>`; }
     }
-    if (m.k != null) s += `<text x="${8 * cw + 8}" y="22" style="font-family:var(--serif);font-size:12px">k = ${m.k}</text>`;
-    return s + '</svg>' + (m.note ? `<span class="mtext" style="font-size:11px;color:#555;font-style:italic">${esc(m.note)}</span>` : '');
+    const note = (m.k != null ? 'k = ' + m.k + ': ' : '') + (m.note || '');
+    return s + '</svg>' + (note ? `<span class="mtext" style="font-size:11px;color:#555;font-style:italic;margin-left:6px">${esc(note)}</span>` : '');
   }
 
   // ---------------- Model ----------------
@@ -1265,6 +1270,7 @@ const PROGS = (() => {
       let c = `row line k-${r.kind}`;
       if (r.ghost) c += ' ghost'; if (r.assume) c += ' assumeln'; if (r.accepted) c += ' acc';
       if (r.text.trim().length > (this.o.longAt || 104)) c += ' long';
+      if (this.o.wrapAt && r.kind === 'func' && r.text.trim().length > this.o.wrapAt) c += ' wrap2';
       return c;
     }
     gutter(r, d) {
@@ -1286,11 +1292,11 @@ const PROGS = (() => {
         else if (c.site.tok) { const tk = esc(c.site.tok), i = html.indexOf(tk); if (i >= 0) html = html.slice(0, i) + `<span class="site s-${h.status}" data-tip="the hole's first suggestion edits this">${tk}</span>` + html.slice(i + tk.length); }
       }
       const tg = this.m.def.toggles && this.m.def.toggles.find(x => x.key === r.key);
-      if (tg && (t || r.key === 'L15')) html = `<span class="tog" data-tog="${r.key}" data-tip="${esc(tg.tip)}">${html || '&nbsp;&nbsp;&nbsp;&nbsp;'}</span>`;
+      if (tg && t) html = `<span class="tog" data-tog="${r.key}" data-tip="${esc(tg.tip)}">${html || '&nbsp;&nbsp;&nbsp;&nbsp;'}</span>`;
       let frac = '';
       if (r.eff && (r.eff[0] || r.eff[1])) frac = this.fracSVG(r, d);
       let cmt = '';
-      if (d.marks[r.key] === 'inf') cmt = `<span class="cmt"><span class="inf" data-tip="∞? partial correctness only: no (@decreases) on this loop (01 §2.7)">∞?</span></span>`;
+      if (d.marks[r.key] === 'inf') cmt = `<span class="cmt" style="left:${this.o.fx}px;right:auto;top:${this.o.rh / 2 - 9}px"><span class="inf" data-tip="∞? partial correctness only: no (@decreases) on this loop (01 §2.7)">∞?</span></span>`;
       if (r.assume && this.runs && this.runs.your) {
         const n = this.runs.your.recs.reduce((a, x) => a + x.checks.filter(c => c.key === r.key && c.ok).length, 0);
         cmt = `<span class="cmt" style="left:${this.o.fx + 60}px;right:auto"><span class="dyn" data-tip="assumed, not proven: the run-time check held ${n} time(s) on your run">∘ ${n}</span></span>`;
@@ -1335,7 +1341,7 @@ const PROGS = (() => {
         const outline = st === 'false' && !rp;
         let shape = '';
         if (y.missing && y.val === undefined) shape = hypShape(undefined, { missing: true, id: h.key + i });
-        else shape = hypShape(y.val, { outline, cex: st === 'false' && y.val !== undefined, wrap: y.wrap, hollow: y.hollow });
+        else shape = hypShape(y.val, { outline, cex: st === 'false' && y.val !== undefined, wrap: y.wrap, hollow: y.hollow }) + (y.missing ? hypShape(undefined, { missing: true, id: h.key + i }) : '');
         hy += `<span class="hyp${y.blame ? ' blame' : ''}${y.missing ? ' missing' : ''}"${src} data-tip="${esc((y.name || '') + ' ' + (y.facts || []).join(', ') + (y.missing ? ' — missing: ' + y.missing : '') + (srcTip ? ' (' + srcTip + ')' : ''))}">${y.name ? `<span class="hn">${esc(y.name)}</span>` : ''}${shape}${(y.facts || []).map(f => `<span class="fact">${esc(f)}</span>`).join('')}${y.missing ? `<span class="mtext">${esc(y.missing)}</span>` : ''}</span>`;
       });
       const goal = (h.goal || []).map(g => `<span class="cj ${g.st}" data-tip="${esc(g.t)} — ${g.st === 'ok' ? 'proven' : g.st === 'bad' ? 'refuted' + (g.inst ? ': ' + g.inst : '') : g.st === 'unk' ? 'unknown' + (g.inst ? ': ' + g.inst : '') : 'vacuous'}">${esc(g.t)}${g.inst && g.st !== 'ok' ? `<span class="inst">${esc(g.inst)}</span>` : ''}${g.inf ? '<span class="infb" data-tip="this conjunct is what makes every probe loop terminate">∞</span>' : ''}</span>`).join('<span class="and">∧</span>');
@@ -1343,7 +1349,7 @@ const PROGS = (() => {
       if (h.gap) notes += `<div class="hnote"><span class="gapw">gap</span> ${esc(h.gap)}</div>`;
       if (h.also) notes += `<div class="hnote">${esc(h.also)}</div>`;
       const chips = (h.chips || []).map((c, i) =>
-        `<button class="chip k-${c.kind}" data-ci="${i}"${c.tip ? ` data-tip="${esc(c.tip)}"` : ''}><span class="ck">${KIND[c.kind]}</span><span class="ct">${esc(c.text)}${c.text2 ? '<br>' + esc(c.text2) : ''}</span><span class="cl">${esc(c.label)}</span></button>` +
+        `<button class="chip k-${c.kind}" data-ci="${i}" data-tip="${esc(c.text + (c.text2 ? '\n' + c.text2 : '') + '\n— ' + c.label + (c.tip ? '\n' + c.tip : ''))}"><span class="ck">${KIND[c.kind]}</span><span class="ct">${esc(c.text)}${c.text2 ? '<br>' + esc(c.text2) : ''}</span><span class="cl">${esc(c.label)}</span></button>` +
         (c.alts || []).map((a, j) => `<button class="chip alt" data-ci="${i}" data-alt="${j}" data-tip="another instance the autocomplete found"><span class="ck">or</span><span class="ct">${esc(a.text)}</span></button>`).join('')).join('');
       const cap = (h.chips || []).some(c => c.kind === 'lemma') ? 'apply?  ·  click to accept' : 'suggestions  ·  click to accept';
       return `<div class="gut">${restGlyph(st, rp)}</div>
@@ -1374,8 +1380,8 @@ const PROGS = (() => {
         const chip = e.target.closest('.chip:not(.alt)'), hb = e.target.closest('.hbox');
         if (chip && hb && chip !== this.pvChip) { this.clearPreview(); this.pvChip = chip; this.preview(this.holeOf(hb.dataset.hole).chips[+chip.dataset.ci]); }
         const hyp = e.target.closest('.hyp[data-src]');
-        if (hyp) { const el = this.rowEl(hyp.dataset.src); if (el) el.classList.add('srchl'); this.hlSrc = el; this.trailFocus(hb && hb.dataset.hole, true); }
-        else if (hb) this.trailFocus(hb.dataset.hole, true);
+        if (hyp) { const el = this.rowEl(hyp.dataset.src); if (el) el.classList.add('srchl'); this.hlSrc = el; this.trailFocus(hb && hb.dataset.hole, hyp.dataset.src); }
+        else if (hb) this.trailFocus(hb.dataset.hole);
       });
       R.addEventListener('mouseout', e => {
         const chip = e.target.closest('.chip:not(.alt)');
@@ -1489,28 +1495,26 @@ const PROGS = (() => {
         s += `<path d="M${x1},${y1} C${x1 + bow},${y1} ${x2 + bow},${y2} ${x2},${y2}" fill="none" stroke="${bad ? 'darkred' : '#6A5ACD'}" stroke-width="${bad ? 1.2 : 1.6}" ${bad ? 'stroke-dasharray="1.5 2.5"' : ''} opacity="${bad ? 1 : .8}"/>`;
       }
       $('.conn', ov).innerHTML = s;
-      // trails: hypothesis chip -> the line it came from
-      const rr = R.getBoundingClientRect(); let t = '', k = 0;
+      // trails: hypothesis chip -> the line it came from, routed in the left margin (never across code)
+      const rr = R.getBoundingClientRect(); let t = '';
       for (const hb of $$('.row.hole:not(.leaving) .hbox', R)) {
         const hk = hb.dataset.hole, h = this.holeOf(hk); if (!h) continue;
-        const lane = fx + 150 + (k++ % 3) * 9;
+        const hrow = hb.closest('.row'); const y0 = hrow.offsetTop + 5; let k = 0;
         for (const hy of $$('.hyp[data-src]', hb)) {
           const src = this.rowEl(hy.dataset.src); if (!src) continue;
-          const hr = hy.getBoundingClientRect();
-          const x0 = hr.left - rr.left + Math.min(26, hr.width / 2), y0 = hr.top - rr.top;
-          const ey = src.offsetTop + rh / 2, ex = fx + (src.querySelector('.frac') ? 112 : 0) + 8;
-          const up = ey < y0;
+          const lane = 5 + (k++ % 4) * 5;
+          const ey = src.offsetTop + rh / 2, ex = 22;
           const blameC = hy.classList.contains('blame');
           const col = blameC ? 'darkred' : '#6A5ACD';
-          const d = up ? `M${x0},${y0} C${x0},${y0 - 12} ${lane},${y0 - 6} ${lane},${y0 - 22} L${lane},${ey + 10} C${lane},${ey} ${ex + 12},${ey} ${ex},${ey}`
-            : `M${x0},${y0 + hr.height} C${x0},${y0 + hr.height + 12} ${lane},${y0 + hr.height + 6} ${lane},${y0 + hr.height + 22} L${lane},${ey - 10} C${lane},${ey} ${ex + 12},${ey} ${ex},${ey}`;
-          t += `<g class="tr" data-h="${hk}"><path d="${d}" fill="none" stroke="${col}" stroke-width="1" ${blameC ? 'stroke-dasharray="2 2"' : ''} opacity=".55"/><circle cx="${ex}" cy="${ey}" r="2.4" fill="${col}" opacity=".7"/></g>`;
+          const up = ey < y0;
+          const d = `M82,${y0} C60,${y0} ${lane},${y0} ${lane},${y0 + (up ? -14 : 14)} L${lane},${ey + (up ? 8 : -8)} C${lane},${ey} ${ex - 8},${ey} ${ex},${ey}`;
+          t += `<g class="tr" data-h="${hk}" data-src="${hy.dataset.src}"><path d="${d}" fill="none" stroke="${col}" stroke-width="1" ${blameC ? 'stroke-dasharray="2 2"' : ''} opacity=".45"/><path d="M${ex - 1},${ey - 3} l4,3 l-4,3" fill="none" stroke="${col}" stroke-width="1" opacity=".7"/></g>`;
         }
       }
       $('.trail', ov).innerHTML = t;
     }
-    trailFocus(hk) {
-      $$('.trail .tr', this.ov).forEach(g => { const on = hk && g.dataset.h === hk; g.querySelector('path').setAttribute('opacity', on ? '1' : '.55'); g.querySelector('path').setAttribute('stroke-width', on ? '1.6' : '1'); });
+    trailFocus(hk, src) {
+      $$('.trail .tr', this.ov).forEach(g => { const on = hk && g.dataset.h === hk && (!src || g.dataset.src === src); g.querySelector('path').setAttribute('opacity', on ? '1' : '.45'); g.querySelector('path').setAttribute('stroke-width', on ? '1.8' : '1'); });
     }
   }
 
@@ -1556,7 +1560,8 @@ const PROGS = (() => {
       }
       $('.sticks', el).innerHTML = t;
       let p = rec ? `<div class="pill" style="left:${pos(v.cur)}%;${rec.bad ? 'background:darkred' : ''}">${rec.s}</div>` : '';
-      if (run) run.fails.slice(0, 4).forEach(i => { const r = run.recs[i]; p += `<div class="pill err${r.trap ? ' trap' : ''}" data-i="${i}" style="left:${pos(i)}%" data-tip="${esc(r.trap ? 'trap: ' + r.trap : 'check failed: ' + r.checks.filter(c => !c.ok).map(c => c.kind + ' (line ' + (c.key || '').slice(1) + ')').join(', '))}">${r.trap ? '💣' : '⚖'} ${r.s}</div>`; });
+      let lastL = -99, lane = 0;
+      if (run) run.fails.slice(0, 5).forEach(i => { const r = run.recs[i]; const L = pos(i); lane = L - lastL < 4 ? lane + 1 : 0; lastL = L; p += `<div class="pill err${r.trap ? ' trap' : ''}" data-i="${i}" style="left:${L}%;top:${26 + lane * 13}px" data-tip="${esc(r.trap ? 'trap: ' + r.trap : 'check failed: ' + r.checks.filter(c => !c.ok).map(c => c.kind + ' (line ' + (c.key || '').slice(1) + ')').join(', '))}">${r.trap ? '💣' : '⚖'} ${r.s}</div>`; });
       const pills = $('.pills', el); pills.innerHTML = p;
       $$('.pill.err', pills).forEach(x => x.addEventListener('click', () => v.setStep(+x.dataset.i)));
     }
@@ -1653,7 +1658,7 @@ const PROGS = (() => {
   const box = (cls, inner, w = 150) => `<div class="row hole ${cls}" style="--hw:${w}px;padding:0"><div class="hbox" style="margin:0;width:${w}px;padding:3px 6px"><svg class="hborder"><rect x="1" y="1" rx="3"/>${cls.includes('vacuous') ? '<rect class="in" x="4" y="4" rx="2"/>' : ''}</svg>${inner}</div></div>`;
   const L = [
     ['sec', 'holes — lines the editor inserts, like synthetic <code>end</code>'],
-    [`<span style="font-size:22px">${UI.restGlyph('false', true)} ${UI.restGlyph('false', false)} ${UI.restGlyph('unknown')} ${UI.restGlyph('vacuous')}</span>`,
+    [`<span style="font-size:22px">${UI.restGlyph('false', true)} ${UI.restGlyph('false', false)} ${UI.restGlyph('unknown')} ${UI.restGlyph('vacuous')}</span><div class="small" style="font-size:9.5px;line-height:1.1">false · unreplayed<br>unknown · vacuous</div>`,
       '<b>𝄽 hole glyph.</b> A quarter rest: a measured silence the bar still owes. It joins the clef family (𝄞 malformed, 𝄠 synthetic end) and marks a row <i>you did not type</i>. Its fill follows the hole\'s status.'],
     [box('false replayed', `<div class="hstat" style="color:darkred;font-size:9px">FALSE</div>${UI.hypShape(25, { cex: true })} ${UI.ruleSVG('false', true, 120)}<span class="cj bad" style="font-size:12px">r·r ≤ n<span class="inst">25 ≤ 3</span></span>`),
       '<b>Refuted, witness replayed.</b> Heavy dashes, a <i>broken</i> solid rule with ⚖, counterexample values inside the shapes, a solid ⚖ in the gutter of the line above, a darkred pill on the slider.'],
@@ -1686,7 +1691,7 @@ const PROGS = (() => {
   if (Q.A === 'calm') par.flags = PROGS.parity.init();
   const A1 = new UI.View(par, { root: $('#A1list'), rh: 34, fx: 330, hw: 560, ruleW: 260, cf: 21, mf: 14, longAt: 200, strip: new UI.Strip($('#A1strip')),
     range: r => { const n = parseInt(r.key.slice(1)); return n >= 7 && n <= 11; }, yourRun: () => ({ calls: [['half', [6]]], label: '$half(6)' }) });
-  const A2 = new UI.View(par, { root: $('#A2list'), rh: 34, fx: 330, hw: 560, ruleW: 260, cf: 21, mf: 12.5, longAt: 200, strip: new UI.Strip($('#A2strip')),
+  const A2 = new UI.View(par, { root: $('#A2list'), rh: 34, fx: 330, hw: 560, ruleW: 260, cf: 21, mf: 14, longAt: 200, wrapAt: 70, strip: new UI.Strip($('#A2strip')),
     range: r => parseInt(r.key.slice(1)) >= 12, yourRun: () => ({ calls: [['half_or_neg1', [6]], ['half_or_neg1', [7]]], label: '$half_or_neg1(6) · $half_or_neg1(7)' }) });
   const syncPar = () => { $$('input[name=a1]').forEach(i => i.checked = i.value === par.flags.spec); $$('input[name=a2]').forEach(i => i.checked = (i.value === 'P1') === par.flags.p1); };
   par.listeners.push(syncPar); syncPar();

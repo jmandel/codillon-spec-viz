@@ -63,7 +63,8 @@ label{font-family:var(--sans);font-size:13px}
 .lrow{position:relative;display:grid;align-items:center;min-height:var(--row)}
 .gut{font-family:var(--sans);font-size:15px;color:gray;text-align:right;padding-right:8px;position:relative;align-self:stretch;display:flex;align-items:center;justify-content:flex-end}
 .gut .g{font-family:var(--serif);font-size:20px;color:darkred;line-height:1}
-.gut .g.hollow{color:transparent;-webkit-text-stroke:1px darkred}
+.gut .g.hollow{color:transparent;-webkit-text-stroke:.7px darkred;border:1.2px dashed darkred;border-radius:50%;padding:1px 2px;font-size:17px}
+.hollowS{color:transparent;-webkit-text-stroke:.7px darkred;border:1.2px dashed darkred;border-radius:50%;padding:0 2px}
 .gut .g.unk{color:indigo}
 .gut .g.vac{color:#777}
 .gut .g.dyn{color:slategray;font-size:16px}
@@ -191,7 +192,11 @@ svg text{font-family:var(--sans)}
 .lens .lt{font-family:var(--sans);font-size:12px;color:#333;margin:2px 4px}
 .lens .lt b{font-weight:bold}
 .secC{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:12px;align-items:start}
-.secC .scroller{height:780px;overflow-y:auto;border:1px solid #e3e3d8;position:relative;}
+.scwrap{display:flex;gap:4px;min-width:0}
+.minimap{flex:none;width:14px;height:780px;position:relative;border:1px solid #e3e3d8;background:#fffff6;cursor:pointer}
+.minimap .mk{position:absolute;left:1px;right:1px;height:4px;border-radius:1px}
+.minimap .vp{position:absolute;left:0;right:0;border:1px solid #bbb;background:rgba(0,0,128,.04)}
+.secC .scroller{flex:1;min-width:0;height:780px;overflow-y:auto;border:1px solid #e3e3d8;position:relative;}
 .secC .lrow{grid-template-columns:44px 470px 150px minmax(0,1fr)}
 .secC .code{font-size:20px}
 .secC .code.specline{font-size:16px}
@@ -291,7 +296,7 @@ svg text{font-family:var(--sans)}
     <div class="slider" id="sliderC"></div>
   </div>
   <div class="secC">
-    <div class="scroller" id="scrollC"><div class="listing" id="listC"></div></div>
+    <div class="scwrap"><div class="minimap" id="mmC"></div><div class="scroller" id="scrollC"><div class="listing" id="listC"></div></div></div>
     <div class="lens" id="lensC"></div>
   </div>
 </section>
@@ -299,13 +304,24 @@ svg text{font-family:var(--sans)}
 <section class="footer" id="footer">
   <h2>Self-critique</h2>
   <ul>
-    <li><b>What the ring makes obvious.</b> Overflow and signedness. Both are invisible on a number line, and here they become places: the top seam (signed) and the bottom seam (unsigned). S1 needs no prose: the comparison's cut swings from the bottom to the top of the ring, and the product's ℤ arc now crosses it. Strictness becomes a post: S2 is a filled post turning hollow with the bead sitting on it. Masking becomes a wrap: in bug (a), an unmasked index leaves the table ring through the seam where <code>&amp; 7</code> would have wrapped it.</li>
-    <li><b>What it hides.</b> Relations among more than two values, quantified facts, and anything about memory beyond one table. The hash table's R clauses still need conjunct chips and the table ring, because no single i32 ring shows them. Parity becomes a symbolic comb: the fisheye scale cannot show individual teeth. On the fisheye, large mid-range values (around 2<sup>30</sup>) are compressed, so a hover readout or the twin-tick labels carry the exact numbers.</li>
-    <li><b>Scale.</b> On the 169-line hash table, rings appear only on lines with an obligation or a refined value (about 15). The gutter still carries ⚖︎ / 💣 / ✶ / ○, so you can find the bug by scanning. Rings are 26 px in the margin and become legible in the lens. Several hundred steps work on the slider. The 695k-step S1 real run cannot be replayed, so it is shown as a dashed ghost track.</li>
-    <li><b>Kind discrimination.</b> The six states differ in shape, not just hue. Proven is a quiet filled band. Refuted and replayed is a solid dark bead with a hatched spill, a solid ⚖︎ and a seam flash. Refuted but not replayed is a hollow dashed bead, a hollow ⚖︎ and a dashed ghost track. Dynamic is a dotted band with ∘N. Unknown is a dashed band with ✶. Vacuous is a 50% hollow ring with ○. The grayscale button tests this.</li>
-    <li><b>Implementation cost in Codillon.</b> Moderate. A ring is one SVG &lt;g&gt; per refined value, built from arcs, posts and a rotated bead. It fits the existing per-line fraction/annotation slot and the 0.25 s tween system: beads rotate, so they tween around the ring rather than across it. The fisheye map is about 5 lines. The expensive part is upstream: the checker must report for every obligation its <i>reader</i> (which seam applies), the ℤ term and its machine value, and the dependent anchors behind each fence. That is roughly the "residue" record of 01 §2.8 plus a <code>reader: signed|unsigned|ℤ</code> field.</li>
-    <li><b>Deviations.</b> I kept 03's listing text and line numbers, with names written <code>n</code>, <code>r</code>, <code>v</code>, because the fixture's edits are string replacements on those lines. 01 §1 syntax would write <code>$n</code> and put param/result on separate lines; the header is wrapped here to suggest that. The hash table has 8 slots (fixture), not the 16 slots that idea 05 mentions. The traces are full step logs regenerated with the fixture's own reference interpreter. They match every fixture key frame (stack, line and checks), and the S1 trace is exactly the fixture's loop-head replay. The "nonlinear lemma" obligations (03 status <i>lemma</i>) are proven by default. The Checker menu in B shows how they look when they are only <i>dynamic</i> or <i>unknown</i>.</li>
-    <li><b>Rubric self-scores</b> (1–5): salience 5 · blame locality 4 · kind discrimination (grayscale) 4 · vocabulary continuity 4 · predicate on shape 4 · causal trail 3 · concrete witness 5 · ink economy 4 · scale 3 · edit continuity 4. Weak spots: the causal trail across functions in C is carried by the table ring rather than by connections, and the margin crowds when three or more rings share a row.</li>
+    <li><b>What the ring makes obvious.</b> Overflow and signedness. On a number line they are invisible; here they are two places: the top seam (signed) and the bottom seam (unsigned). In S1 nothing has to be read. The comparison's cut swings from the bottom to the top of the ring (line 17), the product's ℤ arc now crosses it, and the seam flashes on line 15, which is where the wrap happened. S2 is a fence post that turns from filled to hollow with the bead sitting on it, best seen in the loupe. Bug (a) is the mask made literal: the unmasked index leaves the table ring through the seam where <code>&amp; 7</code> would have wrapped it. Dependent bounds visibly move with their anchor: √n hangs from n's bead.</li>
+    <li><b>What it hides.</b> Relations among more than two values, quantified facts, and memory beyond one table. The hash table's R clauses still need conjunct chips and the table ring, because a single i32 ring cannot show them. Parity becomes a symbolic comb, because the fisheye cannot show individual teeth. The fisheye also cannot separate small integers, so I added a <b>loupe</b>: a linear integer strip under any big ring whose values of interest fall within about 200 consecutive integers. Without it, S2 and S3 would be hairlines.</li>
+    <li><b>Scale.</b> On the 169-line table, rings appear only on the 14 lines that carry an obligation or a refined value. The gutter keeps ⚖ / 💣 / ✶ / ○. A gutter minimap beside the scroller marks ⚖, 💣, refuted rings and the arrow, so a bug outside the scrolled view still shows within a glance. Mini rings are 22 px, so they only say "calm or not"; the two lens rings and the table ring carry the detail. The 695k-step S1 real run is a dashed ghost track, not a replay.</li>
+    <li><b>Kind discrimination.</b> The six states differ in line style and glyph, not hue alone. Proven is a quiet filled band. Refuted and replayed is a solid dark bead, a hatched spill, a seam flash and a solid ⚖. Refuted but not replayed is a hollow dashed bead, a dashed spill and a dashed-circle ⚖. Held-on-this-run is a dotted band with ∘N. Unknown is a dashed band with ✶. Vacuous is a 50% hollow ring with ○. Use the grayscale button to check. A 22-px mini ring in grayscale distinguishes only refuted from the rest; the lens and gutter carry the full distinction.</li>
+    <li><b>Implementation cost in Codillon.</b> Moderate. A ring is one SVG &lt;g&gt; per refined value: arcs, posts, and a bead that is <i>rotated</i>, so the existing 0.25 s tweens move it around the ring and across the seam rather than through the middle. The fisheye map is five lines. The real cost is upstream: for every obligation the checker must report its <i>reader</i> (signed seam, unsigned seam or ℤ), the ℤ term and its machine value, and the anchor of each dependent fence. That is roughly the residue record of 01 §2.8 plus a <code>reader</code> field and the wrap-blame list.</li>
+    <li><b>Deviations.</b>
+      <ul>
+        <li>Listing text and line numbers follow 03, with names <code>n</code>, <code>r</code> and <code>v</code>, because the fixture's edits are string replacements on those lines. In 01 syntax these would be <code>$n</code>, and the header is shown wrapped into func / param / result rows to suggest that.</li>
+        <li>The table has 8 slots, as in the fixture, not the 16 in idea 05.</li>
+        <li>The slider traces are full step logs regenerated with the fixture's own reference interpreter. They match every fixture key frame (line, stack and checks), and the S1 trace is exactly the fixture's loop-head replay.</li>
+        <li>03's <i>lemma</i> obligations are shown as proven by default, the "nonlinear lemmas found" setting. The Checker menu in B shows the same obligations as <i>held on this run</i> or <i>unknown</i>.</li>
+        <li>In C the clean run is 03's correct-run sequence. Each bug loads its own witness sequence.</li>
+      </ul></li>
+    <li><b>Rubric self-scores</b> (1–5):
+      <ul>
+        <li>salience 4 · blame locality 4 · kind discrimination (grayscale) 4 · vocabulary continuity 4 · predicate on shape 3 · causal trail 3 · concrete witness 5 · ink economy 4 · scale 4 · edit continuity 4.</li>
+        <li>Weakest points: the predicate lives in a margin ring <i>beside</i> the type shape rather than inside it, and the causal trail across functions in C runs through the table ring, not through connections. In S3 the strongest mark is at the loop entry (line 6), where the obligation fails. The line to edit (line 3) shows only the bad value 1 in its shape.</li>
+      </ul></li>
   </ul>
 </section>
 </div>
@@ -413,6 +429,7 @@ class Ring {
     this.posts = el('g', {}, g);
     this.beadG = el('g', {}, g); this.beads = {};
     this.labG = el('g', {}, g); this.labs = {};
+    this.loupeG = el('g', {}, g);
     this.cg = el('text', { cls: 'cglyph', x: cx, y: cy, 'font-size': big ? 22 : 11 }, g);
     this.cg2 = big ? el('text', { x: cx, y: cy + 20, 'text-anchor': 'middle', 'font-size': 10, fill: '#555' }, g) : null;
   }
@@ -509,9 +526,58 @@ class Ring {
     for (const k in this.beads) if (!seen[k]) { this.beads[k].g.style.opacity = 0; }
     // labels (big rings): twin ticks
     if (big) this.labelBeads(beads.filter(b => b.lab != null));
+    if (big) this.loupe(s, beads);
     this.cg.textContent = s.glyph || '';
     this.cg.setAttribute('fill', s.glyphColor || '#555');
     if (this.cg2) { this.cg2.textContent = s.sub || (s.cut && s.cutLab ? 'cut: ' + s.cutLab : ''); this.cg2.setAttribute('fill', s.cutBad ? 'darkred' : '#555'); }
+  }
+  /* loupe: a linear integer strip under the ring, for when everything of interest sits in a few integers */
+  loupe(s, beads) {
+    const { cx, cy, R } = this, G = this.loupeG; G.innerHTML = '';
+    if (s.loupe === false || s.status === 'vacuous') return;
+    const vals = [];
+    for (const a of (s.arcs || [])) { if (a.a0 == null && !a.loOpen) vals.push(a.lo); if (a.a1 == null && !a.hiOpen) vals.push(a.hi); }
+    for (const q of (s.extraPosts || [])) if (q.v != null) vals.push(q.v);
+    for (const b of beads) { const v = b.z != null ? b.z : b.v; if (b.cls !== 'hollowbad' && b.cls !== 'prev') vals.push(v); }
+    if (vals.length < 2 || vals.some(v => !isFinite(v) || v > MX || v < MN)) return;
+    let lo = Math.floor(Math.min(...vals)) - 1, hi = Math.ceil(Math.max(...vals)) + 1;
+    if (hi - lo > 240) return;
+    if (hi - lo < 6) { const c = (hi + lo) / 2; lo = Math.floor(c - 3); hi = Math.ceil(c + 3); }
+    const half = Math.min(150, cx - 12), xl = cx - half, xr = cx + half, y = cy + R + 42;
+    const X = v => xl + (v - lo) / (hi - lo) * (xr - xl);
+    const [p1x, p1y] = P(cx, cy, R, ang(lo)), [p2x, p2y] = P(cx, cy, R, ang(hi));
+    el('path', { d: `M${p1x},${p1y} L${xl},${y - 8} M${p2x},${p2y} L${xr},${y - 8}`, stroke: '#c9c6d8', 'stroke-dasharray': '2 2', fill: 'none' }, G);
+    el('line', { x1: xl, y1: y, x2: xr, y2: y, stroke: '#999' }, G);
+    const span = hi - lo, step = span <= 14 ? 1 : span <= 60 ? 5 : span <= 120 ? 10 : 20;
+    for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
+      el('line', { x1: X(v), y1: y - 3, x2: X(v), y2: y + 3, stroke: '#999' }, G);
+      el('text', { x: X(v), y: y + 13, 'text-anchor': 'middle', 'font-size': 8.5, fill: '#777', text: fmt(v) }, G);
+    }
+    el('text', { x: xr + 4, y: y + 3, 'font-size': 8.5, fill: '#999', text: 'loupe' }, G);
+    for (const a of (s.arcs || [])) {
+      if (a.a0 != null) continue;
+      const l = a.loOpen ? lo : Math.max(lo, a.lo), r = a.hiOpen ? hi : Math.min(hi, a.hi);
+      if (r < l) continue;
+      const p = el('path', { cls: 'arc', d: `M${X(l)},${y} L${X(r) + (r === l ? .01 : 0)},${y}` }, G); p.style.strokeWidth = 7;
+      if (!a.loOpen && a.lo >= lo) el('circle', { cls: 'post ' + (a.loIn ? 'in' : 'ex'), cx: X(a.lo), cy: y, r: 4 }, G);
+      if (!a.hiOpen && a.hi <= hi) el('circle', { cls: 'post ' + (a.hiIn ? 'in' : 'ex'), cx: X(a.hi), cy: y, r: 4 }, G);
+    }
+    for (const q of (s.extraPosts || [])) if (q.v != null) el('circle', { cls: 'post ' + (q.inc ? 'in' : 'ex'), cx: X(q.v), cy: y, r: 4, style: q.bad ? 'stroke:darkred' : '' }, G);
+    const fences = [];
+    for (const a of (s.arcs || [])) { if (a.a0 != null) continue; if (!a.loOpen) fences.push(a.lo); if (!a.hiOpen) fences.push(a.hi); }
+    for (const q of (s.extraPosts || [])) if (q.v != null) fences.push(q.v);
+    for (const b of beads) {
+      const v = b.z != null ? b.z : b.v; if (v > hi || v < lo) continue;
+      const g = el('g', { cls: 'bead ' + (b.cls || '') }, G);
+      const by = y - (b.small ? 9 : 12);
+      el('line', { x1: X(v), y1: by, x2: X(v), y2: y, stroke: b.cls === 'bad' ? 'darkred' : '#a9a3d6', 'stroke-width': 1 }, G);
+      el('circle', { cx: X(v), cy: by, r: b.small ? 3.4 : 5 }, g);
+      if (b.cls === 'bad' && fences.length) {
+        let best = fences[0]; for (const e of fences) if (Math.abs(e - v) < Math.abs(best - v)) best = e;
+        if (Math.abs(best - v) < 1e-9) el('circle', { cx: X(v), cy: y, r: 7.5, fill: 'none', stroke: 'darkred', 'stroke-width': 1.6 }, G);
+        else { const sp = el('path', { cls: 'spill', d: `M${X(best)},${y + 8} L${X(v)},${y + 8}` }, G); sp.style.strokeWidth = 3; }
+      }
+    }
   }
   labelBeads(beads) {
     const { cx, cy, R } = this;
@@ -713,7 +779,7 @@ class Slider {
       setTip(d, b.tip || 'a spec check fails at this step');
       d.addEventListener('mousedown', ev => { ev.stopPropagation(); Slider.active = this; this.go(b.i); });
     }
-    if (o.ghost) { this.ghost.style.display = 'block'; this.ghost.innerHTML = '<span><span class="hollow" style="color:transparent;-webkit-text-stroke:1px darkred">⚖\uFE0E</span> ' + o.ghost + '</span>'; setTip(this.ghost, o.ghostTip || ''); }
+    if (o.ghost) { this.ghost.style.display = 'block'; this.ghost.innerHTML = '<span><span class="hollowS">⚖\uFE0E</span> ' + o.ghost + '</span>'; setTip(this.ghost, o.ghostTip || ''); }
     else this.ghost.style.display = 'none';
     this.go(Math.min(o.start != null ? o.start : 0, this.N - 1), true);
   }
@@ -724,7 +790,7 @@ class Slider {
     const left = (this.N > 1 ? i / (this.N - 1) * 100 : 0) + '%';
     this.thumb.style.left = left; this.pill.style.left = left;
     const fr = this.N > 1 ? i / (this.N - 1) : 0;
-    this.pill.style.transform = 'translateX(' + (-50 - Math.max(0, fr - .8) * 250) + '%)';
+    this.pill.style.transform = 'translateX(' + (-fr * 100) + '%)';
     const f = this.T[i];
     const bad = (this.o.bad || []).some(b => b.i === i);
     this.pill.style.background = bad ? 'darkred' : 'darkblue';
@@ -997,7 +1063,7 @@ function miniRing(marg, kind, n, labels) {
   item(70, 64, s => { const r = new SRing(s, 35, 32, 24, 8, false, {}); r.set({ fills: ['', '', '', 'tomb', 'full', '', '', ''], probe: { from: 3, steps: 1 }, homes: [{ from: 3, to: 4 }] }); },
     '<b>Table ring</b>: 8 slots, slot 0 at the bottom-right. <code>&amp; 7</code> wraps at the bottom seam. Shaded = FULL, hatched = TOMB, ivory = EMPTY. Navy arc = the current probe; violet outer arc = a key\'s home path h(k)→slot.');
   const g = h('div', 'it', L);
-  g.innerHTML = '<div><b>Gutter</b> (darkred, precedence 💣 &gt; 𝄞 &gt; ⚖︎ &gt; ✗ &gt; ✶ &gt; number): <span style="color:darkred;font-size:16px">⚖︎</span> a spec obligation is refuted and its witness is loaded on the slider; <span style="color:transparent;-webkit-text-stroke:1px darkred;font-size:16px">⚖︎</span> refuted, witness not yet replayed; <span style="color:darkred">💣</span> trap; <span style="color:indigo">✶</span> unknown; <span style="color:#777">○</span> vacuous; gray number = nothing to say. Floated darkred labels are Codillon\'s commentary.</div>';
+  g.innerHTML = '<div><b>Gutter</b> (darkred, precedence 💣 &gt; 𝄞 &gt; ⚖︎ &gt; ✗ &gt; ✶ &gt; number): <span style="color:darkred;font-size:16px">⚖︎</span> a spec obligation is refuted and its witness is loaded on the slider; <span class="hollowS" style="font-size:14px">⚖︎</span> refuted, witness not yet replayed; <span style="color:darkred">💣</span> trap; <span style="color:indigo">✶</span> unknown; <span style="color:#777">○</span> vacuous; gray number = nothing to say. Floated darkred labels are Codillon\'s commentary.</div>';
   const six = h('div', 'six', L);
   const S = [
     ['proven', 'Proven', 'quiet filled arc, gray line number. Silence is success.', { status: 'proven', arcs: [{ lo: 0, hi: MX, loIn: true, hiOpen: true }], beads: [{ k: 'a', v: 40 }] }],
@@ -1096,7 +1162,7 @@ const CARDS = [
       { key: 'vac', label: '(param $x (i32 | v < -2147483648))', header: '(func $abs (param $x (i32 | v < -2147483648)) (result (i32 | 0 <= v))', status: 'vacuous' },
     ],
     body: ['i32.const 0', 'local.get $x', 'i32.sub', 'local.get $x', 'local.get $x', 'i32.const 0', 'i32.lt_s', 'select', ')'],
-    inputs: [5, -5, -2147483647, -2147483648], x0: -5,
+    inputs: [5, -5, -2147483647, -2147483648], x0: -2147483648,
     fails: (vk, x) => vk === 'plain' && x === MN,
     ring(vk, x, v, replayed) {
       const arcs = [{ lo: 0, hi: MX, loIn: true, hiOpen: true }];
@@ -1124,7 +1190,7 @@ const CARDS = [
     ],
     header: '(func $next (param $n (i32 | v == 8)) (param $i (i32 | 0 <= v && v < n)) (result (i32 | 0 <= v && v < n))',
     body: ['local.get $i', 'i32.const 1', 'i32.add', 'i32.const 7', 'i32.and', ')'],
-    inputs: [0, 1, 2, 3, 4, 5, 6, 7], x0: 6, xname: 'i', slots: true,
+    inputs: [0, 1, 2, 3, 4, 5, 6, 7], x0: 7, xname: 'i', slots: true,
     fails: (vk, x) => vk === 'nomask' && x === 7,
     ring(vk, x, v, replayed) {
       const bad = v >= 8;
@@ -1155,7 +1221,7 @@ const CARDS = [
     const rp = h('button', '', ctl, '▶ replay witness'); rp.style.color = 'darkred'; rp.style.borderColor = 'darkred';
     const body = h('div', 'body', card);
     const lh = h('div', 'listing', body);
-    const ringSvg = el('svg', { width: 300, height: 210, viewBox: '0 0 300 210' }, body); ringSvg.style.overflow = 'visible';
+    const ringSvg = el('svg', { width: 300, height: 236, viewBox: '0 0 300 236' }, body); ringSvg.style.overflow = 'visible';
     const ring = C.slots ? new SRing(ringSvg, 150, 100, 62, 8, true, { seamLabel: '' }) : new Ring(ringSvg, 130, 104, 58, true);
     const cap = h('div', 'cap', card); cap.innerHTML = C.cap;
     let x = C.x0;
@@ -1231,14 +1297,15 @@ const CARDS = [
   const comm = h('span', 'comm', L.row(17).marg); comm.style.display = 'none';
   L.layout();
   // cross-row tether (n's bead anchors the fences of the result and invariant rings)
+  let tg = null;
   function tethers() {
+    if (tg) tg.remove();
     const hr = $('listB').getBoundingClientRect();
     const c = k => { const b = RINGS[k].svg.getBoundingClientRect(); return [b.left - hr.left + 15, b.top - hr.top + 15]; };
     const [x1, y1] = c('n'), [x2, y2] = c('inv'), [x3, y3] = c('res');
-    const g = el('g', {}, L.markG);
+    const g = tg = el('g', {}, L.markG);
     el('path', { d: `M${x1},${y1 + 12} C${x1 - 30},${y1 + 80} ${x2 - 30},${y2 - 60} ${x2 - 6},${y2 - 9}`, fill: 'none', stroke: '#6A5ACD', 'stroke-dasharray': '2 2', 'stroke-width': 1 }, g);
     el('text', { x: x1 - 26, y: (y1 + y2) / 2, 'font-size': 10, fill: '#6A5ACD', text: '√n', 'text-anchor': 'end' }, g);
-    el('path', { d: `M${x1 + 12},${y1} L${x3 - 12},${y3}`, fill: 'none', stroke: '#6A5ACD', 'stroke-dasharray': '2 2', 'stroke-width': 1 }, g);
   }
   tethers();
   const FM = {
@@ -1250,8 +1317,8 @@ const CARDS = [
   const lensHost = $('lensB'); lensHost.innerHTML = '';
   const LENS = [0, 1].map(k => {
     const t = h('div', 'lt', lensHost);
-    const svg = el('svg', { width: 388, height: 262, viewBox: '0 0 388 262' }, lensHost); svg.style.overflow = 'visible';
-    return { t, ring: new Ring(svg, 194, 128, 82, true) };
+    const svg = el('svg', { width: 388, height: 292, viewBox: '0 0 388 292' }, lensHost); svg.style.overflow = 'visible';
+    return { t, ring: new Ring(svg, 194, 118, 80, true) };
   });
   const lensNote = h('div', 'lt', lensHost);
   const slider = new Slider($('sliderB'), () => render());
@@ -1337,7 +1404,7 @@ const CARDS = [
       const j = last[ln]; const ls = lemmaStatus(ln, last);
       const sp = Object.assign({ arcs: [{ lo: MN, hi: MX, loOpen: true, hiOpen: true, thin: true }], cut: 'top', beads: [],
         tip: 'line ' + ln + ' · i32.add r + 1 · obligation: no signed wrap (r + 1 &lt;= 2147483647), read as a signed value by the spec. Needs r &lt;= 46340 from r*r &lt;= n (nonlinear). Status: <b>' + ls.status + '</b>.' }, ls);
-      if (j != null) { const z = T[j].loc.r + 1; sp.zarc = { z }; sp.beads = [{ k: 'v', z, lab: 'r + 1', read: 's' }]; sp.tt = `r+1 = <b>${fmt(z)}</b>`; }
+      if (j != null) { const z = T[j].loc.r + 1; sp.zarc = { z }; sp.beads = [{ k: 'v', z, lab: 'r + 1', read: 's' }]; sp.tt = `r+1 = <b>${fmt(z)}</b>` + (ls.status === 'dynamic' ? ` · <span style="color:slategray">held ${ls.glyph}</span>` : ''); }
       else sp.tt = '<span class="dim">not yet run</span>';
       S['a' + ln] = sp;
     }
@@ -1354,7 +1421,7 @@ const CARDS = [
         sp.zarc = { z, bad: crosses };
         sp.beads = [{ k: 'v', z, lab: '(r+1)·(r+1)', read: reader, cls: crosses ? 'bad' : '' }];
         if (crosses) { sp.flash = 'top'; sp.spill = { a0: 180, a1: zang(z), keep: true }; }
-        sp.tt = (z !== v ? `ℤ ${fmt(z)} → ` : '') + `<span class="${reader === 's' ? (crosses ? 'bad' : '') : 'dim'}">${reader === 's' ? '<b>' : ''}s ${fmt(v)}${reader === 's' ? '</b>' : ''}</span> · <span class="${reader === 'u' ? '' : 'dim'}">${reader === 'u' ? '<b>' : ''}u ${u32(v)}${reader === 'u' ? '</b>' : ''}</span>`;
+        sp.tt = v >= 0 && z === v ? `s = u <b>${v}</b>` + (ls.status === 'dynamic' && !crosses ? ` · <span style="color:slategray">held ${ls.glyph}</span>` : '') : (z !== v ? `ℤ ${fmt(z)} → ` : '') + `<span class="${reader === 's' ? (crosses ? 'bad' : '') : 'dim'}">${reader === 's' ? '<b>' : ''}s ${fmt(v)}${reader === 's' ? '</b>' : ''}</span> · <span class="${reader === 'u' ? '' : 'dim'}">${reader === 'u' ? '<b>' : ''}u ${u32(v)}${reader === 'u' ? '</b>' : ''}</span>`;
       } else sp.tt = '<span class="dim">not yet run</span>';
       if (crosses) sp.status = 'refuted';
       else if (st.bug === 'S1') { sp.status = 'ghost'; sp.beads.push({ k: 'w', z: 2147488281, cls: 'hollowbad' }); sp.spill = { a0: 180, a1: zang(2147488281), keep: true }; }
@@ -1469,7 +1536,7 @@ const CARDS = [
   const RINGS = {};
   const DEF = [
     [13, 'slotp', 'idx'], [20, 'findres', 'i32'], [28, 'mask', 'idx'], [30, 'pinv', 'idx'], [32, 'pdec', 'i32'], [38, 'stt', 'st3'],
-    [63, 'cnt', 'cnt'], [67, 'lookres', 'i32'], [99, 'dst', 'st3'], [126, 'lf', 'cnt'], [140, 'cup140', 'idx'], [149, 'set149', 'idx'], [166, 'used', 'cnt']];
+    [63, 'cnt', 'cnt'], [67, 'lookres', 'i32'], [99, 'dst', 'st3'], [126, 'lf', 'cnt'], [136, 'notin', 'i32'], [140, 'cup140', 'idx'], [149, 'set149', 'idx'], [166, 'used', 'cnt']];
   const KIND = {};
   for (const [ln, key, kind] of DEF) {
     const m = L.row(ln).marg; KIND[key] = kind;
@@ -1538,7 +1605,7 @@ const CARDS = [
       if (j >= 0) { const g = T[j]; sp.probe = { from: hk(g.loc.k), steps: g.loc.j, off: g.loc.i >= 8, bad: g.loc.i >= 8 }; }
     }
     { const j = lastIn(i, g => g.fn === 'find' && g.op === 'return');
-      if (j >= 0 && (f.fn !== 'insert' || f.ln <= 123)) { const g = T[j]; const Mj = new Map(g.M); const v = g.st[g.st.length - 1]; sp.stop = { at: g.loc.i & 7, bad: v === -1 && Mj.has(g.loc.k) }; if (sp.probe && sp.stop.bad) sp.probe.bad = true; } }
+      if (j >= 0 && (f.fn !== 'insert' || f.ln <= 123) && T[j].st[T[j].st.length - 1] === -1) { const g = T[j]; const Mj = new Map(g.M); const v = g.st[g.st.length - 1]; sp.stop = { at: g.loc.i & 7, bad: v === -1 && Mj.has(g.loc.k) }; if (sp.probe && sp.stop.bad) sp.probe.bad = true; } }
     // home paths, model beads, R clauses made geometric
     const homes = [], laneOf = {};
     slots.forEach((s, ix) => {
@@ -1608,6 +1675,12 @@ const CARDS = [
     { const j = lastIn(i, g => g.fn === 'delete' && g.ln === 99); const cv = j >= 0 ? T[j].st[T[j].st.length - 1] : null; const bad = st.bug === 'Hbp';
       S.dst = { fills: ['', '', 'adm'], bad: bad ? [0] : [], badFill: bad ? [0] : [], bead: cv == null ? null : { i: cv, cls: cv !== 2 ? 'bad' : '' }, status: bad ? 'refuted' : 'proven',
         tip: 'line 99–100: delete must write TOMB (shaded), so that no probe path gains an EMPTY (R3). ' + (bad ? '<b>writes EMPTY</b>' : ''), tt: cv == null ? '' : `writes <b class="${cv !== 2 ? 'bad' : ''}">${['EMPTY', 'FULL', 'TOMB'][cv]}</b>` }; }
+    { const j = lastIn(i, g => g.fn === 'insert' && g.ln === 135);
+      if (j >= 0) { const g = T[j], k = g.loc.k, keys = g.M.map(e => e[0]), bad = keys.includes(k);
+        S.notin = { status: bad ? 'refuted' : 'proven', arcs: [{ lo: MN, hi: MX, loOpen: true, hiOpen: true, thin: true }], extraPosts: keys.map(v => ({ v, inc: false, bad: v === k })), beads: [{ k: 'k', v: k, lab: 'k', cls: bad ? 'bad' : '' }],
+          tip: '(@invariant !(k in M) …) on entry to loop $free · admitted = every i32 except the keys of M (hollow posts punch them out of the ring). ' + (st.bug === 'Hc' ? '<b>Nothing establishes it any more</b> (lines 110–123 deleted): k = ' + k + ' sits in a hole.' : 'Established by $find\'s dependent result (−1 ⟹ k ∉ M).'),
+          tt: `k = <b class="${bad ? 'bad' : ''}">${k}</b> · M keys {${keys.join(', ')}}` };
+      } else S.notin = { status: st.bug === 'Hc' ? 'ghost' : 'proven', arcs: [], beads: [], tt: '<span class="dim">loop not entered</span>', tip: 'free-loop entry invariant !(k in M)' }; }
     { const lim = st.bug === 'Hd' ? 8 : 7; const bad = st.bug === 'Hd';
       S.lf = { fills: Array(8).fill('').map((_, x) => x < lim ? 'adm' : ''), badFill: bad ? [7] : [], bad: bad ? [7] : [], posts: [{ at: lim, inc: false, bad }], bead: f.fn === 'insert' ? { i: used, edge: true } : null, status: bad ? 'refuted' : 'proven',
         tip: 'lines 124–126: insert proceeds only while used &lt; ' + lim + '. R4 needs used + 1 &lt; CAP afterwards, i.e. used &lt; 7. ' + (bad ? '<b>The fence moved to 8: sector 7 spills.</b>' : ''), tt: `insert while used &lt; <b class="${bad ? 'bad' : ''}">${lim}</b>` }; }
@@ -1620,14 +1693,14 @@ const CARDS = [
         tip: 'line 166 · used := used + 1 · R4 requires used &lt; CAP: the hollow post at the seam. ' + (bad ? '<b>used = 8 sits on the post.</b>' : ''), tt: `used = <b class="${bad ? 'bad' : ''}">${used}</b> &lt; 8` }; }
     for (const k in RINGS) { const s = Object.assign({}, S[k] || {}); s.stale = stale; RINGS[k].set(s); RINGS[k].tt.innerHTML = (S[k] && S[k].tt) || ''; RINGS[k].svg.style.outline = st.pin === k ? '1px solid darkblue' : ''; }
     // ----- focus rings in the lens
-    const FK = { none: ['findres', 'lookres'], Ha: ['cup140', 'set149'], Hb: ['stt', 'findres'], Hbp: ['dst', 'lookres'], Hc: ['lookres', 'used'], Hd: ['lf', 'used'] }[st.bug].slice();
+    const FK = { none: ['findres', 'lookres'], Ha: ['cup140', 'set149'], Hb: ['stt', 'findres'], Hbp: ['dst', 'lookres'], Hc: ['notin', 'lookres'], Hd: ['lf', 'used'] }[st.bug].slice();
     if (st.pin) { if (FK[0] !== st.pin) FK[1] = FK[0]; FK[0] = st.pin; }
     FK.forEach((k, q) => {
       const F = FOC[q];
       if (F.key !== k) {
         F.box.innerHTML = ''; F.key = k;
         const kind = KIND[k];
-        const svg = el('svg', { width: 418, height: kind === 'i32' ? 200 : 150, viewBox: `0 0 418 ${kind === 'i32' ? 200 : 150}` }, F.box); svg.style.overflow = 'visible';
+        const svg = el('svg', { width: 418, height: kind === 'i32' ? 232 : 150, viewBox: `0 0 418 ${kind === 'i32' ? 232 : 150}` }, F.box); svg.style.overflow = 'visible';
         F.ring = kind === 'i32' ? new Ring(svg, 209, 100, 58, true) : new SRing(svg, 209, 72, 52, kind === 'st3' ? 3 : 8, true, kind === 'st3' ? { labels: ['EMPTY', 'FULL', 'TOMB'] } : {});
       }
       const s = Object.assign({}, S[k]); s.stale = stale; F.ring.set(s);
@@ -1643,11 +1716,25 @@ const CARDS = [
     if (BLAME[st.bug]) { L.row(BLAME[st.bug]).marg.appendChild(comm); comm.textContent = COMM[st.bug]; comm.style.display = ''; } else comm.style.display = 'none';
     // op strip highlight
     document.querySelectorAll('#opsC span[data-q]').forEach(e => e.classList.toggle('cur', +e.dataset.q === opq));
+    // minimap of the gutter (scale): ⚖ / 💣 / refuted rings / arrow, plus the visible window
+    const mm = $('mmC'), H = L.host.scrollHeight || 1, mh = mm.clientHeight;
+    mm.innerHTML = '';
+    const mark = (ln, color, tip) => { const R2 = L.row(ln); const d = h('div', 'mk', mm); d.style.top = (R2.y / H * mh) + 'px'; d.style.background = color; setTip(d, tip); };
+    for (const k in RINGS) if (S[k] && S[k].status === 'refuted') mark(RINGS[k].ln, 'rgba(139,0,0,.55)', 'line ' + RINGS[k].ln + ': ring refuted');
+    if (BLAME[st.bug]) mark(BLAME[st.bug], 'darkred', '⚖ line ' + BLAME[st.bug]);
+    if (trapJ >= 0 && i >= trapJ) mark(T[trapJ].ln, 'darkred', '💣 line ' + T[trapJ].ln);
+    mark(f.ln, '#000080', 'arrow: line ' + f.ln);
+    this_vp = h('div', 'vp', mm);
+    const sc0 = $('scrollC'); this_vp.style.top = (sc0.scrollTop / H * mh) + 'px'; this_vp.style.height = (sc0.clientHeight / H * mh) + 'px';
     // keep the arrow row in view inside the scroller
     const sc = $('scrollC'), R = L.row(f.ln);
     if (R && R.y != null && (R.y < sc.scrollTop + 60 || R.y > sc.scrollTop + sc.clientHeight - 120)) sc.scrollTop = Math.max(0, R.y - sc.clientHeight / 2);
+    this_vp.style.top = (sc.scrollTop / H * mh) + 'px';
     if (stale) setTimeout(() => render(false), 330);
   }
+  let this_vp = null;
+  $('mmC').addEventListener('click', ev => { const r = $('mmC').getBoundingClientRect(); const sc = $('scrollC'); sc.scrollTop = (ev.clientY - r.top) / r.height * L.host.scrollHeight - sc.clientHeight / 2; });
+  $('scrollC').addEventListener('scroll', () => { if (this_vp) { const sc = $('scrollC'), H = L.host.scrollHeight || 1, mh = $('mmC').clientHeight; this_vp.style.top = (sc.scrollTop / H * mh) + 'px'; } });
   function setBug(b) {
     st.bug = b;
     for (const R of L.rows) { R.text = lines0[R.ln - 1].trim(); }

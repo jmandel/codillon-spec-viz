@@ -34,7 +34,7 @@ label.ctl { font-family: var(--sans); font-size: 13px; margin-right: 14px; color
 .lg .t { font-family: var(--sans); font-size: 12px; line-height: 1.25; color: #222; }
 .lg .t b { font-weight: 600; }
 .lg code { font-size: 12.5px; }
-.lg svg { width: 165px; }
+.lg svg { width: auto; }
 .lgsec { grid-column: 1 / -1; font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #777; margin-top: 6px; border-bottom: 1px dotted #ccc; }
 
 /* listing */
@@ -166,7 +166,28 @@ table.score th { font-weight: 600; background: #f6f3df; }
 
 <footer class="wrap" id="foot">
   <h2>Self-critique</h2>
-  
+    <ul>
+    <li><b>What it makes obvious.</b> A refinement is something you can <i>see on the type itself</i>: the even comb, the <code>[0, CAP)</code> window with its hollow post at 8, the three state sockets, the hollow sockets of keys already in <code>M</code>. A failed subtyping check is a single darkred sliver whose extent <i>is</i> the counterexample set: past the wall for the signed <code>(r+1)²</code> (S1), exactly the fence post at √n for the strict/non-strict swap (S2), the socket at 2 for TOMB-as-EMPTY (b), the point 8 for the unmasked index (a). Fence-post strictness (filled vs hollow) and signed vs unsigned reading (the tab past the wall, the wrap arc) are spatial instead of textual.</li>
+    <li><b>What it hides.</b> Anything that is not a set of one value: <code>i == at(k, j)</code>, "every slot passed holds TOMB or another key", and the relation between memory and <code>M</code> fall back to conjunct chips or to the memory cups, which are evaluated at the current step rather than drawn as one region. The log part of the scale cannot separate 30 from 31 or 46340 from 46341 in the margin; only the darkred color and the hover magnifier say "these differ". Termination is shown as a measure cup with a moving hollow post, which says "below the last value" but not "decreasing forever".</li>
+    <li><b>Blame.</b> The spill sits on the cup where containment fails, which is the obligation site (frame obligations on the loop or closing line, wire obligations on the argument cup). The line to change is usually one connection up (the producer's provided region is visibly too wide: S1's nub, (a)'s <code>[1, 8]</code>, (b)'s path region <code>{0, 2}</code>), but it is not itself marked. For the spec bug S2 the conjunct chip on the spec line is solid darkred while the code lines stay quiet; that is the only cue that the cup, not the pour, is wrong.</li>
+    <li><b>Scale.</b> The 169-line hash table keeps one row of shapes per line at fixed height, and the gutter (⚖, 💣, ★?) is still scannable. The margin is busy, though: every shape carries a region, so the clean state is quiet in color (no darkred anywhere) but not in ink. A real editor would draw regions only on shapes that carry a refinement and leave plain Codillon rectangles elsewhere; the memory panel would need a second row (or the hover magnifier) for tables larger than 8 slots.</li>
+    <li><b>Cost in Codillon (Rust → SVG).</b> Rendering is cheap: a scale function, a rectangle, a few posts and circles per shape, and set difference over three region kinds (intervals with open/closed ends, congruence classes, finite sets). The checker must export, for every stack slot, the provided region in that small abstract domain and, for every cup, the required one. That is an interval/congruence/finite-set abstract interpretation that a refinement checker computes anyway, plus instantiating dependent bounds at slider values. Estimate: about 1.5k lines of Rust for the domain and its rendering, plus hooks in the existing fraction renderer. The step trace in this page comes from a 200-line interpreter that reproduces all 128 fixture key frames exactly.</li>
+    <li><b>Deviations.</b> The i32 rectangle is widened from 30×11 to 140×13 (138×13 in the memory panel), and rows are 40 px high so a cup, its rim posts and the rule fit. The isqrt listing is the fixture's (03 §A2, binder <code>v</code>) rather than 01 §5's <code>$sq</code> version, so that line numbers and traces match. <code>ensures</code> is drawn as a cup on the closing <code>)</code> (a frame site), so S2's ⚖ is on line 27 rather than the fixture's line 26. Bug (a) shows two ⚖, on 140 and on the back-edge 151, because both cups spill. For (b) the memory state cup is drawn with the region the <i>buggy</i> line 38 relies on ("(iii)-strong"); it spills at step 217, when <code>delete</code> writes TOMB, even though <code>R</code> still holds.</li>
+  </ul>
+  <table class="score">
+    <tr><th>#</th><th>criterion</th><th>self-score</th><th>why</th></tr>
+    <tr><td>1</td><td>Salience</td><td>4</td><td>⚖ in the gutter plus a darkred hatched sliver on the site's cup plus a dotted darkred connection; the slivers are small (6 px minimum), and the darkred chips and commentary label carry part of the load.</td></tr>
+    <tr><td>2</td><td>Blame locality</td><td>3</td><td>Marks the obligation site, not the edited line. The edited line is one connection away (S3: line 3 → 6; (b): 38 → 41; (d): 125 → 166). Spec bugs are told apart only by the conjunct chip.</td></tr>
+    <tr><td>3</td><td>Kind discrimination (grayscale)</td><td>4</td><td>Solid hatch + ⚖ / dashed outline + hollow ⚖ / ?-hatch + ★? / dotted + ∘N / hollow 50% + ○ / squiggle. A run-time-only failure also uses a hatch, so it is told apart from a static refutation by the absence of ⚖, not by the sliver.</td></tr>
+    <tr><td>4</td><td>Vocabulary continuity</td><td>4</td><td>Same rectangles, cups, rule, connections, darkred, slider and gutter. The rectangles are much wider, and posts and sockets are new glyphs.</td></tr>
+    <tr><td>5</td><td>Predicate on shape</td><td>4</td><td>Parity, bounds, finite sets and "not in M" are readable without text. Relational facts are not (they become chips).</td></tr>
+    <tr><td>6</td><td>Causal trail</td><td>3</td><td>Provided regions on every upstream output, plus the memory spill at the cause step (217) before the symptom (240). There is no explicit "region widened here" mark.</td></tr>
+    <tr><td>7</td><td>Concrete witness</td><td>4</td><td>Values sit in the shapes and the slider has darkred pills; clicking a ⚖ jumps to the witness step. The S1 loop-head witness is a labeled one-iteration replay with real-run step numbers.</td></tr>
+    <tr><td>8</td><td>Ink economy</td><td>3</td><td>No darkred and no glyphs when proven, but every refined shape draws its region.</td></tr>
+    <tr><td>9</td><td>Scale</td><td>4</td><td>169 lines at fixed row height, and the gutter can be scanned. The margin is dense.</td></tr>
+    <tr><td>10</td><td>Edit continuity</td><td>3</td><td>Seeding a bug rewrites lines in place (dotted underline / ghost strikethrough). Verdicts go stale (40% + squiggle) and then re-check: regions tween and the spill fades in. The transition is short and is not a "detach" animation.</td></tr>
+  </table>
+
 </footer>
 
 <div id="insp"></div>
@@ -297,7 +318,7 @@ function wasmRun(prog, calls, opts = {}) {
         else if (op === 'i32.store') { const off = +(arg.match(/offset=(\d+)/) || [0, 0])[1]; const v = st[st.length - 1], a = st[st.length - 2]; store(a + off, v); st.pop(); st.pop(); ins = [a, v]; }
         else throw new Error('unknown op ' + op + ' at line ' + pc);
       } catch (e) {
-        if (e instanceof Trap) emit(fr, pc, I.t, [], [], { trap: e.message });
+        if (e instanceof Trap) emit(fr, pc, I.t, op === 'i32.load' ? [st[st.length - 1]] : op === 'i32.store' ? st.slice(-2) : [], [], { trap: e.message });
         throw e;
       }
       st.push(...outs);
@@ -512,7 +533,7 @@ function shapeSpecs(sh, o) {
   if (sh.unk && (st === 'unknown' || st === 'dynamic')) {
     const x1 = X(clampV(sh.unk.lo)), x2 = X(clampV(sh.unk.hi));
     if (st === 'unknown') S.push(E.rect(k + ':unk', 4, x1, y + 0.5, Math.max(4, x2 - x1), H - 1, { fill: 'url(#qhatch)', stroke: COL.unk, 'stroke-width': 1, 'stroke-dasharray': '2.5 1.5' }));
-    else S.push(E.rect(k + ':unk', 4, x1, y + 0.5, Math.max(4, x2 - x1), H - 1, { fill: 'none', stroke: COL.dyn, 'stroke-width': 1.2, 'stroke-dasharray': '0.6 1.8', 'stroke-linecap': 'round' }));
+    else S.push(E.rect(k + ':unk', 4, x1, y + 0.5, Math.max(4, x2 - x1), H - 1, { fill: 'none', stroke: COL.dyn, 'stroke-width': 1.7, 'stroke-dasharray': '0.4 2.4', 'stroke-linecap': 'round' }));
   }
   // ---- spill (P \ Q), drawn above the rim ----
   const pieces = sh.spill || [];
@@ -566,7 +587,7 @@ function shapeSpecs(sh, o) {
     }
   }
   // ---- side glyphs ----
-  let sx = right + 5 + (o.sideShift || 0);
+  let sx = x + W + TAB * W + 5 + (o.sideShift || 0);
   const side = (key, s, a) => { S.push(E.text(k + ':side' + key, 6, sx, y + H - 1, s, Object.assign({ 'font-size': o.big ? 14 : 10, 'font-family': SANS }, a))); sx += (o.big ? 9 : 6.5) * s.length + 4; };
   if (st === 'vacuous') side('v', '○', { fill: '#555' });
   if (st === 'assumed') side('a', '○ assumed', { fill: '#555' });
@@ -582,15 +603,15 @@ function chipSpecs(chips, x, y, k) {
   const S = []; let cx = x;
   chips.forEach((c, i) => {
     const txt = c.t + (c.s === 'unknown' ? ' ?' : '') + (c.s === 'dynamic' ? ' ∘' + (c.n || 0) : '') + (c.s === 'vacuous' ? ' ○' : '');
-    const w = txt.length * 5.1 + 10;
+    const w = txt.length * 5.6 + 10;
     const sty = {
       proven: { fill: 'none', stroke: '#c9c5b0', tf: '#555' }, refuted: { fill: COL.dark, stroke: COL.dark, tf: COL.ivory },
       'refuted-ghost': { fill: COL.ivory, stroke: COL.dark, dash: '2 1.5', tf: COL.dark }, unknown: { fill: '#f1edf8', stroke: COL.unk, dash: '2.5 1.5', tf: COL.unk },
       dynamic: { fill: 'none', stroke: COL.dyn, dash: '0.6 1.8', tf: COL.dyn }, vacuous: { fill: 'none', stroke: '#999', tf: '#999', op: .5 },
       runtime: { fill: COL.dark, stroke: COL.dark, tf: COL.ivory }, pending: { fill: 'none', stroke: '#d8d4c0', dash: '1 2', tf: '#aaa' },
     }[c.s || 'proven'];
-    S.push(E.rect(k + ':chip' + i, 4, cx, y, w, 13, { rx: 6.5, fill: sty.fill, stroke: sty.stroke, 'stroke-width': c.s === 'dynamic' ? 1.3 : 0.9, 'stroke-dasharray': sty.dash || 'none', 'stroke-linecap': 'round', opacity: sty.op || 1, class: 'hit', 'data-chip': k + ':' + i }));
-    S.push(E.text(k + ':chipt' + i, 4, cx + 5, y + 9.7, txt, { 'font-size': 9, fill: sty.tf, 'font-family': SANS, opacity: sty.op || 1 }));
+    S.push(E.rect(k + ':chip' + i, 4, cx, y, w, 14, { rx: 7, fill: sty.fill, stroke: sty.stroke, 'stroke-width': c.s === 'dynamic' ? 1.3 : 0.9, 'stroke-dasharray': sty.dash || 'none', 'stroke-linecap': 'round', opacity: sty.op || 1, class: 'hit', 'data-chip': k + ':' + i }));
+    S.push(E.text(k + ':chipt' + i, 4, cx + 5, y + 10.5, txt, { 'font-size': 10, fill: sty.tf, 'font-family': SANS, opacity: sty.op || 1 }));
     cx += w + 4;
   });
   return S;
@@ -639,7 +660,7 @@ function specsToSVG(specs) {
   }).join('');
 }
 function staticShapeSVG(sh, W = 96, H = 11, extra = {}) {
-  const pad = 12, w = W + TAB * W + 40;
+  const pad = 12, w = W + TAB * W + 62;
   const specs = shapeSpecs(sh, Object.assign({ x: pad, y: 9, W, H, k: 's', noHit: true }, extra));
   return `<svg width="${w}" height="${H + 20}" viewBox="0 0 ${w} ${H + 20}">${specsToSVG(specs)}</svg>`;
 }
@@ -681,7 +702,7 @@ const Insp = {
     const lab = (sh.req && sh.req.lab) || (sh.prov && sh.prov.lab) || {};
     const labs = [];
     [sh.req, sh.prov].forEach(R => { if (R && R.t === 'iv') [['lo', R.lo], ['hi', R.hi]].forEach(([s, v]) => { if (isFinite(v) && v !== I32MAX && v !== I32MIN && v !== U32 - 1) labs.push([v, (R.lab && R.lab[s]) ? R.lab[s] + ' = ' + (+v.toFixed(2)) : String(+v.toFixed(2))]); }); });
-    let fl = ''; labs.slice(0, 4).forEach(([v, l], i) => { const px = Math.min(20 + W * fx(v), 20 + W + TAB * W); fl += `<text x="${px}" y="${10 - (i % 2) * 0}" font-size="9" text-anchor="middle" fill="${COL.i32}" font-family='${SANS}' dy="${i % 2 ? 0 : 0}">${l.replace('-', '−')}</text>`; });
+    let fl = ''; labs.slice(0, 4).forEach(([v, l], i) => { const px = Math.min(20 + W * fx(v), 20 + W + TAB * W); const anc = px > 420 ? 'end' : (px < 120 ? 'start' : 'middle'); fl += `<text x="${px}" y="${i % 2 ? 4 : 11}" font-size="9" text-anchor="${anc}" fill="${COL.i32}" font-family='${SANS}'>${l.replace('-', '−')}</text>`; });
     // magnifier: a linear window around the most interesting value (spill, else dot, else a fence)
     let focus = null, span = 8;
     if (sh.spill && sh.spill.length) { const p = sh.spill[0]; focus = p.a === p.b ? p.a : (p.b - p.a > 64 ? (p.a > 0 ? p.a : p.b) : (p.a + p.b) / 2); span = Math.max(8, Math.min(p.b - p.a, 1e4) * 0.75); }
@@ -692,7 +713,7 @@ const Insp = {
     if (focus !== null) {
       const zlo = Math.floor(focus - span), zhi = Math.ceil(focus + span);
       const ms = shapeSpecs(sh, { x: 20, y: 14, W, H: 18, k: 'M', noHit: true, sc: linScale(zlo - 0.5, zhi + 0.5), zlo, zhi, big: true, noText: true });
-      let ticks = ''; const step = Math.max(1, Math.round((zhi - zlo) / 16));
+      let ticks = ''; const maxLen = Math.max(String(zlo).length, String(zhi).length); const nt = Math.max(3, Math.min(16, Math.floor(W / (maxLen * 6.5)))); const step = Math.max(1, Math.round((zhi - zlo) / nt));
       for (let v = zlo; v <= zhi; v += step) { const px = 20 + W * (v - zlo + 0.5) / (zhi - zlo + 1); ticks += `<path d="M ${px} ${36} L ${px} ${39}" stroke="#aaa"/><text x="${px}" y="${48}" font-size="8.5" text-anchor="middle" fill="#777" font-family='${SANS}'>${fmt(v)}</text>`; }
       mag = `<div class="s" style="margin-top:4px">magnified, linear scale around ${fmt(focus)}:</div><svg width="600" height="52">${specsToSVG(ms)}${ticks}</svg>`;
     }
@@ -700,7 +721,7 @@ const Insp = {
     const rd = sh.val !== undefined && sh.val !== null ? `<br>runtime value ${fmt(sh.val)}${sh.val < 0 ? ` (bits read unsigned: ${sh.val >>> 0})` : ''}${sh.math !== undefined && sh.math !== (sh.reading === 'u' ? sh.val >>> 0 : sh.val) ? `; mathematical value ${sh.math}: <b style="color:darkred">the machine word wrapped</b>` : ''}${sh.old ? ' (from an earlier operation: gray)' : ''}` : '';
     const sp = sh.spill && sh.spill.length ? `<br><b style="color:darkred">spill</b> (provided but not admitted): ${sh.spill.slice(0, 3).map(p => p.a === p.b ? fmt(p.a) : `[${fmt(p.a)} … ${fmt(p.b)}]${p.mod && p.mod.r >= 0 ? ` ≡ ${p.mod.r} mod ${p.mod.m}` : ''}`).join(', ')}${sh.ghostLab ? ' at ' + sh.ghostLab : ''}` : '';
     this.el.innerHTML = `<div class="p">${sh.pred || ''}</div><div class="s"><b>${sh.kind === 'cup' ? 'input cup: rim = required region' : 'output: provided region'}</b> · ${stTxt}${rd}${sp}</div>
-      <svg width="600" height="64">${fl}${specsToSVG(main)}${axis}</svg>${mag}`;
+      <svg width="600" height="64" style="overflow:visible">${fl}${specsToSVG(main)}${axis}</svg>${mag}`;
     this.el.style.display = 'block';
     const r = this.el.getBoundingClientRect();
     let lx = e.clientX + 18, ly = e.clientY + 18;
@@ -820,7 +841,7 @@ class Listing {
         pos[`${ln}o${j}`] = [x, y + SH / 2];
       });
       if (A.chips && A.chips.length) {
-        const cx = this.mx + Math.max(nIns, (A.outs || []).length, A.chipCol || 0) * STRIDE + (nIns || (A.outs || []).length ? 6 : 0);
+        const cx = this.mx + Math.max(nIns, (A.outs || []).length, A.chipCol || 0) * STRIDE + (nIns || (A.outs || []).length ? 34 : 0);
         specs.push(...chipSpecs(A.chips, cx, top + (A.chipY || 13) + (A.chipY ? 2 : 0), `${this.key}${ln}c`));
       }
     }
@@ -834,6 +855,14 @@ class Listing {
         specs.push(E.path(`${this.key}cn${ln}_${j}`, 0, d, bad ? { fill: 'none', stroke: COL.dark, 'stroke-width': 1, 'stroke-dasharray': '1.5 2' } : { fill: 'none', stroke: COL.i32, 'stroke-width': 2, opacity: 0.55 }));
       });
     }
+    // tethers: a dependent fence tied to the dot of the value it depends on
+    (view.tethers || []).forEach((t, q) => {
+      const a = pos[t.from], b = pos[t.to]; if (!a || !b || t.v1 === undefined || t.v2 === undefined) return;
+      const x1 = a[0] + SW * fx(t.v1), y1 = a[1], x2 = b[0] + SW * fx(t.v2), y2 = b[1] - SH / 2 - 4;
+      const xr = this.mx + 2 * STRIDE + 24 + q * 10;
+      specs.push(E.path(`${this.key}teth${q}`, 0, `M ${x1} ${y1} C ${xr} ${y1}, ${xr} ${y2 - 30}, ${x2} ${y2}`, { fill: 'none', stroke: COL.i32, 'stroke-width': 0.9, 'stroke-dasharray': '3 2.5', opacity: 0.6 }));
+      specs.push(E.text(`${this.key}tethl${q}`, 0, xr - 4, (y1 + y2) / 2 + q * 14, t.label, { 'font-size': 9, fill: COL.i32, 'font-family': SANS, opacity: 0.8 }));
+    });
     reconcile(this.layers, specs);
   }
 }
@@ -1323,6 +1352,7 @@ function buildSectionB() {
       text: S.lines.map((t, i) => t || P.lines[i]),
       cls: S.lines.map((t, i) => codeClass(prog0.info[i], edited.has(i + 1))),
       gut, arrowLn: cs.ln, ann, conns,
+      tethers: [{ from: '1o0', v1: cs.loc.n, to: '7o0', v2: Math.sqrt(cs.loc.n), label: '√n' }, { from: '1o0', v1: cs.loc.n, to: '27i0', v2: Math.sqrt(cs.loc.n), label: 'window [√n−1, √n]' }],
       comm: bug !== 'none' && !stale ? { [site]: { t: COMM[bug], ghost: !replayed } } : {},
     });
     // slider

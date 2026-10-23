@@ -37,6 +37,7 @@ section.sec { margin-top: 26px; border-top: 1px solid #ddd8c4; padding-top: 8px;
 /* sticky slider bar (Codillon .slider-container) */
 .bar { position: sticky; top: 0; z-index: 50; background: var(--ivory); padding: 6px 0 2px; border-bottom: 1px solid #e8e3cc; }
 .bar .ctl { display: flex; gap: 16px; align-items: center; font-family: var(--sans); font-size: 13px; flex-wrap: wrap; }
+.bar select { max-width: 470px; }
 .bar select, .bar button { font-family: var(--sans); font-size: 13px; background: var(--ivory); border: 1px solid #b9b39a; border-radius: 3px; padding: 2px 6px; }
 .bar button { cursor: pointer; }
 .runbadge { font-family: var(--sans); font-size: 12px; padding: 1px 8px; border-radius: 10px; border: 1px solid #999; }
@@ -44,7 +45,7 @@ section.sec { margin-top: 26px; border-top: 1px solid #ddd8c4; padding-top: 8px;
 .runbadge.cexl { border: 1.5px dashed darkred; color: darkred; }
 .slwrap { position: relative; margin: 2px 8px 0; }
 .step-slider { width: 100%; margin: 0; accent-color: darkblue; }
-.slider-ticks { position: relative; height: 24px; margin: 0 8px; }
+.slider-ticks { position: relative; height: 38px; margin: 0 8px; }
 .slider-tick { position: absolute; transform: translateX(-50%); color: darkblue; font-family: var(--sans); font-size: 11px; background: var(--ivory); white-space: nowrap; top: 2px; cursor: pointer; }
 .slider-tick.plain { color: #8a8aa8; cursor: default; }
 .bad-slider-tick { color: #fffff0; background: darkred; border-radius: 10px; padding: 0 6px; }
@@ -80,7 +81,8 @@ svg.over .hit { pointer-events: all; cursor: pointer; }
 /* svg primitives */
 .slot-value { font-family: var(--sans); font-size: 10.6px; text-anchor: middle; dominant-baseline: middle; transform-box: fill-box; transform-origin: center; }
 .slot-value.old { opacity: .55; }
-.slot-value.wit { fill: darkred; font-weight: bold; }
+.slot-value.wit { fill: darkred; font-weight: bold; paint-order: stroke; stroke: #fffff0; stroke-width: 2.2px; }
+.slot-value.witout { fill: #fffff0; font-weight: bold; }
 .nm { font-family: var(--sans); font-size: 10px; fill: #555; }
 .tierlab { font-family: var(--sans); font-size: 9px; fill: #777; }
 .sq, .defc, .conn, .wire, .chip, .rule, .shape, .cupmiss, .frame { transition: opacity .25s, transform .25s, fill .25s, stroke .25s, color .25s; }
@@ -116,8 +118,10 @@ svg.over .hit { pointer-events: all; cursor: pointer; }
 .rule.plain rect { fill: #a7a7a7; }
 .rule.ok rect { fill: #222; }
 .rule.ref rect { fill: darkred; }
-.rule.ref .hl, .rule.refg .hl { transform: translate(-4px, -3px); }
-.rule.ref .hr, .rule.refg .hr { transform: translate(4px, 3px); }
+.rule.ref .hl, .rule.refg .hl { transform: translate(-6px, -3.5px); }
+.rule.ref .hr, .rule.refg .hr { transform: translate(6px, 3.5px); }
+.rule.ref rect { y: -1.4px; height: 2.8px; }
+.rule.refg rect { y: -2px; height: 4px; }
 .rule.refg rect { fill: var(--ivory); stroke: darkred; stroke-width: .9; stroke-dasharray: 2 1.4; }
 .rule.unk rect, .rule.dyn rect { display: none; }
 .rule.unk line { display: inline; stroke: indigo; stroke-width: 1.3; stroke-dasharray: 4 3; }
@@ -141,6 +145,7 @@ svg.over .hit { pointer-events: all; cursor: pointer; }
 /* Section A cards */
 .cards { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .card { display: flex; gap: 18px; border: 1px solid #e3ddc6; padding: 8px 10px; }
+.card .lst { zoom: 1.42; }
 .card .cap { width: 330px; flex: none; font-family: var(--sans); font-size: 13px; line-height: 1.4; }
 .card .cap h4 { font: 16px var(--serif); margin: 0 0 4px; color: indigo; }
 .card .cap .btns { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
@@ -716,8 +721,8 @@ function valueNode(key, cx, y, v, isOut, old, wit) {
   const s = fmtNum(v);
   const w = [...s].reduce((a, c) => a + (c === ',' ? 2.8 : c === '-' ? 3.4 : 5.07), 0);
   const sc = w > 25 ? 25 / w : 1;
-  const fill = wit ? (isOut ? '#fffff0' : 'darkred') : (isOut ? '#fffff0' : '#000');
-  return N('text', key, { class: 'slot-value' + (old ? ' old' : '') + (wit ? ' wit' : ''), x: cx, y, fill, style: sc < 1 ? `transform:scale(${sc.toFixed(3)})` : '' }, { text: s });
+  const fill = isOut ? '#fffff0' : '#000';
+  return N('text', key, { class: 'slot-value' + (old ? ' old' : '') + (wit ? (isOut ? ' witout' : ' wit') : ''), x: cx, y, fill, style: sc < 1 ? `transform:scale(${sc.toFixed(3)})` : '' }, { text: s });
 }
 
 // ---------------- surface syntax (01-language-design §1: $-names, named results) ----------------
@@ -957,6 +962,7 @@ Listing.prototype.render = function (S) {
           }
           const isOut = sk === 'out';
           if (v !== undefined && sk !== 'miss' && sk !== 'mem') nodes.push(valueNode(pre + 'v', s.cx, isOut ? yc + 6.4 : yc - 5.6, v, isOut, E && E.old && !wit, wit));
+          if (wit && v !== undefined && fmtNum(v).length > 6) nodes.push(N('text', pre + 'wt', { class: 'slot-value wit', x: s.cx, y: isOut ? yc + 21.5 : yc - 19, style: 'font-size:9.5px' }, { text: fmtNum(v) }));
           if (wit && isOut && v !== undefined) nodes.push(N('path', pre + 'wu', { d: `M${s.cx - 15} ${yc + 14.2}H${s.cx + 15}`, stroke: 'darkred', 'stroke-width': 1.6 }));
         }
         s.chips.forEach((ch, ci) => {
@@ -1003,29 +1009,37 @@ Listing.prototype.render = function (S) {
   for (const ln in geom) if (geom[ln].rs === 'ref' || geom[ln].rs === 'refg') show.add(+ln);
   (S.alwaysWires || []).forEach(l => show.add(l));
   let wk = 0;
+  const right = (l) => { const G = geom[l]; return G ? (G.def ? G.conEnd : G.X0 + (G.W || 0) + 22) : X0; };
+  const wires = [];
   for (const ln of show) {
     const G = geom[ln]; if (!G || G.def) continue;
-    for (const cg of G.chips) {
-      for (const f of (cg.ch.from || [])) {
-        const src = geom[f], sg = this.lineGeo[f];
-        if (!sg) continue;
-        const xs = src ? src.conEnd + 1 : X0 - 14, ys = src ? (src.def ? sg.yc : sg.yc + (src.hasCon ? 7 : -6)) : sg.yc;
-        const bad = cg.miss || cg.st === 'ref' || cg.st === 'refg' || (src && src.rs === 'ref' && cg.ch.drop);
-        let xt, yt, d;
-        const lane = Math.max(xs, cg.x + 14) + 14 + (wk % 5) * 6;
-        if (cg.isHyp || cg.miss) { xt = cg.x + 6; yt = cg.y - 1.5; d = `M${xs} ${ys}C${lane} ${ys},${xt + 2} ${yt - Math.min(70, Math.abs(yt - ys) * 0.55 + 8)},${xt} ${yt}`; }
-        else { xt = cg.x + 13.5; yt = cg.y + 6; d = `M${xs} ${ys}C${lane} ${ys},${lane} ${yt},${xt} ${yt}`; }
-        wireNodes.push(N('path', `w${ln}.${f}.${cg.x}.${cg.isHyp}`, { class: 'wire' + (bad ? ' bad' : ''), d }));
-        wireNodes.push(N('circle', `wd${ln}.${f}.${cg.x}.${cg.isHyp}`, { class: 'wdot' + (bad ? ' bad' : ''), cx: xs, cy: ys, r: 1.8 }));
-        wk++;
-      }
-    }
+    for (const cg of G.chips) for (const f of (cg.ch.from || [])) if (this.lineGeo[f]) wires.push({ ln: +ln, f, cg });
+  }
+  wires.sort((p, q) => Math.abs(p.ln - p.f) - Math.abs(q.ln - q.f));
+  for (const { ln, f, cg } of wires) {
+    const src = geom[f], sg = this.lineGeo[f], G = geom[ln];
+    const xs = src ? src.conEnd + 1 : X0 - 14, ys = src ? (src.def ? sg.yc : sg.yc + (src.hasCon ? 7 : -6)) : sg.yc;
+    const bad = cg.miss || cg.st === 'ref' || cg.st === 'refg' || cg.ch.drop;
+    let edge = 0;
+    for (let l = Math.min(ln, f); l <= Math.max(ln, f); l++) edge = Math.max(edge, right(l));
+    const lane = edge + 8 + (wk % 7) * 5;
+    const hypT = cg.isHyp || cg.miss;
+    const xt = cg.x + 6, yt = hypT ? cg.y - 1.6 : cg.y + 13.6;
+    const yBus = hypT ? G.yc - 21 - (wk % 3) * 2 : G.yc + 21 + (wk % 3) * 2;
+    const r1 = Math.max(2, Math.min(10, Math.abs(yBus - ys) / 2)), s1 = yBus > ys ? 1 : -1;
+    const r2 = Math.min(5, Math.abs(yt - yBus) / 2), s2 = yt > yBus ? 1 : -1;
+    const d = `M${xs} ${ys}H${lane - r1}Q${lane} ${ys},${lane} ${ys + s1 * r1}V${yBus - s1 * r1}Q${lane} ${yBus},${lane - r1} ${yBus}H${xt + r2}Q${xt} ${yBus},${xt} ${yBus + s2 * r2}V${yt}`;
+    const key = `w${ln}.${f}.${cg.x}.${cg.isHyp}`;
+    wireNodes.push(N('path', key, { class: 'wire' + (bad ? ' bad' : ''), d }));
+    wireNodes.push(N('circle', 'd' + key, { class: 'wdot' + (bad ? ' bad' : ''), cx: xs, cy: ys, r: 1.8 }));
+    wireNodes.push(N('circle', 'e' + key, { class: 'wdot' + (bad ? ' bad' : ''), cx: xt, cy: yt, r: 1.3 }));
+    wk++;
   }
   // arrow
   const arrowNodes = [];
   if (cur && S.showArrow !== false && this.lineGeo[cur.ln] && cur.ln >= a && cur.ln <= b) {
     const g = this.lineGeo[cur.ln];
-    arrowNodes.push(N('path', 'arrow', { d: ARROW, style: `transform:translate(${X0 - 9}px,${g.yc}px) scale(.3)`, fill: '#000080', stroke: '#fffff0', 'stroke-width': 1.5, 'paint-order': 'stroke', class: 'sq' }));
+    arrowNodes.push(N('path', 'arrow', { d: ARROW, style: `transform:translate(${X0 - 10}px,${g.yc}px) scale(.4)`, fill: '#000080', stroke: '#fffff0', 'stroke-width': 1.5, 'paint-order': 'stroke', class: 'sq' }));
   }
   const anim = S.anim !== false;
   reconcile(this.layers.frames, frameNodes, anim);
@@ -1346,12 +1360,31 @@ class Section {
   get R() { return this.M.runs[this.runIdx]; }
   render() {
     const R = this.R, cex = this.M.runs[1];
+    this.idx = Math.max(0, Math.min(this.idx, R.trace.length - 1));
     const S = { seq: this.M.seq, defs: this.M.defs, trace: R.trace, idx: this.idx, cexTrace: cex ? cex.trace : null, pinned: this.pinned, hover: this.hover,
       notes: this.M.notes, blame: this.M.blame, conns: this.M.conns, trap: R.trap };
     this.listing.render(S); this.lastS = S;
     this.updateBar();
     if (this.memHost) this.renderMem();
     if (this.pane) this.follow();
+    if (this.ovHost) this.renderOverview();
+  }
+  renderOverview() {
+    const L = this.listing, H = this.ovHost.clientHeight || 880;
+    let html = '';
+    for (const row of L.rowsEl.children) {
+      const g = row.querySelector('.gut'); if (!g || !g.dataset.line) continue;
+      const ln = +g.dataset.line, geo = L.lineGeo[ln]; if (!geo) continue;
+      const cls = g.className;
+      const col = cls.includes('g-trap') || cls.includes('g-bad') ? 'darkred' : cls.includes('g-ghost') ? 'none' : cls.includes('g-unk') ? 'indigo' : cls.includes('g-vac') ? '#999' : null;
+      if (!col) continue;
+      const y = geo.yc / L.height * H;
+      const st = cls.includes('g-ghost') ? 'border:1px dashed darkred;' : cls.includes('g-unk') ? 'border:1px dashed indigo;background:none;' : `background:${col};`;
+      html += `<div class="om" data-line="${ln}" title="line ${ln}" style="top:${y - 2}px;${st}"></div>`;
+    }
+    const top = this.pane.scrollTop / L.height * H, vis = this.pane.clientHeight / L.height * H;
+    html += `<div style="position:absolute;left:-1px;width:15px;top:${top}px;height:${vis}px;border:1px solid #b9b39a;pointer-events:none"></div>`;
+    if (this.ovHost.__h !== html) { this.ovHost.innerHTML = html; this.ovHost.__h = html; }
   }
   setIdx(i) { const n = this.R.trace.length; this.idx = Math.max(0, Math.min(n - 1, i)); this.render(); }
   clickSeq(ln) {
@@ -1409,9 +1442,14 @@ class Section {
       if (taken.some(t => Math.abs(t - x) < 5)) continue;
       html += `<span class="slider-tick plain" style="left:${x}%" data-i="${i}">${fmtNum(R.trace[i].s)}</span>`;
     }
-    R.pills.forEach(p => { if (p.i !== this.idx) html += `<span class="slider-tick ${p.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick'}" style="left:${pos(p.i)}%" data-i="${p.i}" title="${esc(p.why)}">${p.kind === 'trap' ? '💣' : '⚖︎'} ${fmtNum(p.s)}</span>`; });
+    const placed = [pos(this.idx)];
+    R.pills.forEach(p => {
+      if (p.i === this.idx) return;
+      const x = pos(p.i); const row = placed.some(t => Math.abs(t - x) < 4.5) ? 1 : 0; placed.push(x);
+      html += `<span class="slider-tick ${p.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick'}" style="left:${x}%;top:${2 + row * 16}px" data-i="${p.i}" title="${esc(p.why)}">${p.kind === 'trap' ? '💣' : '⚖\uFE0E'} ${fmtNum(p.s)}</span>`;
+    });
     const curBad = R.pills.find(p => p.i === this.idx);
-    html += `<span class="slider-tick ${curBad ? (curBad.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick') : 'current-slider-tick'}" style="left:${pos(this.idx)}%;z-index:3${curBad ? ';outline:2px solid darkblue' : ''}" data-i="${this.idx}">${curBad ? (curBad.kind === 'trap' ? '💣 ' : '⚖︎ ') : ''}${cur ? fmtNum(cur.s) : ''}</span>`;
+    html += `<span class="slider-tick ${curBad ? (curBad.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick') : 'current-slider-tick'}" style="left:${pos(this.idx)}%;z-index:3${curBad ? ';outline:2px solid darkblue' : ''}" data-i="${this.idx}">${curBad ? (curBad.kind === 'trap' ? '💣 ' : '⚖\uFE0E ') : ''}${cur ? fmtNum(cur.s) : ''}</span>`;
     this.ticks.innerHTML = html;
     this.ghost.innerHTML = R.ghost ? `<span class="ghost-tick" title="${esc(R.ghost.tip)}">${esc(R.ghost.label)}</span>` : '';
     this.ghost.style.display = R.ghost ? '' : 'none';
@@ -1434,7 +1472,7 @@ const STATE_ICON = ['empty', 'full', 'tomb'];
 Section.prototype.renderMem = function () {
   const R = this.R, rec = R.trace[this.idx]; if (!rec || !rec.slots) return;
   if (!this.memSvg) {
-    this.memHost.innerHTML = '<div class="lab muted">memory at this step · BASE 65440, 8 slots × (state, key, value)</div><svg class="memsvg" width="410" height="300" style="overflow:visible"></svg><div class="ops"></div>';
+    this.memHost.innerHTML = '<div class="lab muted">memory at this step · BASE 65440, 8 slots × (state, key, value)</div><svg class="memsvg" width="410" height="290" style="overflow:visible"></svg><div class="ops"></div>';
     this.memSvg = this.memHost.querySelector('svg'); this.memOps = this.memHost.querySelector('.ops');
   }
   const nodes = [], X = s => 52 + s * 44;
@@ -1452,7 +1490,7 @@ Section.prototype.renderMem = function () {
   if ((rec.fn === 'find' || rec.fn === 'insert') && rec.loc && rec.loc.i !== undefined && rec.loc.i >= 0) {
     const i = rec.loc.i, x = X(i), bad = i > 7;
     nodes.push(N('path', 'probe', { d: `M${x} 86l-5 8h10z`, fill: bad ? 'none' : '#000080', stroke: bad ? 'darkred' : '#000080', 'stroke-dasharray': bad ? '2 1.5' : null, style: 'transition:transform .25s' }));
-    nodes.push(N('text', 'probel', { class: 'nm', x: x, y: 104, 'text-anchor': 'middle', fill: bad ? 'darkred' : '#000080' }, { text: `i = ${i}` + (bad ? ' (off the table)' : '') }));
+    nodes.push(N('text', 'probel', { class: 'nm', x: Math.min(x, 392), y: 104, 'text-anchor': bad ? 'end' : 'middle', fill: bad ? 'darkred' : '#000080' }, { text: `i = ${i}` + (bad ? ' (past the last slot)' : '') }));
   }
   // reachability arcs (R3): each FULL key's path from h(key)
   rec.slots.forEach((sl, s) => {
@@ -1463,14 +1501,15 @@ Section.prototype.renderMem = function () {
     nodes.push(N('path', 'arc' + s, { d: `M${x1} 84C${x1} 100,${x2} 100,${x2} 84`, fill: 'none', stroke: bad ? 'darkred' : '#8a8a8a', 'stroke-width': 1, 'stroke-dasharray': bad ? '2 2' : null, 'data-tip': `probe path of key ${sl[1]}: h = ${h} → slot ${s}${bad ? ' crosses an EMPTY slot (R3 broken)' : ''}` }));
   });
   // ghost map + used
-  nodes.push(N('text', 'Ml', { class: 'nm', x: 20, y: 128, 'text-anchor': 'end' }, { text: 'M' }));
-  let mx = 28;
-  (rec.M || []).forEach(([k, v]) => { const t = `${k} ↦ ${v}`, w = t.length * 5.6 + 10; nodes.push(N('rect', 'Mb' + k, { x: mx, y: 118, width: w, height: 15, rx: 7, fill: 'none', stroke: '#777', 'stroke-dasharray': '3 2' })); nodes.push(N('text', 'Mt' + k, { class: 'nm', x: mx + w / 2, y: 129, 'text-anchor': 'middle', fill: '#333' }, { text: t })); mx += w + 6; });
-  if (!rec.M || !rec.M.length) nodes.push(N('text', 'Me', { class: 'nm', x: 30, y: 129 }, { text: '{ }  (ghost map, spec-only)' }));
-  nodes.push(N('text', 'ul', { class: 'nm', x: 330, y: 128, 'text-anchor': 'end' }, { text: 'used' }));
-  nodes.push(N('path', 'us', { class: 'shape', d: CUP_OUT, transform: 'translate(352,118)', fill: '#6A5ACD', stroke: '#fffff0' }));
-  nodes.push(valueNode('uv', 352, 124.4, rec.used, true, false, false));
+  nodes.push(N('text', 'ul', { class: 'nm', x: 20, y: 124, 'text-anchor': 'end' }, { text: 'used' }));
+  nodes.push(N('path', 'us', { class: 'shape', d: CUP_OUT, transform: 'translate(44,114)', fill: '#6A5ACD', stroke: '#fffff0' }));
+  nodes.push(valueNode('uv', 44, 120.4, rec.used, true, false, false));
+  nodes.push(N('text', 'Ml', { class: 'nm', x: 90, y: 124, 'text-anchor': 'end' }, { text: 'M' }));
+  let mx = 96, my = 114;
+  (rec.M || []).forEach(([k, v]) => { const t = `${k} ↦ ${v}`, w = t.length * 5.4 + 10; if (mx + w > 405) { mx = 96; my += 18; } nodes.push(N('rect', 'Mb' + k, { x: mx, y: my, width: w, height: 15, rx: 7, fill: 'none', stroke: '#777', 'stroke-dasharray': '3 2' })); nodes.push(N('text', 'Mt' + k, { class: 'nm', x: mx + w / 2, y: my + 11, 'text-anchor': 'middle', fill: '#333' }, { text: t })); mx += w + 5; });
+  if (!rec.M || !rec.M.length) nodes.push(N('text', 'Me', { class: 'nm', x: 98, y: 125 }, { text: '{ }  (ghost map, spec-only)' }));
   // operation sequent: R at entry (above) / R at exit (below)
+  const opNodes = [];
   const op = rec.top, calls = R.calls || [];
   let entry = null, exit = null, retv;
   for (let i = 0; i < R.trace.length; i++) { const r = R.trace[i]; if (r.top !== op) continue; if (!entry) entry = r; if (r.ret && r.ret.top) { if (i <= this.idx) { exit = r; retv = r.ret.v; } break; } }
@@ -1478,24 +1517,25 @@ Section.prototype.renderMem = function () {
   const RE = Rof(entry), RX = exit ? Rof(exit) : null;
   const clauses = [['o', 'states3', 'R0 well-formed states'], ['i', 'r1', 'R1 FULL slots are entries of M'], ['ii', 'r2', 'R2 exactly one slot per key'], ['iii', 'r3', 'R3 no EMPTY on a key’s path'], ['iv', 'r4', 'R4 counts agree; used < CAP']];
   const call = calls[op];
-  nodes.push(N('text', 'opl', { class: 'nm', x: 0, y: 166, fill: '#000' }, { text: call ? `${call[0]}(${call[1].join(', ')})  ⊢  R ⇒ R` : '' }));
-  const y0 = 196;
+  opNodes.push(N('text', 'opl', { class: 'nm', x: 0, y: 12, fill: '#000' }, { text: call ? `${call[0]}(${call[1].join(', ')})  ⊢  R ⇒ R` : '' }));
+  const y0 = 38;
   let anyFalse = false;
   clauses.forEach(([key, icon, name], j) => {
     const x = 22 + j * 18;
     const eOk = RE ? RE[key] : true, xOk = RX ? RX[key] : null;
-    nodes.push(chipNode('re' + key, { k: icon, t: name + ' at entry' }, x, y0 - 13.4, eOk ? 'ok' : 'ref', {}));
-    if (RX) { if (!xOk) anyFalse = true; nodes.push(chipNode('rx' + key, { k: icon, t: name + ' at exit' + (xOk ? '' : ' — FALSE at this boundary') }, x, y0 + 1.4, xOk ? 'ok' : 'ref', {})); }
+    opNodes.push(chipNode('re' + key, { k: icon, t: name + ' at entry' }, x, y0 - 13.4, eOk ? 'ok' : 'ref', {}));
+    if (RX) { if (!xOk) anyFalse = true; opNodes.push(chipNode('rx' + key, { k: icon, t: name + ' at exit' + (xOk ? '' : ' — FALSE at this boundary') }, x, y0 + 1.4, xOk ? 'ok' : 'ref', {})); }
   });
-  nodes.push(N('text', 'rel', { class: 'tierlab', x: 18, y: y0 - 3, 'text-anchor': 'end' }, { text: 'entry' }));
-  nodes.push(N('text', 'rxl', { class: 'tierlab', x: 18, y: y0 + 10, 'text-anchor': 'end' }, { text: 'exit' }));
-  nodes.push(ruleNode('oprule', 16, y0, 100, RX ? (anyFalse ? 'ref' : 'ok') : 'plain'));
-  if (!RX) nodes.push(N('text', 'pend', { class: 'tierlab', x: 26, y: y0 + 11 }, { text: '… operation in progress (R may be false mid-operation)' }));
+  opNodes.push(N('text', 'rel', { class: 'tierlab', x: 18, y: y0 - 3, 'text-anchor': 'end' }, { text: 'entry' }));
+  opNodes.push(N('text', 'rxl', { class: 'tierlab', x: 18, y: y0 + 10, 'text-anchor': 'end' }, { text: 'exit' }));
+  opNodes.push(ruleNode('oprule', 16, y0, 100, RX ? (anyFalse ? 'ref' : 'ok') : 'plain'));
+  if (!RX) opNodes.push(N('text', 'pend', { class: 'tierlab', x: 26, y: y0 + 11 }, { text: '… operation in progress (R may be false mid-operation)' }));
   if (retv !== undefined) {
-    nodes.push(N('text', 'resl', { class: 'nm', x: 150, y: y0 + 10, 'text-anchor': 'end' }, { text: 'result' }));
-    nodes.push(N('path', 'ress', { class: 'shape', d: CUP_OUT, transform: `translate(170,${y0})`, fill: '#6A5ACD', stroke: '#fffff0' }));
-    nodes.push(valueNode('resv', 170, y0 + 6.4, retv, true, false, false));
+    opNodes.push(N('text', 'resl', { class: 'nm', x: 150, y: y0 + 10, 'text-anchor': 'end' }, { text: 'result' }));
+    opNodes.push(N('path', 'ress', { class: 'shape', d: CUP_OUT, transform: `translate(170,${y0})`, fill: '#6A5ACD', stroke: '#fffff0' }));
+    opNodes.push(valueNode('resv', 170, y0 + 6.4, retv, true, false, false));
   }
+  nodes.push(N('g', 'opseq', { transform: 'translate(0,160) scale(1.5)' }, { ch: opNodes }));
   reconcile(this.memSvg, nodes, true);
   // op log (results vs expected)
   const expected = R.expected || (this.M.runs[0] === R ? this.cleanResults : null) || [];
@@ -1532,7 +1572,7 @@ const secB = new Section({
 
 const secC = new Section({
   root: $('#secC'), pid: 'hashtable', names: ['k', 'x', 'i', 'j', 'p', 'dflt', 'used', 'M'],
-  listingHost: $('#lstC'), barHost: $('#barC'), pane: $('#paneC'), memHost: $('#memC'),
+  listingHost: $('#lstC'), barHost: $('#barC'), pane: $('#paneC'), memHost: $('#memC'), ovHost: $('#ovC'),
   cfg: { rowH: 38, font: 17, codeW: 470, seqX: 545, width: 930 },
   bugs: [{ id: 'none', label: 'no bug' }, { id: 'Ha', label: '(a) probe index not wrapped (trap)' }, { id: 'Hb', label: '(b) lookup treats TOMB as EMPTY' }, { id: 'Hb_prime', label: '(b′) delete writes EMPTY' }, { id: 'Hc', label: '(c) insert skips the existing-key check' }, { id: 'Hd', label: '(d) load-factor check off by one' }],
   seq: HT_SEQ, defs: HT_DEFS, bugSeq: HT_BUGS,
@@ -1542,6 +1582,8 @@ const secC = new Section({
   defaultPin: [159], defaultIdx: tr => { let n = 0; for (let i = 0; i < tr.length; i++) if (tr[i].ln === 159 && ++n === 2) return i; return 0; },
   initialBug: QS.get('c') || 'none',
 });
+$('#ovC').addEventListener('click', e => { const m = e.target.closest('[data-line]'); if (m) secC.scrollToLine(+m.dataset.line, true); });
+$('#paneC').addEventListener('scroll', () => secC.renderOverview());
 if (QS.get('tB')) secB.setIdx(+QS.get('tB'));
 if (QS.get('tC')) secC.setIdx(+QS.get('tC'));
 
@@ -1576,7 +1618,7 @@ function btnRow(cap, label, opts, get, set) {
 }
 const A1 = { code: 'shr_s', spec: 'plain', x: 6 };
 const cA1 = card($('#cardsA'), 'A1 · a fact carried and consumed ($half)', `<div>The parameter type says <i>even</i> (comb chip). It rides into the body on the value, and the shift's sequent uses it to prove the dependent result <i>$v + $v = $x</i> (½ chip). Toggle the code bug P2 or the spec bug P3: in both the rule snaps, but in P2 the darkred lands on the <i>code</i> line's claim and in P3 on the <i>header's</i> claim.</div>`);
-const LA1 = new Listing(cA1.lst, { rowH: 45, font: 21, codeW: 560, seqX: 610, width: 980 });
+const LA1 = new Listing(cA1.lst, { rowH: 36, font: 16, codeW: 330, seqX: 372, width: 660 });
 btnRow(cA1.cap, 'line 10', [['shr_s', 'i32.shr_s'], ['shr_u', 'i32.shr_u (P2)']], () => A1.code, v => { A1.code = v; drawA1(); });
 btnRow(cA1.cap, 'line 7', [['plain', '$v+$v == $x'], ['lt', '… && $v < $x (P3)']], () => A1.spec, v => { A1.spec = v; drawA1(); });
 btnRow(cA1.cap, 'call $half(x) with x =', [['6', '6'], ['-4', '−4'], ['0', '0'], ['10', '10']], () => A1.x, v => { A1.x = +v; drawA1(); });
@@ -1603,7 +1645,7 @@ function drawA1() {
 }
 const A2 = { gate: 'yes', x: 6 };
 const cA2 = card($('#cardsA'), 'A2 · the gate makes the fact (path-sensitive)', `<div>Evenness of $x is never computed <i>on</i> $x: it is born from the test on line 16 and lives only in the else-arm. The call on line 21 has a cup that <i>demands</i> it (a seated chip). Delete the <code>i32.eqz</code> (P1) and the else-arm now knows <i>odd</i>: the demanded chip unseats (floats up, darkred), and the missing fact appears as Codillon's empty fade-up cup, wired back to the gate.</div>`);
-const LA2 = new Listing(cA2.lst, { rowH: 45, font: 21, codeW: 560, seqX: 610, width: 980 });
+const LA2 = new Listing(cA2.lst, { rowH: 36, font: 16, codeW: 330, seqX: 372, width: 660 });
 btnRow(cA2.cap, 'line 15', [['yes', 'i32.eqz'], ['no', 'deleted (P1)']], () => A2.gate, v => { A2.gate = v; drawA2(); });
 btnRow(cA2.cap, '$half_or_neg1(x), x =', [['6', '6'], ['3', '3'], ['-4', '−4']], () => A2.x, v => { A2.x = +v; drawA2(); });
 function drawA2() {
@@ -1625,7 +1667,7 @@ function drawA2() {
 }
 const A3 = { v: 'ok' };
 const cA3 = card($('#cardsA'), 'A3 · one obligation, six epistemic states', `<div>The same wire obligation — the cup of <code>call $slot</code> demands <i>0 ≤ $i &lt; 8</i> (range chip, seated) — under each verdict the checker can return. The rule and the chip's box carry the state; the gutter repeats it. Try them in grayscale: solid, offset-solid, offset-hollow, dashed + star, dotted + ∘N, ghosted + ○.</div>`);
-const LA3 = new Listing(cA3.lst, { rowH: 45, font: 21, codeW: 560, seqX: 610, width: 980 });
+const LA3 = new Listing(cA3.lst, { rowH: 36, font: 16, codeW: 330, seqX: 372, width: 660 });
 const A3V = {
   ok: { lines: ['(func $at (param $i i32) (result i32)', '  local.get $i', '  i32.const 7', '  i32.and', '  call $slot', ')'],
     seq: { 4: { c: [OUT(0, [c('range', '0 ≤ v < 8 ($i & 7)')])] }, 5: { site: 'wire', h: [IN(0, [c('range', '0 ≤ $i < 8', { from: [4] }), need('range', 'pre of $slot: 0 ≤ $i < CAP', { from: [4] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i')])] } },
@@ -1659,6 +1701,9 @@ function drawA3() {
   LA3.setModel({ orig: V.lines, lines: V.lines, struck: new Set(), changed: new Set(), names: ['i'], prog, range: [1, V.lines.length] });
   LA3.render({ seq: V.seq, defs: V.defs || {}, trace: null, idx: -1, vals: V.vals, valsWit: !!V.wit, pinned: new Set(Object.keys(V.seq).map(Number)), conns: computeConns(V.lines, prog), notes: V.notes || {}, blame: new Set() });
 }
+if (QS.get('a1')) { const v = QS.get('a1').split(','); if (v.includes('shr_u')) A1.code = 'shr_u'; if (v.includes('lt')) A1.spec = 'lt'; const x = v.find(t => /^-?\d+$/.test(t)); if (x) A1.x = +x; }
+if (QS.get('a2')) { A2.gate = 'no'; A2.x = +QS.get('a2') || 3; }
+if (QS.get('a3')) A3.v = QS.get('a3');
 drawA1(); drawA2(); drawA3();
 
 // ---------------- legend ----------------
@@ -1721,8 +1766,32 @@ document.addEventListener('keydown', e => {
 });
 if (QS.get('scroll')) setTimeout(() => { const el = document.getElementById(QS.get('scroll')); if (el) el.scrollIntoView(); }, 50);
 if (QS.get('only')) { const keep = QS.get('only').split(','); ['top', 'secA', 'secB', 'secC', 'crit'].forEach(id => { const el = id === 'top' ? document.querySelector('header.top') : document.getElementById(id); if (el && !keep.includes(id)) el.style.display = 'none'; }); }
+if (QS.get('selftest')) {
+  window.addEventListener('error', e => console.log('SELFTEST ERROR ' + e.message));
+  (async () => {
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    try {
+      for (const sec of [secB, secC]) {
+        for (const b of sec.bugs) {
+          sec.sel.value = b.id; sec.sel.dispatchEvent(new Event('change'));
+          await wait(600);
+          for (let k = 0; k < 6; k++) sec.setIdx(Math.floor(Math.random() * sec.R.trace.length));
+          sec.runIdx = 0; sec.render(); sec.setIdx(sec.R.trace.length - 1);
+          for (const ln of Object.keys(sec.M.seq)) sec.clickSeq(+ln);
+          sec.listing.onHover(+Object.keys(sec.M.seq)[0]); sec.listing.onHover(null);
+          const reds = Object.entries(sec.listing.geom).filter(([l, g]) => g.rs === 'ref').map(([l]) => l);
+          console.log(`SELFTEST ${sec.pid} ${b.id}: refuted lines now [${reds}] pills ${sec.M.runs.map(r => r.pills.map(p => p.s).join('/')).join(' | ')}`);
+        }
+        sec.sel.value = 'none'; sec.sel.dispatchEvent(new Event('change')); await wait(600);
+      }
+      ['ok', 'refg', 'ref', 'unk', 'dyn', 'asm', 'vac'].forEach(v => { A3.v = v; drawA3(); });
+      A1.code = 'shr_u'; A1.spec = 'lt'; drawA1(); A2.gate = 'no'; drawA2();
+      console.log('SELFTEST DONE');
+    } catch (e) { console.log('SELFTEST ERROR ' + e.stack); }
+  })();
+}
 
-// footer filled later
+// footer filled below
 
 </script>
 </body>
