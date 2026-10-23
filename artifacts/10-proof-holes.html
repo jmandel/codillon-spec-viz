@@ -1,0 +1,1776 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>10 — Synthetic proof holes (refined Codillon prototype)</title>
+<style>
+:root {
+  --ivory: #fffff0;
+  --i32: #6A5ACD; --i32m: #d2cdf0;
+  --serif: "Latin Modern Roman", "CMU Serif", "Computer Modern", Georgia, "Times New Roman", serif;
+  --sans: "Latin Modern Sans", "Fira Sans Condensed", "Roboto Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
+  --music: "Noto Music", "Bravura", "Symbola", serif;
+  --dr: darkred; --ind: indigo; --sg: slategray; --db: darkblue;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--ivory); color: #111; font-family: var(--serif); }
+body { padding: 0 20px 80px 20px; max-width: 1400px; margin: 0 auto; }
+h1 { font-weight: normal; font-size: 34px; margin: 22px 0 6px 0; }
+h1 .num { color: gray; }
+h2 { font-weight: normal; font-size: 26px; margin: 0; }
+h3 { font-weight: normal; font-size: 19px; margin: 0 0 2px 0; }
+p { font-size: 17px; line-height: 1.4; margin: 6px 0; max-width: 1180px; }
+.sans, .small { font-family: var(--sans); }
+.small { font-size: 12px; color: #444; }
+code, .mono { font-family: var(--serif); }
+section { margin-top: 26px; border-top: 1px solid #cfcfb8; padding-top: 10px; position: relative; }
+.lede { font-size: 17px; }
+
+/* ---------------- legend ---------------- */
+.legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 14px; margin-top: 10px; }
+.lg { display: flex; gap: 8px; align-items: flex-start; font-family: var(--sans); font-size: 12px; line-height: 1.3; color: #222; }
+.lg .sw { flex: 0 0 auto; min-width: 74px; display: flex; justify-content: center; align-items: center; }
+.lg b { font-weight: 600; }
+.lgsec { grid-column: 1 / -1; font-family: var(--sans); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #777; margin-top: 4px; border-bottom: 1px solid #e2e2cc; }
+
+/* ---------------- listing ---------------- */
+.listing { position: relative; }
+.rows { position: relative; }
+.overlay { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; z-index: 3; transition: opacity .2s; }
+.overlay.hide { opacity: 0; }
+.row { position: relative; overflow: hidden; transition: height .25s ease, opacity .25s ease; }
+.row.line { height: var(--rh); }
+.row .gut { position: absolute; left: 0; top: 0; width: 56px; height: var(--rh); text-align: right; font-size: 17px; color: gray; line-height: var(--rh); font-family: var(--serif); }
+.row .gut .g { display: inline-block; }
+.g.mk-false { color: var(--dr); font-family: "DejaVu Sans", "Noto Sans Symbols", sans-serif; font-size: 19px; }
+.g.mk-ghost { color: transparent; -webkit-text-stroke: 1px var(--dr); font-family: "DejaVu Sans", "Noto Sans Symbols", sans-serif; font-size: 19px; }
+.g.mk-trap { font-size: 18px; }
+.g.mk-assume { color: #777; font-size: 19px; }
+.g.mk-inf { color: var(--ind); font-family: var(--sans); font-size: 13px; }
+.g.rest { font-family: var(--music); font-size: 24px; line-height: 1; vertical-align: middle; }
+.g.rest.false { color: var(--dr); }
+.g.rest.ghost { color: transparent; -webkit-text-stroke: 1px var(--dr); }
+.g.rest.unknown { color: var(--ind); }
+.g.rest.vacuous { color: transparent; -webkit-text-stroke: .8px #888; }
+.row .arrow { position: absolute; left: 60px; top: 0; width: 18px; height: var(--rh); display: none; }
+.row.cur .arrow { display: block; }
+.row .code { position: absolute; left: 82px; top: 0; height: var(--rh); line-height: var(--rh); white-space: pre; font-size: var(--cf); color: #000; transform-origin: top; }
+.row.k-func .code, .row.k-meta .code, .row.k-local .code, .row.k-spec .code, .row.k-ghostlocal .code, .row.k-ghostop .code, .row.k-assert .code, .row.k-assume .code { color: indigo; font-size: var(--mf); }
+.row.k-func .code, .row.k-meta .code { }
+.row.k-close .code { color: indigo; }
+.row.long .code { font-size: 13.5px; }
+.row .frac { position: absolute; top: 0; overflow: visible; }
+.row.ghost .frac, .row.ghost .gut { opacity: .45; }
+.row.ghost .code { opacity: .55; }
+.row.assumeln .code { color: #555; font-style: italic; }
+.row.acc .gut { color: #555; }
+.row.rtfail .code { color: var(--dr); }
+.row.rtfail .gut { color: var(--dr); }
+.row.reveal .code { animation: reveal .25s; }
+@keyframes reveal { 0% { transform: scaleY(0); } 100% { transform: scaleY(1); } }
+.row.stale { opacity: .4; }
+.row.stale .code, .row.stale .hhead { text-decoration: underline wavy #999 1px; text-underline-offset: 4px; }
+.row.shake, .chip.shake { animation: shake .25s; }
+@keyframes shake { 0%{transform:translateX(0)} 25%{transform:translateX(5px)} 50%{transform:translateX(-5px)} 75%{transform:translateX(5px)} 100%{transform:translateX(0)} }
+.tog { border-bottom: 1px dotted #999; cursor: pointer; }
+.tog:hover { background: rgba(72,61,139,.08); }
+.site { outline: 1.5px dashed var(--dr); outline-offset: 2px; border-radius: 2px; }
+.site.s-unknown { outline-color: var(--ind); }
+.site.s-vacuous { outline-color: #999; }
+.siteblank { display: inline-block; width: 150px; height: calc(var(--rh) - 12px); vertical-align: middle; border: 1.5px dashed var(--dr); border-radius: 3px; margin-left: 40px; }
+.ghosttext { color: indigo; opacity: .75; border-bottom: 1.5px dashed indigo; }
+.tokold { text-decoration: line-through; color: #999; }
+.toknew { color: indigo; border-bottom: 1.5px dashed indigo; margin-left: 6px; }
+.row.ghostins { background: repeating-linear-gradient(90deg, transparent 0 6px, rgba(75,0,130,.04) 6px 12px); }
+.row.fold .code { color: #777; font-size: 16px; cursor: pointer; }
+.row.fold .code b { color: indigo; font-weight: normal; }
+.row.fold:hover .code { color: #333; }
+.row .cmt { position: absolute; right: 8px; top: 4px; font-family: var(--sans); font-size: 11px; }
+.inf { color: var(--ind); font-family: var(--sans); font-size: 12px; border: 1px dashed var(--ind); padding: 0 3px; border-radius: 2px; }
+
+/* values inside shapes */
+.sv { font-family: var(--sans); font-size: 8.5px; text-anchor: middle; dominant-baseline: central; fill: #111; }
+.sv.old { fill: #888; }
+.frac .cup { fill: var(--i32m); stroke: var(--i32); stroke-width: 1; }
+.frac .out { fill: var(--i32); stroke: var(--i32); }
+.frac .out + .sv, .frac .sv.o { fill: #fff; }
+.frac .sv.o.old { fill: #ddd; }
+.frac .rule { stroke: #222; stroke-width: 1; }
+.frac .old-shape { opacity: .55; filter: grayscale(1); }
+.wrapmark { stroke: var(--dr); stroke-width: 1.4; fill: none; }
+
+/* ---------------- holes ---------------- */
+.row.hole { padding: 3px 0 5px 0; }
+.row.hole .gut { height: 100%; line-height: normal; padding-top: 10px; }
+.hbox { position: relative; margin-left: 82px; width: var(--hw); padding: 5px 10px 6px 10px; font-family: var(--sans); font-size: 12px; color: #222; transform-origin: top left; transition: transform .28s ease, opacity .28s ease, background .2s; cursor: default; user-select: none; }
+.hbox > svg.hborder { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.hborder rect { fill: none; width: calc(100% - 2px); height: calc(100% - 2px); }
+.hole.false .hborder rect { stroke: var(--dr); stroke-width: 1; stroke-dasharray: 3 3; }
+.hole.false.replayed .hborder rect { stroke-width: 2.2; stroke-dasharray: 8 3; }
+.hole.false.replayed .hbox { background: rgba(139, 0, 0, .035); }
+.hole.unknown .hborder rect { stroke: var(--ind); stroke-width: 1.2; stroke-dasharray: 11 5; }
+.hole.vacuous .hborder rect { stroke: #888; stroke-width: 1; }
+.hole.vacuous .hborder rect.in { width: calc(100% - 8px); height: calc(100% - 8px); }
+.hole.vacuous .hbox { opacity: .75; }
+.hole.solid .hborder rect { stroke: #222 !important; stroke-dasharray: none !important; stroke-width: 1.2 !important; }
+.hole.solid .hbox { background: rgba(255,255,255,.6); }
+.hhead { display: flex; gap: 10px; align-items: baseline; white-space: nowrap; font-size: 11px; color: #444; }
+.hstat { font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 10.5px; }
+.hole.false .hstat { color: var(--dr); }
+.hole.unknown .hstat { color: var(--ind); }
+.hole.vacuous .hstat { color: #777; }
+.hsite { color: #333; }
+.hwit { color: #555; }
+.hole.false.replayed .hwit { color: var(--dr); }
+.hbtn { font-family: var(--sans); font-size: 11px; border: 1px solid var(--dr); color: var(--dr); background: var(--ivory); border-radius: 9px; padding: 0 7px; cursor: pointer; }
+.hbtn:hover { background: #fbeaea; }
+.dyn { display: inline-block; border: 1.3px dotted var(--sg); color: var(--sg); border-radius: 9px; padding: 0 6px; font-size: 11px; }
+.hbody { display: flex; gap: 14px; margin-top: 3px; align-items: flex-start; }
+.hfrac { flex: 1 1 auto; min-width: 0; }
+.hyps { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; min-height: 26px; }
+.hyp { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.hyp .hn { font-family: var(--serif); font-size: 14px; color: #222; }
+.hyp svg { overflow: visible; }
+.fact { border: 1px solid #b9b3e6; border-radius: 3px; padding: 0 4px; font-size: 11.5px; color: #222; background: rgba(255,255,255,.5); }
+.hyp.blame .fact { border-color: var(--dr); border-style: dotted; }
+.hyp.missing .mtext { font-size: 11.5px; color: #555; font-style: italic; }
+.hyp.hl { background: rgba(72,61,139,.10); border-radius: 3px; }
+.hrule { display: block; margin: 2px 0 2px 0; overflow: visible; }
+.goal { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; font-size: 12.5px; }
+.cj { font-family: var(--serif); font-size: 14.5px; padding: 0 4px; border-radius: 3px; white-space: nowrap; }
+.cj.ok { color: #666; }
+.cj.bad { border: 1.6px solid var(--dr); color: #111; }
+.hole.false:not(.replayed) .cj.bad { border-width: 1px; border-style: dashed; }
+.cj.unk { border: 1.2px dashed var(--ind); color: #111; }
+.cj.vac { border: 1px double #888; color: #777; }
+.cj .inst { font-family: var(--sans); font-size: 11px; margin-left: 4px; color: var(--dr); }
+.cj.unk .inst { color: var(--ind); }
+.cj .infb { font-family: var(--sans); font-size: 11px; color: #333; margin-left: 3px; }
+.and { color: #999; font-size: 12px; }
+.hnote { font-size: 11px; color: #666; margin-top: 2px; }
+.hnote .gapw { color: #222; border-bottom: 1px dotted var(--dr); }
+.chips { flex: 0 0 auto; display: flex; flex-direction: column; gap: 3px; max-width: 46%; }
+.chipcap { font-size: 10px; color: #888; letter-spacing: .05em; text-transform: uppercase; }
+.chip { display: flex; align-items: baseline; gap: 6px; text-align: left; font-family: var(--sans); font-size: 11px; background: #fff; border: 1px solid #333; border-radius: 4px; padding: 2px 7px 2px 3px; cursor: pointer; color: #111; max-width: 100%; }
+.chip:hover { background: #f3f1ff; }
+.chip .ck { font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase; padding: 0 4px; border-radius: 2px; color: #fff; background: #333; flex: 0 0 auto; }
+.chip .ct { font-family: var(--serif); font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip .cl { color: #666; font-size: 10.5px; white-space: nowrap; }
+.chip.k-inv, .chip.k-lemma { border-color: var(--ind); }
+.chip.k-inv .ck, .chip.k-lemma .ck { background: var(--ind); }
+.chip.k-spec { border: 3px double #333; padding-top: 0; padding-bottom: 0; }
+.chip.k-admit { border: 1px dashed #999; opacity: .8; }
+.chip.k-admit .ck { background: #fff; color: #777; border: 1px solid #999; }
+.chip.alt { border: 1px dashed #aaa; margin-left: 18px; opacity: .85; }
+.chip.alt .ck { background: #fff; color: #666; border: 1px solid #aaa; }
+.chip .refused { color: var(--dr); border: 1px solid var(--dr); padding: 0 3px; font-size: 10.5px; }
+.hole .wtag { font-size: 10.5px; color: #777; }
+
+/* ---------------- slider ---------------- */
+.slider { position: sticky; top: 0; z-index: 20; background: var(--ivory); padding: 6px 0 4px 0; border-bottom: 1px solid #e3e3cc; font-family: var(--sans); }
+.srow { display: flex; align-items: center; gap: 12px; font-size: 12.5px; }
+.slab { color: var(--db); }
+.slab.wit { color: var(--dr); }
+.sstep { color: #444; }
+.sbtn { font-family: var(--sans); font-size: 11.5px; border: 1px solid #888; background: #fff; border-radius: 9px; padding: 0 8px; cursor: pointer; }
+.sbtn.dr { border-color: var(--dr); color: var(--dr); }
+.strack { position: relative; height: 40px; margin: 0 8px; }
+.strack input { position: absolute; left: -8px; right: -8px; width: calc(100% + 16px); top: 14px; margin: 0; accent-color: darkblue; }
+.sticks { position: absolute; left: 0; top: 30px; width: 100%; height: 10px; overflow: visible; }
+.pill { position: absolute; top: -1px; transform: translateX(-50%); font-size: 10.5px; color: #fff; background: darkblue; border-radius: 8px; padding: 0 6px; white-space: nowrap; pointer-events: none; transition: left .12s; }
+.pill.err { background: var(--dr); cursor: pointer; pointer-events: auto; top: 26px; font-size: 9.5px; padding: 0 4px; }
+.pill.trap { background: #fff; color: #000; border: 1px solid var(--dr); }
+.ghosttrack { display: flex; align-items: center; gap: 10px; margin: 2px 8px 0 8px; font-size: 11.5px; color: var(--dr); }
+.ghosttrack .gl { flex: 1; border-top: 1.5px dashed var(--dr); opacity: .7; }
+.ghosttrack[hidden] { display: none; }
+
+/* step strip (section A) */
+.strip { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11.5px; margin: 4px 0 0 82px; min-height: 22px; flex-wrap: wrap; }
+.dots { display: flex; gap: 3px; }
+.dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid #889; background: #fff; cursor: pointer; }
+.dot.on { background: darkblue; border-color: darkblue; }
+.dot.err { border: 2px solid var(--dr); }
+.dot.err.on { background: var(--dr); }
+
+/* ---------------- section layouts ---------------- */
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; margin-top: 8px; }
+.card { border: 1px solid #e0e0c8; padding: 8px 8px 10px 0; position: relative; }
+.card h3, .card .ctl, .card .cap { margin-left: 12px; }
+.ctl { font-family: var(--sans); font-size: 12px; display: flex; gap: 12px; flex-wrap: wrap; margin: 2px 0 6px 0; }
+.ctl label { cursor: pointer; }
+.cap { font-family: var(--sans); font-size: 12px; color: #555; margin-top: 6px; line-height: 1.35; }
+.bwrap { display: grid; grid-template-columns: 1fr 250px; gap: 16px; }
+.cwrap { display: grid; grid-template-columns: 1fr 340px; gap: 14px; }
+.side { position: sticky; top: 74px; align-self: start; font-family: var(--sans); font-size: 12px; }
+.side h4 { font-weight: 600; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #666; margin: 10px 0 4px 0; }
+.stage { display: block; width: 100%; text-align: left; font-family: var(--sans); font-size: 12px; border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 3px 6px; margin-bottom: 4px; cursor: pointer; }
+.stage.on { border-color: darkblue; box-shadow: inset 3px 0 0 darkblue; }
+.stage .sn { font-family: var(--serif); font-size: 15px; margin-right: 4px; }
+select { font-family: var(--sans); font-size: 12.5px; background: #fff; }
+.residue .ri { display: flex; gap: 6px; align-items: baseline; cursor: pointer; padding: 1px 0; }
+.residue .ri:hover { background: #f1f0e0; }
+.residue .ri .g.rest { font-size: 18px; }
+.calm { color: #888; font-style: italic; }
+.undo { font-family: var(--sans); font-size: 11.5px; border: 1px solid #999; background: #fff; border-radius: 9px; padding: 0 8px; cursor: pointer; }
+.toolbar { display: flex; align-items: center; gap: 14px; font-family: var(--sans); font-size: 12.5px; margin: 6px 0 4px 0; flex-wrap: wrap; }
+
+/* memory panel */
+.mem { border: 1px solid #e0e0c8; padding: 6px 8px; background: var(--ivory); }
+.mem .mh { font-size: 11.5px; color: #333; }
+.mem svg { display: block; overflow: visible; }
+.mem .beads { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.bead { font-family: var(--serif); font-size: 13px; border: 1px solid var(--i32); border-radius: 9px; padding: 0 6px; }
+.rcl { display: flex; gap: 6px; margin-top: 6px; align-items: center; flex-wrap: wrap; }
+.rc { font-family: var(--serif); font-size: 13px; padding: 0 5px; border-radius: 3px; }
+.rc.held { border: 1.3px dotted var(--sg); color: var(--sg); }
+.rc.fail { border: 1.6px solid var(--dr); color: var(--dr); }
+.rc.na { color: #bbb; }
+
+/* tooltip */
+#tip { position: fixed; z-index: 100; max-width: 420px; background: #fffff8; border: 1px solid #555; padding: 4px 7px; font-family: var(--sans); font-size: 12px; line-height: 1.35; pointer-events: none; display: none; box-shadow: 2px 2px 0 rgba(0,0,0,.08); white-space: pre-line; }
+
+/* footer */
+footer ul { font-size: 16px; line-height: 1.45; max-width: 1200px; }
+footer li { margin-bottom: 5px; }
+.scores { font-family: var(--sans); font-size: 13px; border-collapse: collapse; margin-top: 6px; }
+.scores td, .scores th { border: 1px solid #ddd; padding: 2px 8px; text-align: left; }
+.verify { font-family: var(--sans); font-size: 12px; color: #555; }
+
+.row.srchl { background: rgba(106,90,205,.12); }
+.siteblank.s-unknown { border-color: indigo; }
+
+</style></head>
+<body>
+<header>
+  <h1><span class="num">10 —</span> Synthetic proof holes: goals as inserted lines</h1>
+  <p class="lede">Codillon already writes lines you did not type: when a frame is unclosed it inserts a synthetic <code>end</code>, drawn as a dashed darkred box with 𝄠 in the gutter. This prototype does the same for proofs. When an obligation at line <i>L</i> cannot be discharged, the editor <b>inserts a hole row right after <i>L</i></b>. The hole is the goal drawn as a fraction, the same glyph Codillon uses for stack types: <i>hypotheses</i> above the rule (i32 shapes holding values, with the facts known about them), the <i>goal</i> below (split into conjuncts). Next to the fraction sit up to three suggestion chips. The rule says what kind of hole it is. It is <b>broken and darkred</b> when a counterexample exists, and the counterexample values sit inside the shapes, ready to replay. It is <b>dashed indigo with ★?</b> when the checker merely cannot decide. Accepting a chip turns the hole into a real line: the box solidifies, flies to where the edit belongs, and the line reveals itself. Editing the code so the goal holds makes the hole vanish. Holes are read-only and never take the cursor. The reasoning failure becomes part of the program text, in reading order.</p>
+  <div class="legend" id="legend"></div>
+</header>
+
+<section id="A">
+  <h2>A — the primitive in isolation</h2>
+  <p class="small" style="font-size:13px">Four tiny functions. Hover any chip to preview its edit; click it to accept. Click a hole body to see that holes refuse edits (shake). A1 and A2 share one program, so a spec change in A1 can move a hole into A2.</p>
+  <div class="cards">
+    <div class="card">
+      <h3>A1 · <code>$half</code>: a spec that is wrong (P3)</h3>
+      <div class="ctl"><label><input type="radio" name="a1" value="ok"> ensures <code>$h + $h == $x</code></label><label><input type="radio" name="a1" value="P3"> P3: <code>… &amp;&amp; $h &lt; $x</code></label></div>
+      <div id="A1list"></div><div id="A1strip"></div>
+      <div class="cap">The hole's witness <i>x = 0</i> is not yet replayed: outlined shapes, a hollow broken rule, hollow ⚖. Both chips are <i>spec</i> chips because the code is right. "Tighten requires" closes this hole but pushes the obligation onto the caller (watch A2).</div>
+    </div>
+    <div class="card">
+      <h3>A2 · <code>$half_or_neg1</code>: the gate inverted (P1), blame at the caller</h3>
+      <div class="ctl"><label><input type="radio" name="a2" value="ok"> correct</label><label><input type="radio" name="a2" value="P1"> P1: delete line 15 <code>i32.eqz</code></label></div>
+      <div id="A2list"></div><div id="A2strip"></div>
+      <div class="cap">Replayed: <i>x = 3</i> sits in the shape, the rule is solid and broken, and the strip has darkred steps. The dashed slot on line 15 is where the fix goes. Clicking line 15 also deletes or restores it directly.</div>
+    </div>
+    <div class="card">
+      <h3>A3 · <code>$sign</code>: a vacuous requires</h3>
+      <div class="ctl"><button class="undo" id="A3reset">reset</button></div>
+      <div id="A3list"></div><div id="A3strip"></div>
+      <div class="cap">No integer is both positive and negative, so "returns 1" is proven even though the body returns −1. The hollow ○ hole says so, and the body is ghosted. Loosen the requires and a <i>false</i> hole appears right where the lie was.</div>
+    </div>
+    <div class="card">
+      <h3>A4 · <code>$sq_even</code>: unknown, dynamic, assumed</h3>
+      <div class="ctl"><button class="undo" id="A4reset">reset</button></div>
+      <div id="A4list"></div><div id="A4strip"></div>
+      <div class="cap">The goal is true but nonlinear, so it is <i>unknown</i>: indigo, no darkred, with "∘ 3" for three passing run-time checks. <i>lemma</i> solidifies the hole in place into line 4′. <i>admit</i> writes an <code>@assume</code> line instead: ○, ghosted below, checked at run time.</div>
+    </div>
+  </div>
+</section>
+
+<section id="B">
+  <h2>B — number theory: <code>$isqrt</code> (linear search)</h2>
+  <div id="Bslider"></div>
+  <div class="bwrap">
+    <div id="Blist"></div>
+    <div class="side">
+      <h4>student path (01 §5)</h4>
+      <button class="stage" data-p="stage1"><span class="sn">①</span>no invariant yet</button>
+      <button class="stage" data-p="stage2"><span class="sn">②</span>signed first attempt</button>
+      <button class="stage" data-p="stage3"><span class="sn">③</span>no lemma hint</button>
+      <button class="stage" data-p="final"><span class="sn">④</span>all proven</button>
+      <div class="small" style="margin:2px 0 6px 0">Accepting each stage's first chip walks you to the next stage.</div>
+      <h4>seed bug</h4>
+      <select id="Bbug"><option value="">— (edited state)</option><option value="final">no bug (all proven)</option><option value="S1">S1 · signed compare (gt_s)</option><option value="S2">S2 · spec: &lt; and &lt;= swapped</option><option value="S3">S3 · search starts at 1</option></select>
+      <h4>your run</h4>
+      <select id="Binput"><option value="10">$isqrt(10)</option><option value="16">$isqrt(16)</option><option value="4">$isqrt(4)</option><option value="0">$isqrt(0)</option></select>
+      <h4>holes (residue)</h4>
+      <div class="residue" id="Bres"></div>
+      <div style="margin-top:8px"><button class="undo" id="Bundo">↶ undo</button></div>
+      <div class="small" style="margin-top:8px">Editable tokens: line 3's constant and line 17's comparison. Click either one to edit the code directly.</div>
+    </div>
+  </div>
+</section>
+
+<section id="C">
+  <h2>C — open-addressing hash table (8 slots, tombstones, ghost map M)</h2>
+  <div id="Cslider"></div>
+  <div class="toolbar">seed bug
+    <select id="Cbug"><option value="">— (edited state)</option><option value="none">no bug</option><option value="a">(a) probe index not wrapped</option><option value="b">(b) lookup treats TOMB as EMPTY</option><option value="bp">(b′) delete writes EMPTY</option><option value="c">(c) insert skips the existing-key check</option><option value="d">(d) load-factor check off by one</option><option value="dweak">(d) + clause (iv) without used &lt; CAP</option></select>
+    <button class="undo" id="Cundo">↶ undo</button>
+    <span class="small">Functions without holes are folded: click a fold to open it, or a function's header to fold it. Lines 38, 99 and 125 are editable.</span>
+  </div>
+  <div class="cwrap">
+    <div id="Clist"></div>
+    <div class="side" style="top:84px"><div class="mem" id="Cmem"></div><h4>holes (residue)</h4><div class="residue" id="Cres"></div></div>
+  </div>
+</section>
+
+<footer>
+  <section>
+    <h2>Self-critique</h2>
+    <ul id="critique">
+      <li><b>What it makes obvious.</b> <i>Where</i> the reasoning breaks, in reading order, as a row of the program. False and unknown look different in shape (broken vs. dashed rule, ⚖ vs. ★?) as well as colour, and the hole always says what would close it. The chips put the "fix the code or fix the spec?" choice (principle 13, Clousot-style) right at the goal, and accepting one shows the consequence: a hole that moves (A1→A2, (b)→delete, (d)→termination) is the clearest teaching moment here.</li>
+      <li><b>What it hides.</b> The hole sits at the failing obligation, which is not always where the fix goes (S1's gt_s at 17, P1's line 15). The dashed edit-site outline and the darkred trail carry the blame, but they are secondary marks. A hole also says nothing about <i>how often</i> things go wrong over time (the slider and memory panel carry that). Proven-with-search (the hash table's counting lemma) is drawn as plain proven.</li>
+      <li><b>How it scales.</b> One hole is 3–4 rows tall, so ten holes would push a 100-line function far apart. Mitigations prototyped here: a hole reports the <i>first</i> failure per root cause and folds its echoes into an "also needed by / same goal at" line, folded functions auto-open only when they contain a hole, and the residue list mirrors the gutter. Not prototyped: collapsing a hole to a one-row strip when it is not focused.</li>
+      <li><b>Cost in Codillon.</b> Low on the rendering side: holes reuse <code>synthetic_before</code>, the reveal/shake classes and the fraction SVG renderer, plus one new row kind. The chip previews reuse the editor's own line diffing. The real cost is the checker: a residue with per-conjunct status, witness kind (input vs. loop-head state), unsat-core sources for the trails, and a ranked suggestion engine (invariant strengthening, lemma <i>apply?</i> by conclusion shape, requires-tightening by weakest precondition). The engine's line interpreter is ~250 lines of JS and reproduces the fixture.</li>
+      <li><b>Deviations.</b> Listings follow 03's line numbers and fixture traces with 01's syntax (<code>$</code>-names, named results, <code>(@use …)</code>). The hash table keeps 03's <code>(@define …)</code> lines verbatim. Lines that holes write (<code>(@use sq_lt_sq $r 46341)</code>) are numbered <code>15′</code> so fixture numbering stays fixed. Student-path stage ① blanks lines 7–8, following the fixture's convention for deletions. Long header lines are set smaller than 22px. Folding is not in Codillon today. The "hole after the probe loop" for (b) sits at <code>$find</code>'s early return (line 41), where the goal actually lives.</li>
+      <li id="scoresli"><b>Rubric self-scores</b> (1–5):
+        <table class="scores"><tr><th>1 Salience</th><th>2 Blame</th><th>3 Kinds (gray)</th><th>4 Vocabulary</th><th>5 Pred. on shape</th><th>6 Causal trail</th><th>7 Witness</th><th>8 Ink economy</th><th>9 Scale</th><th>10 Edit continuity</th></tr>
+        <tr><td>5</td><td>4</td><td>4</td><td>5</td><td>3</td><td>4</td><td>4</td><td>5</td><td>3</td><td>5</td></tr></table>
+      </li>
+    </ul>
+    <p class="verify" id="verify"></p>
+  </section>
+</footer>
+
+<script>
+// Fixture (research/fixture.json; programs parity, isqrt, hashtable embedded verbatim)
+const FIXTURE = {"version":1,"conventions":{"step":"one step per executed instruction line; `block`/`loop`/`if`/`br*`/`return`/`call` count, `else`/`end` do not; a `call` takes two steps (enter: args popped; return: result pushed). Spec checks happen after the step they are attached to.","values":"i32 shown as signed decimal; predicates read them as mathematical integers (signed) unless written u(x)","frame":"{s: step, fn, ln: line (1-based, in the program listing, which is the same for buggy variants because deleted lines are blanked, not removed), op, stack (after the step, bottom first), loc: locals incl. ghost, checks: spec checks evaluated at this step}","hash_frame_extra":"used: global $used; M: ghost map as [key, value] pairs; slots: 8 x [state, key, value] (0 EMPTY, 1 FULL, 2 TOMB); R: truth of each clause of the representation invariant at that instant (only REQUIRED at function boundaries; transient falsity mid-operation is normal)","status":"none = no obligation beyond Wasm typing; auto = discharged from the refined stack + path condition by linear/bit-vector reasoning; inv = needs the loop invariant or the representation invariant R; lemma = also needs a nonlinear, counting, or definitional lemma; fails = the obligation that a seeded bug breaks"},"programs":[{"id":"parity","title":"Parity gate: is_even / half / half_or_neg1","lines":["(func $is_even (param $x i32) (result (i32 | v == (x % 2 == 0 ? 1 : 0)))","  local.get $x","  i32.const 1","  i32.and","  i32.eqz",")","(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))","  local.get $x","  i32.const 1","  i32.shr_s",")","(func $half_or_neg1 (param $x i32) (result (i32 | (x % 2 == 0 && v + v == x) || (x % 2 == 1 && v == -1)))","  local.get $x","  call $is_even","  i32.eqz","  if (result i32)","    i32.const -1","  else","    (@assert x % 2 == 0)","    local.get $x","    call $half","  end",")"],"functions":[{"name":"$is_even","line":1,"signature":"(func $is_even (param $x i32) (result (i32 | v == (x % 2 == 0 ? 1 : 0)))"},{"name":"$half","line":7,"signature":"(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))"},{"name":"$half_or_neg1","line":12,"signature":"(func $half_or_neg1 (param $x i32) (result (i32 | (x % 2 == 0 && v + v == x) || (x % 2 == 1 && v == -1)))"}],"specs":[{"line":19,"text":"(@assert x % 2 == 0)"}],"obligations":[{"lines":[2,3],"code":"local.get $x; i32.const 1","stack":"[x, 1]","obligation":"-","status":"none"},{"lines":[4],"code":"i32.and","stack":"[(i32 | v == x & 1 && 0 <= v <= 1)]","obligation":"-","status":"none"},{"lines":[5],"code":"i32.eqz","stack":"[(i32 | v == (x & 1 == 0 ? 1 : 0))]","obligation":"post of $is_even: v == (x % 2 == 0 ? 1 : 0)","status":"auto","kind":"post"},{"lines":[8,9],"code":"local.get $x; i32.const 1","stack":"[(i32 | v == x && v % 2 == 0), 1]","obligation":"-","status":"none"},{"lines":[10],"code":"i32.shr_s","stack":"[(i32 | v == floor(x / 2))]","obligation":"post of $half: v + v == x","status":"auto","kind":"post"},{"lines":[13,14],"code":"local.get $x; call $is_even","stack":"[(i32 | v == (x % 2 == 0 ? 1 : 0))]","obligation":"pre of $is_even: none","status":"auto","kind":"pre"},{"lines":[15],"code":"i32.eqz","stack":"[(i32 | v == (x % 2 == 0 ? 0 : 1))]","obligation":"-","status":"none"},{"lines":[16],"code":"if (result i32)","stack":"then: path x % 2 == 1 / else: path x % 2 == 0","obligation":"-","status":"auto","kind":"branch"},{"lines":[17],"code":"i32.const -1","stack":"[(i32 | v == -1)]","obligation":"post (then-arm): x % 2 == 1 && v == -1","status":"auto","kind":"post"},{"lines":[19],"code":"(@assert x % 2 == 0)","obligation":"x % 2 == 0","status":"auto","kind":"assert"},{"lines":[20,21],"code":"local.get $x; call $half","stack":"[(i32 | v + v == x)]","obligation":"pre of $half: x % 2 == 0;  post (else-arm): x % 2 == 0 && v + v == x","status":"auto","kind":"pre"}],"bugs":[{"id":"P1","title":"gate inverted (forgot the negation)","category":"code","flavor":"ordinary; blame lands on the CALLER","edit":"delete line 15 (`i32.eqz`)","edits":[["delete",15,15]],"calls":[["half_or_neg1",[3]]],"expected_results":[-1],"observed_results":[1],"runtime":"no trap; $half(3) computes 3 >> 1 = 1 and $half_or_neg1 returns 1 (should be -1). For x = 4 it returns -1 (should be 2).","static_failure":{"line":21,"obligation":"pre of $half: x % 2 == 0","why":"with line 15 gone the else-arm runs when is_even(x) == 0, so its path condition is x % 2 == 1; the precondition is refuted (the @assert on line 19 fails the same way)","status":"fails"},"first_dynamic_failure":{"s":8,"ln":19,"kind":"assert"},"trace":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":3}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[3,1],"loc":{"x":3}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[1],"loc":{"x":3}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[0],"loc":{"x":3}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[0],"loc":{"x":3},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":3},"checks":[{"ln":19,"kind":"assert","ok":false}]},{"s":9,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":10,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":3},"checks":[{"ln":7,"kind":"requires","ok":false}]},{"s":11,"fn":"half","ln":8,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":12,"fn":"half","ln":9,"op":"i32.const 1","stack":[3,1],"loc":{"x":3}},{"s":13,"fn":"half","ln":10,"op":"i32.shr_s","stack":[1],"loc":{"x":3}},{"s":14,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[1],"loc":{"x":3},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":false}]}]},{"id":"P2","title":"logical instead of arithmetic shift","category":"code","flavor":"subtle: every non-negative input is fine","edit":"line 10: `i32.shr_s` -> `i32.shr_u`","edits":[["replace",10,"i32.shr_s","i32.shr_u"]],"calls":[["half_or_neg1",[-4]]],"expected_results":[-2],"observed_results":[2147483646],"runtime":"no trap; returns 2147483646 for x = -4. Also x = INT_MIN returns 1073741824 (positive).","static_failure":{"line":10,"obligation":"post of $half: v + v == x","why":"shr_u gives v == u(x) / 2, which equals x / 2 only when 0 <= x; for x < 0, v + v == x + 2^32","status":"fails"},"first_dynamic_failure":{"s":15,"ln":7,"kind":"ensures"},"trace":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":-4}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[-4,1],"loc":{"x":-4}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[0],"loc":{"x":-4}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[1],"loc":{"x":-4}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[1],"loc":{"x":-4},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":15,"op":"i32.eqz","stack":[0],"loc":{"x":-4}},{"s":9,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":-4},"checks":[{"ln":19,"kind":"assert","ok":true}]},{"s":10,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":11,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":-4},"checks":[{"ln":7,"kind":"requires","ok":true}]},{"s":12,"fn":"half","ln":8,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":13,"fn":"half","ln":9,"op":"i32.const 1","stack":[-4,1],"loc":{"x":-4}},{"s":14,"fn":"half","ln":10,"op":"i32.shr_u","stack":[2147483646],"loc":{"x":-4}},{"s":15,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[2147483646],"loc":{"x":-4},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":false}]}]},{"id":"P3","title":"\"half is smaller\" (spec bug)","category":"spec","flavor":"spec bug: program right, spec wrong","edit":"line 7: result refinement `(i32 | v + v == x)` -> `(i32 | v + v == x && v < x)`","edits":[["replace",7,"(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))","(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x && v < x))"]],"calls":[["half_or_neg1",[0]]],"expected_results":[0],"observed_results":[0],"runtime":"no trap; returns the correct 0. Only the dynamic ensures check of $half fires. Fix the spec (drop `v < x`), not the code.","static_failure":{"line":10,"obligation":"post of $half: v + v == x && v < x","why":"v < x is false when x == 0 (0 < 0) and for every negative even x (-2 > -4)","status":"fails"},"first_dynamic_failure":{"s":15,"ln":7,"kind":"ensures"},"trace":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":0}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[0,1],"loc":{"x":0}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[0],"loc":{"x":0}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[1],"loc":{"x":0}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[1],"loc":{"x":0},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":15,"op":"i32.eqz","stack":[0],"loc":{"x":0}},{"s":9,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":0},"checks":[{"ln":19,"kind":"assert","ok":true}]},{"s":10,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":11,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":0},"checks":[{"ln":7,"kind":"requires","ok":true}]},{"s":12,"fn":"half","ln":8,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":13,"fn":"half","ln":9,"op":"i32.const 1","stack":[0,1],"loc":{"x":0}},{"s":14,"fn":"half","ln":10,"op":"i32.shr_s","stack":[0],"loc":{"x":0}},{"s":15,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[0],"loc":{"x":0},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":true}]}]}],"correct_runs":{"calls":[["half_or_neg1",[6]],["half_or_neg1",[7]],["half_or_neg1",[-4]],["is_even",[-3]]],"results":[3,-1,-2,0],"total_steps":44,"spec_checks_failed":0}},{"id":"isqrt","title":"Integer square root (linear search)","lines":["(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))","  (local $r i32)","  i32.const 0","  local.set $r","  block $done","    loop $grow","      (@invariant 0 <= r && r * r <= n)","      (@decreases n - r * r)","      local.get $r","      i32.const 1","      i32.add","      local.get $r","      i32.const 1","      i32.add","      i32.mul","      local.get $n","      i32.gt_u","      br_if $done","      local.get $r","      i32.const 1","      i32.add","      local.set $r","      br $grow","    end","  end","  local.get $r",")"],"functions":[{"name":"$isqrt","line":1,"signature":"(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))"}],"specs":[{"line":7,"text":"(@invariant 0 <= r && r * r <= n)"},{"line":8,"text":"(@decreases n - r * r)"}],"obligations":[{"lines":[3,4],"code":"i32.const 0; local.set $r","stack":"r == 0","obligation":"-","status":"none"},{"lines":[6],"code":"loop $grow","obligation":"inv on entry: 0 <= 0 && 0*0 <= n;  measure n - 0 >= 0","status":"auto","kind":"inv-entry"},{"lines":[9,10,11],"code":"local.get $r; i32.const 1; i32.add","stack":"[(i32 | v == r + 1)]","obligation":"no signed overflow: r + 1 <= 2^31-1","status":"lemma","kind":"overflow"},{"lines":[12,13,14],"code":"local.get $r; i32.const 1; i32.add","stack":"[r+1, r+1]","obligation":"same as 9-11","status":"lemma","kind":"overflow"},{"lines":[15],"code":"i32.mul","stack":"[(i32 | u(v) == (r+1)*(r+1))]","obligation":"no UNSIGNED overflow: (r+1)^2 < 2^32","status":"lemma","kind":"overflow"},{"lines":[16,17],"code":"local.get $n; i32.gt_u","stack":"[(i32 | v == ((r+1)^2 > n ? 1 : 0))]","obligation":"u(n) == n","status":"auto","kind":"type"},{"lines":[18],"code":"br_if $done","stack":"taken: n < (r+1)^2 / fallthrough: (r+1)^2 <= n","obligation":"-","status":"auto","kind":"branch"},{"lines":[19,20,21,22],"code":"r := r + 1","stack":"r' == r + 1","obligation":"no signed overflow (as 9-11)","status":"lemma","kind":"overflow"},{"lines":[23],"code":"br $grow","obligation":"inv preserved: 0 <= r' && r'*r' <= n;  measure: 0 <= n - r'^2 < n - r^2","status":"auto","kind":"inv-preserve"},{"lines":[26],"code":"local.get $r  (exit via br_if)","stack":"[(i32 | v == r)]","obligation":"post: 0 <= r && r*r <= n && n < (r+1)^2","status":"inv","kind":"post"}],"bugs":[{"id":"S1","title":"signed comparison of a product that may exceed 2^31-1","category":"code","flavor":"subtle: correct for every n < 46340^2 = 2147395600","edit":"line 17: `i32.gt_u` -> `i32.gt_s`","edits":[["replace",17,"i32.gt_u","i32.gt_s"]],"calls":[["isqrt",[2147483647]]],"expected_results":[46340],"observed_results":["(does not terminate)"],"runtime":"n = 2147483647: never terminates (no i32 is signed-greater than INT_MAX). n = 2147395600 (smallest failing input): returns 289398 after ~4.3M steps. The real run reaches the bad loop-head state (r = 46340) only at step 695,104, far past Codillon's 100k-step log, so the trace below is the counterexample-to-induction: start at a loop head satisfying the invariant and run one iteration (add 695,100 to each step number to get the real-run step).","static_failure":{"line":17,"obligation":"the comparison must mean (r+1)^2 > n","why":"signed reading of the line-15 product is faithful only if (r+1)^2 <= 2^31-1, i.e. r <= 46339; the invariant r*r <= n only gives r <= 46340. At r = 46340 the product 2147488281 wraps to -2147479015","status":"fails"},"first_dynamic_failure":{"s":695119,"ln":7,"kind":"invariant"},"trace_note":"counterexample-to-induction: one loop iteration from the loop-head state n = 2147483647, r = 46340 (which satisfies the invariant). Real-run step = s + 695100.","trace":[{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":2147483647,"r":46340},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":5,"fn":"isqrt","ln":9,"op":"local.get $r","stack":[46340],"loc":{"n":2147483647,"r":46340}},{"s":6,"fn":"isqrt","ln":10,"op":"i32.const 1","stack":[46340,1],"loc":{"n":2147483647,"r":46340}},{"s":7,"fn":"isqrt","ln":11,"op":"i32.add","stack":[46341],"loc":{"n":2147483647,"r":46340}},{"s":8,"fn":"isqrt","ln":12,"op":"local.get $r","stack":[46341,46340],"loc":{"n":2147483647,"r":46340}},{"s":9,"fn":"isqrt","ln":13,"op":"i32.const 1","stack":[46341,46340,1],"loc":{"n":2147483647,"r":46340}},{"s":10,"fn":"isqrt","ln":14,"op":"i32.add","stack":[46341,46341],"loc":{"n":2147483647,"r":46340}},{"s":11,"fn":"isqrt","ln":15,"op":"i32.mul","stack":[-2147479015],"loc":{"n":2147483647,"r":46340}},{"s":12,"fn":"isqrt","ln":16,"op":"local.get $n","stack":[-2147479015,2147483647],"loc":{"n":2147483647,"r":46340}},{"s":13,"fn":"isqrt","ln":17,"op":"i32.gt_s","stack":[0],"loc":{"n":2147483647,"r":46340}},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":2147483647,"r":46340}},{"s":15,"fn":"isqrt","ln":19,"op":"local.get $r","stack":[46340],"loc":{"n":2147483647,"r":46340}},{"s":16,"fn":"isqrt","ln":20,"op":"i32.const 1","stack":[46340,1],"loc":{"n":2147483647,"r":46340}},{"s":17,"fn":"isqrt","ln":21,"op":"i32.add","stack":[46341],"loc":{"n":2147483647,"r":46340}},{"s":18,"fn":"isqrt","ln":22,"op":"local.set $r","stack":[],"loc":{"n":2147483647,"r":46341}},{"s":19,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":2147483647,"r":46341},"checks":[{"ln":7,"kind":"invariant","ok":false},{"ln":8,"kind":"decreases","ok":false}]}]},{"id":"S2","title":"strict/non-strict swapped in the postcondition (spec bug)","category":"spec","flavor":"spec bug: fails exactly on perfect squares","edit":"line 1: result `v * v <= n && n < (v + 1) * (v + 1)` -> `v * v < n && n <= (v + 1) * (v + 1)`","edits":[["replace",1,"(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))","(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v < n && n <= (v + 1) * (v + 1)))"]],"calls":[["isqrt",[4]]],"expected_results":[2],"observed_results":[2],"runtime":"no trap; returns the correct 2 for n = 4 (also fails for n = 0, 1, 9, ...). n = 5 passes.","static_failure":{"line":26,"obligation":"post: r*r < n","why":"the invariant gives r*r <= n and the exit gives n < (r+1)^2; nothing excludes r*r == n","status":"fails"},"first_dynamic_failure":{"s":45,"ln":1,"kind":"ensures"},"trace":[{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":4,"r":0},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":0}},{"s":19,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":4,"r":1},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":29,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":1}},{"s":34,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":4,"r":2},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":44,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":2}},{"s":45,"fn":"isqrt","ln":26,"op":"local.get $r","stack":[2],"loc":{"n":4,"r":2},"checks":[{"ln":1,"kind":"ensures","ok":false}]}]},{"id":"S3","title":"off-by-one initial value","category":"code","flavor":"edge case: wrong only for n = 0","edit":"line 3: `i32.const 0` -> `i32.const 1`","edits":[["replace",3,"i32.const 0","i32.const 1"]],"calls":[["isqrt",[0]]],"expected_results":[0],"observed_results":[1],"runtime":"no trap; isqrt(0) returns 1. Every n >= 1 is answered correctly, so tests on 1..100 all pass.","static_failure":{"line":6,"obligation":"inv on entry: 1*1 <= n","why":"only 0 <= n is known","status":"fails"},"first_dynamic_failure":{"s":4,"ln":7,"kind":"invariant"},"trace":[{"s":1,"fn":"isqrt","ln":3,"op":"i32.const 1","stack":[1],"loc":{"n":0,"r":0},"checks":[{"ln":1,"kind":"requires","ok":true}]},{"s":2,"fn":"isqrt","ln":4,"op":"local.set $r","stack":[],"loc":{"n":0,"r":1}},{"s":3,"fn":"isqrt","ln":5,"op":"block $done","stack":[],"loc":{"n":0,"r":1}},{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":0,"r":1},"checks":[{"ln":7,"kind":"invariant","ok":false},{"ln":8,"kind":"decreases","ok":false}]},{"s":5,"fn":"isqrt","ln":9,"op":"local.get $r","stack":[1],"loc":{"n":0,"r":1}},{"s":6,"fn":"isqrt","ln":10,"op":"i32.const 1","stack":[1,1],"loc":{"n":0,"r":1}},{"s":7,"fn":"isqrt","ln":11,"op":"i32.add","stack":[2],"loc":{"n":0,"r":1}},{"s":8,"fn":"isqrt","ln":12,"op":"local.get $r","stack":[2,1],"loc":{"n":0,"r":1}},{"s":9,"fn":"isqrt","ln":13,"op":"i32.const 1","stack":[2,1,1],"loc":{"n":0,"r":1}},{"s":10,"fn":"isqrt","ln":14,"op":"i32.add","stack":[2,2],"loc":{"n":0,"r":1}},{"s":11,"fn":"isqrt","ln":15,"op":"i32.mul","stack":[4],"loc":{"n":0,"r":1}},{"s":12,"fn":"isqrt","ln":16,"op":"local.get $n","stack":[4,0],"loc":{"n":0,"r":1}},{"s":13,"fn":"isqrt","ln":17,"op":"i32.gt_u","stack":[1],"loc":{"n":0,"r":1}},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":0,"r":1}},{"s":15,"fn":"isqrt","ln":26,"op":"local.get $r","stack":[1],"loc":{"n":0,"r":1},"checks":[{"ln":1,"kind":"ensures","ok":false}]}]}],"correct_runs":{"calls":[["isqrt",[10]],["isqrt",[16]],["isqrt",[0]]],"results":[3,4,0],"total_steps":150,"spec_checks_failed":0}},{"id":"hashtable","title":"Open-addressing hash table (8 slots, linear probing, tombstones)","lines":["(memory 1)","(global $used (mut i32) (i32.const 0))","(@ghost global $M (Map i32 i32))","(@define EMPTY = 0, FULL = 1, TOMB = 2, CAP = 8, BASE = 65440)","(@define st(s) = load(BASE + 12*s), key(s) = load(BASE + 12*s + 4), val(s) = load(BASE + 12*s + 8))","(@define h(k) = k & 7, at(k, d) = (h(k) + d) & 7, dist(k, s) = (s - h(k)) & 7)","(@define R0 = forall s in 0..7. st(s) in {EMPTY, FULL, TOMB})","(@define R1 = forall s. st(s) == FULL ==> key(s) in M && M[key(s)] == val(s))","(@define R2 = forall k in M. #{s | st(s) == FULL && key(s) == k} == 1)","(@define R3 = forall s. st(s) == FULL ==> forall d <= dist(key(s), s). st(at(key(s), d)) != EMPTY)","(@define R4 = #{s | st(s) == FULL} == |M| && used == #{s | st(s) != EMPTY} && used < CAP)","(@define R = R0 && R1 && R2 && R3 && R4)","(func $slot (param $i (i32 | 0 <= v && v < CAP)) (result (i32 | v == BASE + 12*i))","  local.get $i","  i32.const 12","  i32.mul","  i32.const 65440","  i32.add",")","(func $find (param $k i32) (result (i32 | (v == -1 && !(k in M)) || (0 <= v && v < CAP && st(v) == FULL && key(v) == k)))","  (@requires R)","  (local $i i32)","  (local $p i32)","  (@ghost local $j i32)","  local.get $k","  i32.const 7","  i32.and","  local.set $i","  loop $probe","    (@invariant 0 <= j && j <= used && i == at(k, j))","    (@invariant forall d < j. st(at(k, d)) == TOMB || (st(at(k, d)) == FULL && key(at(k, d)) != k))","    (@decreases CAP - j)","    local.get $i","    call $slot","    local.tee $p","    i32.load","    i32.const 1","    i32.lt_u","    if","      i32.const -1","      return","    end","    local.get $p","    i32.load","    i32.const 1","    i32.eq","    local.get $p","    i32.load offset=4","    local.get $k","    i32.eq","    i32.and","    if","      local.get $i","      return","    end","    local.get $i","    i32.const 1","    i32.add","    i32.const 7","    i32.and","    local.set $i","    (@ghost j := j + 1)","    br $probe","  end","  unreachable",")","(func $lookup (param $k i32) (param $dflt i32) (result (i32 | v == (k in M ? M[k] : dflt)))","  (@requires R)","  (@ensures R)","  (local $i i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.lt_s","  if","    local.get $dflt","    return","  end","  local.get $i","  call $slot","  i32.load offset=8",")","(func $delete (param $k i32) (result (i32 | v == (k in old(M) ? 1 : 0)))","  (@requires R)","  (@ensures R && M == old(M) \\ {k})","  (local $i i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.lt_s","  if","    i32.const 0","    return","  end","  local.get $i","  call $slot","  i32.const 2","  i32.store","  (@ghost M := M \\ {k})","  i32.const 1",")","(func $insert (param $k i32) (param $x i32) (result (i32 | v == 1 || (v == 0 && !(k in M) && used == CAP - 1)))","  (@requires R)","  (@ensures R && M == (result == 1 ? old(M)[k := x] : old(M)))","  (local $i i32)","  (local $p i32)","  (@ghost local $j i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.ge_s","  if","    local.get $i","    call $slot","    local.get $x","    i32.store offset=8","    (@ghost M := M[k := x])","    i32.const 1","    return","  end","  global.get $used","  i32.const 7","  i32.ge_u","  if","    i32.const 0","    return","  end","  local.get $k","  i32.const 7","  i32.and","  local.set $i","  loop $free","    (@invariant !(k in M) && 0 <= j && j <= used && i == at(k, j))","    (@invariant forall d < j. st(at(k, d)) != EMPTY)","    (@decreases CAP - j)","    local.get $i","    call $slot","    local.tee $p","    i32.load","    if","      local.get $i","      i32.const 1","      i32.add","      i32.const 7","      i32.and","      local.set $i","      (@ghost j := j + 1)","      br $free","    end","  end","  local.get $p","  i32.const 1","  i32.store","  local.get $p","  local.get $k","  i32.store offset=4","  local.get $p","  local.get $x","  i32.store offset=8","  global.get $used","  i32.const 1","  i32.add","  global.set $used","  (@ghost M := M[k := x])","  i32.const 1",")"],"functions":[{"name":"$slot","line":13,"signature":"(func $slot (param $i (i32 | 0 <= v && v < CAP)) (result (i32 | v == BASE + 12*i))"},{"name":"$find","line":20,"signature":"(func $find (param $k i32) (result (i32 | (v == -1 && !(k in M)) || (0 <= v && v < CAP && st(v) == FULL && key(v) == k)))"},{"name":"$lookup","line":67,"signature":"(func $lookup (param $k i32) (param $dflt i32) (result (i32 | v == (k in M ? M[k] : dflt)))"},{"name":"$delete","line":84,"signature":"(func $delete (param $k i32) (result (i32 | v == (k in old(M) ? 1 : 0)))"},{"name":"$insert","line":104,"signature":"(func $insert (param $k i32) (param $x i32) (result (i32 | v == 1 || (v == 0 && !(k in M) && used == CAP - 1)))"}],"specs":[{"line":3,"text":"(@ghost global $M (Map i32 i32))"},{"line":4,"text":"(@define EMPTY = 0, FULL = 1, TOMB = 2, CAP = 8, BASE = 65440)"},{"line":5,"text":"(@define st(s) = load(BASE + 12*s), key(s) = load(BASE + 12*s + 4), val(s) = load(BASE + 12*s + 8))"},{"line":6,"text":"(@define h(k) = k & 7, at(k, d) = (h(k) + d) & 7, dist(k, s) = (s - h(k)) & 7)"},{"line":7,"text":"(@define R0 = forall s in 0..7. st(s) in {EMPTY, FULL, TOMB})"},{"line":8,"text":"(@define R1 = forall s. st(s) == FULL ==> key(s) in M && M[key(s)] == val(s))"},{"line":9,"text":"(@define R2 = forall k in M. #{s | st(s) == FULL && key(s) == k} == 1)"},{"line":10,"text":"(@define R3 = forall s. st(s) == FULL ==> forall d <= dist(key(s), s). st(at(key(s), d)) != EMPTY)"},{"line":11,"text":"(@define R4 = #{s | st(s) == FULL} == |M| && used == #{s | st(s) != EMPTY} && used < CAP)"},{"line":12,"text":"(@define R = R0 && R1 && R2 && R3 && R4)"},{"line":21,"text":"(@requires R)"},{"line":24,"text":"(@ghost local $j i32)"},{"line":30,"text":"(@invariant 0 <= j && j <= used && i == at(k, j))"},{"line":31,"text":"(@invariant forall d < j. st(at(k, d)) == TOMB || (st(at(k, d)) == FULL && key(at(k, d)) != k))"},{"line":32,"text":"(@decreases CAP - j)"},{"line":62,"text":"(@ghost j := j + 1)"},{"line":68,"text":"(@requires R)"},{"line":69,"text":"(@ensures R)"},{"line":85,"text":"(@requires R)"},{"line":86,"text":"(@ensures R && M == old(M) \\ {k})"},{"line":101,"text":"(@ghost M := M \\ {k})"},{"line":105,"text":"(@requires R)"},{"line":106,"text":"(@ensures R && M == (result == 1 ? old(M)[k := x] : old(M)))"},{"line":109,"text":"(@ghost local $j i32)"},{"line":120,"text":"(@ghost M := M[k := x])"},{"line":136,"text":"(@invariant !(k in M) && 0 <= j && j <= used && i == at(k, j))"},{"line":137,"text":"(@invariant forall d < j. st(at(k, d)) != EMPTY)"},{"line":138,"text":"(@decreases CAP - j)"},{"line":150,"text":"(@ghost j := j + 1)"},{"line":167,"text":"(@ghost M := M[k := x])"}],"obligations":[{"lines":[14,15,16,17,18],"code":"$slot: i*12 + 65440","stack":"[(i32 | v == BASE + 12*i)]","obligation":"no overflow; post v == BASE + 12*i","status":"auto","kind":"post"},{"lines":[25,26,27,28],"code":"find: i := k & 7","stack":"i == h(k), 0 <= i < 8","obligation":"-","status":"auto","kind":"type"},{"lines":[29],"code":"loop $probe","obligation":"inv on entry: j == 0 <= used, i == at(k,0), path-so-far vacuous;  measure CAP - 0 >= 0","status":"auto","kind":"inv-entry"},{"lines":[33,34,35],"code":"call $slot; local.tee $p","stack":"[(i32 | v == BASE + 12*i)]","obligation":"pre of $slot: 0 <= i < CAP","status":"inv","kind":"pre"},{"lines":[36],"code":"i32.load","stack":"[(i32 | v == st(i))]","obligation":"in bounds: p + 4 <= 65536","status":"auto","kind":"trap"},{"lines":[37,38,39,40,41],"code":"st(i) < FULL ? return -1","stack":"[(i32 | v == -1)]","obligation":"post of $find: !(k in M)","status":"inv","kind":"post"},{"lines":[43,44,45,46,47,48,49,50,51],"code":"(st(i) == FULL) & (key(i) == k)","stack":"[(i32 | v == (st(i) == FULL && key(i) == k ? 1 : 0))]","obligation":"in bounds: p + 8 <= 65536","status":"auto","kind":"trap"},{"lines":[52,53,54],"code":"match ? return i","stack":"[(i32 | v == i)]","obligation":"post of $find: 0 <= i < CAP && st(i) == FULL && key(i) == k","status":"auto","kind":"post"},{"lines":[56,57,58,59,60,61],"code":"i := (i + 1) & 7","stack":"i' == at(k, j + 1)","obligation":"-","status":"auto","kind":"type"},{"lines":[62,63],"code":"j := j + 1; br $probe","obligation":"inv preserved: slot at distance j is TOMB or FULL-with-other-key; j + 1 <= used;  measure CAP - (j+1) < CAP - j, >= 0","status":"lemma","kind":"inv-preserve"},{"lines":[65],"code":"unreachable","obligation":"this point is dead","status":"auto","kind":"dead"},{"lines":[71,72,73,74,75,76,77,78],"code":"lookup: i := find(k); i < 0 ? return dflt","stack":"[(i32 | v == dflt)]","obligation":"pre of $find: R;  post: !(k in M) so result == dflt","status":"auto","kind":"post"},{"lines":[80,81,82],"code":"lookup: load val(i)","stack":"[(i32 | v == val(i))]","obligation":"post: val(i) == M[k];  R preserved","status":"inv","kind":"post"},{"lines":[88,89,90,91,92,93,94,95,96],"code":"delete: i := find(k); absent ? return 0","stack":"[(i32 | v == 0)]","obligation":"post: k not in old(M), M unchanged, R unchanged","status":"auto","kind":"post"},{"lines":[97,98,99,100,101],"code":"delete: st(i) := TOMB; M := M \\ {k}","obligation":"R after: R1 (slot i no longer FULL), R2 (k had exactly one slot), R3 (TOMB is not EMPTY, so no probe path gains an EMPTY), R4 (#FULL - 1 == |M| - 1; used unchanged)","status":"inv","kind":"R"},{"lines":[110,111,112,113,114,115],"code":"insert: i := find(k); i >= 0 ?","stack":"then: st(i) == FULL && key(i) == k / else: !(k in M)","obligation":"pre of $find: R","status":"auto","kind":"pre"},{"lines":[116,117,118,119,120],"code":"insert(update): val(i) := x; M := M[k := x]","obligation":"R1 for slot i with the new M; other clauses untouched","status":"auto","kind":"R"},{"lines":[124,125,126,127,128,129,130],"code":"used >= CAP-1 ? return 0","stack":"[(i32 | v == 0)]","obligation":"post: !(k in M) && used == CAP - 1","status":"auto","kind":"post"},{"lines":[131,132,133,134,135],"code":"i := h(k); loop $free","obligation":"inv on entry: !(k in M) (from find), j == 0, i == at(k, 0)","status":"auto","kind":"inv-entry"},{"lines":[139,140,141,142,143],"code":"st(i) != EMPTY ?","obligation":"pre of $slot: 0 <= i < CAP;  load in bounds","status":"inv","kind":"pre"},{"lines":[144,145,146,147,148,149,150,151],"code":"i := (i+1) & 7; j := j + 1; br $free","obligation":"inv preserved (path so far non-EMPTY; j + 1 <= used);  measure","status":"lemma","kind":"inv-preserve"},{"lines":[154,155,156,157,158,159,160,161,162],"code":"write FULL, k, x into EMPTY slot i","obligation":"stores in bounds","status":"auto","kind":"trap"},{"lines":[163,164,165,166,167],"code":"used := used + 1; M := M[k := x]","obligation":"R after: R1 (new slot maps k to x), R2 (k was absent: inv), R3 (path h(k)..i was non-EMPTY: inv; turning an EMPTY into FULL never breaks another key's path), R4 (#FULL + 1 == |M| + 1; used + 1 == #non-EMPTY because slot i WAS EMPTY; used + 1 < CAP because the check at 124-126 gave used < CAP - 1)","status":"inv","kind":"R"}],"bugs":[{"id":"Ha","title":"(a) probe index not wrapped","category":"code","flavor":"out-of-bounds trap","edit":"delete lines 147-148 (`i32.const 7`, `i32.and`) in $insert's free-slot loop","edits":[["delete",147,148]],"calls":[["insert",[7,70]],["insert",[15,150]]],"expected_results":[1,1],"observed_results":[1,"trap: out of bounds memory access"],"runtime":"insert(15, 150) traps \"out of bounds memory access\" at line 142 (address 65536 = BASE + 12*8).","static_failure":{"line":140,"obligation":"pre of $slot: 0 <= i < CAP","why":"after line 146 i == at(k, j) + 1, which is 8 when at(k, j) == 7. The back-edge invariant i == at(k, j+1) (line 136) fails first","status":"fails"},"first_dynamic_failure":{"s":143,"ln":136,"kind":"invariant"},"R_violation":"none: the trap fires before any write. With BASE = 0 instead of 65440 there would be no trap: \"slot 8\" (bytes 96..107) reads as EMPTY, the entry is written outside the table, and R2 (ii) fails because 15 is in M but in no FULL slot","op_boundaries":[{"call":["insert",[7,70]],"returned_at_step":61,"R_false":[]}],"trace":[{"s":17,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":7,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":22,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":7,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":46,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":56,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":61,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}]},{"s":78,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":15,"i":7,"p":65524,"j":0},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":108,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":15,"i":0,"p":65440,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":113,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":15,"i":0,"p":65440,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":137,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":15,"x":150,"i":7,"p":65524,"j":0},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":143,"fn":"insert","ln":151,"op":"br $free","stack":[],"loc":{"k":15,"x":150,"i":8,"p":65524,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"checks":[{"ln":136,"kind":"invariant","ok":false},{"ln":137,"kind":"invariant","ok":true},{"ln":138,"kind":"decreases","ok":true}]},{"s":145,"fn":"insert","ln":140,"op":"call $slot  (enter)","stack":[],"loc":{"k":15,"x":150,"i":8,"p":65524,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"checks":[{"ln":13,"kind":"requires","ok":false}]},{"s":153,"fn":"insert","ln":142,"op":"i32.load","stack":[65536],"loc":{"k":15,"x":150,"i":8,"p":65536,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"trap":"out of bounds memory access"}]},{"id":"Hb","title":"(b) lookup treats TOMBSTONE as EMPTY","category":"code","flavor":"key becomes unreachable","edit":"line 38: `i32.lt_u` (state < FULL, i.e. EMPTY) -> `i32.ne` (state != FULL, i.e. EMPTY or TOMB)","edits":[["replace",38,"i32.lt_u","i32.ne"]],"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]]],"expected_results":[1,1,1,110],"observed_results":[1,1,1,-1],"runtime":"lookup(11, -1) returns -1 (expected 110). No trap. Cascade: a later insert(11, 111) sees \"absent\" and writes a second FULL slot for 11 (slot 5), now breaking R2 (ii).","static_failure":{"line":41,"obligation":"post of $find: !(k in M)","why":"the path condition at the early return is now st(i) in {EMPTY, TOMB}; R3 (iii) only promises no EMPTY on a key's probe path, so a TOMB there says nothing about k","status":"fails"},"first_dynamic_failure":{"s":241,"ln":20,"kind":"ensures"},"R_violation":"R stays TRUE at every step (delete correctly writes TOMB). What breaks is the stronger invariant the buggy lookup silently relies on, iii_strong = \"no non-FULL slot on any key's probe path\". It becomes false at step 217 (delete's i32.store, line 100), when slot 3 on key 11's path turns TOMB. The first obligation to fail at runtime is $find's postcondition, at step 241 (find returns -1 to lookup)","op_boundaries":[{"call":["insert",[3,30]],"returned_at_step":61,"R_false":[]},{"call":["insert",[11,110]],"returned_at_step":170,"R_false":[]},{"call":["delete",[3]],"returned_at_step":218,"R_false":[]},{"call":["lookup",[11,-1]],"returned_at_step":247,"R_false":[]}],"trace":[{"s":17,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":22,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":46,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":56,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":61,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":true,"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}]},{"s":78,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":87,"fn":"find","ln":48,"op":"i32.load offset=4","stack":[1,3],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":108,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":11,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":113,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":137,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":11,"x":110,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":155,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":165,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":170,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":true,"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}]},{"s":187,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":196,"fn":"find","ln":48,"op":"i32.load offset=4","stack":[1,3],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":202,"fn":"find","ln":54,"op":"return","stack":[3],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":217,"fn":"delete","ln":100,"op":"i32.store","stack":[],"loc":{"k":3,"i":3},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":218,"fn":"delete","ln":102,"op":"i32.const 1","stack":[1],"loc":{"k":3,"i":3},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":false,"checks":[{"ln":84,"kind":"ensures","ok":true},{"ln":86,"kind":"ensures","ok":true}]},{"s":235,"fn":"find","ln":36,"op":"i32.load","stack":[2],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":237,"fn":"find","ln":38,"op":"i32.ne","stack":[1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":240,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":241,"fn":"lookup","ln":72,"op":"call $find  (return)","stack":[-1],"loc":{"k":11,"dflt":-1,"i":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false,"checks":[{"ln":20,"kind":"ensures","ok":false}]},{"s":247,"fn":"lookup","ln":78,"op":"return","stack":[-1],"loc":{"k":11,"dflt":-1,"i":-1},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":false,"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":true}]}]},{"id":"Hb_prime","title":"(b') delete writes EMPTY instead of TOMBSTONE","category":"code","flavor":"the same symptom, caused on the delete side","edit":"line 99: `i32.const 2` -> `i32.const 0`","edits":[["replace",99,"i32.const 2","i32.const 0"]],"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]]],"expected_results":[1,1,1,110],"observed_results":[1,1,1,-1],"runtime":"lookup(11, -1) returns -1 (expected 110).","static_failure":{"line":100,"obligation":"R3 (iii) after delete's store","why":"writing EMPTY into slot 3 places an EMPTY on key 11's path h(11)=3 .. 4","status":"fails"},"first_dynamic_failure":{"s":218,"ln":86,"kind":"ensures"},"R_violation":"R3 (iii) and R4 (iv: used == #non-EMPTY) become false at step 217 (line 100, the store)","op_boundaries":[{"call":["insert",[3,30]],"returned_at_step":61,"R_false":[]},{"call":["insert",[11,110]],"returned_at_step":170,"R_false":[]},{"call":["delete",[3]],"returned_at_step":218,"R_false":["iii","iv"]},{"call":["lookup",[11,-1]],"returned_at_step":247,"R_false":["iii","iv"]}],"trace":[{"s":217,"fn":"delete","ln":100,"op":"i32.store","stack":[],"loc":{"k":3,"i":3},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]]},{"s":218,"fn":"delete","ln":102,"op":"i32.const 1","stack":[1],"loc":{"k":3,"i":3},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":false,"iv":false},"checks":[{"ln":84,"kind":"ensures","ok":true},{"ln":86,"kind":"ensures","ok":false}]},{"s":235,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]]},{"s":240,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]]},{"s":247,"fn":"lookup","ln":78,"op":"return","stack":[-1],"loc":{"k":11,"dflt":-1,"i":-1},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":false,"iv":false},"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":false}]}]},{"id":"Hc","title":"(c) insert does not check for an existing key","category":"code","flavor":"duplicate key","edit":"delete lines 110-123 (the find-and-update group at the top of $insert)","edits":[["delete",110,123]],"calls":[["insert",[3,30]],["insert",[3,31]],["lookup",[3,-1]]],"expected_results":[1,1,31],"observed_results":[1,1,30],"runtime":"insert(3, 31) returns 1 but leaves two FULL slots with key 3; lookup(3, -1) returns the stale 30 (expected 31). No trap.","static_failure":{"line":135,"obligation":"inv on entry of $free: !(k in M)","why":"nothing establishes that k is absent any more","status":"fails"},"first_dynamic_failure":{"s":43,"ln":136,"kind":"invariant"},"R_violation":"R2 (ii): from step 78 (line 159, key store) slots 3 and 4 are both FULL with key 3. At insert's return (step 86) R1 (i) is false too (ghost M[3] = 31 but slot 3 still holds 30) and so is R4 (iv) (#FULL = 2 but |M| = 1)","op_boundaries":[{"call":["insert",[3,30]],"returned_at_step":34,"R_false":[]},{"call":["insert",[3,31]],"returned_at_step":86,"R_false":["i","ii","iv"]},{"call":["lookup",[3,-1]],"returned_at_step":132,"R_false":["i","ii","iv"]}],"trace":[{"s":43,"fn":"insert","ln":135,"op":"loop $free","stack":[],"loc":{"k":3,"x":31,"i":3,"p":0,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"checks":[{"ln":136,"kind":"invariant","ok":false},{"ln":137,"kind":"invariant","ok":true},{"ln":138,"kind":"decreases","ok":true}]},{"s":53,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":3,"x":31,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":71,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":78,"fn":"insert","ln":159,"op":"i32.store offset=4","stack":[],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":86,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":2,"M":[[3,31]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,31],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":false,"ii":false,"iii":true,"iv":false},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":false}]},{"s":132,"fn":"lookup","ln":82,"op":"i32.load offset=8","stack":[30],"loc":{"k":3,"dflt":-1,"i":3},"used":2,"M":[[3,31]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,31],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":false,"ii":false,"iii":true,"iv":false},"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":false}]}]},{"id":"Hd","title":"(d) load-factor check off by one","category":"code","flavor":"probe loop never terminates","edit":"line 125: `i32.const 7` -> `i32.const 8` (refuse only when used >= 8)","edits":[["replace",125,"i32.const 7","i32.const 8"]],"calls":[["insert",[0,0]],["insert",[1,10]],["insert",[2,20]],["insert",[3,30]],["insert",[4,40]],["insert",[5,50]],["insert",[6,60]],["insert",[7,70]],["lookup",[8,-1]]],"expected_results":[1,1,1,1,1,1,1,0,-1],"observed_results":[1,1,1,1,1,1,1,1,"(lookup does not terminate)"],"runtime":"The 8th insert succeeds (correct program refuses it with 0). lookup(8, -1) then probes slots 0,1,...,7,0,1,... forever: no trap, no result; Codillon's 100k-step log fills up.","static_failure":{"line":166,"obligation":"R4 (iv) after insert: used + 1 < CAP","why":"the check at 124-126 now only gives used < 8, which R4 already guaranteed; used + 1 <= 8 is all that follows","status":"fails"},"first_dynamic_failure":{"s":488,"ln":106,"kind":"ensures"},"R_violation":"R4 (iv): used < CAP. False from step 487 (line 166, global.set $used = 8) of the 8th insert; checked false at its return, step 488","op_boundaries":[{"call":["insert",[0,0]],"returned_at_step":61,"R_false":[]},{"call":["insert",[1,10]],"returned_at_step":122,"R_false":[]},{"call":["insert",[2,20]],"returned_at_step":183,"R_false":[]},{"call":["insert",[3,30]],"returned_at_step":244,"R_false":[]},{"call":["insert",[4,40]],"returned_at_step":305,"R_false":[]},{"call":["insert",[5,50]],"returned_at_step":366,"R_false":[]},{"call":["insert",[6,60]],"returned_at_step":427,"R_false":[]},{"call":["insert",[7,70]],"returned_at_step":488,"R_false":["iv"]}],"trace":[{"s":487,"fn":"insert","ln":166,"op":"global.set $used","stack":[],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":488,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":false},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":false}]},{"s":489,"fn":"lookup","ln":71,"op":"local.get $k","stack":[8],"loc":{"k":8,"dflt":-1,"i":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":68,"kind":"requires","ok":false}]},{"s":490,"fn":"lookup","ln":72,"op":"call $find  (enter)","stack":[],"loc":{"k":8,"dflt":-1,"i":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":21,"kind":"requires","ok":false}]},{"s":505,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":0,"p":65440,"j":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":535,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":1,"p":65452,"j":1},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":565,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":2,"p":65464,"j":2},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":595,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":3,"p":65476,"j":3},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":625,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":4,"p":65488,"j":4},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":655,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":5,"p":65500,"j":5},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":685,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":6,"p":65512,"j":6},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":715,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":7,"p":65524,"j":7},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":745,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":0,"p":65440,"j":8},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":765,"fn":"find","ln":63,"op":"br $probe","stack":[],"loc":{"k":8,"i":1,"p":65440,"j":9},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":30,"kind":"invariant","ok":false},{"ln":31,"kind":"invariant","ok":true},{"ln":32,"kind":"decreases","ok":false}]},{"s":775,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":1,"p":65452,"j":9},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":795,"fn":"find","ln":63,"op":"br $probe","stack":[],"loc":{"k":8,"i":2,"p":65452,"j":10},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":30,"kind":"invariant","ok":false},{"ln":31,"kind":"invariant","ok":true},{"ln":32,"kind":"decreases","ok":false}]}]}],"correct_runs":{"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]],["lookup",[3,-1]]],"results":[1,1,1,110,-1],"total_steps":383,"spec_checks_failed":0}}]};
+// ---------------------------------------------------------------------------
+// Line-level WAT interpreter (subset), step convention of 03 §1:
+// one step per executed instruction line; block/loop/if/br*/return/call count,
+// else/end do not; call = two steps (enter, return). Spec checks attach to the
+// step after which they are evaluated.
+// ---------------------------------------------------------------------------
+const ENG = (() => {
+  const BIN = {
+    'i32.add': (a, b) => (a + b) | 0, 'i32.sub': (a, b) => (a - b) | 0,
+    'i32.mul': (a, b) => Math.imul(a, b), 'i32.and': (a, b) => a & b, 'i32.or': (a, b) => a | b,
+    'i32.eq': (a, b) => +(a === b), 'i32.ne': (a, b) => +(a !== b),
+    'i32.lt_s': (a, b) => +(a < b), 'i32.gt_s': (a, b) => +(a > b), 'i32.le_s': (a, b) => +(a <= b), 'i32.ge_s': (a, b) => +(a >= b),
+    'i32.lt_u': (a, b) => +((a >>> 0) < (b >>> 0)), 'i32.gt_u': (a, b) => +((a >>> 0) > (b >>> 0)),
+    'i32.le_u': (a, b) => +((a >>> 0) <= (b >>> 0)), 'i32.ge_u': (a, b) => +((a >>> 0) >= (b >>> 0)),
+    'i32.shr_s': (a, b) => a >> (b & 31), 'i32.shr_u': (a, b) => (a >>> (b & 31)) | 0, 'i32.shl': (a, b) => a << (b & 31),
+    'i32.rem_u': (a, b) => { if (b === 0) throw { trap: 'integer divide by zero' }; return ((a >>> 0) % (b >>> 0)) | 0; },
+    'i32.rem_s': (a, b) => { if (b === 0) throw { trap: 'integer divide by zero' }; return (a % b) | 0; },
+  };
+  const UN = { 'i32.eqz': a => +(a === 0) };
+
+  function classify(raw) {
+    const t = (raw || '').trim();
+    if (!t) return { kind: 'blank', t };
+    if (t.startsWith('(func')) return { kind: 'func', t };
+    if (t === ')') return { kind: 'close', t };
+    if (t.startsWith('(local')) return { kind: 'local', t, name: (t.match(/\$(\w+)/) || [])[1] };
+    if (t.startsWith('(@ghost local')) return { kind: 'ghostlocal', t, name: (t.match(/\$(\w+)/) || [])[1] };
+    if (t.startsWith('(@ghost')) return { kind: 'ghostop', t };
+    if (t.startsWith('(@assert')) return { kind: 'assert', t };
+    if (t.startsWith('(@assume')) return { kind: 'assume', t };
+    if (t.startsWith('(@')) return { kind: 'spec', t };
+    if (t.startsWith('(memory') || t.startsWith('(global')) return { kind: 'meta', t };
+    if (t.startsWith(';;')) return { kind: 'blank', t };
+    const parts = t.split(/\s+/);
+    const o = { kind: 'instr', t, op: parts[0], arg: parts[1], offset: 0 };
+    for (const p of parts.slice(1)) { const m = p.match(/^offset=(\d+)/); if (m) { o.offset = +m[1]; if (o.arg === p) o.arg = undefined; } }
+    return o;
+  }
+
+  function parse(lines) {
+    const L = [null]; // 1-based
+    lines.forEach((raw, i) => L.push(Object.assign({ n: i + 1, raw }, classify(raw))));
+    const funcs = {}, globals = {};
+    let cur = null, ctl = [];
+    for (let n = 1; n < L.length; n++) {
+      const l = L[n];
+      if (l.kind === 'func') {
+        const name = l.t.match(/^\(func \$(\w+)/)[1];
+        const params = [...l.t.matchAll(/\(param \$(\w+)/g)].map(m => m[1]);
+        cur = { name, hdr: n, params, locals: [], ghosts: [], hasResult: /\(result/.test(l.t) };
+        funcs[name] = cur; ctl = [];
+      } else if (l.kind === 'close' && cur) { cur.close = n; l.fn = cur.name; cur = null; }
+      else if (l.kind === 'meta') { const g = l.t.match(/^\(global \$(\w+).*\(i32\.const (-?\d+)\)\)/); if (g) globals[g[1]] = +g[2]; }
+      if (!cur) continue;
+      l.fn = cur.name;
+      if (l.kind === 'local') cur.locals.push(l.name);
+      if (l.kind === 'ghostlocal') cur.ghosts.push(l.name);
+      if (l.kind === 'instr') {
+        if (['block', 'loop', 'if'].includes(l.op)) { l.label = l.arg && l.arg.startsWith('$') ? l.arg.slice(1) : null; ctl.push(n); }
+        else if (l.op === 'else') { const o = ctl[ctl.length - 1]; L[o].else = n; l.open = o; }
+        else if (l.op === 'end') { const o = ctl.pop(); L[o].end = n; l.open = o; if (L[o].else) L[L[o].else].end = n; }
+      }
+    }
+    return { L, funcs, globals, lines };
+  }
+
+  // effect (pops, pushes) of an instruction line
+  function effect(prog, l) {
+    if (!l || l.kind !== 'instr') return null;
+    const op = l.op;
+    if (op === 'i32.const' || op === 'local.get' || op === 'global.get') return [0, 1];
+    if (op === 'local.set' || op === 'global.set' || op === 'br_if' || op === 'if' || op === 'drop') return [1, 0];
+    if (op === 'local.tee' || op === 'i32.load' || UN[op]) return [1, 1];
+    if (op === 'i32.store') return [2, 0];
+    if (BIN[op]) return [2, 1];
+    if (op === 'call') { const f = prog.funcs[l.arg.slice(1)]; return [f ? f.params.length : 0, f && f.hasResult ? 1 : 0]; }
+    if (op === 'return') { const f = prog.funcs[l.fn]; return [f && f.hasResult ? 1 : 0, 0]; }
+    return [0, 0];
+  }
+
+  const BASE = 65440;
+  function makeState(prog, init) {
+    const mem = new DataView(new ArrayBuffer(65536));
+    const st = { prog, mem, globals: Object.assign({}, prog.globals), M: new Map(), s: 0, recs: [], cap: 4000, halted: null, checker: null };
+    if (init && init.slots) init.slots.forEach((sl, i) => { mem.setInt32(BASE + 12 * i, sl[0], true); mem.setInt32(BASE + 12 * i + 4, sl[1], true); mem.setInt32(BASE + 12 * i + 8, sl[2], true); });
+    if (init && init.used != null) st.globals.used = init.used;
+    if (init && init.M) init.M.forEach(([k, v]) => st.M.set(k, v));
+    return st;
+  }
+  function slotsOf(st) { const a = []; for (let i = 0; i < 8; i++) a.push([st.mem.getInt32(BASE + 12 * i, true), st.mem.getInt32(BASE + 12 * i + 4, true), st.mem.getInt32(BASE + 12 * i + 8, true)]); return a; }
+
+  function record(st, fr, n, op, popped, pushed, extra) {
+    st.s++;
+    const r = { s: st.s, fn: fr.fn, ln: n, op, popped, pushed, stack: fr.stack.slice(), loc: Object.assign({}, fr.loc), checks: [] };
+    if (st.prog.hash) { r.slots = slotsOf(st); r.used = st.globals.used; r.M = [...st.M.entries()]; }
+    if (extra) Object.assign(r, extra);
+    st.recs.push(r);
+    if (st.s >= st.cap) { st.halted = 'cut'; throw { halt: 'cut' }; }
+    return r;
+  }
+  function addChecks(st, r, ev) { if (st.checker) { const c = st.checker(ev, st, r); if (c && c.length) r.checks.push(...c); } }
+
+  // pass over non-instruction lines starting at pc; executes ghost ops & asserts
+  function skip(st, fr, pc, lastRec) {
+    const L = st.prog.L;
+    for (;;) {
+      const l = L[pc];
+      if (!l) return pc;
+      if (l.kind === 'instr' || l.kind === 'close') return pc;
+      if (l.kind === 'ghostop') ghost(st, fr, l.t);
+      if ((l.kind === 'assert' || l.kind === 'assume') && lastRec) addChecks(st, lastRec, { type: l.kind, ln: pc, fr });
+      pc++;
+    }
+  }
+  function ghost(st, fr, t) {
+    let m;
+    if ((m = t.match(/(\w+) := \1 \+ 1/))) fr.loc[m[1]] = (fr.loc[m[1]] || 0) + 1;
+    else if ((m = t.match(/M := M\[(\w+) := (\w+)\]/))) st.M.set(fr.loc[m[1]], fr.loc[m[2]]);
+    else if ((m = t.match(/M := M \\ \{(\w+)\}/))) st.M.delete(fr.loc[m[1]]);
+  }
+
+  // invoke a function. ctx.top: top-level call. ctx.fromLoop: {line, loc} start at a loop head
+  function invoke(st, fname, args, ctx) {
+    const prog = st.prog, L = prog.L, f = prog.funcs[fname];
+    const fr = { fn: fname, loc: {}, stack: [] };
+    f.params.forEach((p, i) => fr.loc[p] = args[i] | 0);
+    f.locals.forEach(p => fr.loc[p] = 0);
+    f.ghosts.forEach(p => fr.loc[p] = 0);
+    const oldM = new Map(st.M);
+    const entryArgs = Object.assign({}, fr.loc);
+    const ctl = []; // {n, kind, label, h}
+    let pc = f.hdr + 1, first = true, lastRec = null;
+    if (ctx.fromLoop) {
+      Object.assign(fr.loc, ctx.fromLoop.loc);
+      // reconstruct enclosing control structures
+      for (let n = f.hdr + 1; n < ctx.fromLoop.line; n++) {
+        const l = L[n];
+        if (l.kind === 'instr' && ['block', 'loop', 'if'].includes(l.op) && l.end > ctx.fromLoop.line) ctl.push({ n, kind: l.op, label: l.label, h: 0 });
+      }
+      pc = ctx.fromLoop.line;
+      first = false;
+    }
+    const enterEv = () => ({ type: 'enter', fn: fname, args: entryArgs, fr, top: !!ctx.top });
+    const done = (result) => {
+      if (ctx.top && lastRec) addChecks(st, lastRec, { type: 'return', fn: fname, args: entryArgs, result, oldM, fr, top: true });
+      return { result, oldM, args: entryArgs, fr };
+    };
+    for (;;) {
+      pc = skip(st, fr, pc, lastRec);
+      const l = L[pc];
+      if (!l || l.kind === 'close') { const res = f.hasResult ? fr.stack[fr.stack.length - 1] : undefined; return done(res); }
+      const op = l.op;
+      if (op === 'end') { ctl.pop(); pc++; continue; }
+      if (op === 'else') { pc = l.end; continue; } // then-arm finished: jump to end (end pops ctl)
+      let popped = [], pushed = [];
+      const pop = k => { const v = fr.stack.splice(fr.stack.length - k, k); popped = v; return v; };
+      const push = v => { fr.stack.push(v); pushed = [v]; };
+      let r, branchTo = null;
+      try {
+        if (op === 'i32.const') push(parseInt(l.arg, 10) | 0);
+        else if (op === 'local.get') push(fr.loc[l.arg.slice(1)]);
+        else if (op === 'global.get') push(st.globals[l.arg.slice(1)]);
+        else if (op === 'local.set') { const [v] = pop(1); fr.loc[l.arg.slice(1)] = v; }
+        else if (op === 'global.set') { const [v] = pop(1); st.globals[l.arg.slice(1)] = v; }
+        else if (op === 'local.tee') { const [v] = pop(1); fr.loc[l.arg.slice(1)] = v; push(v); popped = [v]; }
+        else if (BIN[op]) { const [a, b] = pop(2); push(BIN[op](a, b)); }
+        else if (UN[op]) { const [a] = pop(1); push(UN[op](a)); }
+        else if (op === 'i32.load') {
+          const [a] = pop(1); const ad = (a >>> 0) + l.offset;
+          if (ad + 4 > 65536) { fr.stack.push(a); throw { trap: 'out of bounds memory access' }; }
+          push(st.mem.getInt32(ad, true));
+        } else if (op === 'i32.store') {
+          const [a, v] = pop(2); const ad = (a >>> 0) + l.offset;
+          if (ad + 4 > 65536) throw { trap: 'out of bounds memory access' };
+          st.mem.setInt32(ad, v, true);
+        } else if (op === 'block' || op === 'loop' || op === 'if') {
+          if (op === 'if') { const [c] = pop(1); ctl.push({ n: pc, kind: 'if', h: fr.stack.length }); if (!c) branchTo = l.else ? l.else + 1 : l.end; }
+          else ctl.push({ n: pc, kind: op, label: l.label, h: fr.stack.length });
+        } else if (op === 'br' || op === 'br_if') {
+          let take = true;
+          if (op === 'br_if') { const [c] = pop(1); take = !!c; }
+          if (take) {
+            const name = l.arg.slice(1);
+            let k = ctl.length - 1; while (k >= 0 && ctl[k].label !== name) k--;
+            const tgt = ctl[k];
+            if (tgt.kind === 'loop') { ctl.length = k + 1; fr.stack.length = tgt.h; branchTo = { loop: tgt.n }; }
+            else { ctl.length = k; fr.stack.length = tgt.h; branchTo = L[tgt.n].end + 1; }
+          }
+        } else if (op === 'return') {
+          const res = f.hasResult ? fr.stack[fr.stack.length - 1] : undefined;
+          popped = f.hasResult ? [res] : [];
+          lastRec = r = record(st, fr, pc, 'return', popped, []);
+          return done(res);
+        } else if (op === 'unreachable') throw { trap: 'unreachable' };
+        else if (op === 'drop') pop(1);
+        else if (op === 'call') {
+          const g = prog.funcs[l.arg.slice(1)];
+          const args2 = pop(g.params.length);
+          r = record(st, fr, pc, 'call ' + l.arg + '  (enter)', args2, []);
+          if (first) { if (ctx.top) addChecks(st, r, enterEv()); first = false; }
+          addChecks(st, r, { type: 'enter', fn: g.name, args: Object.fromEntries(g.params.map((p, i) => [p, args2[i]])), top: false });
+          const out = invoke(st, g.name, args2, {});
+          if (g.hasResult) fr.stack.push(out.result);
+          r = record(st, fr, pc, 'call ' + l.arg + '  (return)', [], g.hasResult ? [out.result] : []);
+          addChecks(st, r, { type: 'return', fn: g.name, args: out.args, result: out.result, oldM: out.oldM, top: false });
+          lastRec = r; pc++; continue;
+        } else throw new Error('op ' + op);
+      } catch (e) {
+        if (e.trap) { r = record(st, fr, pc, l.t, popped, [], { trap: e.trap }); st.halted = 'trap'; throw { halt: 'trap', trap: e.trap }; }
+        throw e;
+      }
+      r = record(st, fr, pc, l.t, popped, pushed);
+      lastRec = r;
+      if (first) { if (ctx.top) addChecks(st, r, enterEv()); first = false; }
+      if (op === 'loop') addChecks(st, r, { type: 'loopHead', ln: pc, fr, entry: true });
+      if (branchTo && branchTo.loop) {
+        addChecks(st, r, { type: 'loopHead', ln: branchTo.loop, fr, entry: false });
+        if (ctx.stopAtLoopHead) return { result: undefined, stopped: true };
+        pc = branchTo.loop + 1;
+      } else if (branchTo) pc = branchTo; else pc++;
+    }
+  }
+
+  // run a sequence of top-level calls; returns {recs, results, halted}
+  function run(prog, calls, opts) {
+    opts = opts || {};
+    const st = makeState(prog, opts.init);
+    if (opts.cap) st.cap = opts.cap;
+    if (opts.s0) st.s = opts.s0 - 1;
+    st.checker = opts.checker ? opts.checker() : null;
+    const results = [], boundaries = [];
+    try {
+      if (opts.fromLoop) {
+        const out = invoke(st, opts.fromLoop.fn, [], { top: true, fromLoop: opts.fromLoop, stopAtLoopHead: true });
+        results.push(out.result);
+      } else for (const [fn, args] of calls) {
+        const out = invoke(st, fn, args, { top: true });
+        results.push(out.result); boundaries.push(st.s);
+      }
+    } catch (e) {
+      if (e.halt === 'trap') results.push('trap: ' + e.trap);
+      else if (e.halt === 'cut') results.push('(does not return: cut at ' + st.s + ' steps)');
+      else throw e;
+    }
+    return { recs: st.recs, results, halted: st.halted, boundaries, calls };
+  }
+
+  return { parse, run, effect, classify, slotsOf, BASE };
+})();
+
+
+// ---------------------------------------------------------------------------
+// Runtime spec checkers (hard-coded per program; every predicate is decidable
+// by evaluation, 01 principle 3). Return [{ln, kind, ok}] for an event.
+// ---------------------------------------------------------------------------
+const CHK = (() => {
+  const emod = (a, m) => ((a % m) + m) % m;
+  const isqrt = fl => () => {
+    let last = null;
+    return (ev, st, r) => {
+      const out = [];
+      if (ev.type === 'enter' && ev.top && ev.fn === 'isqrt') {
+        const n = ev.args.n;
+        const ok = fl.req === 'tight' ? (0 <= n && n < 2147395600) : fl.req === '1' ? 1 <= n : 0 <= n;
+        out.push({ ln: 1, kind: 'requires', ok });
+      }
+      if (ev.type === 'loopHead' && fl.inv) {
+        const { n, r: rr } = ev.fr.loc;
+        out.push({ ln: 7, kind: 'invariant', ok: 0 <= rr && rr * rr <= n });
+        const m = n - rr * rr;
+        out.push({ ln: 8, kind: 'decreases', ok: ev.entry ? m >= 0 : (m >= 0 && m < last) });
+        last = m;
+      }
+      if (ev.type === 'assume') out.push({ ln: ev.ln, kind: 'assume', ok: ev.fr.loc.r <= 46340 });
+      if (ev.type === 'return' && ev.top) {
+        const n = ev.args.n, v = ev.result;
+        const ok = fl.post === 'S2' ? (0 <= v && v * v < n && n <= (v + 1) * (v + 1)) : (0 <= v && v * v <= n && n < (v + 1) * (v + 1));
+        out.push({ ln: 1, kind: 'ensures', ok });
+      }
+      return out;
+    };
+  };
+  const parity = fl => () => (ev) => {
+    const out = [];
+    if (ev.type === 'enter' && ev.fn === 'half') {
+      const x = ev.args.x; out.push({ ln: 7, kind: 'requires', ok: emod(x, 2) === 0 && (fl.req !== 'pos' || 0 < x) });
+    }
+    if (ev.type === 'assert') out.push({ ln: ev.ln, kind: 'assert', ok: emod(ev.fr.loc.x, 2) === 0 });
+    if (ev.type === 'return') {
+      const x = ev.args.x, v = ev.result;
+      if (ev.fn === 'is_even') out.push({ ln: 1, kind: 'ensures', ok: v === (emod(x, 2) === 0 ? 1 : 0) });
+      if (ev.fn === 'half') out.push({ ln: 7, kind: 'ensures', ok: v + v === x && (fl.spec !== 'P3' || v < x) });
+      if (ev.fn === 'half_or_neg1') out.push({ ln: 12, kind: 'ensures', ok: (emod(x, 2) === 0 && v + v === x) || (emod(x, 2) === 1 && v === -1) });
+    }
+    return out;
+  };
+  // ---- hash table ----
+  const h = k => k & 7, at = (k, d) => (h(k) + d) & 7, dist = (k, s) => (s - h(k)) & 7;
+  function Rclauses(st, fl) {
+    const S = ENG.slotsOf(st), M = st.M, used = st.globals.used;
+    const R = {};
+    R.o = S.every(x => x[0] === 0 || x[0] === 1 || x[0] === 2);
+    R.i = S.every(x => x[0] !== 1 || (M.has(x[1]) && M.get(x[1]) === x[2]));
+    R.ii = [...M.keys()].every(k => S.filter(x => x[0] === 1 && x[1] === k).length === 1);
+    const path = strong => S.every((x, s) => {
+      if (x[0] !== 1) return true;
+      for (let d = 0; d <= dist(x[1], s); d++) { const q = S[at(x[1], d)][0]; if (strong ? q !== 1 : q === 0) return false; }
+      return true;
+    });
+    R.iii = path(fl && fl.r3 === 'strong');
+    R.iii_strong = path(true);
+    const full = S.filter(x => x[0] === 1).length, nonEmpty = S.filter(x => x[0] !== 0).length;
+    R.iv = full === M.size && used === nonEmpty && (fl && fl.r4 === 'weak' ? true : used < 8);
+    R.all = R.o && R.i && R.ii && R.iii && R.iv;
+    return R;
+  }
+  const hash = fl => () => {
+    const last = {};
+    return (ev, st) => {
+      const out = [];
+      const S = ENG.slotsOf(st), M = st.M, used = st.globals.used;
+      const reqLn = { find: 21, lookup: 68, delete: 85, insert: 105 };
+      if (ev.type === 'enter') {
+        if (reqLn[ev.fn]) out.push({ ln: reqLn[ev.fn], kind: 'requires', ok: Rclauses(st, fl).all });
+        if (ev.fn === 'slot') out.push({ ln: 13, kind: 'requires', ok: 0 <= ev.args.i && ev.args.i < 8 });
+      }
+      if (ev.type === 'return') {
+        const a = ev.args, v = ev.result, R = () => Rclauses(st, fl).all;
+        if (ev.fn === 'slot') out.push({ ln: 13, kind: 'ensures', ok: v === ENG.BASE + 12 * a.i });
+        if (ev.fn === 'find') out.push({ ln: 20, kind: 'ensures', ok: (v === -1 && !M.has(a.k)) || (0 <= v && v < 8 && S[v][0] === 1 && S[v][1] === a.k) });
+        if (ev.fn === 'lookup') { out.push({ ln: 67, kind: 'ensures', ok: v === (M.has(a.k) ? M.get(a.k) : a.dflt) }); out.push({ ln: 69, kind: 'ensures', ok: R() }); }
+        if (ev.fn === 'delete') {
+          out.push({ ln: 84, kind: 'ensures', ok: v === (ev.oldM.has(a.k) ? 1 : 0) });
+          const exp = new Map(ev.oldM); exp.delete(a.k);
+          out.push({ ln: 86, kind: 'ensures', ok: R() && sameMap(M, exp) });
+        }
+        if (ev.fn === 'insert') {
+          out.push({ ln: 104, kind: 'ensures', ok: v === 1 || (v === 0 && !M.has(a.k) && used === 7) });
+          const exp = new Map(ev.oldM); if (v === 1) exp.set(a.k, a.x);
+          out.push({ ln: 106, kind: 'ensures', ok: R() && sameMap(M, exp) });
+        }
+      }
+      if (ev.type === 'loopHead') {
+        const { k, i, j } = ev.fr.loc;
+        const m = 8 - j;
+        if (ev.ln === 29) {
+          out.push({ ln: 30, kind: 'invariant', ok: 0 <= j && j <= used && i === at(k, j) });
+          let ok = true; for (let d = 0; d < j; d++) { const x = S[at(k, d)]; if (!(x[0] === 2 || (x[0] === 1 && x[1] !== k))) ok = false; }
+          out.push({ ln: 31, kind: 'invariant', ok });
+          out.push({ ln: 32, kind: 'decreases', ok: ev.entry ? m >= 0 : (m >= 0 && m < last[29]) });
+          last[29] = m;
+        }
+        if (ev.ln === 135) {
+          out.push({ ln: 136, kind: 'invariant', ok: !M.has(k) && 0 <= j && j <= used && i === at(k, j) });
+          let ok = true; for (let d = 0; d < j; d++) if (S[at(k, d)][0] === 0) ok = false;
+          out.push({ ln: 137, kind: 'invariant', ok });
+          out.push({ ln: 138, kind: 'decreases', ok: ev.entry ? m >= 0 : (m >= 0 && m < last[135]) });
+          last[135] = m;
+        }
+      }
+      return out;
+    };
+  };
+  function sameMap(a, b) { if (a.size !== b.size) return false; for (const [k, v] of a) if (b.get(k) !== v) return false; return true; }
+  const sign = fl => () => (ev) => {
+    const out = [];
+    if (ev.type === 'enter' && ev.top) { const x = ev.args.x; out.push({ ln: 1, kind: 'requires', ok: fl.st === 'vac' ? (0 < x && x < 0) : 0 < x }); }
+    if (ev.type === 'return' && ev.top) out.push({ ln: 1, kind: 'ensures', ok: ev.result === 1 });
+    return out;
+  };
+  const sqeven = fl => () => (ev) => {
+    const out = [];
+    if (ev.type === 'enter' && ev.top) out.push({ ln: 1, kind: 'requires', ok: emod(ev.args.a, 2) === 0 });
+    if (ev.type === 'assume') { const a = ev.fr.loc.a; out.push({ ln: ev.ln, kind: 'assume', ok: emod(a * a, 4) === 0 }); }
+    if (ev.type === 'return' && ev.top) out.push({ ln: 1, kind: 'ensures', ok: emod(ev.result, 4) === 0 });
+    return out;
+  };
+  return { isqrt, parity, hash, sign, sqeven, Rclauses, emod };
+})();
+
+
+// ---------------------------------------------------------------------------
+// Program models. Each derive(flags) returns the listing (rows) and the holes the
+// checker would insert for that listing. The derivation is hard-coded per state
+// (no solver): it encodes the residue of 01 §2.8 for each reachable flag set.
+// ---------------------------------------------------------------------------
+const PROGS = (() => {
+  const FX = Object.fromEntries(FIXTURE.programs.map(p => [p.id, p]));
+  const indentOf = t => (t.match(/^ */) || [''])[0].length;
+  function rowsFrom(lines, keyNum) {
+    return lines.map((t, i) => ({ key: 'L' + (i + 1), num: String(i + 1), text: t }));
+  }
+  function setText(rows, key, text) { const r = rows.find(r => r.key === key); r.text = r.text.match(/^ */)[0] + text.trim(); }
+  function blank(rows, a, b) { for (let n = a; n <= b; n++) rows.find(r => r.key === 'L' + n).text = ''; }
+  function insertAfter(rows, key, row) { const i = rows.findIndex(r => r.key === key); rows.splice(i + 1, 0, row); }
+  const W = (calls) => ({ kind: 'input', calls });
+
+  // ======================= A1/A2: parity gate ============================
+  const parityBase = [
+    '(func $is_even (param $x i32) (result $e (i32 | $e == ($x % 2 == 0 ? 1 : 0)))',
+    '  local.get $x', '  i32.const 1', '  i32.and', '  i32.eqz', ')',
+    '(func $half (param $x (i32 | $x % 2 == 0)) (result $h (i32 | $h + $h == $x))',
+    '  local.get $x', '  i32.const 1', '  i32.shr_s', ')',
+    '(func $half_or_neg1 (param $x i32) (result $y (i32 | ($x % 2 == 0 && $y + $y == $x) || ($x % 2 == 1 && $y == -1)))',
+    '  local.get $x', '  call $is_even', '  i32.eqz', '  if (result i32)', '    i32.const -1', '  else',
+    '    (@assert $x % 2 == 0)', '    local.get $x', '    call $half', '  end', ')'];
+  const parity = {
+    id: 'parity', init: () => ({ spec: 'ok', req: 'even', p1: false }),
+    checker: CHK.parity,
+    derive(f) {
+      const rows = rowsFrom(parityBase);
+      setText(rows, 'L7', `(func $half (param $x (i32 | $x % 2 == 0${f.req === 'pos' ? ' && 0 < $x' : ''})) (result $h (i32 | $h + $h == $x${f.spec === 'P3' ? ' && $h < $x' : ''}))`);
+      if (f.p1) blank(rows, 15, 15);
+      const holes = [];
+      if (f.spec === 'P3' && f.req === 'even') holes.push({
+        key: 'H-P3', after: 'L10', status: 'false', site: 'ensures of $half', witness: W([['half_or_neg1', [0]]]), wlabel: '$half_or_neg1(0)',
+        hyps: [{ name: '$x', val: 0, facts: ['x % 2 = 0'], src: 'L7' }, { name: '$h', val: 0, facts: ['h = ⌊x / 2⌋'], src: 'L10' }],
+        goal: [{ t: 'h + h = x', st: 'ok' }, { t: 'h < x', st: 'bad', inst: '0 < 0' }],
+        gap: 'x = 0 and every negative even x',
+        chips: [
+          { kind: 'spec', label: 'fix the ensures', text: 'drop  && $h < $x', site: { key: 'L7', tok: ' && $h < $x' }, apply: f => ({ ...f, spec: 'ok' }) },
+          { kind: 'spec', label: 'tighten requires', text: '(param $x (i32 | $x % 2 == 0 && 0 < $x))', site: { key: 'L7', tok: '$x % 2 == 0' }, apply: f => ({ ...f, req: 'pos' }) }],
+      });
+      if (f.p1) holes.push({
+        key: 'H-P1', after: 'L19', status: 'false', site: '@assert · else-arm', witness: W([['half_or_neg1', [3]]]), wlabel: '$half_or_neg1(3)',
+        hyps: [{ name: '$x', val: 3, facts: ['is_even(x) ≠ 0 is false here', 'so x % 2 = 1'], src: 'L16' }],
+        goal: [{ t: 'x % 2 = 0', st: 'bad', inst: '3 % 2 = 1' }],
+        also: 'the call at 21 needs the same fact',
+        chips: [{ kind: 'code', label: 'negate the test', text: '15: + i32.eqz', site: { key: 'L15', blank: true }, fill: { L15: '  i32.eqz' }, apply: f => ({ ...f, p1: false }) }],
+      });
+      if (f.req === 'pos' && !f.p1) holes.push({
+        key: 'H-req', after: 'L21', status: 'false', site: 'requires of $half · at the call', witness: W([['half_or_neg1', [0]]]), wlabel: '$half_or_neg1(0)',
+        hyps: [{ name: '$x', val: 0, facts: ['x % 2 = 0 (else-arm)'], src: 'L16' }],
+        goal: [{ t: 'x % 2 = 0', st: 'ok' }, { t: '0 < x', st: 'bad', inst: '0 < 0' }],
+        chips: [{ kind: 'spec', label: "revert $half's requires", text: '(param $x (i32 | $x % 2 == 0))', site: { key: 'L7', tok: ' && 0 < $x' }, apply: f => ({ ...f, req: 'even' }) }],
+      });
+      return { rows, holes };
+    },
+    toggles: [{ key: 'L15', alt: f => f.p1 ? 'i32.eqz' : null, tip: 'click: delete / restore this line', apply: f => ({ ...f, p1: !f.p1 }) }],
+  };
+
+  // ======================= A3: vacuous requires ===========================
+  const sign = {
+    id: 'sign', init: () => ({ st: 'vac' }), checker: CHK.sign,
+    derive(f) {
+      const rows = rowsFrom([
+        `(func $sign (param $x (i32 | 0 < $x${f.st === 'vac' ? ' && $x < 0' : ''})) (result $s (i32 | $s == 1))`,
+        `  i32.const ${f.st === 'fixed' ? 1 : -1}`, ')']);
+      const holes = [];
+      if (f.st === 'vac') { holes.push({
+        key: 'H-vac', after: 'L1', status: 'vacuous', site: 'requires has no models',
+        hyps: [{ name: '$x', facts: ['0 < x', 'x < 0'], src: 'L1', hollow: true }],
+        goal: [{ t: '⊥ — so every goal below closes for free', st: 'vac' }],
+        chips: [{ kind: 'spec', label: 'loosen requires', text: '(param $x (i32 | 0 < $x))', site: { key: 'L1', tok: ' && $x < 0' }, apply: f => ({ ...f, st: 'req' }) }],
+      }); rows.slice(1).forEach(r => r.ghost = true); }
+      if (f.st === 'req') holes.push({
+        key: 'H-sign', after: 'L2', status: 'false', site: 'ensures of $sign', witness: W([['sign', [1]]]), wlabel: '$sign(1)',
+        hyps: [{ name: '$x', val: 1, facts: ['0 < x'], src: 'L1' }, { name: '$s', val: -1, facts: ['s = −1'], src: 'L2' }],
+        goal: [{ t: 's = 1', st: 'bad', inst: '−1 = 1' }],
+        chips: [{ kind: 'code', label: 'fix the code', text: '2: i32.const -1 → i32.const 1', site: { key: 'L2', tok: '-1' }, apply: f => ({ ...f, st: 'fixed' }) }],
+      });
+      return { rows, holes };
+    },
+  };
+
+  // ======================= A4: unknown / dynamic / assumed ================
+  const sqeven = {
+    id: 'sqeven', init: () => ({ st: 'none' }), checker: CHK.sqeven,
+    derive(f) {
+      const rows = rowsFrom(['(func $sq_even (param $a (i32 | $a % 2 == 0)) (result $q (i32 | $q % 4 == 0))',
+        '  local.get $a', '  local.get $a', '  i32.mul', ')']);
+      const holes = [];
+      if (f.st === 'use') insertAfter(rows, 'L4', { key: 'L4p', num: '4′', text: '  (@use even_sq $a)', accepted: true });
+      if (f.st === 'assume') { insertAfter(rows, 'L4', { key: 'L4p', num: '4′', text: '  (@assume $a*$a % 4 == 0)', assume: true }); rows.find(r => r.key === 'L5').ghost = true; }
+      if (f.st === 'none') holes.push({
+        key: 'H-sq', after: 'L4', status: 'unknown', site: 'ensures of $sq_even · nonlinear',
+        hyps: [{ name: '$a', facts: ['a % 2 = 0'], src: 'L1' }, { name: 'v', facts: ['v = wrap(a·a)'], src: 'L4' }],
+        goal: [{ t: 'v % 4 = 0', st: 'unk', inst: 'a·a is an opaque atom' }],
+        dyn: { kind: 'line', key: 'L4', label: 'held on your run' },
+        chips: [
+          { kind: 'lemma', label: 'apply? · conclusion matches', text: '(@use even_sq $a)', insert: { after: 'L4', key: 'L4p' }, apply: f => ({ ...f, st: 'use' }), tip: 'even_sq (x): requires x % 2 == 0 ensures x*x % 4 == 0' },
+          { kind: 'admit', label: 'admit (checked at run time)', text: '(@assume $a*$a % 4 == 0)', insert: { after: 'L4', key: 'L4p' }, apply: f => ({ ...f, st: 'assume' }) }],
+      });
+      return { rows, holes };
+    },
+  };
+
+  // ======================= B: isqrt ======================================
+  const isqrtBase = [
+    '(func $isqrt (param $n (i32 | 0 <= $n)) (result $root (i32 | 0 <= $root && $root*$root <= $n && $n < ($root+1)*($root+1)))',
+    '  (local $r i32)', '  i32.const 0', '  local.set $r', '  block $done', '    loop $grow',
+    '      (@invariant 0 <= $r && $r*$r <= $n)', '      (@decreases $n - $r*$r)',
+    '      local.get $r', '      i32.const 1', '      i32.add', '      local.get $r', '      i32.const 1', '      i32.add', '      i32.mul',
+    '      local.get $n', '      i32.gt_u', '      br_if $done',
+    '      local.get $r', '      i32.const 1', '      i32.add', '      local.set $r', '      br $grow', '    end', '  end', '  local.get $r', ')'];
+  const ISQ_FINAL = { inv: true, cmp: 'u', req: '0', lemma: 'use', b: 46341, init: 0, post: 'ok' };
+  const isqrt = {
+    id: 'isqrt', init: () => ({ ...ISQ_FINAL }), checker: CHK.isqrt,
+    presets: {
+      stage1: { inv: false, cmp: 's', req: '0', lemma: 'none', b: 0, init: 0, post: 'ok' },
+      stage2: { inv: true, cmp: 's', req: '0', lemma: 'none', b: 0, init: 0, post: 'ok' },
+      stage3: { inv: true, cmp: 'u', req: '0', lemma: 'none', b: 0, init: 0, post: 'ok' },
+      final: { ...ISQ_FINAL },
+      S1: { ...ISQ_FINAL, cmp: 's' }, S2: { ...ISQ_FINAL, post: 'S2' }, S3: { ...ISQ_FINAL, init: 1 },
+    },
+    derive(f) {
+      const rows = rowsFrom(isqrtBase);
+      const req = f.req === 'tight' ? '0 <= $n && $n < 2147395600' : f.req === '1' ? '1 <= $n' : '0 <= $n';
+      const post = f.post === 'S2' ? '0 <= $root && $root*$root < $n && $n <= ($root+1)*($root+1)' : '0 <= $root && $root*$root <= $n && $n < ($root+1)*($root+1)';
+      setText(rows, 'L1', `(func $isqrt (param $n (i32 | ${req})) (result $root (i32 | ${post}))`);
+      if (!f.inv) blank(rows, 7, 8);
+      if (f.init === 1) setText(rows, 'L3', 'i32.const 1');
+      if (f.cmp === 's') setText(rows, 'L17', 'i32.gt_s');
+      if (f.lemma === 'use') insertAfter(rows, 'L15', { key: 'L15p', num: '15′', text: `      (@use sq_lt_sq $r ${f.b})`, accepted: true });
+      if (f.lemma === 'assume') {
+        insertAfter(rows, 'L15', { key: 'L15p', num: '15′', text: '      (@assume $r <= 46340)', assume: true });
+        rows.forEach(r => { const n = parseInt(r.key.slice(1)); if (r.key !== 'L15p' && n >= 16) r.ghost = true; });
+      }
+      const marks = {};
+      if (!f.inv) marks.L6 = 'inf';
+      const holes = [];
+      const lemmaChips = b => [
+        { kind: 'lemma', label: 'apply? · conclusion matches', text: `(@use sq_lt_sq $r ${b})`, insert: { after: 'L15', key: 'L15p' }, apply: f => ({ ...f, lemma: 'use', b }),
+          tip: `sq_lt_sq (x b): requires 0 <= x && 0 <= b && x*x < b*b  ensures x < b.  Here x*x = r*r <= n < ${b}*${b}, so r < ${b}.`,
+          alts: [{ text: `(@use sq_lt_sq ($r+1) ${b})`, refuse: `precondition (r+1)·(r+1) < ${b}² is false at r = ${b - 1}` }] },
+        { kind: 'admit', label: 'admit (checked at run time)', text: `(@assume $r <= ${b - 1})`, insert: { after: 'L15', key: 'L15p' }, apply: f => ({ ...f, lemma: 'assume' }) }];
+      if (!f.inv) {
+        holes.push({
+          key: 'H-noinv', after: 'L26', status: 'false', site: 'ensures of $isqrt · exit',
+          witness: { kind: 'loophead', fromLoop: { fn: 'isqrt', lineKey: 'L6', loc: { n: 3, r: 5 } }, s0: 4 }, wlabel: 'n = 3, r = 5',
+          hyps: [{ name: '$n', val: 3, facts: ['0 ≤ n'], src: 'L1' },
+            { name: '$r', val: 5, missing: 'loop head: nothing known about $r', src: 'L6' },
+            { fact: 'exit: (r+1)·(r+1) > n', src: 'L18' }],
+          goal: [{ t: '0 ≤ root', st: 'bad', inst: 'r = −2' }, { t: 'root·root ≤ n', st: 'bad', inst: '25 ≤ 3' }, { t: 'n < (root+1)²', st: 'ok' }],
+          also: 'the same missing fact blocks 17 and 23 · loop 6 is ∞? (no decreases)',
+          chips: [{ kind: 'inv', label: 'say what stays true at the loop head', text: '(@invariant 0 <= $r && $r*$r <= $n)', text2: '(@decreases $n - $r*$r)',
+            site: { key: 'L7', blank: true }, fill: { L7: '      (@invariant 0 <= $r && $r*$r <= $n)', L8: '      (@decreases $n - $r*$r)' }, apply: f => ({ ...f, inv: true }) }],
+        });
+        return { rows, holes, marks };
+      }
+      if (f.init === 1 && f.req !== '1') {
+        holes.push({
+          key: 'H-entry', after: 'L6', status: 'false', site: 'invariant on entry · loop $grow',
+          witness: W([['isqrt', [0]]]), wlabel: '$isqrt(0)',
+          hyps: [{ name: '$n', val: 0, facts: ['0 ≤ n'], src: 'L1' }, { name: '$r', val: 1, facts: ['r = 1'], src: 'L3', blame: true }],
+          goal: [{ t: '0 ≤ r', st: 'ok' }, { t: 'r·r ≤ n', st: 'bad', inst: '1 ≤ 0' }, { t: 'measure n − r·r ≥ 0', st: 'bad', inst: '−1' }],
+          chips: [
+            { kind: 'code', label: 'start the search at 0', text: '3: i32.const 1 → i32.const 0', site: { key: 'L3', tok: '1' }, apply: f => ({ ...f, init: 0 }) },
+            { kind: 'spec', label: 'tighten requires', text: '(param $n (i32 | 1 <= $n))', site: { key: 'L1', tok: '0 <= $n' }, apply: f => ({ ...f, req: '1' }) }],
+        });
+        return { rows, holes, marks };
+      }
+      if (f.cmp === 's') {
+        const closed = (f.req === 'tight' && ((f.lemma === 'use' && f.b === 46340) || f.lemma === 'assume'));
+        if (f.req !== 'tight') holes.push({
+          key: 'H-back', after: 'L23', status: 'false', site: 'invariant kept by the back-edge · br $grow',
+          witness: { kind: 'loophead', fromLoop: { fn: 'isqrt', lineKey: 'L6', loc: { n: 2147483647, r: 46340 } }, s0: 4 }, wlabel: 'n = 2147483647, r = 46340',
+          hyps: [{ name: '$n', val: 2147483647, facts: ['0 ≤ n'], src: 'L1' }, { name: '$r', val: 46340, facts: ['r·r ≤ n'], src: 'L7' },
+            { name: 'v₁₅', val: -2147479015, wrap: true, facts: ['46341² wrapped past 2³¹−1'], src: 'L15', blame: true },
+            { fact: 'gt_s reads v₁₅ < 0: "not greater", stay', src: 'L17', blame: true }],
+          goal: [{ t: 'r′·r′ ≤ n', st: 'bad', inst: '2147488281 ≤ 2147483647' }, { t: 'measure ≥ 0', st: 'bad', inst: 'n − r′² = −4634' }, { t: 'measure drops', st: 'ok' }],
+          also: 'same witness never terminates in a real run (n = INT_MAX)',
+          chips: [
+            { kind: 'code', label: 'compare unsigned', text: '17: i32.gt_s → i32.gt_u', site: { key: 'L17', tok: 'i32.gt_s' }, apply: f => ({ ...f, cmp: 'u', b: f.lemma === 'use' ? 46341 : f.b }) },
+            { kind: 'spec', label: 'tighten requires', text: '(param $n (i32 | 0 <= $n && $n < 2147395600))', site: { key: 'L1', tok: '0 <= $n' }, apply: f => ({ ...f, req: 'tight' }) }],
+        });
+        else if (!closed) holes.push({
+          key: 'H-back-unk', after: 'L23', status: 'unknown', site: 'invariant kept by the back-edge · nonlinear',
+          hyps: [{ name: '$n', facts: ['0 ≤ n < 2147395600'], src: 'L1' }, { name: '$r', facts: ['r·r ≤ n'], src: 'L7' },
+            { fact: 'gt_s is faithful only if (r+1)² ≤ 2³¹−1', src: 'L17' }],
+          goal: [{ t: '(r+1)·(r+1) ≤ 2³¹−1', st: 'unk', inst: 'needs r < 46340 (nonlinear)' }, { t: 'r′·r′ ≤ n', st: 'unk' }],
+          dyn: { kind: 'check', ln: 'L7', label: 'held on your run' },
+          chips: lemmaChips(46340),
+        });
+      } else if (f.lemma === 'none') holes.push({
+        key: 'H-unk', after: 'L15', status: 'unknown', site: 'u(v) = (r+1)·(r+1) · i32.mul · nonlinear',
+        hyps: [{ name: '$r', facts: ['0 ≤ r', 'r·r ≤ n'], src: 'L7' }, { name: '$n', facts: ['n ≤ 2³¹−1'], src: 'L1' }, { name: 'v', facts: ['u(v) = (r+1)² mod 2³²'], src: 'L15' }],
+        goal: [{ t: '(r+1)·(r+1) < 2³²', st: 'unk', inst: 'needs r ≤ 46340 from r·r ≤ 2³¹−1' }],
+        also: 'needed by 17 (gt_u reads u(v)) and 23 (r+1 does not wrap)',
+        dyn: { kind: 'line', key: 'L15', label: 'held on your run' },
+        chips: lemmaChips(46341),
+      });
+      if (f.post === 'S2') holes.push({
+        key: 'H-S2', after: 'L26', status: 'false', site: 'ensures of $isqrt · the spec', witness: W([['isqrt', [4]]]), wlabel: '$isqrt(4)',
+        hyps: [{ name: '$n', val: 4, facts: ['0 ≤ n'], src: 'L1' }, { name: '$r', val: 2, facts: ['r·r ≤ n'], src: 'L7' }, { fact: 'exit: n < (r+1)·(r+1)', src: 'L18' }],
+        goal: [{ t: '0 ≤ root', st: 'ok' }, { t: 'root·root < n', st: 'bad', inst: '4 < 4' }, { t: 'n ≤ (root+1)²', st: 'ok' }],
+        gap: 'have r·r ≤ n, need r·r < n: the gap is r·r = n (perfect squares)',
+        chips: [{ kind: 'spec', label: 'fix the ensures (code is right)', text: '$root*$root <= $n && $n < ($root+1)*($root+1)', site: { key: 'L1', tok: '$root*$root < $n && $n <= ($root+1)*($root+1)' }, apply: f => ({ ...f, post: 'ok' }) }],
+      });
+      return { rows, holes, marks };
+    },
+    toggles: [
+      { key: 'L3', tip: 'click to edit: i32.const 0 ⇄ 1', apply: f => ({ ...f, init: f.init ? 0 : 1 }) },
+      { key: 'L17', tip: 'click to edit: i32.gt_u ⇄ i32.gt_s', apply: f => ({ ...f, cmp: f.cmp === 'u' ? 's' : 'u' }) }],
+  };
+
+  // ======================= C: hash table =================================
+  const H = FX.hashtable;
+  const hashBugs = Object.fromEntries(H.bugs.map(b => [b.id, b]));
+  const S0 = () => [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  const hash = {
+    id: 'hashtable', hash: true, init: () => ({ code: 'none', r3: 'aware', r4: 'full' }), checker: CHK.hash,
+    presets: {
+      none: { code: 'none', r3: 'aware', r4: 'full' }, a: { code: 'a', r3: 'aware', r4: 'full' }, b: { code: 'b', r3: 'aware', r4: 'full' },
+      bp: { code: 'bp', r3: 'aware', r4: 'full' }, c: { code: 'c', r3: 'aware', r4: 'full' }, d: { code: 'd', r3: 'aware', r4: 'full' },
+      dweak: { code: 'd', r3: 'aware', r4: 'weak' },
+    },
+    yourRun: { calls: H.correct_runs.calls, label: H.correct_runs.calls.map(c => c[0] + '(' + c[1].join(',') + ')').join(' · ') },
+    funcs: [['slot', 13, 19], ['find', 20, 66], ['lookup', 67, 83], ['delete', 84, 103], ['insert', 104, 169]],
+    derive(f) {
+      const rows = rowsFrom(H.lines);
+      if (f.code === 'a') blank(rows, 147, 148);
+      if (f.code === 'b') setText(rows, 'L38', 'i32.ne');
+      if (f.code === 'bp') setText(rows, 'L99', 'i32.const 0');
+      if (f.code === 'c') blank(rows, 110, 123);
+      if (f.code === 'd') setText(rows, 'L125', 'i32.const 8');
+      if (f.r3 === 'strong') setText(rows, 'L10', '(@define R3 = forall s. st(s) == FULL ==> forall d <= dist(key(s), s). st(at(key(s), d)) == FULL)');
+      if (f.r4 === 'weak') setText(rows, 'L11', '(@define R4 = #{s | st(s) == FULL} == |M| && used == #{s | st(s) != EMPTY})');
+      const holes = [];
+      const hb = hashBugs;
+      if (f.r4 === 'weak') holes.push({
+        key: 'H-term', after: 'L63', status: 'false', site: '∞ termination of loop $probe · br $probe',
+        witness: { kind: 'loophead', fromLoop: { fn: 'find', lineKey: 'L29', loc: { k: 8, i: 0, p: 65440, j: 8 } }, s0: 1,
+          init: { slots: [0, 1, 2, 3, 4, 5, 6, 7].map(k => [1, k, 10 * k]), used: 8, M: [0, 1, 2, 3, 4, 5, 6, 7].map(k => [k, 10 * k]) } },
+        wlabel: '8 FULL slots, k = 8, j = 8',
+        hyps: [{ name: '$j', val: 8, facts: ['j ≤ used'], src: 'L30' }, { name: 'used', val: 8, facts: ['used = #non-EMPTY'], src: 'L11' },
+          { missing: 'no EMPTY slot is promised: used < CAP is gone', src: 'L11' },
+          { mem: { slots: [0, 1, 2, 3, 4, 5, 6, 7].map(k => [1, k, 10 * k]), k: 8, path: [0, 1, 2, 3, 4, 5, 6, 7, 0], note: 'probe of 8 wraps forever' } }],
+        goal: [{ t: 'measure CAP − j′ ≥ 0', st: 'bad', inst: '8 − 9 = −1' }, { t: 'j′ ≤ used', st: 'bad', inst: '9 ≤ 8' }],
+        also: 'same goal at 151 (loop $free, decreases 138)',
+        chips: [{ kind: 'inv', label: 'corrected clause (iv)', text: 'R4 = … && used == #{s | st(s) != EMPTY} && used < CAP', site: { key: 'L11', tok: 'used == #{s | st(s) != EMPTY}' }, apply: f => ({ ...f, r4: 'full' }),
+          tip: 'B.2: with tombstones, #FULL < CAP does not make probing stop; at least one EMPTY slot must exist.' }],
+      });
+      if (f.code === 'b' && f.r3 === 'aware') holes.push({
+        key: 'H-b', after: 'L41', status: 'false', site: 'ensures of $find · early return −1', witness: W(hb.Hb.calls), wlabel: hb.Hb.calls.map(c => c[0] + '(' + c[1].join(',') + ')').join(' · '),
+        hyps: [{ name: '$k', val: 11, facts: ['h(k) = 3'], src: 'L28' }, { name: 'st(i)', val: 2, facts: ['st(i) ≠ FULL'], src: 'L38', blame: true },
+          { missing: 'st(i) = EMPTY — (iii) rules out only EMPTY on a path', src: 'L10' },
+          { mem: { slots: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 3, 30], [1, 11, 110], [0, 0, 0], [0, 0, 0], [0, 0, 0]], k: 11, path: [3, 4], stop: 3, note: '11 sits past the TOMB' } }],
+        goal: [{ t: '!(k in M)', st: 'bad', inst: '11 ∈ M = {11↦110}' }],
+        gap: 'st(i) ≠ FULL also admits TOMB',
+        chips: [
+          { kind: 'code', label: 'tombstone-aware exit test', text: '38: i32.ne → i32.lt_u  (stop only at EMPTY)', site: { key: 'L38', tok: 'i32.ne' }, apply: f => ({ ...f, code: 'none' }) },
+          { kind: 'inv', label: 'or make (iii) say what this test assumes', text: 'R3: … st(at(key(s), d)) == FULL', site: { key: 'L10', tok: '!= EMPTY' }, apply: f => ({ ...f, r3: 'strong' }) }],
+      });
+      if (f.r3 === 'strong' && f.code !== 'bp') holes.push({
+        key: 'H-strong', after: 'L100', status: 'false', site: '(iii) after delete’s store · R', witness: W(hb.Hb.calls.slice(0, 3)), wlabel: 'insert(3,30) · insert(11,110) · delete(3)',
+        hyps: [{ name: '$i', val: 3, facts: ['slot of k = 3'], src: 'L97' }, { fact: 'st(3) := TOMB', src: 'L99' },
+          { mem: { slots: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 3, 30], [1, 11, 110], [0, 0, 0], [0, 0, 0], [0, 0, 0]], k: 11, path: [3, 4], stop: null, note: 'TOMB now on 11’s path' } }],
+        goal: [{ t: '(iii)-strong: 11’s path all FULL', st: 'bad', inst: 'st(3) = TOMB' }, { t: '(i) (ii) (iv)', st: 'ok' }],
+        chips: [{ kind: 'inv', label: 'back to the tombstone-aware (iii)', text: 'R3: … st(at(key(s), d)) != EMPTY', site: { key: 'L10', tok: '== FULL)' }, apply: f => ({ ...f, r3: 'aware' }) }],
+      });
+      if (f.code === 'a') holes.push({
+        key: 'H-a', after: 'L151', status: 'false', site: 'invariant kept by the back-edge · br $free', witness: W(hb.Ha.calls), wlabel: 'insert(7,70) · insert(15,150)',
+        hyps: [{ name: '$k', val: 15, facts: ['h(k) = 7'], src: 'L134' }, { name: '$j', val: 1, facts: ['j := j + 1'], src: 'L150' },
+          { name: '$i', val: 8, facts: ['i = at(k, 0) + 1, unmasked'], src: 'L146', blame: true }],
+        goal: [{ t: '!(k in M) · j ≤ used', st: 'ok' }, { t: 'i = at(k, j)', st: 'bad', inst: '8 ≠ 0' }],
+        also: 'next: 140 pre of $slot, then 💣 at 142 in the replay',
+        chips: [{ kind: 'code', label: 'wrap the probe index', text: '147–148: + i32.const 7 · i32.and', site: { key: 'L147', blank: true }, fill: { L147: '        i32.const 7', L148: '        i32.and' }, apply: f => ({ ...f, code: 'none' }) }],
+      });
+      if (f.code === 'bp') holes.push({
+        key: 'H-bp', after: 'L100', status: 'false', site: 'R after delete’s store', witness: W(hb.Hb_prime.calls), wlabel: 'insert(3,30) · insert(11,110) · delete(3) · lookup(11,-1)',
+        hyps: [{ name: '$i', val: 3, facts: ['slot of k = 3'], src: 'L97' }, { fact: 'st(3) := EMPTY', src: 'L99', blame: true },
+          { mem: { slots: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 3, 30], [1, 11, 110], [0, 0, 0], [0, 0, 0], [0, 0, 0]], k: 11, path: [3, 4], stop: 3, note: 'EMPTY cuts 11’s path' } }],
+        goal: [{ t: '(iii) no EMPTY on 11’s path', st: 'bad', inst: 'st(3) = EMPTY' }, { t: '(iv) used = #non-EMPTY', st: 'bad', inst: '2 ≠ 1' }],
+        chips: [{ kind: 'code', label: 'write a tombstone', text: '99: i32.const 0 → i32.const 2', site: { key: 'L99', tok: '0' }, apply: f => ({ ...f, code: 'none' }) }],
+      });
+      if (f.code === 'c') holes.push({
+        key: 'H-c', after: 'L135', status: 'false', site: 'invariant on entry · loop $free', witness: W(hb.Hc.calls), wlabel: 'insert(3,30) · insert(3,31)',
+        hyps: [{ name: '$k', val: 3, facts: ['h(k) = 3'], src: 'L134' }, { missing: 'nothing says k ∉ M (110–123 are gone)', src: 'L110', blame: true },
+          { mem: { slots: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [1, 3, 30], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], k: 3, path: [3], note: '3 is already here' } }],
+        goal: [{ t: '!(k in M)', st: 'bad', inst: '3 ∈ M = {3↦30}' }, { t: 'j = 0 ≤ used · i = at(k, 0)', st: 'ok' }],
+        chips: [{ kind: 'code', label: 'restore find-and-update', text: '110–123: call $find; update in place if found', site: { key: 'L110', blank: true }, fill: Object.fromEntries(H.lines.slice(109, 123).map((t, i) => ['L' + (110 + i), t])), apply: f => ({ ...f, code: 'none' }) }],
+      });
+      if (f.code === 'd' && f.r4 === 'full') holes.push({
+        key: 'H-d', after: 'L166', status: 'false', site: '(iv) after insert · R', witness: { kind: 'input', calls: hb.Hd.calls, cap: 900 }, wlabel: 'insert(k,10k), k = 0‥7 · lookup(8,-1)',
+        hyps: [{ name: 'used', val: 7, facts: ['refused only if used ≥ 8'], src: 'L125', blame: true }, { name: 'used′', val: 8, facts: ['used + 1'], src: 'L165' },
+          { mem: { slots: [0, 1, 2, 3, 4, 5, 6, 7].map(k => [1, k, 10 * k]), k: null, path: [], note: 'no EMPTY slot left' } }],
+        goal: [{ t: '#FULL = |M| · used = #non-EMPTY', st: 'ok' }, { t: 'used < CAP', st: 'bad', inst: '8 < 8', inf: true }],
+        also: 'used < CAP is what bounds every probe (decreases at 32 and 138)',
+        chips: [
+          { kind: 'code', label: 'restore the load-factor check', text: '125: i32.const 8 → i32.const 7', site: { key: 'L125', tok: '8' }, apply: f => ({ ...f, code: 'none' }) },
+          { kind: 'spec', label: 'relax (iv)', text: 'drop  && used < CAP', site: { key: 'L11', tok: ' && used < CAP' }, apply: f => ({ ...f, r4: 'weak' }) }],
+      });
+      return { rows, holes, marks: {} };
+    },
+    toggles: [
+      { key: 'L38', tip: 'click to edit: i32.lt_u ⇄ i32.ne', apply: f => ({ ...f, code: f.code === 'b' ? 'none' : 'b' }) },
+      { key: 'L99', tip: 'click to edit: TOMB (2) ⇄ EMPTY (0)', apply: f => ({ ...f, code: f.code === 'bp' ? 'none' : 'bp' }) },
+      { key: 'L125', tip: 'click to edit: 7 ⇄ 8', apply: f => ({ ...f, code: f.code === 'd' ? 'none' : 'd' }) }],
+  };
+  return { parity, sign, sqeven, isqrt, hash, FX };
+})();
+
+// ---------------------------------------------------------------------------
+// UI: listing views with synthetic hole rows, chips, previews, replay, sliders.
+// ---------------------------------------------------------------------------
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const minus = s => String(s).replace(/^-/, '−');
+  function fmt(v) {
+    if (v === undefined || v === null || v === '') return '';
+    if (typeof v !== 'number') return String(v);
+    if (v === 2147483647) return '2³¹−1';
+    if (v === -2147483648) return '−2³¹';
+    const a = Math.abs(v), s = v < 0 ? '−' : '';
+    if (a >= 1e6) return s + (a / 1e9).toFixed(1) + 'e9';
+    return s + a;
+  }
+  const KIND = { code: 'code', spec: 'spec', inv: 'invariant', lemma: 'lemma', admit: 'admit ○' };
+
+  // ---------------- tooltip ----------------
+  const tip = document.createElement('div'); tip.id = 'tip'; document.body.appendChild(tip);
+  document.addEventListener('mouseover', e => {
+    const t = e.target.closest && e.target.closest('[data-tip]');
+    if (!t) { tip.style.display = 'none'; return; }
+    tip.textContent = t.getAttribute('data-tip'); tip.style.display = 'block';
+  });
+  document.addEventListener('mousemove', e => {
+    if (tip.style.display === 'block') { tip.style.left = Math.min(e.clientX + 14, innerWidth - 440) + 'px'; tip.style.top = (e.clientY + 18) + 'px'; }
+  });
+
+  // ---------------- glyph helpers ----------------
+  const STAR = (c = 'indigo', s = 1) => `<svg width="${16 * s}" height="${15 * s}" viewBox="0 0 16 15" style="vertical-align:middle"><polygon points="8,1 9.9,5.6 15,6 11.1,9.3 12.3,14.2 8,11.6 3.7,14.2 4.9,9.3 1,6 6.1,5.6" fill="none" stroke="${c}" stroke-width="1.2" stroke-dasharray="2.2 1.4"/></svg>`;
+  const ARROW = `<svg width="18" height="100%" viewBox="0 0 18 20" preserveAspectRatio="xMidYMid meet"><path d="M2,10 H12 M8,5 L13,10 L8,15" stroke="navy" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  function restGlyph(st, replayed) {
+    const cls = st === 'false' ? (replayed ? 'false' : 'ghost') : st;
+    const t = st === 'false' ? (replayed ? 'proof hole: goal is FALSE, witness replayed' : 'proof hole: goal is FALSE, witness not yet replayed') : st === 'unknown' ? 'proof hole: goal UNKNOWN, needs a hint' : 'proof hole: hypotheses contradict (vacuous)';
+    return `<span class="g rest ${cls}" data-tip="𝄽 ${t}">𝄽</span>`;
+  }
+  function hypShape(val, o = {}) {
+    const txt = val === undefined ? '' : minus(val);
+    const w = Math.max(30, txt.length * 6.1 + 10), h = 14;
+    const outline = o.outline, cex = o.cex;
+    let s = `<svg width="${w + (o.wrap ? 8 : 0)}" height="${h + 2}">`;
+    if (o.missing) {
+      s += `<defs><linearGradient id="fu${o.id}" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6A5ACD" stop-opacity=".45"/><stop offset="1" stop-color="#6A5ACD" stop-opacity="0"/></linearGradient></defs>`;
+      s += `<path d="M1,1 V${h} H${w - 1} V1" fill="url(#fu${o.id})" stroke="#6A5ACD" stroke-width="1"/>`;
+    } else if (o.hollow) s += `<rect x="1" y="1" width="${w - 2}" height="${h - 1}" fill="none" stroke="#888" stroke-dasharray="2 2"/>`;
+    else s += `<rect x="1" y="1" width="${w - 2}" height="${h - 1}" fill="${outline ? 'none' : '#d2cdf0'}" stroke="#6A5ACD" stroke-width="${outline ? 1.2 : 1}"/>`;
+    if (txt) s += `<text x="${w / 2}" y="${h / 2 + 1.5}" class="sv" style="font-size:10.5px;fill:${cex ? '#5a0000' : '#111'};font-weight:${cex ? 600 : 400}">${esc(txt)}</text>`;
+    if (o.wrap) s += `<path class="wrapmark" d="M${w},1 l4,3 l-4,3 l4,3 l-4,3"/>`;
+    return s + '</svg>';
+  }
+  function ruleSVG(st, replayed, W) {
+    const c = W / 2;
+    if (st === 'false') {
+      if (replayed) return `<svg class="hrule" width="${W}" height="16"><line x1="0" x2="${c - 15}" y1="5" y2="5" stroke="darkred" stroke-width="2.6"/><line x1="${c + 15}" x2="${W}" y1="11" y2="11" stroke="darkred" stroke-width="2.6"/><text x="${c}" y="12.5" text-anchor="middle" font-size="14" fill="darkred" font-family="DejaVu Sans">⚖</text></svg>`;
+      return `<svg class="hrule" width="${W}" height="16"><rect x="0.5" y="3.5" width="${c - 15.5}" height="3" fill="none" stroke="darkred" stroke-width=".8"/><rect x="${c + 15}" y="9.5" width="${c - 15.5}" height="3" fill="none" stroke="darkred" stroke-width=".8"/><text x="${c}" y="12.5" text-anchor="middle" font-size="14" fill="none" stroke="darkred" stroke-width=".7" font-family="DejaVu Sans">⚖</text></svg>`;
+    }
+    if (st === 'unknown') return `<svg class="hrule" width="${W}" height="16"><line x1="0" x2="${c - 22}" y1="8" y2="8" stroke="indigo" stroke-width="1.3" stroke-dasharray="7 5"/><line x1="${c + 22}" x2="${W}" y1="8" y2="8" stroke="indigo" stroke-width="1.3" stroke-dasharray="7 5"/><g transform="translate(${c - 19},0.5)"><polygon points="8,1 9.9,5.6 15,6 11.1,9.3 12.3,14.2 8,11.6 3.7,14.2 4.9,9.3 1,6 6.1,5.6" fill="none" stroke="indigo" stroke-width="1.1"/></g><text x="${c + 9}" y="13" text-anchor="middle" font-size="14" fill="indigo" font-family="Georgia,serif" font-weight="bold">?</text></svg>`;
+    return `<svg class="hrule" width="${W}" height="16"><line x1="0" x2="${c - 12}" y1="6" y2="6" stroke="#888" stroke-width=".8"/><line x1="0" x2="${c - 12}" y1="10" y2="10" stroke="#888" stroke-width=".8"/><line x1="${c + 12}" x2="${W}" y1="6" y2="6" stroke="#888" stroke-width=".8"/><line x1="${c + 12}" x2="${W}" y1="10" y2="10" stroke="#888" stroke-width=".8"/><circle cx="${c}" cy="8" r="5.5" fill="none" stroke="#777" stroke-width="1"/></svg>`;
+  }
+  function memMini(m) {
+    const cw = 22, h = 34;
+    let s = `<svg width="${8 * cw + 6}" height="${h + 10}" style="overflow:visible">`;
+    m.slots.forEach((sl, i) => {
+      const x = 2 + i * cw, st = sl[0];
+      if (st === 0) s += `<rect x="${x}" y="12" width="${cw - 3}" height="16" fill="#fffff0" stroke="#aaa" stroke-dasharray="2 2"/>`;
+      else if (st === 1) s += `<rect x="${x}" y="12" width="${cw - 3}" height="16" fill="#d2cdf0" stroke="#6A5ACD"/><text x="${x + (cw - 3) / 2}" y="20.5" class="sv" style="font-size:9px">${sl[1]}</text>`;
+      else s += `<rect x="${x}" y="12" width="${cw - 3}" height="16" fill="url(#hatch)" stroke="#555"/><text x="${x + (cw - 3) / 2}" y="20.5" class="sv" style="font-size:9px;fill:#555">†</text>`;
+      s += `<text x="${x + (cw - 3) / 2}" y="${h + 2}" class="sv" style="font-size:8px;fill:#888">${i}</text>`;
+    });
+    if (m.path && m.path.length) {
+      let d = '';
+      m.path.forEach((p, k) => { const x = 2 + p * cw + (cw - 3) / 2; if (k === 0) d += `M${x},10`; else { const x0 = 2 + m.path[k - 1] * cw + (cw - 3) / 2; if (x > x0) d += ` Q${(x + x0) / 2},0 ${x},10`; else d += ` Q${x0 + 10},-4 ${x0 + 12},4 M${x},10`; } });
+      s += `<path d="${d}" fill="none" stroke="#483D8B" stroke-width="1.3"/>`;
+      if (m.stop != null) { const x = 2 + m.stop * cw + (cw - 3) / 2; s += `<path d="M${x - 5},4 l10,10 M${x + 5},4 l-10,10" stroke="darkred" stroke-width="1.6"/>`; }
+    }
+    if (m.k != null) s += `<text x="${8 * cw + 8}" y="22" style="font-family:var(--serif);font-size:12px">k = ${m.k}</text>`;
+    return s + '</svg>' + (m.note ? `<span class="mtext" style="font-size:11px;color:#555;font-style:italic">${esc(m.note)}</span>` : '');
+  }
+
+  // ---------------- Model ----------------
+  class Model {
+    constructor(def) { this.def = def; this.flags = def.init(); this.views = []; this.hist = []; this.replayed = new Set(); this.cache = new Map(); this.listeners = []; }
+    derive(fl = this.flags) {
+      const k = JSON.stringify(fl);
+      if (!this.cache.has(k)) {
+        const d = this.def.derive(fl); d.flags = fl; d.marks = d.marks || {};
+        d.prog = ENG.parse(d.rows.map(r => r.text)); if (this.def.hash) d.prog.hash = true;
+        d.rows.forEach((r, i) => { const l = d.prog.L[i + 1]; r.kind = l.kind; r.op = l.op; r.eff = ENG.effect(d.prog, l); r.fn = l.fn; r.idx = i + 1; });
+        d.pairs = dataflow(d);
+        this.cache.set(k, d);
+      }
+      return this.cache.get(k);
+    }
+    set(fl, how = {}) {
+      this.hist.push(this.flags); this.flags = fl;
+      const d = this.derive();
+      for (const k of [...this.replayed]) if (!d.holes.find(h => h.key === k)) this.replayed.delete(k);
+      this.views.forEach(v => v.update(how)); this.listeners.forEach(f => f());
+    }
+    undo() { if (!this.hist.length) return; this.flags = this.hist.pop(); this.views.forEach(v => v.update({ undo: true })); this.listeners.forEach(f => f()); }
+    run(spec, d = this.derive()) {
+      if (!spec) return null;
+      const opts = { checker: this.def.checker(d.flags), cap: spec.cap || 3000 };
+      if (spec.fromLoop) { opts.fromLoop = { fn: spec.fromLoop.fn, line: d.rows.findIndex(r => r.key === spec.fromLoop.lineKey) + 1, loc: spec.fromLoop.loc }; opts.s0 = spec.s0; }
+      if (spec.init) opts.init = spec.init;
+      const out = ENG.run(d.prog, spec.calls || [], opts);
+      out.recs.forEach(r => { r.key = d.rows[r.ln - 1].key; r.checks.forEach(c => c.key = (d.rows[c.ln - 1] || {}).key); r.bad = r.checks.some(c => !c.ok) || !!r.trap; });
+      out.byKey = new Map(); out.recs.forEach((r, i) => { if (!out.byKey.has(r.key)) out.byKey.set(r.key, []); out.byKey.get(r.key).push(i); });
+      out.fails = []; out.recs.forEach((r, i) => { if (r.bad) out.fails.push(i); });
+      out.spec = spec;
+      return out;
+    }
+  }
+
+  // static operand-stack dataflow (producer output -> consumer input cup)
+  function dataflow(d) {
+    const pairs = [], L = d.prog.L;
+    for (const f of Object.values(d.prog.funcs)) {
+      let stack = []; const ctl = [{ h: 0 }];
+      for (let n = f.hdr + 1; n < f.close; n++) {
+        const l = L[n]; if (l.kind !== 'instr') continue;
+        const key = d.rows[n - 1].key, op = l.op;
+        if (op === 'block' || op === 'loop') { ctl.push({ h: stack.length }); continue; }
+        if (op === 'else') { const t = ctl[ctl.length - 1]; stack.length = t.h; continue; }
+        if (op === 'end') { const t = ctl.pop(); if (!t.res) stack.length = Math.min(stack.length, t.h); continue; }
+        const [k, m] = ENG.effect(d.prog, l);
+        const base = stack.length - k;
+        for (let j = 0; j < k; j++) { const p = stack[base + j]; if (p) pairs.push({ from: p, to: { key, j } }); }
+        stack.length = Math.max(0, base);
+        if (op === 'if') { ctl.push({ h: stack.length, res: /result/.test(l.t) }); continue; }
+        for (let i = 0; i < m; i++) stack.push({ key, i });
+        if (op === 'br' || op === 'return' || op === 'unreachable') stack.length = ctl[ctl.length - 1].h;
+      }
+    }
+    return pairs;
+  }
+
+  // ---------------- Listing view ----------------
+  class View {
+    constructor(model, o) {
+      this.m = model; this.o = o; model.views.push(this);
+      const root = this.root = o.root;
+      root.classList.add('listing');
+      root.style.setProperty('--rh', o.rh + 'px'); root.style.setProperty('--fx', o.fx + 'px');
+      root.style.setProperty('--cf', (o.cf || 22) + 'px'); root.style.setProperty('--mf', (o.mf || 17) + 'px');
+      root.style.setProperty('--hw', o.hw + 'px');
+      root.innerHTML = `<div class="rows"></div><svg class="overlay"><defs><pattern id="hatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="#999" stroke-width="1.2"/></pattern></defs><g class="conn"></g><g class="trail"></g></svg>`;
+      this.rowsEl = $('.rows', root); this.ov = $('.overlay', root);
+      this.folded = new Set(o.folded || []);
+      this.mode = 'your'; this.cur = 0; this.pendingJump = false;
+      this.bind();
+      this.update({ initial: true });
+      addEventListener('resize', () => this.drawOverlay());
+      root.addEventListener('mouseenter', () => { ACTIVE = this; });
+    }
+    rowEl(key) { return this.rowsEl.querySelector(`.row[data-key="${key}"]:not(.leaving)`); }
+    fnOf(key) { if (!this.o.funcs) return null; const n = parseInt(key.slice(1)); return this.o.funcs.find(f => n >= f[1] && n <= f[2]) || null; }
+    holeOf(key) { return this.d.holes.find(h => h.key === key); }
+    yourSpec() { return this.o.yourRun ? this.o.yourRun(this.m.flags) : null; }
+    curRun() { return this.mode === 'your' ? this.runs.your : this.runs.wit; }
+
+    update(how = {}) {
+      const prevD = this.d; const d = this.d = this.m.derive();
+      if (this.o.funcs) for (const h of d.holes) { const f = this.fnOf(h.after); if (f) this.folded.delete(f[0]); const c = h.chips && h.chips[0]; if (c && c.site) { const f2 = this.fnOf(c.site.key); if (f2) this.folded.delete(f2[0]); } }
+      // runs
+      this.runs = { your: this.m.run(this.yourSpec(), d) };
+      if (how.autoReplay) { const h = d.holes.find(h => h.status === 'false' && h.witness && this.vis(h.after)); if (h) { this.m.replayed.add(h.key); this.mode = h.key; this.pendingJump = true; } }
+      if (this.mode !== 'your') {
+        const h = this.holeOf(this.mode);
+        if (!h || !this.m.replayed.has(h.key)) this.mode = 'your';
+        else this.runs.wit = this.m.run(h.witness, d);
+      }
+      const items = this.items(d);
+      const changed = new Set();
+      if (prevD && !how.quiet) { const pm = new Map(prevD.rows.map(r => [r.key, r.text])); d.rows.forEach(r => { if (pm.has(r.key) && pm.get(r.key) !== r.text) changed.add(r.key); }); }
+      this.reconcile(items, changed, !how.initial && !how.quiet);
+      const run = this.curRun();
+      if (run) {
+        if (this.pendingJump) { this.cur = run.fails.length ? run.fails[0] : run.recs.length - 1; this.pendingJump = false; }
+        else if (how.initial || this.cur >= run.recs.length || !how.quiet) this.cur = Math.min(this.cur, run.recs.length - 1);
+        if (how.initial || how.resetStep) this.cur = run.recs.length - 1;
+      } else this.cur = 0;
+      this.refreshStep();
+      this.ov.classList.add('hide');
+      clearTimeout(this.ovT); this.ovT = setTimeout(() => { this.drawOverlay(); this.ov.classList.remove('hide'); }, how.initial ? 30 : 330);
+      if (this.o.after) this.o.after(this);
+    }
+    vis(key) { const r = this.d.rows.find(r => r.key === key); return r && (!this.o.range || this.o.range(r)); }
+    items(d) {
+      const out = [], after = new Map();
+      d.holes.forEach(h => { if (!after.has(h.after)) after.set(h.after, []); after.get(h.after).push(h); });
+      for (const r of d.rows) {
+        if (this.o.range && !this.o.range(r)) continue;
+        const f = this.fnOf(r.key);
+        if (f && this.folded.has(f[0])) { if (r.key === 'L' + f[1]) out.push({ key: 'F' + f[0], cls: 'row line fold', html: this.foldHTML(f, d) }); continue; }
+        out.push({ key: r.key, cls: this.lineCls(r, d), html: this.lineHTML(r, d) });
+        for (const h of after.get(r.key) || []) out.push({ key: h.key, cls: this.holeCls(h), html: this.holeHTML(h, d), hole: true });
+      }
+      return out;
+    }
+    reconcile(items, changed, animate) {
+      const old = new Map($$('.row', this.rowsEl).filter(e => !e.classList.contains('leaving')).map(e => [e.dataset.key, e]));
+      let prev = null;
+      for (const it of items) {
+        let el = old.get(it.key);
+        if (el) {
+          old.delete(it.key);
+          if (el._html !== it.html) { el.innerHTML = it.html; el._html = it.html; }
+          const keep = ['stale', 'cur', 'rtfail'].filter(c => el.classList.contains(c));
+          el.className = it.cls; keep.forEach(c => el.classList.add(c));
+          if (animate && changed.has(it.key)) { el.classList.remove('reveal'); void el.offsetWidth; el.classList.add('reveal'); setTimeout(() => el.classList.remove('reveal'), 300); }
+          if (animate && it.hole) { el.classList.add('stale'); setTimeout(() => el.classList.remove('stale'), 480); }
+        } else {
+          el = document.createElement('div'); el.dataset.key = it.key; el.className = it.cls; el.innerHTML = it.html; el._html = it.html;
+          if (animate) { el.style.height = '0px'; el.style.opacity = '0'; }
+        }
+        const want = prev ? prev.nextSibling : this.rowsEl.firstChild;
+        if (want !== el) this.rowsEl.insertBefore(el, want);
+        if (animate && el.style.height === '0px') {
+          requestAnimationFrame(() => { const h = this.natural(el); el.style.height = h + 'px'; el.style.opacity = '1'; setTimeout(() => { el.style.height = ''; }, 280); });
+        }
+        prev = el;
+      }
+      for (const el of old.values()) {
+        if (!animate) { el.remove(); continue; }
+        el.classList.add('leaving'); el.style.height = el.offsetHeight + 'px';
+        requestAnimationFrame(() => { el.style.height = '0px'; el.style.opacity = '0'; });
+        setTimeout(() => el.remove(), 300);
+      }
+    }
+    natural(el) { const h0 = el.style.height; el.style.height = ''; const h = el.offsetHeight; el.style.height = h0; return h; }
+
+    lineCls(r, d) {
+      let c = `row line k-${r.kind}`;
+      if (r.ghost) c += ' ghost'; if (r.assume) c += ' assumeln'; if (r.accepted) c += ' acc';
+      if (r.text.trim().length > (this.o.longAt || 104)) c += ' long';
+      return c;
+    }
+    gutter(r, d) {
+      const hs = d.holes.filter(h => h.after === r.key && this.vis(h.after));
+      const f = hs.find(h => h.status === 'false');
+      if (f) { const rp = this.m.replayed.has(f.key); return `<span class="g ${rp ? 'mk-false' : 'mk-ghost'}" data-hole="${f.key}" style="cursor:pointer" data-tip="⚖ spec violated at this line (${rp ? 'witness replayed' : 'witness not yet replayed: click to replay'})">⚖&#xFE0E;</span>`; }
+      if (hs.find(h => h.status === 'unknown')) return `<span class="g" data-tip="obligation unknown: needs a hint (see the hole below)">${STAR()}<span style="color:indigo;font-family:Georgia;font-size:13px;font-weight:bold">?</span></span>`;
+      if (r.assume) return `<span class="g mk-assume" data-tip="○ assumed, not proven: checked at run time">○</span>`;
+      if (hs.find(h => h.status === 'vacuous')) return `<span class="g mk-assume" data-tip="○ vacuous: nothing satisfies this">○</span>`;
+      return `<span class="g">${esc(r.num)}</span>`;
+    }
+    lineHTML(r, d) {
+      const t = r.text.trim(), ind = Math.min(9, (r.text.match(/^ */) || [''])[0].length) * 9;
+      let html = esc(t);
+      for (const h of d.holes) {
+        const c = h.chips && h.chips[0];
+        if (!c || !c.site || c.site.key !== r.key) continue;
+        if (c.site.blank || !t) html = `<span class="siteblank s-${h.status}" data-tip="the hole's first suggestion edits this line"></span>`;
+        else if (c.site.tok) { const tk = esc(c.site.tok), i = html.indexOf(tk); if (i >= 0) html = html.slice(0, i) + `<span class="site s-${h.status}" data-tip="the hole's first suggestion edits this">${tk}</span>` + html.slice(i + tk.length); }
+      }
+      const tg = this.m.def.toggles && this.m.def.toggles.find(x => x.key === r.key);
+      if (tg && (t || r.key === 'L15')) html = `<span class="tog" data-tog="${r.key}" data-tip="${esc(tg.tip)}">${html || '&nbsp;&nbsp;&nbsp;&nbsp;'}</span>`;
+      let frac = '';
+      if (r.eff && (r.eff[0] || r.eff[1])) frac = this.fracSVG(r, d);
+      let cmt = '';
+      if (d.marks[r.key] === 'inf') cmt = `<span class="cmt"><span class="inf" data-tip="∞? partial correctness only: no (@decreases) on this loop (01 §2.7)">∞?</span></span>`;
+      if (r.assume && this.runs && this.runs.your) {
+        const n = this.runs.your.recs.reduce((a, x) => a + x.checks.filter(c => c.key === r.key && c.ok).length, 0);
+        cmt = `<span class="cmt" style="left:${this.o.fx + 60}px;right:auto"><span class="dyn" data-tip="assumed, not proven: the run-time check held ${n} time(s) on your run">∘ ${n}</span></span>`;
+      }
+      return `<div class="gut">${this.gutter(r, d)}</div><div class="arrow">${ARROW}</div><div class="code" style="padding-left:${ind}px">${html}</div>${frac}${cmt}`;
+    }
+    fracSVG(r, d) {
+      const [k, m] = r.eff, n = Math.max(k, m), w = n * 36, rh = this.o.rh, yc = rh / 2;
+      let s = `<svg class="frac" width="${w + 8}" height="${rh}" style="left:${this.o.fx}px">`;
+      for (let i = 0; i < k; i++) { const x = 2 + i * 36; s += `<path class="cup" d="M${x},${yc - 13} V${yc - 2} H${x + 30} V${yc - 13}"/><text class="sv" x="${x + 15}" y="${yc - 7}" data-vi="${i}"></text>`; }
+      s += `<line class="rule" x1="0" x2="${w}" y1="${yc}" y2="${yc}"/>`;
+      const wrap = d.holes.some(h => (h.hyps || []).some(y => y.wrap && y.src === r.key));
+      for (let i = 0; i < m; i++) { const x = 2 + i * 36; s += `<rect class="out" x="${x}" y="${yc + 2}" width="30" height="11"/><text class="sv o" x="${x + 15}" y="${yc + 8}" data-vo="${i}"></text>`; if (wrap) s += `<path class="wrapmark" d="M${x + 31},${yc + 1} l4,3 l-4,3 l4,3 l-4,3" data-tip="this product wraps (46341² > 2³¹−1): wrap blame"/>`; }
+      return s + '</svg>';
+    }
+    foldHTML(f, d) {
+      const n = f[2] - f[1] + 1;
+      return `<div class="gut"><span class="g">${f[1]}</span></div><div class="arrow">${ARROW}</div><div class="code" data-fold="${f[0]}" data-tip="folded: no holes inside. Click to unfold.">▸ <b>(func $${f[0]}</b> … <b>)</b>   ⋯ ${n} lines, no holes</div>`;
+    }
+    holeCls(h) { return `row hole ${h.status}${this.m.replayed.has(h.key) ? ' replayed' : ''}`; }
+    holeHTML(h, d) {
+      const rp = this.m.replayed.has(h.key), st = h.status;
+      const W = this.o.ruleW || 440;
+      let head = `<span class="hstat">${st === 'false' ? 'false' : st === 'unknown' ? 'unknown' : 'vacuous'}</span><span class="hsite">${esc(h.site)}</span>`;
+      if (h.witness) {
+        const kind = h.witness.kind === 'input' ? 'input witness' : 'loop-head witness';
+        const ex = h.witness.kind === 'input' ? '' : ' · one-iteration replay';
+        head += `<span class="hwit" data-tip="${h.witness.kind === 'input' ? 'a reachable input: replay runs the whole program on it' : 'a state at the loop head that satisfies the invariant (maybe unreachable): replay runs one iteration from it — the invariant is too weak or the code is wrong'}">${kind}: ${esc(h.wlabel)}${ex}</span>`;
+        head += rp ? `<button class="hbtn" data-act="show">⚖ on the slider</button>` : `<button class="hbtn" data-act="replay">▸ replay</button>`;
+      }
+      if (h.dyn && this.runs && this.runs.your) {
+        const R = this.runs.your;
+        const n = h.dyn.kind === 'line' ? (R.byKey.get(h.dyn.key) || []).length : R.recs.reduce((a, x) => a + x.checks.filter(c => c.key === h.dyn.ln && c.ok).length, 0);
+        head += `<span class="dyn" data-tip="held on this run only: the dynamic check passed ${n} time(s). Not a proof.">∘ ${n}</span><span class="wtag">${esc(h.dyn.label)}</span>`;
+      }
+      let hy = '';
+      (h.hyps || []).forEach((y, i) => {
+        const src = y.src ? ` data-src="${y.src}"` : '';
+        const srcTip = y.src ? `from line ${y.src.slice(1).replace('p', '′')}` : '';
+        if (y.mem) { hy += `<span class="hyp" data-tip="witness memory: the 8 slots (EMPTY dashed, FULL solid, TOMB hatched †) and the probe path">${memMini(y.mem)}</span>`; return; }
+        if (y.fact) { hy += `<span class="hyp${y.blame ? ' blame' : ''}"${src} data-tip="${esc(srcTip)}"><span class="fact">${esc(y.fact)}</span></span>`; return; }
+        const outline = st === 'false' && !rp;
+        let shape = '';
+        if (y.missing && y.val === undefined) shape = hypShape(undefined, { missing: true, id: h.key + i });
+        else shape = hypShape(y.val, { outline, cex: st === 'false' && y.val !== undefined, wrap: y.wrap, hollow: y.hollow });
+        hy += `<span class="hyp${y.blame ? ' blame' : ''}${y.missing ? ' missing' : ''}"${src} data-tip="${esc((y.name || '') + ' ' + (y.facts || []).join(', ') + (y.missing ? ' — missing: ' + y.missing : '') + (srcTip ? ' (' + srcTip + ')' : ''))}">${y.name ? `<span class="hn">${esc(y.name)}</span>` : ''}${shape}${(y.facts || []).map(f => `<span class="fact">${esc(f)}</span>`).join('')}${y.missing ? `<span class="mtext">${esc(y.missing)}</span>` : ''}</span>`;
+      });
+      const goal = (h.goal || []).map(g => `<span class="cj ${g.st}" data-tip="${esc(g.t)} — ${g.st === 'ok' ? 'proven' : g.st === 'bad' ? 'refuted' + (g.inst ? ': ' + g.inst : '') : g.st === 'unk' ? 'unknown' + (g.inst ? ': ' + g.inst : '') : 'vacuous'}">${esc(g.t)}${g.inst && g.st !== 'ok' ? `<span class="inst">${esc(g.inst)}</span>` : ''}${g.inf ? '<span class="infb" data-tip="this conjunct is what makes every probe loop terminate">∞</span>' : ''}</span>`).join('<span class="and">∧</span>');
+      let notes = '';
+      if (h.gap) notes += `<div class="hnote"><span class="gapw">gap</span> ${esc(h.gap)}</div>`;
+      if (h.also) notes += `<div class="hnote">${esc(h.also)}</div>`;
+      const chips = (h.chips || []).map((c, i) =>
+        `<button class="chip k-${c.kind}" data-ci="${i}"${c.tip ? ` data-tip="${esc(c.tip)}"` : ''}><span class="ck">${KIND[c.kind]}</span><span class="ct">${esc(c.text)}${c.text2 ? '<br>' + esc(c.text2) : ''}</span><span class="cl">${esc(c.label)}</span></button>` +
+        (c.alts || []).map((a, j) => `<button class="chip alt" data-ci="${i}" data-alt="${j}" data-tip="another instance the autocomplete found"><span class="ck">or</span><span class="ct">${esc(a.text)}</span></button>`).join('')).join('');
+      const cap = (h.chips || []).some(c => c.kind === 'lemma') ? 'apply?  ·  click to accept' : 'suggestions  ·  click to accept';
+      return `<div class="gut">${restGlyph(st, rp)}</div>
+        <div class="hbox" data-hole="${h.key}"><svg class="hborder"><rect x="1" y="1" rx="3"/>${st === 'vacuous' ? '<rect class="in" x="4" y="4" rx="2"/>' : ''}</svg>
+          <div class="hhead">${head}</div>
+          <div class="hbody"><div class="hfrac"><div class="hyps">${hy}</div>${ruleSVG(st, rp, W)}<div class="goal">${goal}</div>${notes}</div>
+          <div class="chips"><div class="chipcap">${cap}</div>${chips}</div></div></div>`;
+    }
+
+    // ---------------- interaction ----------------
+    bind() {
+      const R = this.rowsEl;
+      R.addEventListener('click', e => {
+        const t = e.target;
+        const chip = t.closest('.chip');
+        const hb = t.closest('.hbox');
+        if (chip && hb) { this.onChip(this.holeOf(hb.dataset.hole), chip); return; }
+        const act = t.closest('[data-act]');
+        if (act && hb) { this.replay(this.holeOf(hb.dataset.hole)); return; }
+        if (hb) { const row = hb.closest('.row'); row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); setTimeout(() => row.classList.remove('shake'), 260); return; }
+        const g = t.closest('[data-hole]'); if (g) { const h = this.holeOf(g.dataset.hole); if (h) this.replay(h); return; }
+        const tg = t.closest('[data-tog]'); if (tg) { const x = this.m.def.toggles.find(q => q.key === tg.dataset.tog); this.m.set(x.apply(this.m.flags), { edit: true }); return; }
+        const fd = t.closest('[data-fold]'); if (fd) { this.folded.delete(fd.dataset.fold); this.update({ quiet: true }); return; }
+        const row = t.closest('.row.line');
+        if (row && this.o.funcs) { const f = this.fnOf(row.dataset.key); if (f && row.dataset.key === 'L' + f[1] && !this.d.holes.some(h => this.fnOf(h.after) === f)) { this.folded.add(f[0]); this.update({ quiet: true }); } }
+      });
+      R.addEventListener('mouseover', e => {
+        const chip = e.target.closest('.chip:not(.alt)'), hb = e.target.closest('.hbox');
+        if (chip && hb && chip !== this.pvChip) { this.clearPreview(); this.pvChip = chip; this.preview(this.holeOf(hb.dataset.hole).chips[+chip.dataset.ci]); }
+        const hyp = e.target.closest('.hyp[data-src]');
+        if (hyp) { const el = this.rowEl(hyp.dataset.src); if (el) el.classList.add('srchl'); this.hlSrc = el; this.trailFocus(hb && hb.dataset.hole, true); }
+        else if (hb) this.trailFocus(hb.dataset.hole, true);
+      });
+      R.addEventListener('mouseout', e => {
+        const chip = e.target.closest('.chip:not(.alt)');
+        if (chip && !chip.contains(e.relatedTarget)) { this.clearPreview(); this.pvChip = null; }
+        if (this.hlSrc) { this.hlSrc.classList.remove('srchl'); this.hlSrc = null; }
+        const hb = e.target.closest('.hbox'); if (hb && !hb.contains(e.relatedTarget)) this.trailFocus(null);
+      });
+    }
+    onChip(h, chipEl) {
+      const c = h.chips[+chipEl.dataset.ci];
+      if (chipEl.dataset.alt !== undefined) {
+        const a = c.alts[+chipEl.dataset.alt];
+        chipEl.classList.remove('shake'); void chipEl.offsetWidth; chipEl.classList.add('shake');
+        if (!chipEl.querySelector('.refused')) { const s = document.createElement('span'); s.className = 'refused'; s.textContent = 'refused: ' + a.refuse; chipEl.appendChild(s); setTimeout(() => s.remove(), 3500); }
+        return;
+      }
+      this.clearPreview();
+      const holeEl = this.rowEl(h.key);
+      holeEl.classList.add('solid');
+      const fl2 = c.apply(this.m.flags), d2 = this.m.derive(fl2);
+      const cur = new Map(this.d.rows.map(r => [r.key, r.text]));
+      let tk = null; for (const r of d2.rows) if (!cur.has(r.key) || cur.get(r.key) !== r.text) { tk = r.key; break; }
+      const tEl = tk && this.rowEl(tk);
+      const box = $('.hbox', holeEl);
+      if (tEl && tk !== h.after) {
+        const dy = tEl.offsetTop - holeEl.offsetTop;
+        holeEl.style.overflow = 'visible'; holeEl.style.zIndex = 6;
+        setTimeout(() => { box.style.transform = `translateY(${dy}px) scaleY(.32)`; box.style.opacity = '.55'; }, 120);
+        setTimeout(() => this.m.set(fl2, { accepted: h.key }), 430);
+      } else setTimeout(() => this.m.set(fl2, { accepted: h.key }), 260);
+    }
+    preview(c) {
+      if (!c) return;
+      const d2 = this.m.derive(c.apply(this.m.flags));
+      const cur = new Map(this.d.rows.map(r => [r.key, r]));
+      this.pv = [];
+      d2.rows.forEach((r2, i) => {
+        const r = cur.get(r2.key);
+        if (r && r.text !== r2.text) {
+          const el = this.rowEl(r2.key); if (!el) return;
+          const code = $('.code', el); const orig = code.innerHTML, pad = code.style.paddingLeft;
+          const a = r.text.trim(), b = r2.text.trim();
+          let p = 0; while (p < a.length && p < b.length && a[p] === b[p]) p++;
+          let q = 0; while (q < a.length - p && q < b.length - p && a[a.length - 1 - q] === b[b.length - 1 - q]) q++;
+          code.innerHTML = a ? esc(a.slice(0, p)) + `<span class="tokold">${esc(a.slice(p, a.length - q))}</span><span class="toknew">${esc(b.slice(p, b.length - q))}</span>` + esc(a.slice(a.length - q)) : `<span class="ghosttext">${esc(b)}</span>`;
+          if (!a) code.style.paddingLeft = Math.min(9, (r2.text.match(/^ */) || [''])[0].length) * 9 + 'px';
+          this.pv.push(() => { code.innerHTML = orig; code.style.paddingLeft = pad; });
+        } else if (!r && (!this.o.range || this.o.range(r2))) {
+          const prevEl = this.rowEl(d2.rows[i - 1].key); if (!prevEl) return;
+          const g = document.createElement('div'); g.className = 'row line ghostins k-spec'; g.dataset.key = 'ghost'; g.classList.add('leaving');
+          g.innerHTML = `<div class="gut"><span class="g" style="color:#bbb">${esc(r2.num)}</span></div><div class="code" style="padding-left:${Math.min(9, (r2.text.match(/^ */) || [''])[0].length) * 9}px"><span class="ghosttext">${esc(r2.text.trim())}</span></div>`;
+          g.style.height = '0px'; prevEl.after(g); requestAnimationFrame(() => g.style.height = this.o.rh + 'px');
+          this.pv.push(() => g.remove());
+        }
+      });
+    }
+    clearPreview() { (this.pv || []).forEach(f => f()); this.pv = []; }
+    replay(h) {
+      if (!h || !h.witness) return;
+      this.m.replayed.add(h.key); this.mode = h.key; this.pendingJump = true;
+      this.m.views.forEach(v => v.update({ quiet: true }));
+      if (this.o.slider) this.o.slider.el.scrollIntoView({ block: 'nearest' });
+    }
+    backToYour() { this.mode = 'your'; this.update({ quiet: true, resetStep: true }); }
+    setStep(i) { const run = this.curRun(); if (!run) return; this.cur = Math.max(0, Math.min(run.recs.length - 1, i)); this.refreshStep(); }
+    step(dx) { this.setStep(this.cur + dx); }
+
+    refreshStep() {
+      const run = this.curRun();
+      const rec = run && run.recs[this.cur];
+      // values in shapes
+      for (const el of this.rowsEl.children) {
+        if (!el.classList.contains('line') || el.classList.contains('leaving')) continue;
+        const key = el.dataset.key;
+        el.classList.toggle('cur', !!rec && (rec.key === key || (key[0] === 'F' && this.fnOf(rec.key) && 'F' + this.fnOf(rec.key)[0] === key)));
+        el.classList.toggle('rtfail', !!rec && rec.key === key && rec.bad);
+        const g = $('.gut .g', el);
+        if (g && g._trap) { g.innerHTML = g._trap; g._trap = null; g.classList.remove('mk-trap'); }
+        if (rec && rec.trap && rec.key === key && g) { g._trap = g.innerHTML; g.innerHTML = '💣'; g.classList.add('mk-trap'); }
+        const frac = $('.frac', el); if (!frac) continue;
+        const idxs = run && run.byKey.get(key);
+        let j = -1;
+        if (idxs) { let lo = 0, hi = idxs.length - 1; while (lo <= hi) { const md = (lo + hi) >> 1; if (idxs[md] <= this.cur) { j = md; lo = md + 1; } else hi = md - 1; } }
+        const r = j >= 0 ? run.recs[idxs[j]] : null;
+        let popped = r ? r.popped : [];
+        if (r && /\(return\)$/.test(r.op) && j > 0) popped = run.recs[idxs[j - 1]].popped;
+        const old = r && idxs[j] !== this.cur;
+        $$('[data-vi]', frac).forEach(t => { const v = popped[+t.dataset.vi]; t.textContent = r && v !== undefined ? fmt(v) : ''; t.classList.toggle('old', !!old); });
+        $$('[data-vo]', frac).forEach(t => { const v = r ? r.pushed[+t.dataset.vo] : undefined; t.textContent = v !== undefined ? fmt(v) : ''; t.classList.toggle('old', !!old); });
+        frac.classList.toggle('old-shape', !!old);
+      }
+      if (this.o.slider) this.o.slider.set(this, run);
+      if (this.o.strip) this.o.strip.set(this, run);
+      if (this.o.mem) this.o.mem.render(rec, run, this.d.flags);
+    }
+
+    // ---------------- overlay: dataflow + hole trails ----------------
+    drawOverlay() {
+      const R = this.rowsEl, ov = this.ov;
+      ov.setAttribute('width', R.scrollWidth); ov.setAttribute('height', R.offsetHeight);
+      ov.style.width = R.scrollWidth + 'px'; ov.style.height = R.offsetHeight + 'px';
+      const rh = this.o.rh, fx = this.o.fx;
+      const blame = new Set(); this.d.holes.forEach(h => (h.hyps || []).forEach(y => { if (y.blame && y.src) blame.add(y.src); }));
+      let s = '';
+      for (const p of this.d.pairs) {
+        const a = this.rowEl(p.from.key), b = this.rowEl(p.to.key);
+        if (!a || !b || !$('.frac', a) || !$('.frac', b)) continue;
+        const x1 = fx + 2 + p.from.i * 36 + 30, y1 = a.offsetTop + rh / 2 + 7.5, x2 = fx + 2 + p.to.j * 36 + 30, y2 = b.offsetTop + rh / 2 - 7.5;
+        const bow = 7 + Math.min(70, Math.sqrt(Math.max(0, y2 - y1)) * 2.6);
+        const bad = blame.has(p.from.key) && blame.has(p.to.key);
+        s += `<path d="M${x1},${y1} C${x1 + bow},${y1} ${x2 + bow},${y2} ${x2},${y2}" fill="none" stroke="${bad ? 'darkred' : '#6A5ACD'}" stroke-width="${bad ? 1.2 : 1.6}" ${bad ? 'stroke-dasharray="1.5 2.5"' : ''} opacity="${bad ? 1 : .8}"/>`;
+      }
+      $('.conn', ov).innerHTML = s;
+      // trails: hypothesis chip -> the line it came from
+      const rr = R.getBoundingClientRect(); let t = '', k = 0;
+      for (const hb of $$('.row.hole:not(.leaving) .hbox', R)) {
+        const hk = hb.dataset.hole, h = this.holeOf(hk); if (!h) continue;
+        const lane = fx + 150 + (k++ % 3) * 9;
+        for (const hy of $$('.hyp[data-src]', hb)) {
+          const src = this.rowEl(hy.dataset.src); if (!src) continue;
+          const hr = hy.getBoundingClientRect();
+          const x0 = hr.left - rr.left + Math.min(26, hr.width / 2), y0 = hr.top - rr.top;
+          const ey = src.offsetTop + rh / 2, ex = fx + (src.querySelector('.frac') ? 112 : 0) + 8;
+          const up = ey < y0;
+          const blameC = hy.classList.contains('blame');
+          const col = blameC ? 'darkred' : '#6A5ACD';
+          const d = up ? `M${x0},${y0} C${x0},${y0 - 12} ${lane},${y0 - 6} ${lane},${y0 - 22} L${lane},${ey + 10} C${lane},${ey} ${ex + 12},${ey} ${ex},${ey}`
+            : `M${x0},${y0 + hr.height} C${x0},${y0 + hr.height + 12} ${lane},${y0 + hr.height + 6} ${lane},${y0 + hr.height + 22} L${lane},${ey - 10} C${lane},${ey} ${ex + 12},${ey} ${ex},${ey}`;
+          t += `<g class="tr" data-h="${hk}"><path d="${d}" fill="none" stroke="${col}" stroke-width="1" ${blameC ? 'stroke-dasharray="2 2"' : ''} opacity=".55"/><circle cx="${ex}" cy="${ey}" r="2.4" fill="${col}" opacity=".7"/></g>`;
+        }
+      }
+      $('.trail', ov).innerHTML = t;
+    }
+    trailFocus(hk) {
+      $$('.trail .tr', this.ov).forEach(g => { const on = hk && g.dataset.h === hk; g.querySelector('path').setAttribute('opacity', on ? '1' : '.55'); g.querySelector('path').setAttribute('stroke-width', on ? '1.6' : '1'); });
+    }
+  }
+
+  // ---------------- step slider (sections B, C) ----------------
+  class Slider {
+    constructor(el) {
+      this.el = el; el.classList.add('slider');
+      el.innerHTML = `<div class="srow"><span class="slab"></span><span class="sstep"></span><button class="sbtn" data-d="-1">◂</button><button class="sbtn" data-d="1">▸</button><button class="sbtn dr back" hidden>◂ back to your run</button><span class="sop small"></span></div>
+        <div class="ghosttrack" hidden><span class="gtxt"></span><span class="gl"></span><button class="hbtn greplay">▸ replay witness</button></div>
+        <div class="strack"><input type="range" min="0" max="0" value="0"><svg class="sticks"></svg><div class="pills"></div></div>`;
+      this.inp = $('input', el);
+      this.inp.addEventListener('input', () => this.v && this.v.setStep(+this.inp.value));
+      $$('[data-d]', el).forEach(b => b.addEventListener('click', () => this.v && this.v.step(+b.dataset.d)));
+      $('.back', el).addEventListener('click', () => this.v && this.v.backToYour());
+      $('.greplay', el).addEventListener('click', () => { const h = this.pending; if (h && this.v) this.v.replay(h); });
+      el.addEventListener('mouseenter', () => { if (this.v) ACTIVE = this.v; });
+    }
+    set(v, run) {
+      this.v = v; const el = this.el;
+      const n = run ? run.recs.length : 0;
+      const wit = v.mode !== 'your';
+      const h = wit ? v.holeOf(v.mode) : null;
+      const yourSpec = v.yourSpec();
+      $('.slab', el).className = 'slab' + (wit ? ' wit' : '');
+      $('.slab', el).innerHTML = wit ? `⚖ counterexample replay (${h.witness.kind === 'input' ? 'input witness' : 'loop-head witness, one iteration'}): ${esc(h.wlabel)}` : `your run: ${esc(yourSpec ? yourSpec.label : '—')}`;
+      $('.back', el).hidden = !wit;
+      const rec = run && run.recs[v.cur];
+      $('.sstep', el).textContent = rec ? `step ${rec.s} (${v.cur + 1} of ${n})` : 'no run';
+      $('.sop', el).textContent = rec ? `${rec.fn}:${rec.key.slice(1).replace('p', '′')}  ${rec.op}${rec.trap ? '  — trap: ' + rec.trap : ''}${run.halted === 'cut' && v.cur === n - 1 ? '  — run cut: does not terminate' : ''}` : '';
+      this.inp.max = Math.max(0, n - 1); this.inp.value = v.cur;
+      // pending (unreplayed) false holes -> ghost track
+      const pend = v.d.holes.find(x => x.status === 'false' && x.witness && !v.m.replayed.has(x.key) && v.vis(x.after));
+      this.pending = pend;
+      const gt = $('.ghosttrack', el); gt.hidden = !pend;
+      if (pend) $('.gtxt', gt).innerHTML = `<span style="color:transparent;-webkit-text-stroke:.8px darkred;font-family:DejaVu Sans">⚖</span> witness not yet replayed: ${esc(pend.wlabel)}`;
+      // ticks & pills
+      const pos = i => n > 1 ? (i / (n - 1)) * 100 : 0;
+      let t = '';
+      if (run) {
+        const bset = new Set(run.boundaries || []);
+        run.recs.forEach((r, i) => { if (bset.has(r.s)) t += `<line x1="${pos(i)}%" x2="${pos(i)}%" y1="0" y2="9" stroke="#555" stroke-width="1"/>`; else if (r.checks.length && n < 400) t += `<line x1="${pos(i)}%" x2="${pos(i)}%" y1="0" y2="4" stroke="#999" stroke-width="1"/>`; });
+        run.fails.forEach(i => t += `<line x1="${pos(i)}%" x2="${pos(i)}%" y1="0" y2="9" stroke="darkred" stroke-width="2"/>`);
+      }
+      $('.sticks', el).innerHTML = t;
+      let p = rec ? `<div class="pill" style="left:${pos(v.cur)}%;${rec.bad ? 'background:darkred' : ''}">${rec.s}</div>` : '';
+      if (run) run.fails.slice(0, 4).forEach(i => { const r = run.recs[i]; p += `<div class="pill err${r.trap ? ' trap' : ''}" data-i="${i}" style="left:${pos(i)}%" data-tip="${esc(r.trap ? 'trap: ' + r.trap : 'check failed: ' + r.checks.filter(c => !c.ok).map(c => c.kind + ' (line ' + (c.key || '').slice(1) + ')').join(', '))}">${r.trap ? '💣' : '⚖'} ${r.s}</div>`; });
+      const pills = $('.pills', el); pills.innerHTML = p;
+      $$('.pill.err', pills).forEach(x => x.addEventListener('click', () => v.setStep(+x.dataset.i)));
+    }
+  }
+  // ---------------- step strip (section A) ----------------
+  class Strip {
+    constructor(el) { this.el = el; el.classList.add('strip'); el.addEventListener('click', e => { const d = e.target.closest('.dot'); if (d && this.v) this.v.setStep(+d.dataset.i); const b = e.target.closest('.back'); if (b && this.v) this.v.backToYour(); }); }
+    set(v, run) {
+      this.v = v;
+      const wit = v.mode !== 'your', h = wit ? v.holeOf(v.mode) : null, ys = v.yourSpec();
+      if (!run) { this.el.innerHTML = `<span class="calm">no input satisfies the requires: nothing can run</span>`; return; }
+      const rec = run.recs[v.cur];
+      let s = `<span class="${wit ? 'slab wit' : 'slab'}" style="color:${wit ? 'darkred' : 'darkblue'}">${wit ? '⚖ replay: ' + esc(h.wlabel) : 'your run: ' + esc(ys.label)}</span><span class="dots">`;
+      run.recs.forEach((r, i) => s += `<span class="dot${i === v.cur ? ' on' : ''}${r.bad ? ' err' : ''}" data-i="${i}" data-tip="step ${r.s}: ${esc(r.fn + ':' + r.key.slice(1) + ' ' + r.op)}${r.bad ? '\n' + esc(r.checks.filter(c => !c.ok).map(c => '✗ ' + c.kind).join(', ')) : ''}"></span>`);
+      s += `</span><span class="small">step ${rec.s} · ${esc(rec.fn)}</span>`;
+      if (wit) s += `<button class="sbtn back">◂ your run</button>`;
+      this.el.innerHTML = s;
+    }
+  }
+  // ---------------- memory panel (section C) ----------------
+  const ST = ['EMPTY', 'FULL', 'TOMB'];
+  function Rof(slots, Mp, used, fl) {
+    const M = new Map(Mp), h = k => k & 7, at = (k, d) => (h(k) + d) & 7, dist = (k, s) => (s - h(k)) & 7;
+    const R = {};
+    R.o = slots.every(x => x[0] >= 0 && x[0] <= 2);
+    R.i = slots.every(x => x[0] !== 1 || (M.has(x[1]) && M.get(x[1]) === x[2]));
+    R.ii = [...M.keys()].every(k => slots.filter(x => x[0] === 1 && x[1] === k).length === 1);
+    R.iii = slots.every((x, s) => { if (x[0] !== 1) return true; for (let d = 0; d <= dist(x[1], s); d++) { const q = slots[at(x[1], d)][0]; if (fl.r3 === 'strong' ? q !== 1 : q === 0) return false; } return true; });
+    const full = slots.filter(x => x[0] === 1).length, ne = slots.filter(x => x[0] !== 0).length;
+    R.iv = full === M.size && used === ne && (fl.r4 === 'weak' || used < 8);
+    return R;
+  }
+  class MemPanel {
+    constructor(el) { this.el = el; }
+    render(rec, run, fl) {
+      if (!rec || !rec.slots) { this.el.innerHTML = '<div class="mh calm">no run</div>'; return; }
+      const cw = 38;
+      let s = `<div class="mh">memory after step <b>${rec.s}</b> · ${esc(rec.fn)}:${rec.key.slice(1)} <span style="color:#666">${esc(rec.op)}</span></div><svg width="${8 * cw + 4}" height="104">`;
+      const { k, j, i } = rec.loc;
+      const probing = (rec.fn === 'find' || rec.fn === 'insert') && k !== undefined && j !== undefined;
+      rec.slots.forEach((sl, x) => {
+        const X = 2 + x * cw, st = sl[0];
+        const cur = probing && x === i;
+        if (st === 0) s += `<rect x="${X}" y="26" width="${cw - 6}" height="16" fill="#fffff0" stroke="#999" stroke-dasharray="2 2"/>`;
+        else if (st === 1) s += `<rect x="${X}" y="26" width="${cw - 6}" height="16" fill="#6A5ACD"/>`;
+        else s += `<rect x="${X}" y="26" width="${cw - 6}" height="16" fill="url(#hatchM)" stroke="#555"/>`;
+        s += `<text x="${X + (cw - 6) / 2}" y="34.5" class="sv" style="font-size:8.5px;fill:${st === 1 ? '#fff' : st === 2 ? '#222' : '#999'}">${ST[st] || st}</text>`;
+        const dim = st === 1 ? '' : 'opacity=".35"';
+        s += `<g ${dim}><rect x="${X}" y="45" width="${cw - 6}" height="13" fill="#d2cdf0" stroke="#6A5ACD"/><text x="${X + (cw - 6) / 2}" y="51.5" class="sv" style="font-size:9px">${st ? sl[1] : ''}</text>`;
+        s += `<rect x="${X}" y="60" width="${cw - 6}" height="13" fill="#d2cdf0" stroke="#6A5ACD"/><text x="${X + (cw - 6) / 2}" y="66.5" class="sv" style="font-size:9px">${st ? sl[2] : ''}</text></g>`;
+        s += `<text x="${X + (cw - 6) / 2}" y="83" class="sv" style="font-size:9px;fill:#777">${x}</text>`;
+        if (cur) s += `<rect x="${X - 2}" y="24" width="${cw - 2}" height="51" fill="none" stroke="navy" stroke-width="1.6"/>`;
+      });
+      if (probing) {
+        let d = ''; const h0 = k & 7;
+        for (let q = 0; q <= Math.min(j, 9); q++) { const a = (h0 + q) & 7, X = 2 + a * cw + (cw - 6) / 2; if (q === 0) d += `M${X},22`; else { const b = (h0 + q - 1) & 7, X0 = 2 + b * cw + (cw - 6) / 2; d += a > b ? ` Q${(X + X0) / 2},6 ${X},22` : ` Q${X0 + 18},4 ${X0 + 22},12 M${X},22`; } }
+        s += `<path d="${d}" fill="none" stroke="#483D8B" stroke-width="1.5"/><text x="2" y="12" style="font-family:var(--sans);font-size:10.5px;fill:#483D8B">probe path of k = ${k}: h(k) = ${h0}, j = ${j}</text>`;
+      }
+      s += `<text x="2" y="98" style="font-family:var(--sans);font-size:10.5px;fill:#333">used = ${rec.used}   (slot = 12 bytes at 65440 + 12·s)</text>`;
+      s += `<defs><pattern id="hatchM" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="#999" stroke-width="1.3"/></pattern></defs></svg>`;
+      s += `<div class="beads"><span class="small">ghost M =</span>${rec.M.length ? rec.M.map(([a, b]) => `<span class="bead">${a}↦${b}</span>`).join('') : '<span class="small">{}</span>'}</div>`;
+      // R at the last operation boundary
+      const bs = (run.boundaries || []).filter(b => b <= rec.s);
+      let br = null; if (bs.length) br = run.recs.find(r => r.s === bs[bs.length - 1]);
+      if (br) {
+        const R = Rof(br.slots, br.M, br.used, fl);
+        s += `<div class="rcl"><span class="small" data-tip="R is only required at operation boundaries; dotted = held on this run (a dynamic check, not a proof)">R after step ${br.s}:</span>${['o', 'i', 'ii', 'iii', 'iv'].map(c => `<span class="rc ${R[c] ? 'held' : 'fail'}" data-tip="clause (${c}) ${R[c] ? 'held at this boundary on this run (dynamic only)' : 'FALSE at this boundary'}">${R[c] ? '∘' : '✗'} (${c})</span>`).join('')}</div>`;
+      } else s += `<div class="rcl small">R: no operation has returned yet</div>`;
+      this.el.innerHTML = s;
+    }
+  }
+
+  // ---------------- keyboard ----------------
+  let ACTIVE = null;
+  document.addEventListener('keydown', e => {
+    if (!ACTIVE || e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowLeft') { ACTIVE.step(-1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { ACTIVE.step(1); e.preventDefault(); }
+  });
+
+  window.UI = { Model, View, Slider, Strip, MemPanel, restGlyph, ruleSVG, hypShape, STAR, setActive: v => ACTIVE = v };
+})();
+
+// ---------------------------------------------------------------------------
+// Page wiring
+// ---------------------------------------------------------------------------
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const Q = Object.fromEntries((location.hash.slice(1) || '').split('&').filter(Boolean).map(kv => kv.split('=')));
+
+  // ---------------- legend ----------------
+  const box = (cls, inner, w = 150) => `<div class="row hole ${cls}" style="--hw:${w}px;padding:0"><div class="hbox" style="margin:0;width:${w}px;padding:3px 6px"><svg class="hborder"><rect x="1" y="1" rx="3"/>${cls.includes('vacuous') ? '<rect class="in" x="4" y="4" rx="2"/>' : ''}</svg>${inner}</div></div>`;
+  const L = [
+    ['sec', 'holes — lines the editor inserts, like synthetic <code>end</code>'],
+    [`<span style="font-size:22px">${UI.restGlyph('false', true)} ${UI.restGlyph('false', false)} ${UI.restGlyph('unknown')} ${UI.restGlyph('vacuous')}</span>`,
+      '<b>𝄽 hole glyph.</b> A quarter rest: a measured silence the bar still owes. It joins the clef family (𝄞 malformed, 𝄠 synthetic end) and marks a row <i>you did not type</i>. Its fill follows the hole\'s status.'],
+    [box('false replayed', `<div class="hstat" style="color:darkred;font-size:9px">FALSE</div>${UI.hypShape(25, { cex: true })} ${UI.ruleSVG('false', true, 120)}<span class="cj bad" style="font-size:12px">r·r ≤ n<span class="inst">25 ≤ 3</span></span>`),
+      '<b>Refuted, witness replayed.</b> Heavy dashes, a <i>broken</i> solid rule with ⚖, counterexample values inside the shapes, a solid ⚖ in the gutter of the line above, a darkred pill on the slider.'],
+    [box('false', `<div class="hstat" style="color:darkred;font-size:9px">FALSE</div>${UI.hypShape(25, { cex: true, outline: true })} ${UI.ruleSVG('false', false, 120)}<span class="cj bad" style="font-size:12px;border-style:dashed;border-width:1px">r·r ≤ n</span>`),
+      '<b>Refuted, witness not yet replayed.</b> Thin dashes, a hollow broken rule, outlined shapes, a hollow ⚖, and a dashed ghost track above the slider. One click on <span class="hbtn">▸ replay</span> runs it.'],
+    [box('unknown', `<div class="hstat" style="color:indigo;font-size:9px">UNKNOWN</div>${UI.hypShape(undefined)} ${UI.ruleSVG('unknown', false, 120)}<span class="cj unk" style="font-size:12px">(r+1)² &lt; 2³²</span>`),
+      '<b>Unknown / needs a hint.</b> Indigo long dashes, ★? on the rule and in the gutter. No witness, so never darkred. Offers <code>(@use …)</code> via an <i>apply?</i> list.'],
+    [box('vacuous', `<div class="hstat" style="color:#777;font-size:9px">VACUOUS</div>${UI.hypShape(undefined, { hollow: true })} ${UI.ruleSVG('vacuous', false, 120)}<span class="cj vac" style="font-size:12px">⊥</span>`),
+      '<b>Vacuous.</b> The hypotheses contradict each other: a hollow double rule with ○. Everything the hole covers is ghosted, because it "proves" for free.'],
+    [`<span style="font-family:var(--serif);color:gray;font-size:17px">24 &nbsp;</span><span style="font-family:var(--serif);font-size:18px">br $grow</span>`,
+      '<b>Proven.</b> Nothing at all: a gray line number and no hole. Silence is success.'],
+    [`<span class="dyn">∘ 4</span>`, '<b>Held on this run only.</b> A slategray dotted pill counting how often the run-time check passed. It is never a check mark and never closes a hole.'],
+    [`<span style="color:#777;font-size:19px">○</span>&nbsp;<i style="font-family:var(--serif);color:#555;font-size:16px">(@assume …)</i>`, '<b>Assumed / admitted.</b> An accepted <code>admit</code> chip: italic line, ○ in the gutter, checked at run time (∘ N), every line it supports ghosted to 50%.'],
+    [`<span style="opacity:.4;font-family:var(--serif);font-size:17px;text-decoration:underline wavy #999 1px;text-underline-offset:4px">hole</span>`, '<b>Stale.</b> For a moment after every edit, surviving holes fade to 40% and squiggle until the check settles again.'],
+    ['sec', 'inside a hole — the goal drawn as a fraction'],
+    [`<span class="hyp"><span class="hn">$n</span>${UI.hypShape(3)}<span class="fact">0 ≤ n</span></span>`, '<b>Hypotheses above the rule.</b> i32 shapes holding the witness value plus the facts known about them. A thin trail runs back to the line that established each fact.'],
+    [`${UI.hypShape(undefined, { missing: true, id: 'lg' })}`, '<b>Missing fact.</b> Codillon\'s empty fade-up cup, reused for a fact that is needed but not known (e.g. nothing about <code>$r</code> at the loop head).'],
+    [`<span class="cj bad">x</span> <span class="cj unk">y</span> <span class="cj ok">z</span>`, '<b>Goal below the rule</b>, split into conjunct chips: refuted (solid darkred, with the instance), unknown (indigo dashed), proven (plain gray).'],
+    [`<svg width="44" height="16"><rect x="1" y="2" width="30" height="11" fill="#6A5ACD"/><path class="wrapmark" d="M32,1 l4,3 l-4,3 l4,3 l-4,3"/></svg>`, '<b>Wrap blame.</b> A zigzag seam on the output of the instruction that wrapped; its dataflow curve to the reader turns dotted darkred.'],
+    [`<button class="chip k-code"><span class="ck">code</span><span class="ct">17: gt_s → gt_u</span></button>`, '<b>Suggestion chips</b> (≤ 3): <i>code</i> (solid), <i>spec</i> (double border), <i>invariant</i>/<i>lemma</i> (indigo), <i>admit ○</i> (dashed). Hover previews the edit in place; click accepts it.'],
+    [`<span style="font-family:var(--serif);font-size:17px"><span class="site">i32.gt_s</span></span>`, '<b>Edit site.</b> A dashed outline on the token, or the empty slot, that the hole\'s first suggestion would change: blame sits where the fix goes.'],
+    [`<span style="font-family:var(--serif);color:#555;font-size:16px">15′</span>`, '<b>Primed number.</b> A line written by accepting a hole. It keeps a prime so the rest of the numbering (and the fixture\'s) does not jump.'],
+    [`<span class="inf">∞?</span> &nbsp; 💣`, '<b>∞?</b> a loop without <code>(@decreases)</code>: partial correctness only. <b>💣</b> a trap reached in a replay. Clicking a hole body <i>shakes</i> it: holes are read-only.'],
+  ];
+  $('#legend').innerHTML = L.map(([a, b]) => a === 'sec' ? `<div class="lgsec">${b}</div>` : `<div class="lg"><div class="sw">${a}</div><div>${b}</div></div>`).join('');
+
+  // ---------------- Section A ----------------
+  const par = new UI.Model(PROGS.parity);
+  par.flags = { spec: 'P3', req: 'even', p1: true };
+  if (Q.A === 'calm') par.flags = PROGS.parity.init();
+  const A1 = new UI.View(par, { root: $('#A1list'), rh: 34, fx: 330, hw: 560, ruleW: 260, cf: 21, mf: 14, longAt: 200, strip: new UI.Strip($('#A1strip')),
+    range: r => { const n = parseInt(r.key.slice(1)); return n >= 7 && n <= 11; }, yourRun: () => ({ calls: [['half', [6]]], label: '$half(6)' }) });
+  const A2 = new UI.View(par, { root: $('#A2list'), rh: 34, fx: 330, hw: 560, ruleW: 260, cf: 21, mf: 12.5, longAt: 200, strip: new UI.Strip($('#A2strip')),
+    range: r => parseInt(r.key.slice(1)) >= 12, yourRun: () => ({ calls: [['half_or_neg1', [6]], ['half_or_neg1', [7]]], label: '$half_or_neg1(6) · $half_or_neg1(7)' }) });
+  const syncPar = () => { $$('input[name=a1]').forEach(i => i.checked = i.value === par.flags.spec); $$('input[name=a2]').forEach(i => i.checked = (i.value === 'P1') === par.flags.p1); };
+  par.listeners.push(syncPar); syncPar();
+  $$('input[name=a1]').forEach(i => i.addEventListener('change', () => par.set({ ...par.flags, spec: i.value, req: 'even' }, { edit: true })));
+  $$('input[name=a2]').forEach(i => i.addEventListener('change', () => par.set({ ...par.flags, p1: i.value === 'P1' }, { edit: true })));
+  if (!Q.A) A2.replay(A2.holeOf('H-P1'));
+
+  const sg = new UI.Model(PROGS.sign);
+  if (Q.A === 'calm') sg.flags = { st: 'fixed' };
+  const A3 = new UI.View(sg, { root: $('#A3list'), rh: 34, fx: 330, hw: 560, ruleW: 260, cf: 21, mf: 14, longAt: 200, strip: new UI.Strip($('#A3strip')),
+    yourRun: f => f.st === 'vac' ? null : { calls: [['sign', [5]]], label: '$sign(5)' } });
+  $('#A3reset').addEventListener('click', () => sg.set({ st: 'vac' }, { edit: true }));
+
+  const sq = new UI.Model(PROGS.sqeven);
+  if (Q.A === 'calm') sq.flags = { st: 'use' };
+  if (Q.A4) sq.flags = { st: Q.A4 };
+  const A4 = new UI.View(sq, { root: $('#A4list'), rh: 34, fx: 330, hw: 560, ruleW: 260, cf: 21, mf: 14, longAt: 200, strip: new UI.Strip($('#A4strip')),
+    yourRun: () => ({ calls: [['sq_even', [6]], ['sq_even', [-4]], ['sq_even', [0]]], label: '$sq_even(6) · (−4) · (0)' }) });
+  $('#A4reset').addEventListener('click', () => sq.set({ st: 'none' }, { edit: true }));
+
+  // ---------------- Section B ----------------
+  const isq = new UI.Model(PROGS.isqrt);
+  const P = PROGS.isqrt.presets;
+  isq.flags = { ...P[Q.B || 'stage1'] };
+  let bInput = 10;
+  const Bs = new UI.Slider($('#Bslider'));
+  const B = new UI.View(isq, { root: $('#Blist'), rh: 34, fx: 455, hw: 1010, ruleW: 470, cf: 22, mf: 17, longAt: 112, slider: Bs,
+    yourRun: () => ({ calls: [['isqrt', [bInput]]], label: `$isqrt(${bInput})` }) });
+  UI.setActive(B);
+  const residue = (el, model, view) => {
+    const d = model.derive();
+    el.innerHTML = d.holes.length ? d.holes.map(h => `<div class="ri" data-k="${h.key}">${UI.restGlyph(h.status, model.replayed.has(h.key))}<span>after ${h.after.slice(1)} · ${esc(h.site)}</span></div>`).join('')
+      : '<div class="calm">no holes: every obligation is proven</div>';
+    $$('.ri', el).forEach(x => x.addEventListener('click', () => { const r = view.rowEl(x.dataset.k); if (r) { r.scrollIntoView({ block: 'center', behavior: 'smooth' }); r.classList.remove('shake'); void r.offsetWidth; } }));
+  };
+  const syncB = () => {
+    const js = JSON.stringify(isq.flags);
+    $$('.stage').forEach(b => b.classList.toggle('on', JSON.stringify(P[b.dataset.p]) === js));
+    const sel = $('#Bbug'); const m = ['final', 'S1', 'S2', 'S3'].find(k => JSON.stringify(P[k]) === js);
+    sel.value = m || '';
+    residue($('#Bres'), isq, B);
+  };
+  isq.listeners.push(syncB);
+  $$('.stage').forEach(b => b.addEventListener('click', () => isq.set({ ...P[b.dataset.p] }, { edit: true })));
+  $('#Bbug').addEventListener('change', e => { if (e.target.value) isq.set({ ...P[e.target.value] }, { autoReplay: e.target.value !== 'final', edit: true }); });
+  $('#Binput').addEventListener('change', e => { bInput = +e.target.value; B.mode = 'your'; B.update({ quiet: true, resetStep: true }); });
+  $('#Bundo').addEventListener('click', () => isq.undo());
+  syncB();
+  if (Q.B && Q.B[0] === 'S') isq.set({ ...P[Q.B] }, { autoReplay: true });
+
+  // ---------------- Section C ----------------
+  const hm = new UI.Model(PROGS.hash);
+  const HP = PROGS.hash.presets;
+  hm.flags = { ...HP[Q.C || 'b'] };
+  const Cs = new UI.Slider($('#Cslider'));
+  const mem = new UI.MemPanel($('#Cmem'));
+  const C = new UI.View(hm, { root: $('#Clist'), rh: 30, fx: 300, hw: 930, ruleW: 400, cf: 20, mf: 15, longAt: 104, slider: Cs, mem,
+    funcs: PROGS.hash.funcs, folded: ['slot', 'lookup', 'delete', 'insert'],
+    yourRun: () => PROGS.hash.yourRun });
+  const syncC = () => {
+    const js = JSON.stringify(hm.flags);
+    const m = Object.keys(HP).find(k => JSON.stringify(HP[k]) === js);
+    $('#Cbug').value = m || '';
+    residue($('#Cres'), hm, C);
+  };
+  hm.listeners.push(syncC);
+  $('#Cbug').addEventListener('change', e => { if (e.target.value) hm.set({ ...HP[e.target.value] }, { autoReplay: e.target.value !== 'none', edit: true }); });
+  $('#Cundo').addEventListener('click', () => hm.undo());
+  if (Q.C !== 'none' && !Q.noreplay) { hm.set({ ...hm.flags }, { autoReplay: true }); hm.hist = []; }
+  syncC();
+
+  // ---------------- self-check against the fixture ----------------
+  (() => {
+    const FX = PROGS.FX; let tot = 0, ok = 0;
+    const apply = (lines, edits) => { const L = lines.slice(); for (const e of edits) { if (e[0] === 'replace') L[e[1] - 1] = L[e[1] - 1].replace(e[2], e[3]); else for (let n = e[1]; n <= e[2]; n++) L[n - 1] = ''; } return L; };
+    for (const id of ['parity', 'isqrt', 'hashtable']) for (const b of FX[id].bugs) {
+      const prog = ENG.parse(apply(FX[id].lines, b.edits)); if (id === 'hashtable') prog.hash = true;
+      const out = b.id === 'S1' ? ENG.run(prog, [], { fromLoop: { fn: 'isqrt', line: 6, loc: { n: 2147483647, r: 46340 } }, s0: 4 }) : ENG.run(prog, b.calls, { cap: 900 });
+      const by = new Map(out.recs.map(r => [r.s, r]));
+      for (const fr of b.trace) { tot++; const r = by.get(fr.s); if (r && r.ln === fr.ln && JSON.stringify(r.stack) === JSON.stringify(fr.stack) && (!fr.slots || JSON.stringify(r.slots) === JSON.stringify(fr.slots))) ok++; }
+    }
+    $('#verify').textContent = `Self-check on load: the embedded line interpreter reproduces ${ok} of ${tot} key frames of the fixture's bug traces (step number, line, stack, memory).`;
+  })();
+})();
+
+</script>
+</body></html>

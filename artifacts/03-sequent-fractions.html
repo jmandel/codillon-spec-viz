@@ -1720,6 +1720,7 @@ document.addEventListener('keydown', e => {
   sec.setIdx(sec.idx + (e.key === 'ArrowLeft' ? -1 : 1)); e.preventDefault();
 });
 if (QS.get('scroll')) setTimeout(() => { const el = document.getElementById(QS.get('scroll')); if (el) el.scrollIntoView(); }, 50);
+if (QS.get('only')) { const keep = QS.get('only').split(','); ['top', 'secA', 'secB', 'secC', 'crit'].forEach(id => { const el = id === 'top' ? document.querySelector('header.top') : document.getElementById(id); if (el && !keep.includes(id)) el.style.display = 'none'; }); }
 
 // footer filled later
 

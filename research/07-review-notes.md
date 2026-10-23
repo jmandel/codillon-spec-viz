@@ -27,3 +27,9 @@ followed by the coordinator's own observations from the screenshots and the file
 - Cells get fill from the run and border/glyph from the checker: a clean separation of "held on this run" from "proven" that other prototypes should copy.
 - On the hash table the chart is dense but legible: the column header shows the slot visited (□/■/⊠) so the tombstone lap is self-identifying; the "(iii)-strong" chip in the memory strip says "false since step 217" and jumps there.
 - Cost is real: each chart is 5–7 rows tall, which breaks the fixed-row-height requirement for loops (builder scores Scale 3, Ink 3 and I agree). Fine as an on-selection panel; too heavy as always-on.
+
+## 08 · Spec sampler — self 4,3,4,3,3,2,5,3,4,4
+- The patterns do the talking, exactly as intended: a wrong spec (`v*v == n`) lights every non-square; a vacuous `ensures true` has no shading and all-hollow points; the "too weak" spec is proven but the shading is a fat wedge the dots never fill; `requires false` grays the whole gcd grid. The isqrt plot's four panels (n<0 excluded, 0–36 linear, √-scaled middle, near INT_MAX) make the S1 corner case findable.
+- Hash-table grid works as a diagnostic matrix: bug (c) lights exactly one row across all columns, (d) lights the two "fill to 8" rows (one as ⚖, one as ☆ unfinished). Each failing cell carries the line number of its first failed check.
+- Honest framing: "SAMPLES · NOT PROOF" header, "blank area = never run, not fine", and the proof verdict line sits above the samples. The builder correctly notes nothing here proves anything; verdicts come from the fixture.
+- Weak on causal trail (2): a lit cell tells you *that* and *where the first check failed*, not *why*; pairs naturally with 07's substituted-predicate card or 03's sequents.

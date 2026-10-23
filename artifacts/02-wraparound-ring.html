@@ -574,7 +574,7 @@ class SRing {
     // seam at the bottom: where the mask wraps
     const [x1, y1] = P(cx, cy, this.ri - (big ? 6 : 3), 0), [x2, y2] = P(cx, cy, R + (big ? 6 : 3), 0);
     el('line', { x1, y1, x2, y2, stroke: '#555', 'stroke-width': big ? 2 : 1.2 }, g);
-    if (big && opts.seamLabel) el('text', { x: cx, y: cy + R + 22, 'text-anchor': 'middle', 'font-size': 10, fill: '#555', text: opts.seamLabel }, g);
+    if (big && opts.seamLabel) el('text', { x: cx, y: cy + R + 66, 'text-anchor': 'middle', 'font-size': 10, fill: '#555', text: opts.seamLabel }, g);
     this.closed = el('circle', { cls: 'closed', cx, cy, r: this.ri - 2, opacity: 0 }, g);
     this.homeG = el('g', {}, g);
     this.probe = el('path', { cls: 'probe twd' }, g);
@@ -723,6 +723,8 @@ class Slider {
     this.i = i; this.input.value = i;
     const left = (this.N > 1 ? i / (this.N - 1) * 100 : 0) + '%';
     this.thumb.style.left = left; this.pill.style.left = left;
+    const fr = this.N > 1 ? i / (this.N - 1) : 0;
+    this.pill.style.transform = 'translateX(' + (-50 - Math.max(0, fr - .8) * 250) + '%)';
     const f = this.T[i];
     const bad = (this.o.bad || []).some(b => b.i === i);
     this.pill.style.background = bad ? 'darkred' : 'darkblue';
@@ -1481,8 +1483,8 @@ const CARDS = [
   // lens: the table ring + two focus rings
   const lens = $('lensC'); lens.innerHTML = '';
   const t0 = h('div', 'lt', lens); t0.innerHTML = '<b>The table ring</b>: slot s = <code>65440 + 12·s</code>; <code>&amp; 7</code> wraps at the bottom seam. Outer beads = ghost map M, sitting at their home h(k).';
-  const tsvg = el('svg', { width: 418, height: 380, viewBox: '0 0 418 380' }, lens); tsvg.style.overflow = 'visible';
-  const TR8 = new SRing(tsvg, 209, 186, 112, 8, true, { seamLabel: '& 7 wraps here (7 → 0); address 65536 lies past the seam' });
+  const tsvg = el('svg', { width: 418, height: 392, viewBox: '0 0 418 392' }, lens); tsvg.style.overflow = 'visible';
+  const TR8 = new SRing(tsvg, 209, 176, 112, 8, true, { seamLabel: '& 7 wraps here (7 → 0); address 65536 lies past the seam' });
   const chips = h('div', 'chips', lens);
   const FOC = [0, 1].map(() => { const t = h('div', 'lt', lens); const box = h('div', '', lens); return { t, box, key: null, ring: null }; });
   const slider = new Slider($('sliderC'), () => render());
@@ -1536,7 +1538,7 @@ const CARDS = [
       if (j >= 0) { const g = T[j]; sp.probe = { from: hk(g.loc.k), steps: g.loc.j, off: g.loc.i >= 8, bad: g.loc.i >= 8 }; }
     }
     { const j = lastIn(i, g => g.fn === 'find' && g.op === 'return');
-      if (j >= 0) { const g = T[j]; const Mj = new Map(g.M); const v = g.st[g.st.length - 1]; sp.stop = { at: g.loc.i & 7, bad: v === -1 && Mj.has(g.loc.k) }; if (sp.probe && sp.stop.bad) sp.probe.bad = true; } }
+      if (j >= 0 && (f.fn !== 'insert' || f.ln <= 123)) { const g = T[j]; const Mj = new Map(g.M); const v = g.st[g.st.length - 1]; sp.stop = { at: g.loc.i & 7, bad: v === -1 && Mj.has(g.loc.k) }; if (sp.probe && sp.stop.bad) sp.probe.bad = true; } }
     // home paths, model beads, R clauses made geometric
     const homes = [], laneOf = {};
     slots.forEach((s, ix) => {
