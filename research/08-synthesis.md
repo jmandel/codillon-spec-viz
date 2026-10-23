@@ -63,6 +63,9 @@ Causal trail, Witness, Ink, Scale, Edit continuity). My one-line verdict follows
 
 ## 5. A composition, not a winner
 
+The composition below is implemented as a single tutorial page, `artifacts/00-refined-codillon.html`, specified in
+09-walkthrough-design.md. It is the page to read first.
+
 The prototypes are not alternatives. They sort into three layers, and a coherent product takes one or two
 from each:
 
