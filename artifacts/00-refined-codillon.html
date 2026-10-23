@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1400">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Refined Codillon — a walkthrough</title>
 <style>
 :root {
+  --toc: 32px;
   --ivory: #fffff0; --i32: #6A5ACD; --i32m: #d2cee6;
   --serif: "Latin Modern Roman", "CMU Serif", "Computer Modern", Georgia, "Times New Roman", serif;
   --sans: "Latin Modern Sans", "Fira Sans Condensed", "Roboto Condensed", "Arial Narrow", "Nimbus Sans Narrow", "DejaVu Sans Condensed", sans-serif;
@@ -33,9 +34,10 @@ section.sec { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 16px
 .lbl.bad { fill: var(--dr); }
 .lbl.wht { fill: #fff; }
 .lbl.samples { letter-spacing: .1em; fill: #555; font-weight: 600; }
-.sv { font-family: var(--sans); font-size: 8.5px; fill: #111; pointer-events: none; }
+.sv { font-family: var(--sans); font-size: 9px; fill: #111; pointer-events: none; font-stretch: condensed; }
 .sv.inv { fill: #fff; }
-.sv.rv { font-size: 8px; }
+.sv.rv { font-size: 9.5px; paint-order: stroke; stroke: #fffff0; stroke-width: 2.4px; stroke-linejoin: round; }
+.old .sv.rv { stroke: #fffff0; }
 .old .sv { fill: #888; }
 .old circle { fill: #999; }
 #tip { position: fixed; display: none; z-index: 1000; max-width: 360px; background: #fffff8; border: 1px solid #aaa; padding: 5px 8px; font-family: var(--sans); font-size: 12px; line-height: 1.35; color: #222; box-shadow: 0 2px 6px rgba(0,0,0,.12); pointer-events: none; }
@@ -76,7 +78,7 @@ section.sec { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 16px
 .fc.st-open b, .fc.st-open i { color: #888; }
 
 /* ---------- run bar: the one slider ---------- */
-.lessonbar, .minibar { position: sticky; top: 0; z-index: 20; background: var(--ivory); padding: 6px 0 4px; border-bottom: 1px solid #e4e4cc; }
+.lessonbar, .minibar { position: sticky; top: var(--toc); z-index: 20; background: var(--ivory); padding: 6px 0 4px; border-bottom: 1px solid #e4e4cc; }
 .runbar { font-family: var(--sans); font-size: 12px; }
 .rb-ghosts { min-height: 0; }
 .rb-ghost { display: flex; align-items: center; gap: 8px; height: 22px; color: var(--dr); }
@@ -219,8 +221,9 @@ section.sec { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 16px
 .ubtn { border-radius: 4px; }
 select { font-family: var(--sans); font-size: 13px; background: var(--ivory); border: 1px solid #999; padding: 2px 4px; }
 .lgrid { display: grid; grid-template-columns: 780px 1fr; gap: 22px; align-items: start; margin-top: 6px; }
-.dock { position: sticky; top: 118px; border: 1px solid #d8d8bf; border-radius: 6px; padding: 8px 10px 10px; background: #fffff6; min-height: 120px; font-family: var(--sans); }
-.dock.empty { border-style: dashed; background: transparent; }
+.dock { position: sticky; top: calc(var(--toc) + 118px); border: 1px solid #d8d8bf; border-radius: 6px; padding: 8px 10px 10px; background: #fffff6; min-height: 120px; font-family: var(--sans); }
+.dock.empty { border: none; background: transparent; min-height: 0; padding: 4px 0 0; }
+.dock.empty .dk-hint { font-size: 12.5px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dk-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .dk-title { font-size: 12.5px; color: #333; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dock.empty .dk-head { display: none; }
@@ -234,6 +237,8 @@ select { font-family: var(--sans); font-size: 13px; background: var(--ivory); bo
 .mx { margin-top: 5px; font-size: 12px; }
 .open { color: #777; }
 .lens { display: block; overflow: visible; }
+.lens .lbl { paint-order: stroke; stroke: #fffff6; stroke-width: 3px; stroke-linejoin: round; }
+.lens .lbl.wht { stroke: none; }
 #hoverzoom { position: fixed; display: none; z-index: 950; width: 316px; background: #fffff8; border: 1px solid #aaa; padding: 6px 8px; box-shadow: 0 3px 10px rgba(0,0,0,.14); pointer-events: none; font-family: var(--sans); }
 #hoverzoom .hz-t { font-size: 11.5px; color: #333; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #hoverzoom .lt { font-size: 11.5px; }
@@ -260,7 +265,7 @@ ol.steps li { margin: 3px 0; font-size: 16.5px; }
 #vverdict { flex-basis: 100%; font-family: var(--serif); font-size: 16px; }
 #vverdict .say { color: #444; }
 .six { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 18px; }
-.sixp { display: grid; grid-template-columns: 34px 210px 1fr; align-items: center; gap: 8px; border: 1px solid #e6e6d0; border-radius: 6px; padding: 6px 8px; }
+.sixp { display: grid; grid-template-columns: 34px 240px 1fr; align-items: center; gap: 8px; border: 1px solid #e6e6d0; border-radius: 6px; padding: 6px 8px; }
 .sixg { text-align: right; font-size: 18px; }
 .sixt { font-family: var(--sans); font-size: 12.5px; line-height: 1.35; color: #333; }
 .sixt b { display: block; font-size: 13px; color: #111; }
@@ -290,7 +295,7 @@ table.lean td { padding: 6px 8px; border-bottom: 1px solid #e6e6d0; vertical-ali
 .prec { font-size: 15px !important; }
 table.sixtab { border-collapse: collapse; font-family: var(--sans); font-size: 12px; }
 table.sixtab td { padding: 2px 4px; border-bottom: 1px solid #eee; vertical-align: middle; }
-table.sixtab .sixp { border: none; padding: 0; grid-template-columns: 28px 104px; }
+table.sixtab .sixp { border: none; padding: 0; grid-template-columns: 28px 120px; }
 .limits li { font-size: 15.5px; margin: 3px 0; }
 #limit-extra:empty { display: none; }
 footer { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 10px; }
@@ -298,20 +303,82 @@ footer { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 10px; }
 
 .halo { paint-order: stroke; stroke: #fffff6; stroke-width: 4px; stroke-linejoin: round; }
 
+/* ---------- table of contents ---------- */
+nav.toc { position: sticky; top: 0; z-index: 40; height: var(--toc); display: flex; align-items: center; gap: 2px; background: var(--ivory); border-bottom: 1px solid #e0e0c8; font-family: var(--sans); font-size: 12.5px; margin: 0 -24px; padding: 0 24px; white-space: nowrap; overflow: hidden; }
+nav.toc .tt { color: #777; letter-spacing: .08em; text-transform: uppercase; font-size: 11px; margin-right: 10px; }
+nav.toc a { color: #333; text-decoration: none; padding: 3px 8px; border-radius: 10px; }
+nav.toc a:hover { background: #efefd8; }
+nav.toc a.on { background: #2b2b5a; color: #fff; }
+nav.toc a b { font-weight: 600; margin-right: 3px; }
+section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
+.minibar { position: static; }
+.studylink { font-size: 13.5px; margin-top: 8px; }
+.studylink a, .lede a { color: #2b2b5a; }
+
+.rb-track { touch-action: pan-y; min-width: 0; overflow: hidden; }
+/* ---------- tablet and phone (≤ 900 px): one column, listings scroll inside their own box ---------- */
+@media (max-width: 900px) {
+  body { padding: 0 14px 40px; }
+  nav.toc { margin: 0 -14px; padding: 0 10px; overflow-x: auto; }
+  nav.toc .tt { display: none; }
+  nav.toc a { padding: 8px 8px; }
+  h1 { font-size: 32px; }
+  p, li { font-size: 16.5px; }
+  .lede { font-size: 17px; }
+  .beforeafter { grid-template-columns: 1fr; }
+  .ba { overflow-x: auto; }
+  .banote { font-size: 15.5px; }
+  .setfig { overflow-x: hidden; }
+  .setchip { position: static; margin: 4px 0; }
+  .chipcap { display: none; }
+  .setctl { gap: 10px; }
+  .setctl label { display: flex; align-items: center; gap: 6px; flex: 1 1 100%; }
+  .setctl input[type=range] { flex: 1; width: auto; min-height: 36px; }
+  .six { grid-template-columns: 1fr 1fr; }
+  .sixp { grid-template-columns: 34px 1fr; }
+  .sixp svg { max-width: 100%; height: auto; }
+  .sixt { grid-column: 1 / -1; font-size: 15px; }
+  .sixt b { font-size: 15px; }
+  .s2grid, .s6grid { grid-template-columns: 1fr; }
+  .s2grid > div:first-child, .s2side { overflow-x: auto; }
+  .lgrid { display: block; }
+  .lgrid > div:first-child { overflow-x: auto; overflow-y: hidden; }
+  .dock { position: static; margin-top: 10px; }
+  .dock.empty .dk-hint { white-space: normal; }
+  .rules { grid-template-columns: 1fr; }
+  .legend { grid-template-columns: 1fr 1fr; }
+  .rb-b { width: 44px; height: 36px; font-size: 14px; }
+  .rb-track { height: 40px; }
+  .rb-foot { flex-wrap: wrap; padding-left: 0; gap: 6px; }
+  .rb-info { white-space: normal; flex-basis: 100%; }
+  .rb-band .pill, .rbtn, .seg button, .ubtn, select, .pp, .lbtn { min-height: 36px; }
+  .rb-ghost { height: auto; min-height: 36px; flex-wrap: wrap; }
+  .rb-ghost .gl { white-space: normal; }
+  .hole .sg { min-height: 36px; }
+  .lessonctl { gap: 6px; }
+  #hoverzoom { max-width: calc(100vw - 8px); }
+}
+@media (max-width: 560px) {
+  .six { grid-template-columns: 1fr; }
+  .legend { grid-template-columns: 1fr; }
+  h2 { font-size: 24px; }
+}
+
 </style></head>
 <body>
+<nav class="toc" aria-label="contents"><span class="tt">Refined Codillon</span><a href="#s0"><b>0</b>Overview</a><a href="#s1"><b>1</b>A type is a set</a><a href="#s2"><b>2</b>Reading a line</a><a href="#s3"><b>3</b>Parity</a><a href="#s4"><b>4</b>Integer square root</a><a href="#s5"><b>5</b>Hash table</a><a href="#s6"><b>6</b>Residue</a><a href="#s7"><b>7</b>Rules &amp; limits</a></nav>
 <header class="top">
   <div class="kicker">a walkthrough · visualization study 00</div>
   <h1>Refined Codillon</h1>
 </header>
 
 <section id="s0" class="sec">
-  <p class="lede">Codillon is Keith Winstein’s structured editor for WebAssembly, written for Stanford’s CS 10N. You type one instruction per line. On every keystroke Codillon re-validates and re-runs your module, and it draws what it knows in the margin. Each value’s type is a shape, the operand stack is a set of curves from producer to consumer, anything wrong is darkred, and a slider lets you travel through the run. <b>Refined Codillon adds one idea: a type is a set of values, and a refinement is a smaller set drawn inside the type’s shape.</b> With that idea the editor checks more than types. It checks that your module does what its spec says, and when it doesn’t, it shows you where and why in the same margin, with the same shapes.</p>
-  <p>How to read this page: every picture is live. Drag a slider or press ← / → to step through a run. Hover a shape to magnify it, and click to pin the magnifier. Click a loop line or a function header to open a lens. When the editor suggests a fix, click it, and the code changes. Undo puts it back.</p>
+  <p class="lede">Codillon is Keith Winstein’s structured editor for WebAssembly, written for Stanford’s CS 10N. You type one instruction per line. On every keystroke Codillon re-validates and re-runs your module, and it draws what it knows in the margin. Each value’s type is a shape, the operand stack is a set of curves from producer to consumer, anything wrong is darkred, and a slider lets you travel through the run. <b>Refined Codillon adds one idea: a type is a set of values, and a refinement is a smaller set drawn inside the type’s shape.</b> With that idea the editor checks more than types. It checks that your module does what its spec says, and when it doesn’t, it shows you where and why in the same margin, with the same shapes. This page composes the strongest devices from ten competing prototypes into one design. The prototypes, the research and the synthesis are in <a href="../index.html">the study</a>.</p>
+  <p>How to read this page: every picture is live. Drag a slider or press ← / → to step through a run. Hover a shape to magnify it, and click to pin the magnifier (on a touch screen, tap a shape to magnify it and tap again to pin). Click a loop line or a function header to open a lens. When the editor suggests a fix, click it, and the code changes. Undo puts it back.</p>
   <div class="beforeafter">
     <div class="ba"><div class="bacap">Codillon today</div><div id="ba0bar" class="minibar"></div><div id="ba0"></div></div>
     <div class="ba"><div class="bacap">the same function, with one refinement</div><div id="ba1bar" class="minibar"></div><div id="ba1"></div></div>
-    <div class="banote">Only one thing changes. The parameter now says <code>(i32 | $x % 2 == 0)</code>, so the shape of <code>$x</code> on line 2 grows from 30 to 72 px and becomes a number line with a comb: one tooth for each even value near 0, and stripes out to the walls. The dot is the value at this step. Everything else is Codillon as it is today: the fraction, the cups, the curves, the gray line numbers.</div>
+    <div class="banote">Only one thing changes. The parameter now says <code>(i32 | $x % 2 == 0)</code>, so the shape of <code>$x</code> on line 2 grows from 30 to 84 px and becomes a number line with a comb: one tooth for each even value near 0, and stripes out to the walls. The dot is the value at this step. Everything else is Codillon as it is today: the fraction, the cups, the curves, the gray line numbers.</div>
   </div>
 </section>
 
@@ -320,7 +387,7 @@ footer { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 10px; }
   <p>An <code>i32</code> has 2³² possible values. Codillon already draws it as a rectangle, and in Refined Codillon that rectangle is the number line. INT_MIN sits at the left wall, INT_MAX at the right wall, and 0 in the middle. The scale is linear from −8 to 8 across the middle 60% and logarithmic out to the walls, so small numbers and huge ones both stay readable. A refinement <code>(i32 | P)</code> carves out the region where <code>P</code> holds. Fence posts mark bounds: a filled cap is inclusive and a hollow cap is exclusive. A comb marks parity. Sockets mark a finite set. A dashed tether ties a bound to some other value’s dot. Choose a predicate and move the value.</p>
   <div class="card setcard">
     <div class="preds" id="predpick"></div>
-    <div class="setfig"><svg id="setsvg" width="1000" height="190"></svg></div>
+    <div class="setfig"><svg id="setsvg" width="1000" height="190" viewBox="0 0 1000 190"></svg></div>
     <div class="setctl"><label>v = <input type="range" id="vslide" min="0" max="34" value="19"> <b id="vval"></b></label><label id="depctl">n = <input type="range" id="nslide" min="1" max="8" value="5"> <b id="nval"></b></label><span id="vverdict"></span></div>
   </div>
   <h3>Six states, one cup</h3>
@@ -393,7 +460,7 @@ footer { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 10px; }
   <h3>Limits</h3>
   <ul class="limits" id="limits">
     <li><b>Mocked checker.</b> Every verdict, hole, witness and suggestion is written out by hand from the fixture (03-sample-programs.md) for each reachable state. No solver runs on this page. The <i>runs</i> are real: a small line interpreter executes each listing, and it reproduces the fixture’s key frames (see the footer).</li>
-    <li><b>Sizes chosen, not tested.</b> 72 × 12 px for a refined i32, the 60% linear middle, 14 px chips and the hole layout were picked by eye at 1400 px wide. None of them has been tried with students.</li>
+    <li><b>Sizes chosen, not tested.</b> 84 × 14 px for a refined i32 (the spec said 72 × 12, but the run-time values inside were unreadable at that size), the 60% linear middle, 14 px chips and the hole layout were picked by eye at 1400 px wide. None of them has been tried with students.</li>
     <li><b>Left out:</b> fact ribbons as an always-on layer (04). They cost too much ink at 30 px rows. What survives of them is the causal trail: dashed lanes from a hole back to the lines its hypotheses came from, in darkred for the line to blame. The envelope strips (09) are out because the ring and the lap chart already tell the overflow story. The sampler grids for the hash table (08) are out because the mirror carries Lesson 3. Proof wires (unsat cores drawn as curves) are left out entirely.</li>
     <li><b>Mixed syntax.</b> Lessons 1 and 2 use the 01 syntax (<code>$x</code> binders, named results). Lesson 3 shows the fixture’s hash-table text verbatim, which binds the result as <code>v</code>.</li>
     <li><b>Folding.</b> Lesson 3 folds function bodies that hold no hole, and folds R’s five clause lines into chips on the module line. Codillon has no folding today.</li>
@@ -402,7 +469,7 @@ footer { margin-top: 30px; border-top: 1px solid #d8d8c0; padding-top: 10px; }
   </ul>
 </section>
 
-<footer id="foot"><div id="selfcheck" class="selfcheck"></div><div class="small dim">Self-contained file: no network, vanilla JS and inline SVG. Programs, specs, bugs and traces come from research/fixture.json, embedded verbatim (parity, isqrt and hash-table programs). The interpreter is shared with prototype 10.</div></footer>
+<footer id="foot"><div id="selfcheck" class="selfcheck"></div><div class="studylink"><a href="../index.html">Part of the Refined Codillon visualization study: ten prototypes, research, synthesis</a></div><div class="small dim">Self-contained file: no network, vanilla JS and inline SVG. Programs, specs, bugs and traces come from research/fixture.json, embedded verbatim (parity, isqrt and hash-table programs). The interpreter is shared with prototype 10.</div></footer>
 
 <script>
 // research/fixture.json (programs parity, isqrt, hashtable), embedded verbatim
@@ -416,6 +483,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const MAX = 2147483647, MIN = -2147483648, U32 = 4294967296;
+const RW = 84, RH = 14; // refined i32 shape in the margin (grown from 72×12 for legible values)
 const COL = { i32: '#6A5ACD', dr: 'darkred', ind: 'indigo', sg: 'slategray', navy: '#000080', iv: '#fffff0' };
 function mix(hex, t = 0.7) { const c = parseInt(hex.slice(1), 16), iv = [255, 255, 240]; return '#' + [c >> 16, (c >> 8) & 255, c & 255].map((v, i) => Math.round(v * (1 - t) + iv[i] * t).toString(16).padStart(2, '0')).join(''); }
 const MUT = mix(COL.i32);           // muted i32 fill (70% toward ivory)
@@ -432,14 +500,15 @@ function fmtS(v) { // short form for 30-px shapes
   if (typeof v !== 'number') return fmt(v);
   const a = Math.abs(v), s = v < 0 ? '−' : '';
   if (v === MAX) return '2³¹−1';
-  if (a >= 1e9) return s + (a / 1e9).toFixed(2) + 'e9';
-  if (a >= 1e6) return s + (a / 1e6).toFixed(1) + 'M';
+  if (v === MIN) return '−2³¹';
+  if (a >= 1e9) return s + (a / 1e9).toFixed(1) + 'e9';
+  if (a >= 1e6) return s + (a / 1e6).toFixed(1) + 'e6';
   if (a >= 1e5) return s + Math.round(a / 1e3) + 'k';
   return s + a;
 }
 
 // ---------------------------------------------------------------------------
-// The scale (fixed sizes, 09 §Fixed sizes): a refined i32 shape is 72 px wide;
+// The scale (fixed sizes, 09 §Fixed sizes): a refined i32 shape is RW (84) px wide;
 // |v| <= 8 is linear over the middle 60%, then log to the walls.
 // ---------------------------------------------------------------------------
 function half(a) {
@@ -505,12 +574,13 @@ function spillOf(P, Q) {
 let _gid = 0;
 function shapeSVG(o) {
   const refined = o.refined;
-  const W = o.W || (refined ? 72 : 30), H = o.H || (refined ? 12 : 11);
+  const W = o.W || (refined ? RW : 30), H = o.H || (refined ? RH : 11);
   const x = o.x, y = o.y, col = o.color || COL.i32;
   const X = v => x + W * fx(v);
   const NB = o.N || NUB, nubW_ = z => nubW(z, NB);
   const ghost = o.status === 'assumed' || o.status === 'vacuous';
   let s = `<g class="shp${o.old ? ' old' : ''}${ghost ? ' ghosted' : ''}" ${o.k ? `data-sh="${o.k}"` : ''}>`;
+  if (o.val !== undefined && !o.k) s += `<title>${o.z !== undefined && o.z !== o.val ? `machine value ${fmt(o.val)} · mathematically ${fmt(o.z)}` : `value ${fmt(o.val)}`}</title>`;
   const hitW = W + (o.z > MAX ? NB + 2 : 0);
   if (o.k) s += `<rect class="hit" x="${x - 2}" y="${y - 5}" width="${hitW + 4}" height="${H + 7}" fill="transparent"/>`;
   if (o.missing) {
@@ -1500,6 +1570,7 @@ class RunBar {
       <div class="rb-main"><button class="rb-b" data-d="-1" aria-label="step back">◂</button><div class="rb-track" tabindex="0" role="slider" aria-label="step"><svg class="rb-svg"></svg></div><button class="rb-b" data-d="1" aria-label="step forward">▸</button></div>
       <div class="rb-foot"><div class="rb-band"></div><div class="rb-info"></div></div>`;
     this.track = $('.rb-track', el); this.svg = $('.rb-svg', el);
+    addEventListener('resize', () => this.drawTrack());
     $$('.rb-b', el).forEach(b => b.addEventListener('click', () => this.step(+b.dataset.d)));
     const drag = e => { const r = this.track.getBoundingClientRect(); const t = Math.max(0, Math.min(1, (e.clientX - r.left - 10) / (r.width - 20))); this.go(Math.round(t * (this.n - 1))); };
     this.track.addEventListener('pointerdown', e => { drag(e); this.track.setPointerCapture(e.pointerId); const mv = ev => drag(ev); const up = () => { this.track.removeEventListener('pointermove', mv); this.track.removeEventListener('pointerup', up); }; this.track.addEventListener('pointermove', mv); this.track.addEventListener('pointerup', up); });
@@ -1765,8 +1836,8 @@ class View {
       if (x.fact) return `<span class="hyp" data-src="${x.src || ''}">${fc(...x.fact)}</span>`;
       if (x.missing) return `<span class="hyp${x.blame ? ' blame' : ''}" data-src="${x.src || ''}">${x.name ? `<span class="hn">${esc(x.name)}</span>` : ''}${x.val !== undefined ? `<svg width="40" height="18">${shapeSVG({ kind: 'out', x: 2, y: 3, refined: false, val: x.val, hollow })}</svg>` : ''}<svg width="40" height="18">${shapeSVG({ kind: 'cup', x: 4, y: 3, W: 30, H: 12, missing: true })}</svg><span class="miss">${esc(x.note)}</span></span>`;
       const refined = !!x.reg;
-      const sw = refined ? 72 + (x.z ? NUB + 4 : 0) : 30;
-      return `<span class="hyp${x.blame ? ' blame' : ''}" data-src="${x.src || ''}"><span class="hn">${esc(x.name)}</span><svg width="${sw + 6}" height="${refined ? 28 : 18}">${shapeSVG({ kind: 'out', x: 2, y: refined ? 4 : 3, refined, prov: x.reg, val: x.val, z: x.z, hollow, unk: x.unk, bad: x.blame && x.val !== undefined && h.status === 'false' })}</svg>${(x.facts || []).map(f => fc(...f)).join('')}</span>`;
+      const sw = refined ? RW + (x.z ? NUB + 4 : 0) : 30;
+      return `<span class="hyp${x.blame ? ' blame' : ''}" data-src="${x.src || ''}"><span class="hn">${esc(x.name)}</span><svg width="${sw + 6}" height="${refined ? 30 : 18}">${shapeSVG({ kind: 'out', x: 2, y: refined ? 5 : 3, refined, prov: x.reg, val: x.val, z: x.z, hollow, unk: x.unk, bad: x.blame && x.val !== undefined && h.status === 'false' })}</svg>${(x.facts || []).map(f => fc(...f)).join('')}</span>`;
     };
     const goal = g => `<span class="cj ${g.st}${g.st === 'bad' && hollow ? ' hollow' : ''}"><span class="ct">${esc(g.t)}</span>${g.inst ? `<span class="ci">${esc(g.inst)}</span>` : ''}</span>`;
     const ruleSt = h.status === 'false' ? (rep ? 'refuted' : 'ghost') : h.status === 'unknown' ? 'unknown' : h.status;
@@ -1852,8 +1923,8 @@ class View {
     const rh = this.rh, ry = Math.round(rh / 2);
     const ins = [], outs = [];
     let x = 6;
-    for (let j = 0; j < k; j++) { const ref = !!(a.req && a.req[j]); const w = ref ? 72 : 30; ins.push({ x, w, h: ref ? 12 : 11, y: ry - 3 - (ref ? 12 : 11), ref }); x += w + 8; }
-    for (let i = 0; i < m; i++) { const ref = !!(a.outs && a.outs[i]); outs.push({ x: 6, w: ref ? 72 : 30, h: ref ? 12 : 11, y: ry + 3, ref }); }
+    for (let j = 0; j < k; j++) { const ref = !!(a.req && a.req[j]); const w = ref ? RW : 30; ins.push({ x, w, h: ref ? RH : 11, y: ry - 3 - (ref ? RH : 11), ref }); x += w + 8; }
+    for (let i = 0; i < m; i++) { const ref = !!(a.outs && a.outs[i]); outs.push({ x: 6, w: ref ? RW : 30, h: ref ? RH : 11, y: ry + 3, ref }); }
     const right = Math.max(6 + 30, ...ins.map(s => s.x + s.w), ...outs.map(s => s.x + s.w));
     return { ins, outs, ry, right, a };
   }
@@ -1945,7 +2016,7 @@ class View {
     });
     this.rowsEl.addEventListener('mouseleave', () => { const old = this.hoverKey; this.hoverKey = null; const el = old && this.rowEl(old); if (el && this.d.byKey[old]) $('.facts', el).innerHTML = this.factsHTML(this.d.byKey[old]); if (this.o.onShapeHover) this.o.onShapeHover(this, null); });
     this.rowsEl.addEventListener('mouseout', e => { if (e.target.closest('[data-sh]') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('[data-sh]')) && this.o.onShapeHover) this.o.onShapeHover(this, null); });
-    this.rowsEl.addEventListener('click', e => { const sh = e.target.closest('[data-sh]'); if (sh && this.o.onShapeClick) { e.stopPropagation(); this.o.onShapeClick(this, sh.dataset.sh); } }, true);
+    this.rowsEl.addEventListener('click', e => { const sh = e.target.closest('[data-sh]'); if (sh && this.o.onShapeClick) { e.stopPropagation(); this.o.onShapeClick(this, sh.dataset.sh, sh); } }, true);
   }
   // shape info for lenses
   shapeInfo(k) {
@@ -2003,7 +2074,7 @@ class Dock {
     $('.dk-x', el).onclick = () => this.close();
     this.render();
   }
-  open(type, arg) { this.lens = { type, arg }; this.render(); }
+  open(type, arg) { this.lens = { type, arg }; this.render(); if (innerWidth <= 900 && !this.o.quiet) this.el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
   close() { this.lens = null; this.render(); if (this.o.onClose) this.o.onClose(); }
   render() {
     const L = this.lens, v = this.v;
@@ -2054,8 +2125,12 @@ function rF(x) { x = Math.max(0, Math.min(RM, x)); const a = Math.sqrt(Math.log2
 function rang(v) { return v >= 0 ? 4 + 172 * rF(v) : -(4 + 172 * rF(-v - 1)); }
 function rP(cx, cy, R, a) { const t = a * Math.PI / 180; return [cx + R * Math.sin(t), cy + R * Math.cos(t)]; }
 function rArc(cx, cy, a0, a1, rf, N = 64) { let s = ''; for (let k = 0; k <= N; k++) { const a = a0 + (a1 - a0) * k / N; const [x, y] = rP(cx, cy, rf(a), a); s += (k ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); } return s; }
+function callout(px, py, lx, ly, text, anchor, cls) {
+  const tw = text.length * 5.4, ex = anchor === 'start' ? lx + tw + 4 : anchor === 'end' ? lx - tw - 4 : lx;
+  return `<path d="M${px},${py} L${ex},${ly - 3}" stroke="${cls === 'bad' ? COL.dr : '#888'}" stroke-width=".8" fill="none" stroke-dasharray="2 2"/><text x="${lx}" y="${ly}" text-anchor="${anchor}" class="lbl halo ${cls}">${esc(text)}</text>`;
+}
 function ringLens(i, view) {
-  const W = 470, Hh = 330, cx = 235, cy = 168, R = 104;
+  const W = 470, Hh = 344, cx = 235, cy = 182, R = 104;
   const u32 = v => (v >>> 0);
   let s = `<svg width="${W}" height="${Hh}" class="lens ring">`;
   s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${COL.i32}" stroke-width="2"/>`;
@@ -2086,7 +2161,7 @@ function ringLens(i, view) {
       const aEnd = 360 + rang(z - U32), rf = a => R + 18 + Math.max(0, Math.min(16, (a - 150) * 0.16));
       s += `<path d="${rArc(cx, cy, 120, aEnd, rf, 60)}" fill="none" stroke="${COL.dr}" stroke-width="1.3" stroke-dasharray="3 2"/>`;
       const [zx, zy] = rP(cx, cy, rf(aEnd), aEnd), [bx2, by2] = rP(cx, cy, R + 6, aEnd);
-      s += `<line x1="${zx}" y1="${zy}" x2="${bx2}" y2="${by2}" stroke="${COL.dr}" stroke-width="1" stroke-dasharray="1.5 1.5"/><circle cx="${zx}" cy="${zy}" r="4" fill="${COL.iv}" stroke="${COL.dr}" stroke-width="1.4"/><text x="${Math.max(4, zx - 70)}" y="${zy - 12}" class="lbl bad">ℤ: ${fmt(z)}, past the seam</text>`;
+      s += `<line x1="${zx}" y1="${zy}" x2="${bx2}" y2="${by2}" stroke="${COL.dr}" stroke-width="1" stroke-dasharray="1.5 1.5"/><circle cx="${zx}" cy="${zy}" r="4" fill="${COL.iv}" stroke="${COL.dr}" stroke-width="1.4"/>`; s += callout(zx, zy, 8, 18, `ℤ: ${fmt(z)}, past the seam`, 'start', 'bad');
     }
     const a = rang(v), [x, y] = rP(cx, cy, R, a);
     const bad = z !== undefined && z > MAX && rd === 's';
@@ -2097,7 +2172,7 @@ function ringLens(i, view) {
   // the other operand of the comparison (n), if this is the comparison's cup
   if (i.cup && view && i.row && /_(s|u)$/.test(i.op || '')) {
     const vv = view.vals && view.vals[i.key]; const o = vv && vv.ins ? vv.ins[1 - i.j] : undefined;
-    if (o !== undefined) { const a = rang(o), [x, y] = rP(cx, cy, R, a); s += `<circle cx="${x}" cy="${y}" r="5" fill="${COL.iv}" stroke="${COL.navy}" stroke-width="1.6"/>`; const [lx, ly] = rP(cx, cy, R + 34, a); s += `<text x="${lx}" y="${ly}" text-anchor="middle" class="lbl">other operand ${fmt(o)}</text>`; }
+    if (o !== undefined) { const a = rang(o), [x, y] = rP(cx, cy, R, a); s += `<circle cx="${x}" cy="${y}" r="5" fill="${COL.iv}" stroke="${COL.navy}" stroke-width="1.6"/>`; s += callout(x, y, W - 8, 18, `other operand ${fmt(o)}`, 'end', ''); }
   }
   s += `</svg>`;
   let txt = '';
@@ -2133,7 +2208,7 @@ function lapLens(view, lp) {
   const maxCols = 14, skipped = Math.max(0, arr.length - maxCols), cols = arr.slice(skipped);
   const cw = 26, x0 = 150, rowH = 24, W = 470;
   const rows = st.noinv ? [] : lp.conj;
-  const H = 26 + rows.length * rowH + (st.noinv ? 30 : 64);
+  const H = st.noinv ? 82 : 26 + rows.length * rowH + 64;
   let s = `<svg width="${W}" height="${H}" class="lens lap">`;
   let x = x0;
   const hatch = (l1, l2) => { const w = 58; s += `<rect x="${x}" y="22" width="${w}" height="${rows.length * rowH + 30}" fill="url(#hatchG)" stroke="#bbb"/><text x="${x + w / 2}" y="${30 + rows.length * rowH / 2}" text-anchor="middle" class="lbl tiny halo">${l1}</text><text x="${x + w / 2}" y="${42 + rows.length * rowH / 2}" text-anchor="middle" class="lbl tiny halo">${l2}</text>`; x += w + 6; };
@@ -2150,7 +2225,7 @@ function lapLens(view, lp) {
   rows.forEach((c, ri) => { const sst = st.rows[ri]; s += `<text x="${x0 - 8}" y="${36 + ri * rowH + 4}" text-anchor="end" class="lbl${sst === 'refuted' || sst === 'ghost' ? ' bad' : ''}">${sst === 'refuted' ? '⚖ ' : ''}inv · ${esc(c[0])}${sst === 'unknown' ? ' ?' : ''}</text>`; });
   const mY = 36 + rows.length * rowH;
   if (!st.noinv) s += `<text x="${x0 - 8}" y="${mY + 10}" text-anchor="end" class="lbl${st.m === 'refuted' || st.m === 'ghost' ? ' bad' : ''}">${st.m === 'refuted' ? '⚖ ' : ''}↓ ${esc(lp.measure[0])}</text>`;
-  else s += `<text x="${x0 - 8}" y="40" text-anchor="end" class="lbl" fill="${COL.ind}">no (@invariant): the head promises nothing · ∞?</text>`;
+  else s += `<text x="8" y="70" class="lbl" fill="${COL.ind}">no (@invariant): the loop head promises nothing, so no conjunct can be checked here · ∞? (no @decreases)</text><text x="${x0 - 8}" y="38" text-anchor="end" class="lbl">arrivals</text>`;
   cols.forEach((k, ci) => {
     const r = recs[k], l = r.loc, cx = x + ci * cw;
     const inj = loophead && k === arr[0];
@@ -2172,8 +2247,8 @@ function lapLens(view, lp) {
     const last = recs.findIndex((r, k) => k >= start && k <= cur && r.fn === lp.fn && r.checks.some(c => c.kind === 'ensures'));
     const ran = last >= 0, ok = ran && recs[last].checks.filter(c => c.kind === 'ensures').every(c => c.ok);
     s += `<text x="${ex + 20}" y="16" text-anchor="middle" class="lbl tiny">exit</text>`;
-    s += `<rect x="${ex}" y="26" width="40" height="${rows.length * rowH + 10}" ${ran ? cellSt(ok, st.exit) : `fill="url(#hatchG)" stroke="${st.exit === 'proven' ? '#999' : COL.dr}" stroke-dasharray="${st.exit === 'ghost' ? '3 2' : 'none'}"`}/>`;
-    s += `<text x="${ex + 20}" y="${36 + rows.length * rowH / 2 + 4}" text-anchor="middle" class="lbl tiny${ok || !ran ? '' : ' wht'}">⊢ ens.</text>`;
+    s += `<rect x="${ex}" y="26" width="40" height="${Math.max(18, rows.length * rowH - 6)}" ${ran ? cellSt(ok, st.exit) : `fill="url(#hatchG)" stroke="${st.exit === 'proven' ? '#999' : COL.dr}" stroke-dasharray="${st.exit === 'ghost' ? '3 2' : 'none'}"`}/>`;
+    s += `<text x="${ex + 20}" y="${26 + Math.max(18, rows.length * rowH - 6) / 2 + 3}" text-anchor="middle" class="lbl tiny${ok || !ran ? '' : ' wht'}">⊢ ens.</text>`;
   }
   s += `</svg>`;
   const legend = `<div class="lt">Each column is one arrival at the loop head${lp.slotOf ? ' (□ EMPTY · ■ FULL · ⊠ TOMB: the slot it is about to probe)' : ''}; click a column to jump there. Cell <b>fill</b> comes from the run (ivory held, darkred failed); the <b>border</b> comes from the checker (thin = proven, darkred = refuted, indigo dashes = unknown). ${loophead ? 'The ◇ column is the injected loop-head state of the counterexample: it satisfies the invariant; the next column is one iteration later.' : ''}</div>`;
@@ -2210,8 +2285,9 @@ function mirrorLens(view) {
   const sp = s0 => { const a = (-90 + 45 * s0) * Math.PI / 180; return [cx + RR * Math.cos(a), cy + RR * Math.sin(a)]; };
   // ring
   const closed = slots.every(x => x[0] !== 0);
+  const ivOk = f.r4 === 'weak' ? R.iv_weak : R.iv;
   s += `<circle cx="${cx}" cy="${cy}" r="${RR}" fill="none" stroke="#ccc" stroke-width="1"/>`;
-  if (closed) s += `<circle cx="${cx}" cy="${cy}" r="${RR - 34}" fill="none" stroke="${boundary && !R.iv ? COL.dr : COL.sg}" stroke-width="${boundary && !R.iv ? 2.5 : 1.4}" stroke-dasharray="${boundary && !R.iv ? 'none' : '2 3'}"/>`;
+  if (closed) s += `<circle cx="${cx}" cy="${cy}" r="${RR - 34}" fill="none" stroke="${boundary && !ivOk ? COL.dr : COL.sg}" stroke-width="${boundary && !ivOk ? 2.5 : 1.4}" stroke-dasharray="${boundary && !ivOk ? 'none' : '2 3'}"/>`;
   // strings from beads to slots
   M.forEach(([k], i) => {
     const sIdx = slots.findIndex(x => x[0] === 1 && x[1] === k);
@@ -2221,10 +2297,13 @@ function mirrorLens(view) {
   // probe path
   const l = r.loc || {};
   if ((r.fn === 'find' || r.fn === 'insert') && l.k !== undefined && l.j !== undefined) {
-    const h0 = l.k & 7; let d = '';
-    for (let q = 0; q <= Math.min(l.j, 9); q++) { const s0 = (h0 + q) & 7; const a = (-90 + 45 * s0); const [x, y] = [cx + (RR + 30 + q * 1.5) * Math.cos(a * Math.PI / 180), cy + (RR + 30 + q * 1.5) * Math.sin(a * Math.PI / 180)]; d += (q ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }
+    const h0 = l.k & 7, n = Math.min(l.j, 24); let d = '';
+    const pt = (q, rr) => { const a = (-90 + 45 * ((h0 + q) & 7)) * Math.PI / 180; return [cx + rr * Math.cos(a), cy + rr * Math.sin(a)]; };
+    const rad = q => RR + 28 + 4 * Math.floor(q / 8);
+    let [x0, y0] = pt(0, rad(0)); d = `M${x0.toFixed(1)} ${y0.toFixed(1)}`;
+    for (let q = 0; q < n; q++) { const r1 = rad(q + 1); const [x1, y1] = pt(q + 1, r1); d += ` A${r1} ${r1} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; }
     s += `<path d="${d}" fill="none" stroke="${COL.navy}" stroke-width="1.6"/>`;
-    const a = (-90 + 45 * (l.i & 7)) * Math.PI / 180; const [px, py] = [cx + (RR + 30) * Math.cos(a), cy + (RR + 30) * Math.sin(a)];
+    const a = (-90 + 45 * (l.i & 7)) * Math.PI / 180; const [px, py] = [cx + rad(n) * Math.cos(a), cy + rad(n) * Math.sin(a)];
     s += `<circle cx="${px}" cy="${py}" r="4" fill="${COL.navy}"/><text x="${W - 8}" y="${Hh - 50}" text-anchor="end" class="lbl">${r.fn}(${l.k}): probe j = ${l.j}, slot ${l.i}</text>`;
   }
   // slots
@@ -2238,7 +2317,7 @@ function mirrorLens(view) {
     s += `<text x="${px + 4}" y="${py + 4}" text-anchor="middle" class="lbl">${st === 0 ? 'EMPTY' : st === 2 ? `† ${x[1]}` : `${x[1]} : ${x[2]}`}</text>`;
   });
   // counters
-  if (closed) s += `<text x="${cx}" y="${cy + 46}" text-anchor="middle" class="lbl halo halo${boundary && !R.iv ? ' bad' : ''}">the ring is closed: no EMPTY slot</text>`;
+  if (closed) s += `<text x="${cx}" y="${cy + 46}" text-anchor="middle" class="lbl halo${boundary && !ivOk ? ' bad' : ''}">the ring is closed: no EMPTY slot</text>`;
   const full = slots.filter(x => x[0] === 1).length, ne = slots.filter(x => x[0] !== 0).length;
   s += `<text x="${cx}" y="${cy - 10}" text-anchor="middle" class="lbl halo">|M| = ${M.length} · #FULL = ${full}</text><text x="${cx}" y="${cy + 6}" text-anchor="middle" class="lbl halo">used = ${used} · #non-EMPTY = ${ne}</text>`;
   for (let q = 0; q < 8; q++) s += `<rect x="${cx - 40 + q * 10}" y="${cy + 14}" width="8" height="8" fill="${q < used ? COL.i32 : COL.iv}" stroke="${COL.i32}" stroke-width=".7"/>`;
@@ -2295,14 +2374,16 @@ function relLens(view) {
 function hoverZoom() {
   const el = document.createElement('div'); el.id = 'hoverzoom'; document.body.appendChild(el);
   return {
+    key: null, t: 0,
     show(view, k, anchor) {
-      if (!k) { el.style.display = 'none'; return; }
+      if (!k) { el.style.display = 'none'; this.key = null; return; }
+      if (k !== this.key) { this.key = k; this.t = performance.now(); }
       const i = view.shapeInfo(k); if (!i) return;
       el.innerHTML = `<div class="hz-t">line ${i.row.num} · ${esc(i.text)} · ${i.cup ? 'input' : 'output'} <span class="dim">· click to pin</span></div>` + zoomLens(i, 300);
       const b = anchor.getBoundingClientRect();
       el.style.display = 'block';
-      el.style.left = Math.min(innerWidth - 320, b.right + 14) + 'px';
-      el.style.top = Math.min(innerHeight - el.offsetHeight - 8, b.top - 10) + 'px';
+      el.style.left = Math.max(4, Math.min(innerWidth - 320, b.right + 14)) + 'px';
+      el.style.top = (innerWidth <= 900 ? Math.min(innerHeight - el.offsetHeight - 8, b.bottom + 12) : Math.min(innerHeight - el.offsetHeight - 8, b.top - 10)) + 'px';
     },
   };
 }
@@ -2318,14 +2399,26 @@ function hoverZoom() {
   const HZ = hoverZoom();
   const Q = Object.fromEntries((location.hash.slice(1) || '').split('&').filter(Boolean).map(kv => { const [k, v] = kv.split('='); return [k, v === undefined ? '1' : decodeURIComponent(v)]; }));
   if (Q.gray) document.documentElement.classList.add('gray');
-  if (Q.solo) { $$('section.sec').forEach(s => { if (s.id !== Q.solo) s.style.display = 'none'; }); $('header.top').style.display = Q.solo === 's0' ? '' : 'none'; if (Q.solo !== 'foot') $('#foot').style.display = Q.solo === 's7' ? '' : 'none'; }
+  if (Q.solo) { $('nav.toc').style.display = 'none'; $$('section.sec').forEach(s => { if (s.id !== Q.solo) s.style.display = 'none'; }); $('header.top').style.display = Q.solo === 's0' ? '' : 'none'; if (Q.solo !== 'foot') $('#foot').style.display = Q.solo === 's7' ? '' : 'none'; }
 
+  // touch: the first tap on a shape magnifies it (the hover zoom), a second tap pins it
+  let lastPT = 'mouse';
+  document.addEventListener('pointerdown', e => { lastPT = e.pointerType; if (lastPT === 'touch' && !(e.target.closest && e.target.closest('[data-sh]'))) HZ.show(null, null); }, true);
   const lensHooks = (getDock, def) => ({
-    onShapeHover: (v, k, anchor) => HZ.show(v, k, anchor),
-    onShapeClick: (v, k) => { const i = v.shapeInfo(k); HZ.show(v, null); const d = getDock(); if (d) d.open(i && (i.wrap || (i.reader && i.z !== undefined)) ? 'ring' : 'zoom', k); },
+    onShapeHover: (v, k, anchor) => { if (lastPT !== 'touch') HZ.show(v, k, anchor); },
+    onShapeClick: (v, k, anchor) => {
+      if (lastPT === 'touch' && !(HZ.key === k && performance.now() - HZ.t > 350)) { HZ.show(v, k, anchor); return; }
+      const i = v.shapeInfo(k); HZ.show(v, null); const d = getDock(); if (d) d.open(i && (i.wrap || (i.reader && i.z !== undefined)) ? 'ring' : 'zoom', k); },
     onPaint: () => { const d = getDock(); if (d && d.lens) d.render(); },
     onUpdate: () => { const d = getDock(); if (d) d.render(); },
   });
+
+  // ---------------- table of contents: highlight the section in view ----------------
+  (() => {
+    const links = $$('nav.toc a'); const secs = links.map(a => $(a.getAttribute('href')));
+    const on = () => { let k = 0; secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top < 120) k = i; }); links.forEach((a, i) => a.classList.toggle('on', i === k)); };
+    addEventListener('scroll', on, { passive: true }); on();
+  })();
 
   // ---------------- §0 before / after ----------------
   const ba = [false, true].map((ref, i) => {
@@ -2358,7 +2451,9 @@ function hoverZoom() {
       $('#nval').textContent = fmt(dv);
       $('#vval').textContent = fmt(v);
       const R = cur.r(dv), ok = inR(R, v);
-      const x0 = 70, W = 620, y = 104, H = 30;
+      const avail = $('.setfig').clientWidth || 1000, narrow = avail < 760;
+      const x0 = narrow ? 30 : 70, W = narrow ? avail - 50 : 620, y = 104, H = 30;
+      $('#setsvg').setAttribute('width', narrow ? avail : 1000); $('#setsvg').setAttribute('viewBox', `0 0 ${narrow ? avail : 1000} 190`);
       const X = q => x0 + W * fx(q);
       let s = '';
       if (cur.dep) { // the other value, with its dot, and the tether
@@ -2370,21 +2465,21 @@ function hoverZoom() {
       }
       s += `<text x="${x0 - 8}" y="${y + 20}" text-anchor="end" class="lbl">v</text>`;
       s += shapeSVG({ kind: 'cup', x: x0, y, W, H, refined: true, req: R, prov: RG.set([v]), val: v, status: 'refuted', spill: ok ? [] : spillOf(RG.set([Math.max(MIN, Math.min(MAX, v))]), R), N: 20 });
-      const marks = [[MIN, 'INT_MIN'], [-65536, '−2¹⁶'], [-8, '−8'], [0, '0'], [8, '8'], [65536, '2¹⁶'], [MAX, 'INT_MAX']];
+      const marks = narrow ? [[MIN, 'MIN'], [-8, '−8'], [0, '0'], [8, '8'], [MAX, 'MAX']] : [[MIN, 'INT_MIN'], [-65536, '−2¹⁶'], [-8, '−8'], [0, '0'], [8, '8'], [65536, '2¹⁶'], [MAX, 'INT_MAX']];
       for (let q = -8; q <= 8; q++) s += `<line x1="${X(q)}" x2="${X(q)}" y1="${y + H + 2}" y2="${y + H + 6}" stroke="#999"/>`;
       marks.forEach(([q, l]) => { s += `<line x1="${X(q)}" x2="${X(q)}" y1="${y + H + 2}" y2="${y + H + 10}" stroke="#666"/><text x="${X(q)}" y="${y + H + 22}" text-anchor="middle" class="lbl">${l}</text>`; });
       // actual margin size
-      const mx = 770;
-      s += `<text x="${mx}" y="${y - 22}" class="lbl dim">the same cup at margin size (72 × 12):</text>`;
+      const mx = narrow ? -9999 : 770;
+      s += `<text x="${mx}" y="${y - 22}" class="lbl dim">the same cup at margin size (84 × 14):</text>`;
       s += shapeSVG({ kind: 'cup', x: mx + 10, y: y + 6, refined: true, req: R, prov: RG.set([v]), val: v, status: 'refuted', spill: ok ? [] : spillOf(RG.set([Math.max(MIN, Math.min(MAX, v))]), R) });
-      s += `<text x="${mx}" y="${y + 50}" class="lbl dim">and its predicate as a chip: </text>`;
+      s += `<text x="${mx}" y="${y + 50}" class="lbl dim chipcap">and its predicate as a chip: </text>`;
       $('#setsvg').innerHTML = s;
       $('#vverdict').innerHTML = `<span class="say">${esc(cur.say)}.</span> ` + (ok ? `<b>v = ${fmt(v)}</b> is in the set: the dot sits inside the region.` : `<b class="bad">v = ${fmt(v)}</b> is outside: the value spills over the rim. At run time this is a violation, the darkred dot on a one-value sliver.`);
       const chipFor = { ge0: fc('≥0', '', '0 <= v'), win: fc('[a,b)', '0,' + dv, '0 <= v < n'), even: fc('⫶', '0', 'v % 2 == 0'), set: fc('∈', '{0,1,2}', 'v ∈ {0, 1, 2}'), dbl: fc('=', '2x', 'v == 2*x') }[cur.id];
       let c = $('.setchip'); if (!c) { c = document.createElement('div'); c.className = 'setchip'; $('.setfig').appendChild(c); }
       c.innerHTML = chipFor;
     };
-    vs.oninput = draw; ns.oninput = draw; draw();
+    vs.oninput = draw; ns.oninput = draw; draw(); addEventListener('resize', draw);
   })();
 
   // six states, one cup
@@ -2400,9 +2495,9 @@ function hoverZoom() {
     const sc = big ? 2 : 1;
     const prov = st === 'proven' ? RG.iv(1, 7) : RG.iv(1, 8), req = RG.iv(0, 8, false, true);
     const sp = st === 'proven' ? [] : spillOf(prov, req);
-    const inner = shapeSVG({ kind: 'cup', x: 4, y: 8, refined: true, req, prov, status: st, spill: sp }) + ruleSVG(st === 'ghost' ? 'ghost' : st, 2, 25, 78, st === 'dynamic' ? 12 : undefined);
+    const inner = shapeSVG({ kind: 'cup', x: 4, y: 8, refined: true, req, prov, status: st, spill: sp }) + ruleSVG(st === 'ghost' ? 'ghost' : st, 2, 27, RW + 6, st === 'dynamic' ? 12 : undefined);
     const g = { num: '<span class="num">12</span>', scaleS: G.scale(true), scaleH: G.scale(false), rest: G.rest('unknown'), assume: G.assume() }[glyph];
-    return `<div class="sixp st-${st}"><div class="sixg">${g}</div><svg width="${100 * sc}" height="${34 * sc}"><g transform="scale(${sc})">${inner}</g></svg><div class="sixt"><b>${title}</b><span>${desc}</span></div></div>`;
+    return `<div class="sixp st-${st}"><div class="sixg">${g}</div><svg width="${118 * sc}" height="${36 * sc}" viewBox="0 0 118 36">${inner}</svg><div class="sixt"><b>${title}</b><span>${desc}</span></div></div>`;
   }
   $('#six').innerHTML = SIX.map(x => sixPanel(x)).join('');
   $('#sixtab').innerHTML = SIX.map(x => `<tr><td class="sg1">${sixPanel(x, false).replace(/<div class="sixt">[\s\S]*<\/div><\/div>$/, '</div>')}</td><td><b>${x[1]}</b><br><span class="dim">${x[2]}</span></td></tr>`).join('');
@@ -2418,7 +2513,7 @@ function hoverZoom() {
   function drawCall(view) {
     const d = view.d, S = view.S, vals = view.vals || {};
     const host = $('.callfig');
-    const sc = 2.3, ox = 196, oy = 40;
+    const sc = 2.05, ox = 196, oy = 40;
     const masked = d.flags.mask, r7 = d.flags.req7;
     const a7 = d.ann.L7, a8 = d.ann.L8;
     const prov8 = masked ? d.ann.L7b.outs[0] : a7.outs[0];
@@ -2428,25 +2523,25 @@ function hoverZoom() {
     let g = '';
     // row 1: i32.add — a refined cup shows the first input's provided set; the constant stays unrefined
     g += shapeSVG({ kind: 'cup', x: 6, y: 4, refined: true, req: null, prov: d.ann.L5.outs[0], val: v7 && v7.ins ? v7.ins[0] : undefined });
-    g += shapeSVG({ kind: 'cup', x: 86, y: 5, refined: false, val: v7 && v7.ins ? v7.ins[1] : undefined });
-    g += ruleSVG('proven', 2, 19, 118);
-    g += shapeSVG({ kind: 'out', x: 6, y: 22, refined: true, prov: a7.outs[0], val: v7 && v7.outs ? v7.outs[0] : undefined });
+    g += shapeSVG({ kind: 'cup', x: 14 + RW, y: 7, refined: false, val: v7 && v7.ins ? v7.ins[1] : undefined });
+    g += ruleSVG('proven', 2, 21, RW + 44);
+    g += shapeSVG({ kind: 'out', x: 6, y: 24, refined: true, prov: a7.outs[0], val: v7 && v7.outs ? v7.outs[0] : undefined });
     // row 2: call $slot
     const y2 = 70;
     g += shapeSVG({ kind: 'cup', x: 6, y: y2, refined: true, req: a8.req[0], prov: prov8, val: v8 && v8.ins ? v8.ins[0] : undefined, status: spill.length ? s8 : 'proven', spill });
-    g += ruleSVG(spill.length ? s8 : 'proven', 2, y2 + 15, 80);
+    g += ruleSVG(spill.length ? s8 : 'proven', 2, y2 + 17, RW + 8);
     const P = (x, y) => [ox + x * sc, oy + y * sc];
-    const X = v => 6 + 72 * fx(v);
+    const X = v => 6 + RW * fx(v);
     let L = '';
     const lead = (tx, ty, px, py) => { const [x, y] = P(px, py); L += `<path d="M${tx},${ty} L${x},${y}" stroke="#888" stroke-width=".8" fill="none"/><circle cx="${x}" cy="${y}" r="2" fill="#888"/>`; };
     lead(150, 70, X(3), 14);          // provided
-    lead(492, 32, 120, 8);            // facts above
-    lead(492, 112, 80, 28);           // claims below
+    lead(492, 32, 18 + RW + 30, 10);            // facts above
+    lead(492, 112, 6 + RW, 31);           // claims below
     lead(492, 196, X(8), y2 - 4);     // required (hollow post at 8)
-    lead(150, 300, 30, y2 + 15);      // rule
+    lead(150, 300, 30, y2 + 17);      // rule
     if (spill.length) lead(492, 282, X(7.5) + 4, y2 - 1);
     const rowLab = (y, t) => { const [, yy] = P(0, y); return `<text x="${ox - 8}" y="${yy}" text-anchor="end" class="lbl" style="font-family:var(--serif);font-size:16px">${t}</text>`; };
-    const svg = `<svg width="690" height="400"><g transform="translate(${ox},${oy}) scale(${sc})">${g}</g>${L}${rowLab(21, '7 · i32.add')}${rowLab(y2 + 9, '8 · call $slot')}</svg>`;
+    const svg = `<svg width="690" height="400"><g transform="translate(${ox},${oy}) scale(${sc})">${g}</g>${L}${rowLab(23, '7 · i32.add')}${rowLab(y2 + 11, '8 · call $slot')}</svg>`;
     const lab = (x, y, w, html, cls = '') => `<div class="clab ${cls}" style="left:${x}px;top:${y}px;width:${w}px">${html}</div>`;
     const chipsA = (a7.facts || []).map(f => fc(...f)).join(''), chipsB = (a7.claims || []).map(f => fc(...f)).join('');
     const ruleTxt = spill.length ? (s8 === 'refuted' ? 'snapped apart: refuted, the witness replayed' : 'hollow halves: refuted, witness not yet replayed') : 'a plain thin line: proven';
@@ -2457,7 +2552,7 @@ function hoverZoom() {
       lab(498, 176, 190, '<b>required set</b>: fence posts on the rim. <code>$slot</code> needs <code>[0,8)</code>: a filled post at 0, a hollow one at 8.') +
       lab(0, 276, 150, `<b>the rule is the verdict</b>: ${ruleTxt}.`) +
       lab(498, 262, 190, spill.length ? '<b class="bad">spill</b>: the part of the provided set outside the rim, here the single value 8, hatched darkred and rising above it.' : '<b>no spill</b>: the provided set now fits under the rim.') +
-      lab(196, 352, 300, `<span class="dim">Lines 7–8 of the listing, magnified 2.3×. The dots are the values at the slider’s step${v7 && v7.outs ? `: i + 1 = <b>${fmt(v7.outs[0])}</b>` : ''}.</span>`);
+      lab(196, 352, 300, `<span class="dim">Lines 7–8 of the listing, magnified 2×. The dots are the values at the slider’s step${v7 && v7.outs ? `: i + 1 = <b>${fmt(v7.outs[0])}</b>` : ''}.</span>`);
   }
   drawCall(nv);
 
@@ -2475,7 +2570,7 @@ function hoverZoom() {
     <div class="lgi"><span class="inf">∞?</span><span>loop without (@decreases): partial correctness</span></div>
     <div class="lgh" style="margin-top:10px">shapes</div>
     <div class="lgi"><svg width="40" height="16">${shapeSVG({ kind: 'out', x: 2, y: 2, refined: false, val: 6 })}</svg><span>unrefined i32, 30 × 11, value inside</span></div>
-    <div class="lgi"><svg width="80" height="20">${shapeSVG({ kind: 'out', x: 2, y: 5, refined: true, prov: RG.iv(0, 7), val: 3 })}</svg><span>refined i32, 72 × 12: region + dot</span></div>
+    <div class="lgi"><svg width="80" height="20">${shapeSVG({ kind: 'out', x: 2, y: 5, refined: true, prov: RG.iv(0, 7), val: 3 })}</svg><span>refined i32, 84 × 14: region + dot</span></div>
     <div class="lgi"><svg width="92" height="22">${shapeSVG({ kind: 'out', x: 2, y: 5, refined: true, prov: RG.iv(1, 2147488281), val: -2147479015, z: 2147488281 })}</svg><span>nub: a mathematical value past INT_MAX; dotted arc to where it wraps</span></div>
     <div class="lgi"><svg width="40" height="18">${shapeSVG({ kind: 'cup', x: 4, y: 3, W: 30, H: 12, missing: true })}</svg><span>empty fade-up cup: a fact that is needed and missing</span></div></div>
   <div class="lgcol"><div class="lgh">lenses · only on click</div>
@@ -2501,7 +2596,7 @@ function hoverZoom() {
   }
   const L1 = lesson(PROGS.parity, { bar: '#pbar', list: '#plist', dock: '#pdock', undo: '#pundo' }, {
     flags: PROGS.parity.presets[Q.L1 || 'P1'] || PROGS.parity.presets.P1,
-    hint: '<b>Lens dock.</b> Nothing opens here by itself. Hover a shape to magnify it; click it to pin the magnifier here.',
+    hint: 'hover a shape to magnify; click a loop, header or shape to open a lens',
     view: { rh: 38, fracX: 470, width: 780, cf: 20, mf: 15, longAt: 56, yourRun: () => ({ calls: PROGS.parity.yourRun.calls, label: PROGS.callsLabel(PROGS.parity.yourRun.calls) }) },
   });
   const pseg = $('#pseed');
@@ -2514,7 +2609,7 @@ function hoverZoom() {
   let qIn = 10;
   const L2 = lesson(PROGS.isqrt, { bar: '#qbar', list: '#qlist', dock: '#qdock', undo: '#qundo' }, {
     flags: PROGS.isqrt.presets[Q.L2 || 'noinv'] || PROGS.isqrt.presets.noinv,
-    hint: '<b>Lens dock.</b> Click the <code>loop $grow</code> line for the lap chart, the header for the relation plot, or a shape for its zoom (a value that can wrap opens the ring).',
+    hint: 'hover a shape to magnify; click a loop, header or shape to open a lens',
     view: { rh: 38, fracX: 470, width: 780, cf: 20, mf: 15, longAt: 60, loops: isqLoops, yourRun: () => ({ calls: [['isqrt', [qIn]]], label: `$isqrt(${qIn})` }),
       loopLens: (v, key) => L2.dock.open('lap', key), headerLens: v => L2.dock.open('rel') },
   });
@@ -2528,8 +2623,8 @@ function hoverZoom() {
 
   const L3 = lesson(PROGS.hash, { bar: '#hbar', list: '#hlist', dock: '#hdock', undo: '#hundo' }, {
     flags: PROGS.hash.presets[Q.L3 || 'b'] || PROGS.hash.presets.b,
-    hint: '<b>Lens dock.</b> Press <b>◎ memory mirror</b> to dock the mirror here. Click a <code>loop</code> line for its lap chart. Click a function header to fold or unfold it.',
-    view: { rh: 32, fracX: 470, width: 780, cf: 18, mf: 14, longAt: 52, loops: PROGS.hash.loops, funcs: PROGS.hash.funcs, folded: ['slot', 'find', 'lookup', 'delete', 'insert'], moduleFold: true,
+    hint: 'hover a shape to magnify; click a loop or shape, or ◎ memory mirror, to open a lens',
+    view: { rh: 34, fracX: 470, width: 780, cf: 18, mf: 14, longAt: 52, loops: PROGS.hash.loops, funcs: PROGS.hash.funcs, folded: ['slot', 'find', 'lookup', 'delete', 'insert'], moduleFold: true,
       yourRun: () => ({ calls: PROGS.hash.yourRun.calls, label: PROGS.callsLabel(PROGS.hash.yourRun.calls) }), loopLens: (v, key) => L3.dock.open('lap', key) },
   });
   L3.dock.o.onClose = () => $('#hmirror').classList.remove('on');
@@ -2579,7 +2674,7 @@ function hoverZoom() {
   }
   if (Q.step) for (const Lx of [L1, L2, L3]) if (Lx.v.bar) Lx.v.bar.go(Q.step === 'last' ? Lx.v.bar.n - 1 : Math.min(+Q.step, Lx.v.bar.n - 1));
   if (Q.lens) {
-    const [which, arg] = Q.lens.split(':');
+    const [which, ...argp] = Q.lens.split(':'); const arg = argp.join(':');
     const Lx = { 1: L1, 2: L2, 3: L3 }[Q.lensL || (which === 'mirror' ? 3 : which === 'rel' || which === 'ring' ? 2 : '2')];
     if (which === 'mirror') { L3.dock.open('mirror'); $('#hmirror').classList.add('on'); }
     else if (which === 'lap') (Q.lensL === '3' ? L3 : L2).dock.open('lap', arg || (Q.lensL === '3' ? 'L29' : 'L6'));
