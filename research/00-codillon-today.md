@@ -3,7 +3,7 @@
 Source: https://github.com/codillon/codillon (LGPL-2.1). Keith Winstein is the principal author
 (42 of the last 50 commits). Co-advised with Chris Gregg. Brown Institute Magic Grant 2025–26:
 "a curriculum revolving around music and signal processing, and a purpose-built WebAssembly editor"
-for Stanford CS 10N (an intro course). Local clone: ~/hobby/codalon-dependent-viz/codillon (git submodule)
+for Stanford CS 10N (an intro course). (Upstream source was read from a local clone at the time of writing; it is not part of this repository.)
 
 ## What it is
 A browser-based *structured text editor* for the WebAssembly text format (WAT), written in Rust,

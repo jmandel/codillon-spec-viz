@@ -6,8 +6,10 @@ Started 2026-10-23. Question: if Codillon (Keith Winstein's structured WebAssemb
 CS 10N) grew refinement/dependent types grounded Lean-style, how should the editor *draw* specification
 adherence so that a spec bug is as visually obvious as a type error is today?
 
+This repository holds only the investigation: the research write-ups, the language sketch, the shared sample programs
+and fixture, and the ten prototypes. Codillon itself lives at https://github.com/codillon/codillon and is not vendored here.
+
 ## Layout
-- `codillon/` — upstream Codillon as a git submodule (read-only reference for the current visual language).
 - `research/` — the study, in reading order:
   - `00-codillon-today.md` — what Codillon draws today (types as shapes, dataflow curves, gutter glyphs, slider).
   - `01-language-design.md` — the refinement-typed language sketch: `(T | P)` types, `(@invariant)`, `(@decreases)`,
