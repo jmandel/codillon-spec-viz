@@ -1,5 +1,7 @@
 # Codillon with refinement types: a visualization study
 
+Live site: https://joshuamandel.com/codillon-spec-viz/ (GitHub Pages from `main`). Source: https://github.com/jmandel/codillon-spec-viz
+
 Started 2026-10-23. Question: if Codillon (Keith Winstein's structured WebAssembly editor for Stanford's
 CS 10N) grew refinement/dependent types grounded Lean-style, how should the editor *draw* specification
 adherence so that a spec bug is as visually obvious as a type error is today?
