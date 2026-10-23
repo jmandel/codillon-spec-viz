@@ -23,7 +23,9 @@ and fixture, and the ten prototypes. Codillon itself lives at https://github.com
   - `06-artifact-brief-shared.md` — the contract every prototype follows.
   - `07-review-notes.md` — coordinator review of each prototype with the builders' rubric self-scores.
   - `08-synthesis.md` — the summative write-up: vision, verdicts, recommended composition, open questions.
-- `artifacts/` — ten self-contained HTML prototypes, `01-…html` to `10-…html`. Open any from `file://`.
+  - `09-walkthrough-design.md` — the spec for the single-page walkthrough.
+- `artifacts/00-refined-codillon.html` — the tutorial walkthrough of the composed design (start here).
+- `artifacts/01-…html` to `10-…html` — the ten competing prototypes. Open any from `file://`.
 - `tools/` — the Python interpreter / spec checker / fixture generator used to produce the traces.
 
 ## Reviewing the prototypes
