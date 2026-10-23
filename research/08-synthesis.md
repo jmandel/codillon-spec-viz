@@ -1,6 +1,6 @@
 # Synthesis: what a refinement-typed Codillon should draw
 
-Coordinator write-up, 2026-10-23. Inputs: the seven research documents, the ten prototypes in `artifacts/`,
+Coordinator write-up, 2026-10-23 (all ten prototypes reviewed). Inputs: the seven research documents, the ten prototypes in `artifacts/`,
 the builders' self-scores and my review notes (07). Section numbers refer to files in this directory.
 
 ## 1. The vision, in one paragraph
@@ -53,7 +53,7 @@ Causal trail, Witness, Ink, Scale, Edit continuity). My one-line verdict follows
 | 01 | Shape as value space, spill glyph | 3.6 | **Core primitive.** The best predicate-on-shape of the ten; the spill is the right picture of a failed subtyping check. Costs shape width (30 → 140 px) and needs hover zoom. |
 | 02 | Wraparound ring, twin ticks | 3.9 | **Keep for integers.** The only honest picture of Wasm's signless integers; the comparison operator as a cut at its seam is a real teaching device. Works as a lens, not as an always-on margin glyph. |
 | 03 | Sequent fractions | 4.0 | **Core primitive.** Extends the existing fraction with the least new vocabulary; the rule-as-verdict and the empty cup for a missing fact are exactly Codillon's idiom. Chip density is the risk. |
-| 04 | Fact ribbons | pending | (see 07 when it lands) |
+| 04 | Fact ribbons | 3.8 | **Keep as the trail, on selection.** Facts born (✦), carried and frayed along the dataflow curves, with a ghost lane from a hollow badge back to the fray: the best causal trail of the ten. Too much ink always-on; needed *fact rails* for non-dataflow facts. |
 | 05 | Invariant horizon, lap chart | 3.6 | **Keep for loops, on selection.** The gate/horizon/lap chart answers "which lap broke which conjunct" better than anything else; too tall to be always on. |
 | 06 | Model / memory mirror | 3.8 | **Keep for data structures.** Representation invariants as geometry (strings, arcs, gaps) is the right picture; the "R open" gray mid-operation state is essential to keep the clean run calm. |
 | 07 | Witness track | 3.8 | **Core mechanism.** Counterexamples as runs on a ghost track that replay onto the real slider; the substituted-predicate card is the best "why is this false" rendering. Complements, does not replace, the shape-level ideas. |
@@ -72,6 +72,7 @@ from each:
 2. **On failure (the residue).** 10's hole line appears after the offending instruction with the goal,
    the witness values in shapes, and chips. 07's ghost track / witness pill puts the counterexample on the
    slider; scrubbing to it fills the hole's shapes with live values and shows the substituted-predicate card.
+   Clicking a hollow badge or a broken rule lights 04's ribbon trail back to the instruction where the fact was lost.
 3. **On selection (the lenses).** Pin a value to get 02's ring (integers) or 09's strip (over time); pin a
    loop to get 05's lap chart; pin a memory region to get 06's mirror; pin a function header to get 08's
    relation plot or grid. Lenses are the place for density; the margin is not.

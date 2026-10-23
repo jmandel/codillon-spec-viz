@@ -84,6 +84,7 @@ svg.listing *, #legend * { transition: opacity .25s ease, d .25s ease, fill .25s
 .lane.badl { stroke: darkred; }
 .lane.hollowo { stroke: #666; stroke-width: 3.4px; stroke-opacity: .5; }
 .lane.hollowi { stroke: #fbfbf0; stroke-width: 1.5px; }
+.lane.hollowo.badl { stroke: darkred; stroke-opacity: 1; }
 .lane.stub { }
 .ghostlane { fill: none; stroke: darkred; stroke-width: 1.25px; stroke-dasharray: 5 2 1.2 2; }
 .whisk { fill: none; stroke: var(--i32); stroke-width: .9; stroke-linecap: round; }
@@ -140,7 +141,7 @@ On the slider, a stripe or badge whose fact is <i>actually false</i> at the curr
 <table class="statetable"><tr><th>state</th><th>badge</th><th>stripe</th><th>gutter</th></tr>
 <tr><td>proven</td><td>filled, quiet</td><td>solid pattern in i32 color</td><td>gray line number</td></tr>
 <tr><td>refuted, witness replayed</td><td>hollow, solid darkred outline; solid darkred while false</td><td>ghost lane + darkred fray</td><td>⚖ (solid); darkred slider pill</td></tr>
-<tr><td>refuted, witness not yet replayed</td><td>hollow, dashed darkred outline</td><td>ghost lane + darkred fray; dashed ghost track above the slider</td><td>⚖ (hollow)</td></tr>
+<tr><td>refuted, witness not yet replayed</td><td>hollow, dash-dot darkred outline</td><td>ghost lane + darkred fray; dashed ghost track above the slider</td><td>⚖ (hollow)</td></tr>
 <tr><td>held on this run only (dynamic)</td><td>slategray dotted, ∘count</td><td>slategray dots</td><td>line number (never a check mark)</td></tr>
 <tr><td>unknown / needs hint</td><td>indigo dashed, “?”</td><td>indigo dashes</td><td>☆ (indigo, dashed)</td></tr>
 <tr><td>assumed / admitted / vacuous</td><td>ghosted 50%, hollow, ○</td><td>hollow double line at 50%; everything downstream ghosted</td><td>line number</td></tr></table>
@@ -206,7 +207,14 @@ On the slider, a stripe or badge whose fact is <i>actually false</i> at the curr
 <footer>
 <h2>Self-critique</h2>
 <ul id="critique">
-<li>TBD</li>
+<li><b>What it makes obvious.</b> <i>Where knowledge was lost</i> (F10). A hollow badge’s darkred dash-dot ghost lane runs back through ribbons and rails to a darkred fray, and the gutter marks that line with the fray glyph: <code>shr_u</code> (P2, line 10), the deleted mask (a, line 146), <code>i32.ne</code> (b, line 38), the EMPTY constant (b′, line 99), <code>i32.const 8</code> (d, line 125), the product that leaves the signed range (S1, line 15), <code>r</code> starting at 1 (S3, line 3). Spec bugs (P3, S2) have no fray. Instead the trail ends at a dotted underline on the header conjunct, so “fix the spec” looks different from “fix the code”. Provenance is visible too: every stripe starts at a ✦ birth, labelled with its source (<code>shl</code>, <code>param</code>, <code>inv</code>, <code>$slot</code>).</li>
+<li><b>What it hides.</b> Facts that are not attached to a value: relations between two stack slots, frame and memory facts (the hash table’s R and the probe invariant’s “path so far”), and anything quantified. These have to go on rails or badges, where they are text again. The fixed vocabulary (comb, band, knot) cannot express “why” a knot holds: the solver’s reasoning stays hidden, and only its inputs and outputs are drawn. Once a ribbon carries more than 3 facts, the rest are only reachable by hover. Runtime darkred is shown only while a value is fresh, so a failure flashes at its step and the slider pill is what keeps it findable.</li>
+<li><b>How it scales.</b> Rows stay at a fixed height and every annotation sits in the right margin. On the 169-line table the gutter alone (⚖, fray, ☆, 💣) is enough to find each seeded bug. The cost is ink. A clean listing still draws a striped ribbon on every connection and a filled badge on every requirement, and long rails (for example the <code>used&lt;7</code> rail from line 127 to 163) add verticals that cross many rows. It is calm in colour but not silent. A production version should draw stripes only on connections that feed a badge, and show the rest on hover.</li>
+<li><b>Policy choice.</b> Facts re-born from a loop invariant that is <i>not</i> inductive (S1, S3, bug a) are drawn as <i>assumed</i>: ghosted, with ○ badges downstream, instead of proven. That is why every load and store badge in bug (a) is hollow while the darkred stays on the back-edge badge and the fray. It is honest, but it adds a second, grey cascade to the picture.</li>
+<li><b>Cost in Codillon.</b> Codillon already computes the def-use graph (<code>SlotConnections</code>) and draws each connection as a masked, tweened SVG path, so ribbons are N offset copies of that path. The new work is (1) the checker must export, per slot, a fact set projected onto a small vocabulary (parity / interval / equality-to-term), plus per-line path facts for rails, and (2) the editor must diff input and output fact sets to find births and deaths. Rails need the verifier’s per-line Φ (01 §2.1). Rough size: 1–2k lines of Rust, plus fact-vocabulary design.</li>
+<li><b>Implementation notes.</b> The fixture has key frames only, so this page embeds a small line-level interpreter. It reproduces every fixture key frame and every step total (44 / 150 / 383, the trap at step 153, the cut at 900), so the slider scrubs complete runs. The isqrt listing and traces come from 03, the syntax from 01. The <code>(@use lemma …)</code> hint row is an addition and is not numbered. Stale-verdict fading is not implemented.</li>
+<li><b>Rubric self-scores (1–5).</b> Salience 4 · Blame locality 4 (P1 is weaker: one deleted line causes five ⚖ rows, all of whose trails converge on blank line 15) · Kind discrimination (grayscale) 4 · Vocabulary continuity 4 · Predicate on shape 4 · Causal trail 5 · Concrete witness 4 · Ink economy 3 · Scale 3 · Edit continuity 3 (keyed SVG reconciliation: a seeded bug fades the stripe out downstream and fades the fray in at the responsible line, with no re-render; row shifts tween paths but text jumps).</li>
+
 </ul>
 </footer>
 <script>
@@ -1225,7 +1233,7 @@ function buildLegend(svg) {
   cap('c7', 812, 58, 'frayed end = fact dies\n(even + 1 kills “even”)');
   base('b8', 942, 36, 90, 1);
   { const S = sampleSegs([{ a: [942, 36], b: [1032, 36] }], 30); drawLane(items, 'l8', S, 0, () => 1, { f: FA.even, id: 'even', fray: true, vacant: true }, undefined, '', 0); }
-  cap('c8', 942, 58, 'darkred fray + ghost lane:\nthe fact a badge needs, traced\nback to where it died');
+  cap('c8', 942, 58, 'darkred fray + ghost lane:\na needed fact, traced back\nto where it died');
   base('b9', 1082, 36, 90, 1); lane('l9', 1082, 36, 90, FA.even, {}, false); cap('c9', 1082, 58, 'darkred stripe: fact claimed\nbut FALSE at this step');
   items.push({ k: 'rl0', t: 'path', a: { d: 'M1232,26 L1262,26 C1270,26 1272,28 1272,34 L1272,70', class: 'railbase', 'stroke-width': 9.6 } });
   { const S = sampleSegs([{ a: [1232, 26], b: [1262, 26] }, { a: [1262, 26], c: [[1270, 26], [1272, 28]], b: [1272, 34] }, { a: [1272, 34], b: [1272, 70] }], 30); drawLane(items, 'rl1', S, 0, spreadStart, { f: FA.even, id: 'xe' }, undefined, '', 0); }
@@ -1472,6 +1480,22 @@ buildLegend(document.getElementById('legend'));
     document.querySelectorAll('#secA-wrap').forEach(() => 0); }
 })();
 if (new URLSearchParams(location.hash.slice(1)).has('gray')) document.body.style.filter = 'grayscale(1)';
+if (new URLSearchParams(location.hash.slice(1)).has('selftest')) setTimeout(() => {
+  const log = m => console.log('SELFTEST ' + m);
+  try {
+    const sel = document.querySelector('#c select.bug'); sel.value = 'Hb'; sel.dispatchEvent(new Event('change'));
+    const S = sliders.find(s => s.section.id === 'c'); log('Hb start step ' + S.opts.listing.T.trace[S.idx].s + ' pills ' + S.opts.listing.pills.map(p => S.opts.listing.T.trace[p.idx].s).join(','));
+    S.go(0, true); window.scrollTo(0, document.getElementById('c').offsetTop + 400);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' })); log('after → idx ' + S.idx);
+    const chip = [...document.querySelectorAll('#c svg.listing rect.chip.refuted')][0]; log('refuted chip jump=' + (chip && chip.dataset.jump));
+    chip.dispatchEvent(new MouseEvent('click', { bubbles: true })); log('after chip click step ' + S.opts.listing.T.trace[S.idx].s);
+    const fold = document.querySelector('#c text.fold'); fold.dispatchEvent(new MouseEvent('click', { bubbles: true })); log('rows after unfold ' + S.opts.listing.rows.length);
+    const b = document.querySelector('#b select.bug'); b.value = 'S1'; b.dispatchEvent(new Event('change')); document.querySelector('#b .replay').click(); const SB = sliders.find(s => s.section.id === 'b'); log('S1 replay n=' + SB.opts.listing.n + ' pills ' + SB.opts.listing.pills.map(p => SB.opts.listing.T.trace[p.idx].s).join(','));
+    const a = document.querySelector('#a4 select.bug'); a.value = 'P2'; a.dispatchEvent(new Event('change')); const SA = sliders.find(s => s.section.id === 'a4'); SA.go(SA.opts.listing.n - 1, true);
+    const falses = document.querySelectorAll('#a4 rect.chip.false').length; log('P2 last step false chips ' + falses + ', darkred lanes ' + document.querySelectorAll('#a4 .badl').length);
+    log('OK');
+  } catch (e) { log('ERROR ' + e.stack); }
+}, 300);
 
 </script>
 </body></html>
