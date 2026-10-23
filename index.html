@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Codillon with refinement types — a visualization study</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { background:#fffff0; color:#222; font-family: "Latin Modern Roman","CMU Serif",Georgia,"Times New Roman",serif; max-width: 980px; margin: 2rem auto; padding: 0 1.2rem; line-height:1.45; font-size:18px; }
+  h1 { font-weight: normal; font-size: 2rem; margin-bottom:.2rem }
+  h2 { font-weight: normal; border-bottom:1px solid #c9c9b0; padding-bottom:.2rem; margin-top:2.2rem }
+  .sub { color:#555; font-style: italic }
+  .gallery { display:grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap:1rem; margin-top:1rem }
+  .card { border:1px solid #c9c9b0; background:#fffff8; padding:.8rem 1rem; }
+  .card .n { color:#8b0000; font-family:"Latin Modern Sans","Fira Sans Condensed","Arial Narrow",sans-serif; font-size:.85rem }
+  .card a.t { color:indigo; text-decoration:none; font-size:1.15rem }
+  .card a.t:hover { text-decoration:underline }
+  .card p { margin:.4rem 0 0; font-size:.95rem; color:#333 }
+  .card .pending { color:#777; font-style: italic }
+  ul.docs li { margin:.3rem 0 }
+  a { color: indigo }
+  .status { font-family:"Latin Modern Sans","Fira Sans Condensed","Arial Narrow",sans-serif; font-size:.9rem; color:#555 }
+</style>
+</head>
+<body>
+<h1>Codillon with refinement types</h1>
+<p class="sub">A visualization study: when types carry predicates, how should the editor draw whether a program meets its specification?</p>
+
+<p><a href="https://github.com/codillon/codillon">Codillon</a> is Keith Winstein's structured WebAssembly editor for Stanford's intro
+course. Today it shows <em>validity</em> continuously and spatially: types are shapes, dataflow is curves, badness is dark red, and
+runtime is a slider. This study asks what a next version would look like if types were refinement types grounded Lean‑style
+(<code>(i32 | even v)</code>, loop invariants, function contracts, a hash table's representation invariant) and the editor had to make
+a <em>specification‑adherence</em> bug as visually obvious as a type error is today.</p>
+
+<h2>Ten prototypes</h2>
+<p class="status">Each page follows the same contract: legend → primitive in isolation → integer square root (or gcd) with a step slider and a “seed bug” control → an 8‑slot open‑addressing hash table with the same → self‑critique. Everything is a single self‑contained HTML file.</p>
+<div class="gallery" id="gallery">
+  <div class="card"><div class="n">01</div><a class="t" href="artifacts/01-containment-spill.html">Shape as value space</a><p>The i32 rectangle <em>is</em> the number line; a refinement is a region inside it; a failed subtyping check spills over the cup's rim.</p></div>
+  <div class="card"><div class="n">02</div><a class="t" href="artifacts/02-wraparound-ring.html">Wraparound ring</a><p>i32 as a clock with a seam; overflow is a bead jumping the seam; signed and unsigned readings as twin ticks.</p></div>
+  <div class="card"><div class="n">03</div><a class="t" href="artifacts/03-sequent-fractions.html">Sequent fractions</a><p>Codillon's type fraction becomes a sequent: known facts above the rule, claimed facts below; the rule's style is the obligation's status.</p></div>
+  <div class="card"><div class="n">04</div><a class="t" href="artifacts/04-fact-ribbons.html">Fact ribbons</a><p>Dataflow curves carry stripes of facts that are born, preserved, or fray out where an operation loses them.</p></div>
+  <div class="card"><div class="n">05</div><a class="t" href="artifacts/05-invariant-horizon.html">Invariant horizon</a><p>A gate on the loop frame; a lap chart of invariant conjuncts per iteration; a descending staircase for termination.</p></div>
+  <div class="card"><div class="n">06</div><a class="t" href="artifacts/06-model-memory-mirror.html">Model / memory mirror</a><p>Abstract map above, concrete slots below, strings between them; the representation invariant is a clean alignment.</p></div>
+  <div class="card"><div class="n">07</div><a class="t" href="artifacts/07-witness-track.html">Witness track</a><p>Counterexamples are runs: a ghost track above the slider, replayed into a dark‑red pill, with the false sub‑term underlined.</p></div>
+  <div class="card"><div class="n">08</div><a class="t" href="artifacts/08-spec-sampler.html">Spec sampler</a><p>Relation plots and edge‑case grids: sampled calls drawn on the spec's own shape; coverage, not proof.</p></div>
+  <div class="card"><div class="n">09</div><a class="t" href="artifacts/09-envelope-strips.html">Envelope strips</a><p>Per‑variable timelines under the slider; the refinement is a band, the value a line, a violation the line leaving the band.</p></div>
+  <div class="card"><div class="n">10</div><a class="t" href="artifacts/10-proof-holes.html">Synthetic proof holes</a><p>An undischarged obligation materializes as an inserted hole line, like a synthetic <code>end</code>, with suggestion chips.</p></div>
+</div>
+
+<h2>Research</h2>
+<ul class="docs">
+  <li><a href="research/00-codillon-today.html">00 · Codillon today</a> — the current visual vocabulary this study builds on.</li>
+  <li><a href="research/01-language-design.html">01 · Language design</a> — refinement types on a Wasm stack machine, obligations per instruction, Lean grounding.</li>
+  <li><a href="research/02-prior-art-visualization.html">02 · Prior art</a> — proof‑assistant IDEs, auto‑active verifiers, live programming, model finders; principles and primitives.</li>
+  <li><a href="research/03-sample-programs.html">03 · Sample programs</a> — parity, isqrt, gcd, pow_mod, hash table; specs, obligations, seeded bugs, executed traces (<a href="research/fixture.json">fixture.json</a>).</li>
+  <li><a href="research/04-requirements-and-bug-taxonomy.html">04 · Requirements and bug taxonomy</a> — fifteen failure modes and a ten‑criterion rubric.</li>
+  <li><a href="research/05-ten-visualization-ideas.html">05 · The ten ideas</a> — the concepts and the six‑state status model they share.</li>
+  <li><a href="research/06-artifact-brief-shared.html">06 · Shared brief</a> — the contract every prototype follows.</li>
+</ul>
+<p class="status">Source: <a href="https://github.com/jmandel/codillon-spec-viz">github.com/jmandel/codillon-spec-viz</a>. Codillon itself is LGPL‑2.1 and included only as a submodule for reference.</p>
+</body>
+</html>

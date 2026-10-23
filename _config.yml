@@ -1,0 +1,10 @@
+title: Codillon with refinement types — a visualization study
+description: Ten prototypes for making specification-adherence bugs visually obvious in a dependently typed Codillon
+theme: jekyll-theme-primer
+exclude:
+  - codillon
+  - tools
+  - Gemfile
+  - Gemfile.lock
+include:
+  - artifacts
