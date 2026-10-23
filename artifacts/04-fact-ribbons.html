@@ -95,9 +95,9 @@ svg.listing *, #legend * { transition: opacity .25s ease, d .25s ease, fill .25s
 .chip { stroke-width: 1; }
 .chip.proven { fill: #ddd8f2; stroke: var(--i32); stroke-width: .9; }
 .chip.refuted { fill: var(--ivory); stroke: darkred; stroke-width: 1.7; cursor: pointer; }
-.chip.refuted-ghost { fill: var(--ivory); stroke: darkred; stroke-width: 1.3; stroke-dasharray: 3 2; }
+.chip.refuted-ghost { fill: var(--ivory); stroke: darkred; stroke-width: 1.3; stroke-dasharray: 6 2 1.2 2; }
 .chip.false { fill: darkred; stroke: darkred; cursor: pointer; }
-.chip.unknown, .chip.unknown-dyn { fill: var(--ivory); stroke: indigo; stroke-width: 1.2; stroke-dasharray: 4 2; }
+.chip.unknown, .chip.unknown-dyn { fill: var(--ivory); stroke: indigo; stroke-width: 1.2; stroke-dasharray: 3.5 2.5; }
 .chip.dynamic { fill: var(--ivory); stroke: slategray; stroke-width: 1.8; stroke-dasharray: .1 2.8; stroke-linecap: round; }
 .chip.assumed, .chip.vacuous { fill: none; stroke: #555; stroke-opacity: .5; }
 .chipt { font: 10.5px "Arial Narrow", sans-serif; fill: #2c2560; }
@@ -648,7 +648,7 @@ function modelHash(bug) {
     { id: 'tee35', from: 35, src: 'frac', subject: 'p', stripes: ['intab'], taps: [{ row: 43, to: 'out' }, { row: 47, to: 'out' }], label: 'p' },
     { id: 'then39', from: 39, src: 'frac', subject: 'i', stripes: Hb ? ['pathEoT', 'kNotM_'] : ['pathE', 'kNotM'], taps: [{ row: 41, to: 'chip' }], label: 'then' },
     { id: 'then52', from: 52, src: 'frac', subject: 'i', stripes: ['pathHit'], taps: [{ row: 54, to: 'chip' }], label: 'then' },
-    { id: 'set61', from: 61, src: 'frac', subject: 'i', stripes: ['lt8', 'atkj'], taps: [{ row: 63, to: 'chip' }], label: "i'" },
+    { id: 'set61', from: 61, src: 'frac', subject: 'i', stripes: ['lt8', 'atkj1'], taps: [{ row: 63, to: 'chip' }], label: "i'" },
     { id: 'then76', from: 76, src: 'frac', subject: 'k', stripes: ['kNotM'], taps: [{ row: 78, to: 'chip' }], label: 'then' },
     { id: 'tee73', from: 73, src: 'frac', subject: 'i', stripes: ['fpost'], taps: [{ row: 80, to: 'out' }], label: 'i' },
     { id: 'tee90', from: 90, src: 'frac', subject: 'i', stripes: ['fpost'], taps: [{ row: 97, to: 'out' }], label: 'i' },
@@ -656,7 +656,7 @@ function modelHash(bug) {
     { id: 'set134', from: 134, src: 'frac', subject: 'i', stripes: ['lt8'], taps: [{ row: 135, to: 'chip' }], label: 'i' },
     { id: 'loop135', from: 135, src: 'chips', subject: 'i', stripes: ['lt8', 'atkj', 'knew'], taps: [{ row: 139, to: 'out' }, { row: 144, to: 'out' }], label: 'inv' },
     { id: 'tee141', from: 141, src: 'frac', subject: 'p', stripes: ['intab'], taps: [{ row: 154, to: 'out' }, { row: 157, to: 'out' }, { row: 160, to: 'out' }], label: 'p' },
-    { id: 'set149', from: 149, src: 'frac', subject: 'i', stripes: Ha ? ['le8', 'lt8_'] : ['lt8', 'atkj'], taps: [{ row: 151, to: 'chip' }], label: "i'" },
+    { id: 'set149', from: 149, src: 'frac', subject: 'i', stripes: Ha ? ['le8', 'lt8_'] : ['lt8', 'atkj1'], taps: [{ row: 151, to: 'chip' }], label: "i'" },
   ];
   if (Hc) rails.push({ id: 'else115', from: 110, src: 'frac', subject: 'k', stripes: ['knew_'], taps: [{ row: 135, to: 'chip' }], label: '' });
   else rails.push({ id: 'else115', from: 115, src: 'frac', subject: 'k', stripes: ['knew'], taps: [{ row: 135, to: 'chip' }], label: 'else' },
@@ -970,7 +970,10 @@ class Listing {
       const y = 8 + ri * G.ROW;
       if (r.fold) {
         items.text.push({ k: 'fold' + r.fold.from, t: 'text', a: { x: G.CODE_X + 22, y: y + 25, class: 'fold', 'data-fold': r.fold.from }, x: `⋯  lines ${r.fold.from}–${r.fold.to}: ${r.fold.label}   (click to unfold)`, act: 'fold:' + r.fold.from });
-        items.gutter.push({ k: 'g' + r.line, t: 'text', a: { x: G.NUM_X, y: y + 25, class: 'num' }, x: '⋯' });
+        const rootIn = Object.keys(m.roots || {}).find(L => +L >= r.fold.from && +L <= r.fold.to);
+        if (rootIn) { const gy = y; items.gutter.push({ k: 'g' + r.line, t: 'path', a: { d: `M${G.NUM_X - 17},${gy + 21} L${G.NUM_X - 7},${gy + 21} M${G.NUM_X - 7},${gy + 21} L${G.NUM_X},${gy + 15} M${G.NUM_X - 7},${gy + 21} L${G.NUM_X + 1},${gy + 21} M${G.NUM_X - 7},${gy + 21} L${G.NUM_X},${gy + 27}`, class: 'gfray' }, tip: 'a needed fact dies inside this folded region: ' + m.roots[rootIn] });
+          const nt = m.roots[rootIn]; const w = measure(nt, 11.5) + 12; items.over.push({ k: 'nb' + rootIn, t: 'rect', a: { x: G.W - 4 - w, y: y + 12, width: w, height: 17, rx: 2, class: 'notebox' } }); items.over.push({ k: 'note' + rootIn, t: 'text', a: { x: G.W - 10, y: y + 24.5, class: 'note' }, x: nt }); }
+        else items.gutter.push({ k: 'g' + r.line, t: 'text', a: { x: G.NUM_X, y: y + 25, class: 'num' }, x: '⋯' });
         return;
       }
       if (r.extra) {
@@ -1085,7 +1088,7 @@ class Listing {
       this.chipBox[L] = { x0: G.CHIP_X, x1: x - 4, y: y + G.CHIP_H / 2 };
     }
     // ----- rails (path / loop / local facts) -----
-    const railsVis = this.rails.filter(r => this.rowOf[r.from] !== undefined);
+    const railsVis = this.rails.filter(r => this.rowOf[r.from] !== undefined && r.taps.some(t => this.visible(t.row)));
     const cols = []; railsVis.sort((a, b) => this.rowOf[a.from] - this.rowOf[b.from]);
     const srcCount = {};
     for (const r of railsVis) {
@@ -1096,7 +1099,7 @@ class Listing {
       const xr = G.RAIL_X + col * G.RAIL_DX;
       const sc = srcCount[r.from] = (srcCount[r.from] || 0) + 1;
       const yS = this.rowY(r.from) + 29 + (sc - 1) * 6;
-      const box = this.chipBox[r.from]; const xS = r.src === 'chips' && box ? box.x1 + 2 : (this.visible(r.from) ? G.XC + 18 : G.CODE_X + 400);
+      const box = this.chipBox[r.from]; const xS = r.src === 'chips' && box ? box.x1 + 2 : G.XC + 18;
       const yLast = Math.max(...r.taps.map(t => this.rowY(t.row) + (t.to === 'chip' ? 10.5 : 27.5)));
       const ev = this.latest(this.railEval[r.id], cur);
       const evFresh = ev && hasRun && this.fresh(r.from, { idx: ev.idx, act: ev.ex.act }, cur);
@@ -1173,6 +1176,7 @@ function drawLane(out, key, SS, off, spreadFn, s, okNow, tip, j) {
     return;
   }
   const d = polyD(lanePts(SS, off, spreadFn));
+  if (s.unknown && okNow === true) s = Object.assign({}, s, { unknown: false, dynamic: true });
   const cls = laneClass(f, s, bad);
   if (s.assumed) { out.push({ k: key, t: 'path', a: { d, class: 'lane hollowo' + (bad ? ' badl' : '') }, tip }); out.push({ k: key + 'i', t: 'path', a: { d, class: 'lane hollowi' }, tip }); return; }
   if (f.kind === 'knot' && !s.unknown && !s.dynamic) { out.push({ k: key, t: 'path', a: { d, class: cls + ' kline' }, tip }); out.push({ k: key + 'b', t: 'path', a: { d, class: cls + ' kbead', 'stroke-dashoffset': -j * 3 }, tip }); return; }
@@ -1231,7 +1235,7 @@ function buildLegend(svg) {
   const st6 = [
     ['proven', 'even', 'proven: filled badge,\nstripe arrives (quiet)'],
     ['refuted', 'even', 'refuted, witness replayed:\nhollow darkred, ⚖ in gutter'],
-    ['refuted-ghost', 'even', 'refuted, not yet replayed:\ndashed darkred outline, hollow ⚖'],
+    ['refuted-ghost', 'even', 'refuted, not yet replayed:\ndash-dot darkred outline, hollow ⚖'],
     ['false', 'even', 'false at this step:\nsolid darkred (slider pill)'],
     ['dynamic', 'even ∘3', 'held on this run only:\nslategray dotted, ∘count'],
     ['unknown', 'even ?', 'unknown / needs hint:\nindigo dashed ?, ☆ in gutter'],
@@ -1243,8 +1247,9 @@ function buildLegend(svg) {
   const lx = [10, 196, 382, 568, 754, 940, 1126];
   base('sb0', lx[0], 222, 80, 1); lane('sl0', lx[0], 222, 80, FA.even, {}, undefined); cap('sx0', lx[0] + 92, 226, 'proven');
   base('sb1', lx[1], 222, 80, 1); lane('sl1', lx[1], 222, 80, FA.even, { vacant: true }, undefined); cap('sx1', lx[1] + 92, 226, 'missing (ghost)');
+  base('sb2', lx[2], 222, 80, 1); { const S = sampleSegs([{ a: [lx[2], 222], b: [lx[2] + 80, 222] }], 30); drawLane(items, 'sl2', S, 0, () => 1, { f: FA.even, id: 'even', fray: true }, undefined, '', 0); } cap('sx2', lx[2] + 92, 226, 'dies (frays)');
   base('sb3', lx[3], 222, 80, 1); lane('sl3', lx[3], 222, 80, FA.even, {}, false); cap('sx3', lx[3] + 92, 226, 'false now');
-  base('sb4', lx[4], 222, 80, 1); lane('sl4', lx[4], 222, 80, FA.even, { dynamic: true }, undefined); cap('sx4', lx[4] + 92, 226, 'dynamic');
+  base('sb4', lx[4], 222, 80, 1); lane('sl4', lx[4], 222, 80, FA.even, { dynamic: true }, undefined); cap('sx4', lx[4] + 92, 226, 'held this run');
   base('sb5', lx[5], 222, 80, 1); lane('sl5', lx[5], 222, 80, FA.even, { unknown: true }, undefined); cap('sx5', lx[5] + 92, 226, 'unknown');
   base('sb6', lx[6], 222, 80, 1); lane('sl6', lx[6], 222, 80, FA.even, { assumed: true }, undefined); cap('sx6', lx[6] + 92, 226, 'assumed');
   // row 3: glyphs
@@ -1466,6 +1471,7 @@ buildLegend(document.getElementById('legend'));
   if (h.has('only')) { const keep = h.get('only').split(','); document.querySelectorAll('body > *').forEach(el => { if (el.tagName === 'SCRIPT' || el.id === 'tip') return; const ids = [el.id, ...[...el.querySelectorAll('section,.snip')].map(x => x.id)]; if (!keep.some(k => ids.includes(k))) el.style.display = 'none'; });
     document.querySelectorAll('#secA-wrap').forEach(() => 0); }
 })();
+if (new URLSearchParams(location.hash.slice(1)).has('gray')) document.body.style.filter = 'grayscale(1)';
 
 </script>
 </body></html>
