@@ -236,7 +236,7 @@ select { font-family: var(--sans); font-size: 13px; background: var(--ivory); bo
 .rcl { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 3px; }
 .mx { margin-top: 5px; font-size: 12px; }
 .open { color: #777; }
-.lens { display: block; overflow: visible; }
+.lens { display: block; overflow: visible; max-width: 100%; height: auto; }
 .lens .lbl { paint-order: stroke; stroke: #fffff6; stroke-width: 3px; stroke-linejoin: round; }
 .lens .lbl.wht { stroke: none; }
 #hoverzoom { position: fixed; display: none; z-index: 950; width: 316px; background: #fffff8; border: 1px solid #aaa; padding: 6px 8px; box-shadow: 0 3px 10px rgba(0,0,0,.14); pointer-events: none; font-family: var(--sans); }
@@ -326,7 +326,7 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
   p, li { font-size: 16.5px; }
   .lede { font-size: 17px; }
   .beforeafter { grid-template-columns: 1fr; }
-  .ba { overflow-x: auto; }
+  .ba { overflow: hidden; }
   .banote { font-size: 15.5px; }
   .setfig { overflow-x: hidden; }
   .setchip { position: static; margin: 4px 0; }
@@ -340,9 +340,9 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
   .sixt { grid-column: 1 / -1; font-size: 15px; }
   .sixt b { font-size: 15px; }
   .s2grid, .s6grid { grid-template-columns: 1fr; }
-  .s2grid > div:first-child, .s2side { overflow-x: auto; }
+  .s2side { overflow-x: hidden; }
   .lgrid { display: block; }
-  .lgrid > div:first-child { overflow-x: auto; overflow-y: hidden; }
+  .lwrap { overflow-x: auto; overflow-y: hidden; }
   .dock { position: static; margin-top: 10px; }
   .dock.empty .dk-hint { white-space: normal; }
   .rules { grid-template-columns: 1fr; }
@@ -363,6 +363,21 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
   .legend { grid-template-columns: 1fr; }
   h2 { font-size: 24px; }
 }
+
+.fitbtn { display: none; }
+@media (max-width: 700px) {
+  body { padding: 0 8px 40px; }
+  nav.toc { margin: 0 -8px; }
+  .fitbtn { display: inline-block; font-family: var(--sans); font-size: 13px; border: 1px solid #999; background: var(--ivory); border-radius: 18px; padding: 0 12px; min-height: 36px; margin: 6px 0 4px; color: #333; }
+  .lwrap { overflow-x: hidden; }
+  .lwrap.actual { overflow-x: auto; }
+  .listing.narrow .hbody { flex-direction: column; gap: 6px; }
+  .listing.narrow .sugg { flex: 0 0 auto; }
+  .listing.narrow .sg { max-width: 100%; }
+  .listing.narrow .hbox { margin-left: 66px; }
+}
+.s2grid > div, .lgrid > div, .beforeafter > div { min-width: 0; }
+@media (max-width: 700px) { .listing.narrow .site.blank { width: 90px; } }
 
 </style></head>
 <body>
@@ -1624,6 +1639,13 @@ class View {
     root.style.setProperty('--rh', this.rh + 'px'); root.style.setProperty('--cf', (o.cf || 21) + 'px'); root.style.setProperty('--mf', (o.mf || 16) + 'px');
     root.style.setProperty('--fx', this.fracX + 'px'); root.style.width = (o.width || 780) + 'px';
     root.innerHTML = `<div class="rows"></div><svg class="overlay"></svg>`;
+    // phones: a scroller wrapper, and a fit/actual-size toggle above it
+    const wrap = document.createElement('div'); wrap.className = 'lwrap'; root.parentNode.insertBefore(wrap, root); wrap.appendChild(root); this.wrap = wrap;
+    const fb = document.createElement('button'); fb.className = 'fitbtn'; fb.type = 'button'; wrap.parentNode.insertBefore(fb, wrap); this.fitBtn = fb;
+    this.actual = false; fb.textContent = 'fit to screen ⇄ actual size · showing: fit';
+    fb.onclick = () => { this.actual = !this.actual; fb.textContent = 'fit to screen ⇄ actual size · showing: ' + (this.actual ? 'actual size' : 'fit'); this.fit(); this.drawOverlay(); };
+    this.mq = matchMedia('(max-width: 700px)'); this.narrow = null;
+    addEventListener('resize', () => this.relayout());
     this.rowsEl = $('.rows', root); this.ov = $('.overlay', root);
     this.folded = new Set(o.folded || []); this.moduleOpen = false;
     this.mode = 'your'; this.cur = 0; this.runs = { your: null, wit: null };
@@ -1664,8 +1686,47 @@ class View {
   dynCount(key) { const r = this.runs.your; return r ? r.recs.filter(x => x.key === key).length : 0; }
 
   // ---------- update: re-derive, re-run, reconcile rows with tweens ----------
+  // ---------- narrow screens: tighten the gap, then scale the listing to the container ----------
+  layoutMode() {
+    const narrow = this.mq.matches;
+    this.narrow = narrow; this.root.classList.toggle('narrow', narrow);
+    if (!narrow) { this.fracX = this.o.fracX || 470; this.root.style.width = (this.o.width || 780) + 'px'; }
+    else {
+      const c = View._cv || (View._cv = document.createElement('canvas').getContext('2d'));
+      c.font = `${this.o.cf || 21}px ${getComputedStyle(document.body).fontFamily}`;
+      let w = 120;
+      for (const r of this.d.rows) {
+        if (['func', 'meta', 'local', 'ghostlocal', 'spec', 'ghostop', 'assert', 'assume'].includes(r.kind)) continue;
+        const ind = (r.text.match(/^ */) || [''])[0].length;
+        w = Math.max(w, ind * 7 + c.measureText(r.text.trim()).width + 6);
+      }
+      this.fracX = Math.ceil(86 + w + 16);
+      this.root.style.width = (this.fracX + 196 + 96) + 'px';
+    }
+    this.root.style.setProperty('--fx', this.fracX + 'px');
+  }
+  fit() {
+    const r = this.root, p = this.wrap;
+    r.style.zoom = ''; r.style.transform = ''; r.style.marginBottom = ''; r.style.marginRight = '';
+    this.fitBtn.style.display = this.narrow ? '' : 'none';
+    this.wrap.classList.toggle('actual', !!(this.narrow && this.actual));
+    if (!this.narrow || this.actual) { this.scale = 1; return; }
+    const nat = parseFloat(r.style.width), avail = p.clientWidth;
+    const s = Math.min(1, avail / nat); this.scale = s;
+    if (s >= 1) return;
+    if (CSS.supports('zoom', '0.5')) r.style.zoom = s;
+    else { r.style.transformOrigin = '0 0'; r.style.transform = `scale(${s})`; r.style.marginBottom = `${-(1 - s) * r.offsetHeight}px`; r.style.marginRight = `${-(1 - s) * nat}px`; }
+  }
+  relayout() {
+    if (!this.d) return;
+    const was = this.narrow; this.layoutMode();
+    if (was !== this.narrow || this.narrow) { this.reconcile({}); this.paint(); }
+    this.fit(); this.drawOverlay();
+  }
+
   update(how = {}) {
     const d = this.d = this.m.derive();
+    this.layoutMode();
     if (this.o.funcs) for (const h of d.holes) { [h.at, h.fixAlso, h.after].filter(Boolean).forEach(k => { const f = this.fnOf(k); if (f) this.folded.delete(f[0]); }); (h.unfold || []).forEach(n => this.folded.delete(n)); }
     // runs
     const ys = this.o.yourRun ? this.o.yourRun(this.m.flags) : null;
@@ -1679,6 +1740,7 @@ class View {
     for (const h of d.holes) if (how.autoReplay && h.witness && !this.m.replayed.has(h.key)) { this.replay(h, true); return; }
     this.S = this.statuses();
     this.reconcile(how);
+    this.fit();
     this.syncBar(how.resetStep || how.initial || how.edit);
     if (this.o.onUpdate) this.o.onUpdate(this, how);
   }
@@ -2100,7 +2162,7 @@ class Dock {
 function zoomLens(i, W = 470) {
   const pad = 26, w = W - 2 * pad - 14, y = 40, H = 24;
   const X = v => pad + w * fx(v);
-  let s = `<svg width="${W}" height="${i.cup ? 132 : 118}" class="lens zoom">`;
+  let s = `<svg width="${W}" height="${i.cup ? 132 : 118}" viewBox="0 0 ${W} ${i.cup ? 132 : 118}" class="lens zoom">`;
   // landmarks
   const marks = W < 400 ? [[MIN, 'INT_MIN'], [-8, '−8'], [0, '0'], [8, '8'], [MAX, 'INT_MAX']] : [[MIN, 'INT_MIN'], [-65536, '−2¹⁶'], [-8, '−8'], [-4, '−4'], [0, '0'], [4, '4'], [8, '8'], [65536, '2¹⁶'], [MAX, 'INT_MAX']];
   for (let v = -8; v <= 8; v++) s += `<line x1="${X(v)}" x2="${X(v)}" y1="${y + H + 2}" y2="${y + H + 6}" stroke="#999"/>`;
@@ -2132,7 +2194,7 @@ function callout(px, py, lx, ly, text, anchor, cls) {
 function ringLens(i, view) {
   const W = 470, Hh = 344, cx = 235, cy = 182, R = 104;
   const u32 = v => (v >>> 0);
-  let s = `<svg width="${W}" height="${Hh}" class="lens ring">`;
+  let s = `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}" class="lens ring">`;
   s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${COL.i32}" stroke-width="2"/>`;
   // provided region as an arc band
   const P = i.prov;
@@ -2209,7 +2271,7 @@ function lapLens(view, lp) {
   const cw = 26, x0 = 150, rowH = 24, W = 470;
   const rows = st.noinv ? [] : lp.conj;
   const H = st.noinv ? 82 : 26 + rows.length * rowH + 64;
-  let s = `<svg width="${W}" height="${H}" class="lens lap">`;
+  let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" class="lens lap">`;
   let x = x0;
   const hatch = (l1, l2) => { const w = 58; s += `<rect x="${x}" y="22" width="${w}" height="${rows.length * rowH + 30}" fill="url(#hatchG)" stroke="#bbb"/><text x="${x + w / 2}" y="${30 + rows.length * rowH / 2}" text-anchor="middle" class="lbl tiny halo">${l1}</text><text x="${x + w / 2}" y="${42 + rows.length * rowH / 2}" text-anchor="middle" class="lbl tiny halo">${l2}</text>`; x += w + 6; };
   if (loophead && run.hole && run.hole.realStep) hatch('⋯ 46 340', 'laps not run');
@@ -2276,7 +2338,7 @@ function mirrorLens(view) {
   const boundary = (run.boundaries || []).includes(r.s) || view.cur === run.recs.length - 1 && !run.halted;
   const R = evalR(slots, M, used);
   const W = 470, Hh = 372, cx = 235, cy = 206, RR = 104;
-  let s = `<svg width="${W}" height="${Hh}" class="lens mirror">`;
+  let s = `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}" class="lens mirror">`;
   // ghost map beads
   s += `<text x="4" y="11" class="lbl dim">ghost map M</text>`;
   const bx = k => 4 + k * 57;
@@ -2342,7 +2404,7 @@ function relLens(view) {
   const N = 40, W = 470, Hh = 270, x0 = 46, y0 = 222, sx = (W - 70) / (N + 1), sy = 24;
   const post = f.post === 'S2' ? (n, v) => 0 <= v && v * v < n && n <= (v + 1) * (v + 1) : (n, v) => 0 <= v && v * v <= n && n < (v + 1) * (v + 1);
   const reqOk = n => f.req === '1' ? n >= 1 : n >= 0;
-  let s = `<svg width="${W}" height="${Hh}" class="lens rel">`;
+  let s = `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}" class="lens rel">`;
   s += `<text x="${x0}" y="14" class="lbl samples">SAMPLES · NOT PROOF</text><text x="${W - 8}" y="14" text-anchor="end" class="lbl dim">41 inputs of 2³¹ · blank = never run, not fine</text>`;
   // shaded spec relation
   for (let n = 0; n <= N; n++) for (let v = 0; v <= 7; v++) if (post(n, v)) s += `<rect x="${x0 + n * sx}" y="${y0 - (v + 1) * sy + 2}" width="${sx}" height="${sy - 4}" fill="${MUT}"/>`;
@@ -2383,7 +2445,8 @@ function hoverZoom() {
       const b = anchor.getBoundingClientRect();
       el.style.display = 'block';
       el.style.left = Math.max(4, Math.min(innerWidth - 320, b.right + 14)) + 'px';
-      el.style.top = (innerWidth <= 900 ? Math.min(innerHeight - el.offsetHeight - 8, b.bottom + 12) : Math.min(innerHeight - el.offsetHeight - 8, b.top - 10)) + 'px';
+      el.style.top = (innerWidth <= 700 ? innerHeight - el.offsetHeight - 8 : Math.min(innerHeight - el.offsetHeight - 8, b.top - 10)) + 'px';
+      if (innerWidth <= 700) el.style.left = Math.max(4, (innerWidth - el.offsetWidth) / 2) + 'px';
     },
   };
 }
@@ -2555,6 +2618,8 @@ function hoverZoom() {
       lab(196, 352, 300, `<span class="dim">Lines 7–8 of the listing, magnified 2×. The dots are the values at the slider’s step${v7 && v7.outs ? `: i + 1 = <b>${fmt(v7.outs[0])}</b>` : ''}.</span>`);
   }
   drawCall(nv);
+  const fitCall = () => { const f = $('.callfig'); f.style.zoom = innerWidth <= 700 ? Math.min(1, f.parentElement.clientWidth / 690) : ''; };
+  fitCall(); addEventListener('resize', fitCall);
 
   // legend: the one chip vocabulary and the glyphs (used nowhere else)
   $('#legendgrid').innerHTML = `
