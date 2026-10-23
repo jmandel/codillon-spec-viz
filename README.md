@@ -21,6 +21,8 @@ and fixture, and the ten prototypes. Codillon itself lives at https://github.com
   - `04-requirements-and-bug-taxonomy.md` — inferred design values, 15 failure modes, 10-criterion rubric.
   - `05-ten-visualization-ideas.md` — the ten concepts and the six-state status model all prototypes share.
   - `06-artifact-brief-shared.md` — the contract every prototype follows.
+  - `07-review-notes.md` — coordinator review of each prototype with the builders' rubric self-scores.
+  - `08-synthesis.md` — the summative write-up: vision, verdicts, recommended composition, open questions.
 - `artifacts/` — ten self-contained HTML prototypes, `01-…html` to `10-…html`. Open any from `file://`.
 - `tools/` — the Python interpreter / spec checker / fixture generator used to produce the traces.
 
