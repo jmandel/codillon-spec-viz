@@ -46,7 +46,7 @@ label.ctl { font-family: var(--sans); font-size: 13px; margin-right: 14px; color
 .row .gut.ghostg { color: transparent; -webkit-text-stroke: 1px darkred; }
 .row .gut.unkg { color: var(--unk); font-size: 17px; }
 .row .gut.meta { color: indigo; }
-.row .code { width: 610px; flex: none; overflow: hidden; text-overflow: ellipsis; font-size: 22px; transition: opacity .25s, color .25s; }
+.row .code { width: 610px; flex: none; overflow: hidden; padding: 4px 0 6px; line-height: 1.15; text-overflow: ellipsis; font-size: 22px; transition: opacity .25s, color .25s; }
 .row .code.spec { font-size: 15px; color: #303030; }
 .row .code.hdr { font-size: 15px; color: indigo; }
 .row .code.meta { font-size: 15px; color: indigo; }
@@ -57,7 +57,7 @@ label.ctl { font-family: var(--sans); font-size: 13px; margin-right: 14px; color
 .stale .row .code.edited { text-decoration: underline wavy #888; }
 .row .comm { position: absolute; right: 2px; top: 10px; font-family: var(--sans); font-size: 11px; color: var(--dark); border: 1px solid var(--dark); border-radius: 2px; padding: 1px 5px; background: var(--ivory); max-width: 330px; overflow: hidden; text-overflow: ellipsis; transition: opacity .25s; z-index: 2; }
 .row .comm.ghostc { border-style: dashed; }
-.arrowmark { position: absolute; left: 0; width: 16px; height: 40px; display: flex; align-items: center; color: var(--navy); font-size: 15px; transition: transform .25s, opacity .25s; pointer-events: none; }
+.arrowmark { position: absolute; left: 0; top: 0; width: 16px; height: 40px; display: flex; align-items: center; color: var(--navy); font-size: 15px; transition: transform .25s, opacity .25s; pointer-events: none; }
 svg.margin { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
 svg.margin .hit { pointer-events: all; cursor: crosshair; }
 .anim { transition: x .25s, y .25s, width .25s, height .25s, cx .25s, cy .25s, r .25s, d .25s, opacity .25s, transform .25s, fill .25s, stroke .25s; }
@@ -340,11 +340,11 @@ const SANS = '"Latin Modern Sans","Fira Sans Condensed","Roboto Condensed","Aria
 function mix(hex, t = 0.7) { const c = parseInt(hex.slice(1), 16), iv = [255, 255, 240]; const rgb = [c >> 16, (c >> 8) & 255, c & 255].map((v, i) => Math.round(v * (1 - t) + iv[i] * t)); return '#' + rgb.map(v => v.toString(16).padStart(2, '0')).join(''); }
 const MUTED = mix(COL.i32);
 const TAB = 0.15;          // width (fraction of W) of the zone beyond each wall (math values that do not fit in i32)
-// piecewise scale: |v|<=16 linear (50% of the width), 16..65536 log (32%), 65536..2^31 log (18%)
+// piecewise scale: |v|<=8 linear (60% of the width), 8..65536 log (26%), 65536..2^31 log (14%)
 function half(a) {
-  if (a <= 16) return 0.25 * a / 16;
-  if (a <= 65536) return 0.25 + 0.16 * Math.log2(a / 16) / 12;
-  return 0.41 + 0.09 * Math.log2(Math.min(a, 2147483648) / 65536) / 15;
+  if (a <= 8) return 0.30 * a / 8;
+  if (a <= 65536) return 0.30 + 0.13 * Math.log2(a / 8) / 13;
+  return 0.43 + 0.07 * Math.log2(Math.min(a, 2147483648) / 65536) / 15;
 }
 function fx(v) {
   if (v > I32MAX) return 1 + TAB * Math.min(1, Math.log2(1 + v - I32MAX) / 31);
@@ -352,7 +352,7 @@ function fx(v) {
   return v >= 0 ? 0.5 + half(v) : 0.5 - half(-v);
 }
 const linScale = (lo, hi) => v => (v - lo) / (hi - lo);
-const CORE = 16;
+const CORE = 8;
 const emod = (v, m) => ((v % m) + m) % m;
 
 // ---------------- regions ----------------
@@ -485,8 +485,9 @@ function shapeSpecs(sh, o) {
       R.v.forEach((v, i) => {
         if (!inView(v)) return;
         const px = X(v), excl = R.x.includes(v);
-        if (isWell) S.push(E.circ(kp + 'sock' + i, 3, px, y + H / 2, 2.5, op({ fill: excl ? COL.ivory : col, 'fill-opacity': excl ? 1 : 0.13, stroke: col, 'stroke-width': excl ? 0.8 : 1.1, 'stroke-dasharray': excl ? '1 1' : 'none' })));
-        else S.push(E.circ(kp + 'dot' + i, 3, px, y + H / 2, 2.0, op({ fill: col, 'fill-opacity': 0.55 })));
+        const sr = Math.max(1.3, Math.min(2.5, Math.abs(X(v + 1) - px) * 0.44, Math.abs(px - X(v - 1)) * 0.44));
+        if (isWell) S.push(E.circ(kp + 'sock' + i, 3, px, y + H / 2, sr + 0.3, op({ fill: excl ? COL.ivory : col, 'fill-opacity': excl ? 1 : 0.13, stroke: col, 'stroke-width': excl ? 0.8 : 1.1, 'stroke-dasharray': excl ? '1 1' : 'none' })));
+        else S.push(E.circ(kp + 'dot' + i, 3, px, y + H / 2, sr, op({ fill: col, 'fill-opacity': 0.55 })));
       });
     } else if (R.t === 'comb') {
       for (let v = -CORE; v <= CORE; v++) {
@@ -502,7 +503,7 @@ function shapeSpecs(sh, o) {
       }
     } else if (R.t === 'holes') {
       S.push(E.rect(kp + 'reg', 1, x + 1, yT, W - 2, hh, op(fillA)));
-      R.h.forEach((v, i) => { if (!inView(v)) return; const px = X(v); S.push(E.circ(kp + 'hole' + i, 3, px, y + H / 2, 2.4, op({ fill: COL.ivory, stroke: col, 'stroke-width': 1, 'stroke-dasharray': '1 1' }))); });
+      R.h.forEach((v, i) => { if (!inView(v)) return; const px = X(v); const sr = Math.max(1.3, Math.min(2.4, Math.abs(X(v + 1) - px) * 0.44)); S.push(E.circ(kp + 'hole' + i, 3, px, y + H / 2, sr, op({ fill: COL.ivory, stroke: col, 'stroke-width': 1, 'stroke-dasharray': '1 1' }))); });
     }
   }
   if (isCup) { region(sh.req, 'well', k + ':w'); region(sh.prov, 'pc', k + ':p'); }
@@ -531,8 +532,8 @@ function shapeSpecs(sh, o) {
     } else {
       let x1 = X(clampV(a)), x2 = X(clampV(b));
       if (!zoom && a <= I32MAX && b > I32MAX && !(isCup && sh.tab)) x1 = Math.min(x1, X(I32MAX) - 1);
-      if (x2 - x1 < 4) { const c = (x1 + x2) / 2; x1 = c - 2; x2 = c + 2; }
-      S.push(E.rect(k + ':sp' + i, 5, x1, y - 7, x2 - x1, H + 7, spA));
+      if (x2 - x1 < 6) { const c = (x1 + x2) / 2; x1 = c - 3; x2 = c + 3; }
+      S.push(E.rect(k + ':sp' + i, 5, x1, y - 9, x2 - x1, H + 9, spA));
     }
   });
   spillCovers = v => pieces.some(pc => v >= pc.a && v <= pc.b && (!pc.mod || pc.mod.r < 0 || emod(v, pc.mod.m) === pc.mod.r));
@@ -551,13 +552,13 @@ function shapeSpecs(sh, o) {
     const dc = sh.old ? '#9a9a9a' : (ok ? COL.navy : COL.dark);
     if (!ok && !spillCovers(m) && !sh.old) { // a runtime-only violation: the value itself is the sliver
       const c = unfaithful ? pm : px;
-      S.push(E.rect(k + ':rv', 5, c - 2.5, y - 7, 5, H + 7, { fill: 'url(#hatch)', stroke: COL.dark, 'stroke-width': 0.8 }));
+      S.push(E.rect(k + ':rv', 5, c - 3, y - 9, 6, H + 9, { fill: 'url(#hatch)', stroke: COL.dark, 'stroke-width': 0.8 }));
     }
     if (unfaithful && inView(m) && !zoom) {
       S.push(E.circ(k + ':math', 6, pm, y + H / 2, 2.4, { fill: 'none', stroke: dc, 'stroke-width': 1, 'stroke-dasharray': '1.2 1' }));
       S.push(E.path(k + ':wrap', 6, `M ${pm} ${y + H + 1} C ${pm} ${y + H + 8}, ${px} ${y + H + 8}, ${px} ${y + H + 1}`, { fill: 'none', stroke: dc, 'stroke-width': 1, 'stroke-dasharray': '1.5 1.5' }));
     }
-    if (inView(v) || !zoom) S.push(E.circ(k + ':dot', 6, px, y + H / 2, o.big ? 4 : 2.7, { fill: dc, stroke: COL.ivory, 'stroke-width': 0.8 }));
+    if (inView(v) || !zoom) S.push(E.circ(k + ':dot', 6, px, y + H / 2, o.big ? 4 : Math.max(1.8, Math.min(2.7, Math.abs(X(v + 1) - px) * 0.6)), { fill: dc, stroke: COL.ivory, 'stroke-width': 0.8 }));
     if (!o.noText) {
       const leftSide = px > x + W * 0.55;
       const tx = leftSide ? x + 2 : x + W - 2;
@@ -626,7 +627,7 @@ function reconcile(layers, specs) {
     for (const el of old.values()) { el.classList.add('anim'); el.style.opacity = 0; setTimeout(() => el.remove(), 260); }
     g._kids = next;
   }
-  if (fadeQ.length) { const q = fadeQ; fadeQ = []; requestAnimationFrame(() => requestAnimationFrame(() => q.forEach(el => { el.classList.add('anim'); el.style.opacity = ''; }))); }
+  if (fadeQ.length) { const q = fadeQ; fadeQ = []; q[0].getBoundingClientRect(); setTimeout(() => q.forEach(el => { el.classList.add('anim'); el.style.opacity = ''; }), 20); }
 }
 function specsToSVG(specs) {
   const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -654,7 +655,7 @@ const STATUS_TXT = {
   assumed: 'assumed / admitted: not checked; everything downstream is ghosted too',
   stale: 'stale: the text changed since this verdict; re-checking',
 };
-const LANDMARKS = [[I32MIN, 'INT_MIN'], [-65536, '−2¹⁶'], [-16, '−16'], [-8, '−8'], [0, '0'], [8, '8'], [16, '16'], [65536, '2¹⁶'], [I32MAX, 'INT_MAX']];
+const LANDMARKS = [[I32MIN, 'INT_MIN'], [-65536, '−2¹⁶'], [-256, '−256'], [-8, '−8'], [0, '0'], [8, '8'], [256, '256'], [65536, '2¹⁶'], [46340, ''], [I32MAX, 'INT_MAX']];
 const Insp = {
   el: null, pinned: false, reg: new Map(),
   init() {
@@ -812,7 +813,7 @@ class Listing {
         pos[`${ln}i${j}`] = [x, y + SH / 2];
       });
       const nIns = (A.ins || []).length;
-      if (nIns && (A.outs || []).length || A.rule) specs.push(E.path(`${this.key}${ln}rule`, 2, `M ${this.mx - 4} ${top + 21.5} L ${this.mx + Math.max(1, nIns, (A.outs || []).length) * STRIDE - 30} ${top + 21.5}`, { stroke: '#333', 'stroke-width': 1, fill: 'none' }));
+      if (nIns || (A.outs || []).length || A.rule) specs.push(E.path(`${this.key}${ln}rule`, 2, `M ${this.mx - 4} ${top + 21.5} L ${this.mx + Math.max(1, nIns, (A.outs || []).length) * STRIDE - 30} ${top + 21.5}`, { stroke: '#333', 'stroke-width': 1, fill: 'none' }));
       (A.outs || []).forEach((sh, j) => {
         if (!sh) return; const x = this.mx + j * STRIDE, y = top + 25; const k = `${this.key}${ln}o${j}`;
         sh.kind = 'out'; reg.set(k, sh); specs.push(...shapeSpecs(sh, { x, y, W: SW, H: SH, k }));
@@ -914,7 +915,7 @@ function buildLegend() {
   const S = (sh, ex) => staticShapeSVG(sh, 96, 11, ex);
   const axis = (() => {
     let h = `<svg width="150" height="34"><rect x="12" y="6" width="96" height="11" fill="${MUTED}" stroke="${COL.i32}"/>`;
-    [[I32MIN, 'MIN'], [0, '0'], [16, '16'], [I32MAX, 'MAX']].forEach(([v, l]) => { const px = 12 + 96 * fx(v); h += `<path d="M ${px} 17 L ${px} 21" stroke="#555"/><text x="${px}" y="30" font-size="8" text-anchor="middle" font-family='${SANS}' fill="#444">${l}</text>`; });
+    [[I32MIN, 'MIN'], [-8, '−8'], [0, '0'], [8, '8'], [I32MAX, 'MAX']].forEach(([v, l]) => { const px = 12 + 96 * fx(v); h += `<path d="M ${px} 17 L ${px} 21" stroke="#555"/><text x="${px}" y="30" font-size="8" text-anchor="middle" font-family='${SANS}' fill="#444">${l}</text>`; });
     return h + '</svg>';
   })();
   const tether = `<svg width="150" height="40"><rect x="12" y="4" width="96" height="11" fill="#fffff0" stroke="${COL.i32}"/><rect x="${12 + 96 * fx(0)}" y="5" width="${96 * (fx(I32MAX) - fx(0))}" height="9" fill="${MUTED}"/><circle cx="${12 + 96 * fx(10)}" cy="9.5" r="2.7" fill="${COL.navy}"/>
@@ -927,7 +928,7 @@ function buildLegend() {
   const conn = `<svg width="150" height="34"><path d="M 60 6 C 30 6, 30 28, 60 28" stroke="${COL.i32}" stroke-width="2" opacity=".55" fill="none"/><path d="M 110 6 C 80 6, 80 28, 110 28" stroke="darkred" stroke-width="1" stroke-dasharray="1.5 2" fill="none"/></svg>`;
   el.innerHTML = [
     sec('shapes = value spaces'),
-    item(axis, '<b>the i32 rectangle is the number line</b>: INT_MIN at the left wall, INT_MAX at the right; linear for |v| ≤ 16, logarithmic beyond'),
+    item(axis, '<b>the i32 rectangle is the number line</b>: INT_MIN at the left wall, INT_MAX at the right; linear for |v| ≤ 8, logarithmic beyond'),
     item(S({ kind: 'out', prov: RG.all(), val: 42 }), '<b>output, unrefined</b>: whole value space (Codillon today); the dot + number is the value at this step'),
     item(S({ kind: 'out', prov: RG.iv(0, I32MAX), val: 10 }), '<b>output = provided region</b>: carved out of the shape, here <code>0 ≤ v</code>'),
     item(S({ kind: 'cup', req: RG.iv(0, 8, false, true), prov: RG.iv(0, 7), val: 3 }), '<b>input cup = required region</b>: posts on the rim; what flows in (bottom) must fit under it'),
@@ -1216,8 +1217,12 @@ function buildSectionB() {
         case 1: {
           const conj = bug === 'S2' ? ['0 ≤ v', 'v·v < n', 'n ≤ (v+1)²'] : ['0 ≤ v', 'v·v ≤ n', 'n < (v+1)²'];
           const ens = chkAt(1, S.step);
-          const chips = conj.map((t, i) => ({ t, s: bug === 'S2' && i === 1 ? (stale ? 'pending' : 'refuted') : (ens && ens.kind === 'ensures' && !ens.ok ? 'runtime' : 'proven') }));
-          if (bug === 'S3' && ens && ens.kind === 'ensures' && !ens.ok) chips.forEach((c, i) => c.s = i === 2 ? 'runtime' : 'proven');
+          let evals = [true, true, true];
+          if (ens && ens.kind === 'ensures' && !ens.ok) {
+            const fs = T.steps.find(q => q.s === ens.s); const vv = fs.stack[fs.stack.length - 1], nn = fs.loc.n;
+            evals = bug === 'S2' ? [0 <= vv, vv * vv < nn, nn <= (vv + 1) * (vv + 1)] : [0 <= vv, vv * vv <= nn, nn < (vv + 1) * (vv + 1)];
+          }
+          const chips = conj.map((t, i) => ({ t, s: bug === 'S2' && i === 1 ? (stale ? 'pending' : 'refuted') : (evals[i] ? 'proven' : 'runtime') }));
           A = { outs: [{ prov: RG.iv(0, I32MAX), val: cs.loc.n, pred: 'param $n : (i32 | 0 <= v): assumed in the body, proved by every caller' }], chips, chipCol: 1, chipY: 4 };
           break;
         }
@@ -1360,11 +1365,12 @@ function Rclauses(slots, M, used) {
   const full = slots.map((s, i) => [s, i]).filter(([s]) => s[0] === 1);
   const o = slots.every(s => s[0] >= 0 && s[0] <= 2);
   const i = full.every(([s]) => m.has(s[1]) && m.get(s[1]) === s[2]);
-  const ii = [...m.keys()].every(k => full.filter(([s]) => s[1] === k).length === 1);
+  const iiDup = [...m.keys()].every(k => full.filter(([s]) => s[1] === k).length <= 1);
+  const ii = iiDup && [...m.keys()].every(k => full.filter(([s]) => s[1] === k).length === 1);
   const pathOK = strong => full.every(([s, idx]) => { const d = (idx - (s[1] & 7)) & 7; for (let q = 0; q < d; q++) { const st = slots[((s[1] & 7) + q) & 7][0]; if (st === 0 || (strong && st !== 1)) return false; } return true; });
   const nonEmpty = slots.filter(s => s[0] !== 0).length;
   const iv = full.length === m.size && used === nonEmpty && used < CAP;
-  return { o, i, ii, iii: pathOK(false), iv, strong: pathOK(true), nonEmpty, nFull: full.length };
+  return { o, i, ii, iiDup, iii: pathOK(false), iv, strong: pathOK(true), nonEmpty, nFull: full.length };
 }
 function buildSectionC() {
   const P = FX.programs.find(p => p.id === 'hashtable');
@@ -1459,8 +1465,10 @@ function buildSectionC() {
     const findRes = (ln) => { const e = envOf(ln); const M = new Map(e.M); const k = e.loc.k; const s = e.slots.findIndex(q => q[0] === 1 && q[1] === k); return M.has(k) && s >= 0 ? RG.set([s]) : RG.set([-1]); };
     const keysOf = e => e.M.map(p => p[0]);
     // ---- per-line annotations ----
+    const progE = wasmParse(S.lines);
     for (let ln = 1; ln <= P.lines.length; ln++) {
       const I = prog0.info[ln - 1]; let A = null; const e = envOf(ln), V = v(ln);
+      if (S.lines[ln - 1] === '' && P.lines[ln - 1] !== '') continue;
       switch (ln) {
         case 13: A = { outs: [{ prov: idxReq, val: (lv[14] && lv[14].outs) ? lv[14].outs[0] : undefined, pred: 'param $i : (i32 | 0 <= v && v < CAP): assumed in $slot; each call site must prove it' }], chips: [chip('v = BASE + 12·i', 13, 0)], chipCol: 1 }; break;
         case 18: A = { ins: [plainCup(V.ins && V.ins[0]), plainCup(V.ins && V.ins[1])], outs: [{ prov: RG.iv(BASE, BASE + 84), val: V.outs && V.outs[0], pred: '$slot result: v == BASE + 12·i, so 65440 ≤ v ≤ 65524 while 0 ≤ i < 8' }] }; break;
@@ -1552,7 +1560,7 @@ function buildSectionC() {
           A = { ins: [{ req, prov, val: V.ins && V.ins[0], spill: isSite(166) && !stale ? spill(prov, req) : [], status: stOf(166), pred: 'global.set $used: R4 requires used < CAP, so at least one EMPTY slot remains and every probe terminates' }] }; break;
         }
       }
-      if (!A && I.kind === 'instr') A = defaultAnn(prog0, ln, lv);
+      if (!A && I.kind === 'instr') A = defaultAnn(progE, ln, lv);
       if (A) {
         if (V.old) { (A.ins || []).forEach(s => s && (s.old = true)); (A.outs || []).forEach(s => s && (s.old = true)); }
         ann[ln] = A;
@@ -1568,7 +1576,7 @@ function buildSectionC() {
     L.update({
       text: S.lines.map((t, i) => t || P.lines[i]),
       cls: S.lines.map((t, i) => (t === '' && P.lines[i] !== '' ? 'blank' : codeClass(prog0.info[i], edited.has(i + 1))) + (i + 1 === trapLn ? ' trap' : '')),
-      gut, arrowLn: cs.ln, ann, conns: dataflow(prog0),
+      gut, arrowLn: cs.ln, ann, conns: dataflow(progE),
       comm: bug !== 'none' && !stale ? Object.fromEntries([[sites[0], { t: COMM[bug] }]]) : {},
     });
     renderMem(cs, cur, stale);
@@ -1592,16 +1600,16 @@ function buildSectionC() {
     // first FULL slot (in probe order from h(k)) claims k; later duplicates find a hollow socket
     const claimedBy = {};
     keys.forEach(k => { for (let q = 0; q < 8; q++) { const s = ((k & 7) + q) & 7; if (cs.slots[s][0] === 1 && cs.slots[s][1] === k) { claimedBy[k] = s; break; } } });
-    const W = 112, X0 = 6, CW = 163;
+    const W = 138, X0 = 4, CW = 164;
     const probe = (cs.fn === 'find' || cs.fn === 'insert') && cs.loc.i !== undefined ? cs.loc.i : -1;
     const stName = ['EMPTY', 'FULL', 'TOMB'];
     const strong = bug => bug === 'Hb';
     for (let s = 0; s < 8; s++) {
-      const x = X0 + s * CW + 26, sl = cs.slots[s];
+      const x = X0 + s * CW + 24, sl = cs.slots[s];
       const full = sl[0] === 1;
-      specs.push(E.text(`m${s}lab`, 6, x - 24, 9, `slot ${s}`, { 'font-size': 10, fill: '#333', 'font-family': SANS, 'font-weight': 600 }));
-      specs.push(E.text(`m${s}st`, 6, x + 20, 9, stName[sl[0]] || '?', { 'font-size': 9.5, fill: sl[0] === 1 ? '#333' : '#888', 'font-family': SANS }));
-      ['st', 'key', 'val'].forEach((r, j) => specs.push(E.text(`m${s}r${j}`, 6, x - 22, 24 + j * 24, r, { 'font-size': 8.5, fill: '#888', 'font-family': SANS })));
+      specs.push(E.text(`m${s}lab`, 6, x, 9, `slot ${s}`, { 'font-size': 10, fill: '#333', 'font-family': SANS, 'font-weight': 600 }));
+      specs.push(E.text(`m${s}st`, 6, x + 40, 9, stName[sl[0]] || '?', { 'font-size': 9.5, fill: sl[0] === 1 ? '#333' : '#888', 'font-family': SANS }));
+      if (s === 0) ['st', 'key', 'val'].forEach((r, j) => specs.push(E.text(`m${s}r${j}`, 6, x - 22, 25 + j * 24, r, { 'font-size': 9, fill: '#666', 'font-family': SANS })));
       // state cup
       const reqSt = onPath[s] ? (strong(S.bug) ? RG.set([0, 1, 2], [0, 2]) : RG.set([0, 1, 2], [0])) : RG.set([0, 1, 2]);
       const shS = { kind: 'cup', req: reqSt, val: sl[0], pred: onPath[s] ? (strong(S.bug) ? `st(${s}): on a key's probe path. The buggy line 38 treats TOMB as end-of-path, so it silently needs FULL here ((iii)-strong)` : `st(${s}): on a key's probe path, so R3 forbids EMPTY (FULL or TOMB only)`) : `st(${s}) ∈ {EMPTY, FULL, TOMB} (R0)` };
@@ -1626,7 +1634,7 @@ function buildSectionC() {
     specs.push(...chipSpecs(beads, 244, 100, 'mM'));
     const Rs = (ok, always) => ok ? 'proven' : ((boundary || always) ? 'runtime' : 'pending');
     const rchips = [
-      { t: '(o) st ∈ {0,1,2}', s: Rs(R.o, true) }, { t: '(i) FULL ⇒ entry of M', s: Rs(R.i) }, { t: '(ii) one slot per key', s: Rs(R.ii, true) },
+      { t: '(o) st ∈ {0,1,2}', s: Rs(R.o, true) }, { t: '(i) FULL ⇒ entry of M', s: Rs(R.i) }, { t: '(ii) one slot per key', s: Rs(R.ii, !R.iiDup) },
       { t: '(iii) no EMPTY on a path', s: Rs(R.iii, true) }, { t: '(iv) #FULL=|M|, used=#non-EMPTY, used<CAP', s: Rs(R.iv, cs.used >= CAP) },
     ];
     if (S.bug === 'Hb') rchips.push({ t: "(iii)-strong: no TOMB on a path (what line 38 assumes)", s: R.strong ? 'proven' : 'runtime' });
@@ -1671,6 +1679,9 @@ window.addEventListener('DOMContentLoaded', () => {
   else if (h.get('lem')) SECTIONS.B.set('none', null, false, h.get('lem'));
   if (h.get('c')) SECTIONS.C.set(h.get('c'), h.get('cs') ? +h.get('cs') : null, h.get('lemc'));
   if (h.get('gray')) document.body.classList.add('gray');
+  if (h.get('insp')) setTimeout(() => { const el = document.querySelector(`[data-sh="${h.get('insp')}"]`); if (el) { const r = el.getBoundingClientRect(); Insp.show(h.get('insp'), { clientX: r.left + 40, clientY: r.top }); Insp.el.style.position = 'absolute'; Insp.el.style.top = (r.top + scrollY + 20) + 'px'; Insp.el.style.left = '300px'; } }, 600);
+  const off = id => { let e = document.getElementById(id), y = 0; while (e) { y += e.offsetTop; e = e.offsetParent; } return y; };
+  document.documentElement.dataset.layout = JSON.stringify({ B: off('listB'), C: off('listC'), A: off('secA'), F: off('foot') });
   if (h.get('scroll')) setTimeout(() => window.scrollTo(0, +h.get('scroll')), 50);
 });
 

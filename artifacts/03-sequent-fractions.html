@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>03 · Sequent fractions — refined Codillon spec-adherence prototype</title>
+<style>
+:root {
+  --ivory: #fffff0;
+  --i32: #6A5ACD;
+  --i32m: #d2cee6;
+  --serif: "Latin Modern Roman", "CMU Serif", "Computer Modern", Georgia, "Times New Roman", serif;
+  --sans: "Latin Modern Sans", "Fira Sans Condensed", "Roboto Condensed", "Arial Narrow", "DejaVu Sans Condensed", sans-serif;
+}
+* { box-sizing: border-box; }
+html { background: var(--ivory); }
+body { margin: 0; background: var(--ivory); color: #000; font-family: var(--serif); font-size: 17px; }
+body.gray { filter: grayscale(1); }
+a { color: darkblue; }
+.page { width: 1380px; margin: 0 auto; padding: 0 10px 40px; }
+header.top { padding: 22px 0 6px; }
+h1 { font-weight: normal; font-size: 30px; margin: 0 0 6px; }
+h1 .num { color: indigo; }
+h2 { font-weight: normal; font-size: 24px; margin: 0; }
+h2 .sec { color: indigo; margin-right: 8px; }
+p.lede { max-width: 1180px; line-height: 1.38; margin: 6px 0 10px; }
+.small, .lab { font-family: var(--sans); font-size: 12px; }
+.muted { color: #555; }
+section.sec { margin-top: 26px; border-top: 1px solid #ddd8c4; padding-top: 8px; }
+
+/* legend */
+.legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 14px; margin-top: 8px; }
+.legend .item { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 12px; line-height: 1.2; min-height: 40px; }
+.legend .item svg { flex: none; }
+.legend h3 { grid-column: 1 / -1; font: 13px var(--sans); color: indigo; margin: 8px 0 0; letter-spacing: .04em; text-transform: uppercase; }
+.legend b { font-weight: normal; color: #000; font-family: var(--serif); font-size: 14px; }
+
+/* sticky slider bar (Codillon .slider-container) */
+.bar { position: sticky; top: 0; z-index: 50; background: var(--ivory); padding: 6px 0 2px; border-bottom: 1px solid #e8e3cc; }
+.bar .ctl { display: flex; gap: 16px; align-items: center; font-family: var(--sans); font-size: 13px; flex-wrap: wrap; }
+.bar select, .bar button { font-family: var(--sans); font-size: 13px; background: var(--ivory); border: 1px solid #b9b39a; border-radius: 3px; padding: 2px 6px; }
+.bar button { cursor: pointer; }
+.runbadge { font-family: var(--sans); font-size: 12px; padding: 1px 8px; border-radius: 10px; border: 1px solid #999; }
+.runbadge.cex { border: 1.5px solid darkred; color: darkred; }
+.runbadge.cexl { border: 1.5px dashed darkred; color: darkred; }
+.slwrap { position: relative; margin: 2px 8px 0; }
+.step-slider { width: 100%; margin: 0; accent-color: darkblue; }
+.slider-ticks { position: relative; height: 24px; margin: 0 8px; }
+.slider-tick { position: absolute; transform: translateX(-50%); color: darkblue; font-family: var(--sans); font-size: 11px; background: var(--ivory); white-space: nowrap; top: 2px; cursor: pointer; }
+.slider-tick.plain { color: #8a8aa8; cursor: default; }
+.bad-slider-tick { color: #fffff0; background: darkred; border-radius: 10px; padding: 0 6px; }
+.trap-slider-tick { color: #fffff0; background: darkred; border-radius: 2px; padding: 0 5px; }
+.current-slider-tick { color: #fffff0; background: darkblue; border-radius: 10px; padding: 0 6px; z-index: 3; }
+.ghosttrack { position: relative; height: 18px; margin: 0 8px; }
+.ghost-tick { position: absolute; right: 0; top: 1px; font-family: var(--sans); font-size: 11px; color: darkred; border: 1px dashed darkred; border-radius: 10px; padding: 0 7px; background: var(--ivory); cursor: help; }
+
+/* listing (Codillon .textentry) */
+.listing { position: relative; }
+.listing .row { position: absolute; left: 0; display: flex; align-items: center; white-space: pre; }
+.listing .gut { width: 52px; flex: none; text-align: right; padding-right: 12px; font-size: 0.82em; color: gray; font-family: var(--serif); }
+.listing .gut.g-bad { color: darkred; font-size: 1.05em; cursor: pointer; }
+.listing .gut.g-ghost { color: transparent; -webkit-text-stroke: 0.9px darkred; font-size: 1.05em; }
+.listing .gut.g-unk svg, .listing .gut.g-vac { vertical-align: middle; }
+.listing .gut.g-vac { color: #888; }
+.listing .gut.g-trap { font-size: 0.95em; }
+.listing .code { overflow: hidden; text-overflow: ellipsis; position: relative; }
+.k-meta { color: indigo; }
+.k-spec { color: indigo; font-style: italic; }
+.k-close { color: indigo; }
+.k-instr { color: #000; }
+.k-cont { color: indigo; }
+.k-struck { color: #b8b4a0; text-decoration: line-through; text-decoration-color: #c9c4ad; }
+.k-instr.trapline { color: darkred; }
+.row.changed .code { animation: reveal .3s ease-out; transform-origin: left center; }
+@keyframes reveal { 0% { transform: scaleY(0); } 100% { transform: scaleY(1); } }
+.comm { position: absolute; font-family: var(--sans); font-size: 11.5px; color: darkred; border: 1px solid darkred; padding: 1px 5px; background: var(--ivory); white-space: nowrap; z-index: 4; pointer-events: none; }
+svg.over { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+svg.over .hit { pointer-events: all; cursor: pointer; }
+.listing.stale svg.over .sq, .listing.stale svg.over .defc { opacity: .4; filter: url(#squiggle); }
+
+/* svg primitives */
+.slot-value { font-family: var(--sans); font-size: 10.6px; text-anchor: middle; dominant-baseline: middle; transform-box: fill-box; transform-origin: center; }
+.slot-value.old { opacity: .55; }
+.slot-value.wit { fill: darkred; font-weight: bold; }
+.nm { font-family: var(--sans); font-size: 10px; fill: #555; }
+.tierlab { font-family: var(--sans); font-size: 9px; fill: #777; }
+.sq, .defc, .conn, .wire, .chip, .rule, .shape, .cupmiss, .frame { transition: opacity .25s, transform .25s, fill .25s, stroke .25s, color .25s; }
+.shape.old { filter: grayscale(0.75); }
+.enter { opacity: 0; }
+.leaving { opacity: 0 !important; }
+
+.chip { color: #3a3a3a; }
+.chip .cbox { fill: none; stroke: none; }
+.chip.ok .cbox { fill: none; }
+.chip.ref { color: darkred; }
+.chip.ref .cbox { stroke: darkred; stroke-width: 1.3; fill: var(--ivory); }
+.chip.refg { color: darkred; }
+.chip.refg .cbox { stroke: darkred; stroke-width: 1; stroke-dasharray: 2 1.6; fill: var(--ivory); }
+.chip.refg .ic { opacity: .7; }
+.chip.unk { color: indigo; }
+.chip.unk .cbox { stroke: indigo; stroke-width: 1; stroke-dasharray: 3 2; fill: var(--ivory); }
+.chip.dyn { color: slategray; }
+.chip.dyn .cbox { stroke: slategray; stroke-width: 1.1; stroke-dasharray: .1 2.2; stroke-linecap: round; fill: var(--ivory); }
+.chip.vac { opacity: .42; }
+.chip.vac .cbox { stroke: #666; stroke-width: .8; fill: none; }
+.chip .sup { font-family: var(--sans); font-size: 8px; fill: currentColor; }
+.chip .seat { stroke: #3a3a3a; stroke-width: 1; }
+.chip.need.ref .seat, .chip.need.refg .seat { stroke: darkred; }
+.chip.drop .dropmark { stroke: darkred; stroke-width: 1.2; stroke-dasharray: 1 1.4; }
+.chip .dropmark { stroke: none; }
+.chip.need .ic { transition: transform .25s; }
+.chip.need.ref .ic, .chip.need.refg .ic { transform: translateY(-3.5px); }
+.chip.need.ref .cbox, .chip.need.refg .cbox { transform: translateY(-3.5px); }
+
+.rule rect { transition: transform .25s, fill .25s, stroke .25s; }
+.rule line { display: none; }
+.rule.plain rect { fill: #a7a7a7; }
+.rule.ok rect { fill: #222; }
+.rule.ref rect { fill: darkred; }
+.rule.ref .hl, .rule.refg .hl { transform: translate(-4px, -3px); }
+.rule.ref .hr, .rule.refg .hr { transform: translate(4px, 3px); }
+.rule.refg rect { fill: var(--ivory); stroke: darkred; stroke-width: .9; stroke-dasharray: 2 1.4; }
+.rule.unk rect, .rule.dyn rect { display: none; }
+.rule.unk line { display: inline; stroke: indigo; stroke-width: 1.3; stroke-dasharray: 4 3; }
+.rule.dyn line { display: inline; stroke: slategray; stroke-width: 1.9; stroke-dasharray: .1 3.2; stroke-linecap: round; }
+.rule.vac { opacity: .45; }
+.rule.vac rect { fill: #777; }
+.rend text { font-family: var(--sans); font-size: 10px; }
+.sq.vacq .shape, .sq.vacq .slot-value { opacity: .45; }
+
+.conn { fill: none; stroke: var(--i32m); stroke-width: 3; }
+.wire { fill: none; stroke: #6d6d6d; stroke-width: 1; }
+.wire.bad { stroke: darkred; stroke-dasharray: 1.5 2.2; stroke-width: 1.3; }
+.wdot { fill: #6d6d6d; }
+.wdot.bad { fill: darkred; }
+.frame { fill: none; stroke: #b3ae98; stroke-width: 1; }
+.framelab { font-family: var(--sans); font-size: 9px; fill: #8b8670; }
+
+#tip { position: fixed; z-index: 1000; pointer-events: none; background: var(--ivory); border: 1px solid #555; font-family: var(--sans); font-size: 12px; padding: 4px 7px; max-width: 460px; display: none; box-shadow: 1px 1px 0 #ccc; }
+#tip .st { font-size: 11px; color: #555; }
+
+/* Section A cards */
+.cards { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+.card { display: flex; gap: 18px; border: 1px solid #e3ddc6; padding: 8px 10px; }
+.card .cap { width: 330px; flex: none; font-family: var(--sans); font-size: 13px; line-height: 1.4; }
+.card .cap h4 { font: 16px var(--serif); margin: 0 0 4px; color: indigo; }
+.card .cap .btns { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.card .cap button, .card .cap label { font-family: var(--sans); font-size: 12px; }
+.card .cap button { background: var(--ivory); border: 1px solid #b9b39a; border-radius: 3px; padding: 1px 6px; cursor: pointer; }
+.card .cap button.on { border-color: darkblue; color: #fffff0; background: darkblue; }
+
+/* Section C layout */
+.clayout { display: flex; gap: 10px; align-items: flex-start; margin-top: 6px; }
+.overview { width: 14px; flex: none; position: relative; border-left: 1px solid #ddd8c4; }
+.overview .om { position: absolute; left: 1px; width: 12px; height: 4px; cursor: pointer; }
+.pane { width: 935px; flex: none; height: 880px; overflow-y: auto; overflow-x: hidden; position: relative; border: 1px solid #ece7d2; }
+.mempanel { position: sticky; top: 100px; width: 410px; flex: none; }
+.mempanel .ops { font-family: var(--sans); font-size: 12.5px; margin-top: 4px; }
+.mempanel .ops div { padding: 1px 4px; }
+.mempanel .ops .cur { background: #efedf8; }
+.mempanel .ops .badres { color: darkred; }
+footer.crit { margin-top: 30px; border-top: 1px solid #ddd8c4; padding-top: 10px; }
+footer.crit li { margin: 5px 0; line-height: 1.38; max-width: 1240px; }
+.spec-note { font-family: var(--sans); font-size: 12.5px; color: #333; margin: 4px 0 6px; max-width: 1300px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="fade-up" x1="0%" x2="0%" y1="100%" y2="0%">
+      <stop offset="0%" stop-color="#fffff0" stop-opacity="1"/><stop offset="60%" stop-color="#fffff0" stop-opacity="1"/><stop offset="100%" stop-color="#fffff0" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="squiggle"><feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="1" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="2.5"/></filter>
+  </defs>
+</svg>
+<div id="tip"></div>
+<div class="page">
+<header class="top">
+  <h1><span class="num">3 ·</span> Sequent fractions — hypotheses over conclusions</h1>
+  <p class="lede">Codillon already draws each instruction's stack effect as a <i>fraction</i>: input cups above a rule, outputs below.
+  This prototype reads that fraction as a <i>sequent</i>. Above the rule sit the <b>facts known</b> about the inputs at this point (tiny iconic
+  predicate chips attached to the cup they describe, plus named context cups for locals the obligation mentions); below the rule sit the facts the
+  refined type <b>claims</b> about the outputs. The <b>rule itself is the verdict</b>: a quiet solid rule when the claim follows; dashed indigo with a
+  mystery star when the checker cannot tell; dotted slate when only this run's checks held; and <b>snapped into two offset darkred halves</b> when a
+  counterexample exists, with the counterexample's values written inside the shapes exactly where runtime values go. A fact that was
+  <i>needed but missing</i> appears as Codillon's empty fade-up cup, now holding the absent fact. Thin <b>proof wires</b> run from a sequent's chips
+  back to the lines that supplied them (the checker's unsat core), so "why" is a curve you can follow, like dataflow.
+  Compound predicates are split into one chip per conjunct, each with its own status. Click any sequent to pin its wires; click a darkred mark to jump to its witness.</p>
+  <div class="legend" id="legend"></div>
+</header>
+<section class="sec" id="secA">
+  <h2><span class="sec">A</span>The primitive in isolation</h2>
+  <p class="spec-note">Three snippets from the parity program and the hash table's index guard. Each is a live sequent: change the code, the spec or the input and watch which chip changes status and where the rule breaks. Values inside the shapes come from running the snippet (Codillon-style, one instruction per line).</p>
+  <div class="cards" id="cardsA"></div>
+</section>
+<section class="sec" id="secB">
+  <h2><span class="sec">B</span>Number theory — <code>$isqrt</code> by linear search (03-sample-programs A2, fixture “isqrt”)</h2>
+  <p class="spec-note">Spec: <i>0 ≤ $n</i> in; the dependent result <i>0 ≤ $v ∧ $v*$v ≤ $n ∧ $n &lt; ($v+1)*($v+1)</i> out; loop invariant <i>0 ≤ $r ∧ $r*$r ≤ $n</i>, measure <i>$n − $r*$r</i>.
+  The header line is itself a sequent (precondition over postcondition). Line 15's no-overflow lemma is outside the automatic fragment: it reads <i>unknown</i> until the slider passes a runtime check, then <i>held on this run</i>. The sequent of line 26 is pinned to show its proof wires; click any other sequent to pin it.</p>
+  <div class="bar" id="barB"></div>
+  <div id="lstB" style="margin-top:6px"></div>
+</section>
+<section class="sec" id="secC">
+  <h2><span class="sec">C</span>Hash table — 8-slot open addressing with tombstones (03-sample-programs Part B, fixture “hashtable”)</h2>
+  <p class="spec-note">169 lines, scrolling pane at fixed row height; the strip at the left of the pane marks every ⚖ / ★ / 💣 line. The key store on line 159 is pinned: its sequent turns the probe loop's facts (<i>$k ∉ $M</i>, “every slot on the path is non-EMPTY”, “slot $i was EMPTY”) into clause (iii) and (ii) of the representation invariant. Right panel: memory slots with values in shapes, the ghost map M, and the operation's own sequent <i>R at entry ⁄ R at exit</i>.</p>
+  <div class="bar" id="barC"></div>
+  <div class="clayout">
+    <div class="overview" id="ovC" style="height:880px"></div>
+    <div class="pane" id="paneC"><div id="lstC"></div></div>
+    <div class="mempanel" id="memC"></div>
+  </div>
+</section>
+<footer class="crit" id="crit"></footer>
+</div>
+<script>
+// fixture: programs parity, isqrt, hashtable from research/fixture.json (verbatim subset)
+const FIXTURE = {"version":1,"conventions":{"step":"one step per executed instruction line; `block`/`loop`/`if`/`br*`/`return`/`call` count, `else`/`end` do not; a `call` takes two steps (enter: args popped; return: result pushed). Spec checks happen after the step they are attached to.","values":"i32 shown as signed decimal; predicates read them as mathematical integers (signed) unless written u(x)","frame":"{s: step, fn, ln: line (1-based, in the program listing, which is the same for buggy variants because deleted lines are blanked, not removed), op, stack (after the step, bottom first), loc: locals incl. ghost, checks: spec checks evaluated at this step}","hash_frame_extra":"used: global $used; M: ghost map as [key, value] pairs; slots: 8 x [state, key, value] (0 EMPTY, 1 FULL, 2 TOMB); R: truth of each clause of the representation invariant at that instant (only REQUIRED at function boundaries; transient falsity mid-operation is normal)","status":"none = no obligation beyond Wasm typing; auto = discharged from the refined stack + path condition by linear/bit-vector reasoning; inv = needs the loop invariant or the representation invariant R; lemma = also needs a nonlinear, counting, or definitional lemma; fails = the obligation that a seeded bug breaks"},"programs":[{"id":"parity","title":"Parity gate: is_even / half / half_or_neg1","lines":["(func $is_even (param $x i32) (result (i32 | v == (x % 2 == 0 ? 1 : 0)))","  local.get $x","  i32.const 1","  i32.and","  i32.eqz",")","(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))","  local.get $x","  i32.const 1","  i32.shr_s",")","(func $half_or_neg1 (param $x i32) (result (i32 | (x % 2 == 0 && v + v == x) || (x % 2 == 1 && v == -1)))","  local.get $x","  call $is_even","  i32.eqz","  if (result i32)","    i32.const -1","  else","    (@assert x % 2 == 0)","    local.get $x","    call $half","  end",")"],"functions":[{"name":"$is_even","line":1,"signature":"(func $is_even (param $x i32) (result (i32 | v == (x % 2 == 0 ? 1 : 0)))"},{"name":"$half","line":7,"signature":"(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))"},{"name":"$half_or_neg1","line":12,"signature":"(func $half_or_neg1 (param $x i32) (result (i32 | (x % 2 == 0 && v + v == x) || (x % 2 == 1 && v == -1)))"}],"specs":[{"line":19,"text":"(@assert x % 2 == 0)"}],"obligations":[{"lines":[2,3],"code":"local.get $x; i32.const 1","stack":"[x, 1]","obligation":"-","status":"none"},{"lines":[4],"code":"i32.and","stack":"[(i32 | v == x & 1 && 0 <= v <= 1)]","obligation":"-","status":"none"},{"lines":[5],"code":"i32.eqz","stack":"[(i32 | v == (x & 1 == 0 ? 1 : 0))]","obligation":"post of $is_even: v == (x % 2 == 0 ? 1 : 0)","status":"auto","kind":"post"},{"lines":[8,9],"code":"local.get $x; i32.const 1","stack":"[(i32 | v == x && v % 2 == 0), 1]","obligation":"-","status":"none"},{"lines":[10],"code":"i32.shr_s","stack":"[(i32 | v == floor(x / 2))]","obligation":"post of $half: v + v == x","status":"auto","kind":"post"},{"lines":[13,14],"code":"local.get $x; call $is_even","stack":"[(i32 | v == (x % 2 == 0 ? 1 : 0))]","obligation":"pre of $is_even: none","status":"auto","kind":"pre"},{"lines":[15],"code":"i32.eqz","stack":"[(i32 | v == (x % 2 == 0 ? 0 : 1))]","obligation":"-","status":"none"},{"lines":[16],"code":"if (result i32)","stack":"then: path x % 2 == 1 / else: path x % 2 == 0","obligation":"-","status":"auto","kind":"branch"},{"lines":[17],"code":"i32.const -1","stack":"[(i32 | v == -1)]","obligation":"post (then-arm): x % 2 == 1 && v == -1","status":"auto","kind":"post"},{"lines":[19],"code":"(@assert x % 2 == 0)","obligation":"x % 2 == 0","status":"auto","kind":"assert"},{"lines":[20,21],"code":"local.get $x; call $half","stack":"[(i32 | v + v == x)]","obligation":"pre of $half: x % 2 == 0;  post (else-arm): x % 2 == 0 && v + v == x","status":"auto","kind":"pre"}],"bugs":[{"id":"P1","title":"gate inverted (forgot the negation)","category":"code","flavor":"ordinary; blame lands on the CALLER","edit":"delete line 15 (`i32.eqz`)","edits":[["delete",15,15]],"calls":[["half_or_neg1",[3]]],"expected_results":[-1],"observed_results":[1],"runtime":"no trap; $half(3) computes 3 >> 1 = 1 and $half_or_neg1 returns 1 (should be -1). For x = 4 it returns -1 (should be 2).","static_failure":{"line":21,"obligation":"pre of $half: x % 2 == 0","why":"with line 15 gone the else-arm runs when is_even(x) == 0, so its path condition is x % 2 == 1; the precondition is refuted (the @assert on line 19 fails the same way)","status":"fails"},"first_dynamic_failure":{"s":8,"ln":19,"kind":"assert"},"trace":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":3}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[3,1],"loc":{"x":3}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[1],"loc":{"x":3}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[0],"loc":{"x":3}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[0],"loc":{"x":3},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":3},"checks":[{"ln":19,"kind":"assert","ok":false}]},{"s":9,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":10,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":3},"checks":[{"ln":7,"kind":"requires","ok":false}]},{"s":11,"fn":"half","ln":8,"op":"local.get $x","stack":[3],"loc":{"x":3}},{"s":12,"fn":"half","ln":9,"op":"i32.const 1","stack":[3,1],"loc":{"x":3}},{"s":13,"fn":"half","ln":10,"op":"i32.shr_s","stack":[1],"loc":{"x":3}},{"s":14,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[1],"loc":{"x":3},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":false}]}]},{"id":"P2","title":"logical instead of arithmetic shift","category":"code","flavor":"subtle: every non-negative input is fine","edit":"line 10: `i32.shr_s` -> `i32.shr_u`","edits":[["replace",10,"i32.shr_s","i32.shr_u"]],"calls":[["half_or_neg1",[-4]]],"expected_results":[-2],"observed_results":[2147483646],"runtime":"no trap; returns 2147483646 for x = -4. Also x = INT_MIN returns 1073741824 (positive).","static_failure":{"line":10,"obligation":"post of $half: v + v == x","why":"shr_u gives v == u(x) / 2, which equals x / 2 only when 0 <= x; for x < 0, v + v == x + 2^32","status":"fails"},"first_dynamic_failure":{"s":15,"ln":7,"kind":"ensures"},"trace":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":-4}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[-4,1],"loc":{"x":-4}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[0],"loc":{"x":-4}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[1],"loc":{"x":-4}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[1],"loc":{"x":-4},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":15,"op":"i32.eqz","stack":[0],"loc":{"x":-4}},{"s":9,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":-4},"checks":[{"ln":19,"kind":"assert","ok":true}]},{"s":10,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":11,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":-4},"checks":[{"ln":7,"kind":"requires","ok":true}]},{"s":12,"fn":"half","ln":8,"op":"local.get $x","stack":[-4],"loc":{"x":-4}},{"s":13,"fn":"half","ln":9,"op":"i32.const 1","stack":[-4,1],"loc":{"x":-4}},{"s":14,"fn":"half","ln":10,"op":"i32.shr_u","stack":[2147483646],"loc":{"x":-4}},{"s":15,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[2147483646],"loc":{"x":-4},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":false}]}]},{"id":"P3","title":"\"half is smaller\" (spec bug)","category":"spec","flavor":"spec bug: program right, spec wrong","edit":"line 7: result refinement `(i32 | v + v == x)` -> `(i32 | v + v == x && v < x)`","edits":[["replace",7,"(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x))","(func $half (param $x (i32 | v % 2 == 0)) (result (i32 | v + v == x && v < x))"]],"calls":[["half_or_neg1",[0]]],"expected_results":[0],"observed_results":[0],"runtime":"no trap; returns the correct 0. Only the dynamic ensures check of $half fires. Fix the spec (drop `v < x`), not the code.","static_failure":{"line":10,"obligation":"post of $half: v + v == x && v < x","why":"v < x is false when x == 0 (0 < 0) and for every negative even x (-2 > -4)","status":"fails"},"first_dynamic_failure":{"s":15,"ln":7,"kind":"ensures"},"trace":[{"s":1,"fn":"half_or_neg1","ln":13,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":2,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (enter)","stack":[],"loc":{"x":0}},{"s":3,"fn":"is_even","ln":2,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":4,"fn":"is_even","ln":3,"op":"i32.const 1","stack":[0,1],"loc":{"x":0}},{"s":5,"fn":"is_even","ln":4,"op":"i32.and","stack":[0],"loc":{"x":0}},{"s":6,"fn":"is_even","ln":5,"op":"i32.eqz","stack":[1],"loc":{"x":0}},{"s":7,"fn":"half_or_neg1","ln":14,"op":"call $is_even  (return)","stack":[1],"loc":{"x":0},"checks":[{"ln":1,"kind":"ensures","ok":true}]},{"s":8,"fn":"half_or_neg1","ln":15,"op":"i32.eqz","stack":[0],"loc":{"x":0}},{"s":9,"fn":"half_or_neg1","ln":16,"op":"if (result i32)","stack":[],"loc":{"x":0},"checks":[{"ln":19,"kind":"assert","ok":true}]},{"s":10,"fn":"half_or_neg1","ln":20,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":11,"fn":"half_or_neg1","ln":21,"op":"call $half  (enter)","stack":[],"loc":{"x":0},"checks":[{"ln":7,"kind":"requires","ok":true}]},{"s":12,"fn":"half","ln":8,"op":"local.get $x","stack":[0],"loc":{"x":0}},{"s":13,"fn":"half","ln":9,"op":"i32.const 1","stack":[0,1],"loc":{"x":0}},{"s":14,"fn":"half","ln":10,"op":"i32.shr_s","stack":[0],"loc":{"x":0}},{"s":15,"fn":"half_or_neg1","ln":21,"op":"call $half  (return)","stack":[0],"loc":{"x":0},"checks":[{"ln":7,"kind":"ensures","ok":false},{"ln":12,"kind":"ensures","ok":true}]}]}],"correct_runs":{"calls":[["half_or_neg1",[6]],["half_or_neg1",[7]],["half_or_neg1",[-4]],["is_even",[-3]]],"results":[3,-1,-2,0],"total_steps":44,"spec_checks_failed":0}},{"id":"isqrt","title":"Integer square root (linear search)","lines":["(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))","  (local $r i32)","  i32.const 0","  local.set $r","  block $done","    loop $grow","      (@invariant 0 <= r && r * r <= n)","      (@decreases n - r * r)","      local.get $r","      i32.const 1","      i32.add","      local.get $r","      i32.const 1","      i32.add","      i32.mul","      local.get $n","      i32.gt_u","      br_if $done","      local.get $r","      i32.const 1","      i32.add","      local.set $r","      br $grow","    end","  end","  local.get $r",")"],"functions":[{"name":"$isqrt","line":1,"signature":"(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))"}],"specs":[{"line":7,"text":"(@invariant 0 <= r && r * r <= n)"},{"line":8,"text":"(@decreases n - r * r)"}],"obligations":[{"lines":[3,4],"code":"i32.const 0; local.set $r","stack":"r == 0","obligation":"-","status":"none"},{"lines":[6],"code":"loop $grow","obligation":"inv on entry: 0 <= 0 && 0*0 <= n;  measure n - 0 >= 0","status":"auto","kind":"inv-entry"},{"lines":[9,10,11],"code":"local.get $r; i32.const 1; i32.add","stack":"[(i32 | v == r + 1)]","obligation":"no signed overflow: r + 1 <= 2^31-1","status":"lemma","kind":"overflow"},{"lines":[12,13,14],"code":"local.get $r; i32.const 1; i32.add","stack":"[r+1, r+1]","obligation":"same as 9-11","status":"lemma","kind":"overflow"},{"lines":[15],"code":"i32.mul","stack":"[(i32 | u(v) == (r+1)*(r+1))]","obligation":"no UNSIGNED overflow: (r+1)^2 < 2^32","status":"lemma","kind":"overflow"},{"lines":[16,17],"code":"local.get $n; i32.gt_u","stack":"[(i32 | v == ((r+1)^2 > n ? 1 : 0))]","obligation":"u(n) == n","status":"auto","kind":"type"},{"lines":[18],"code":"br_if $done","stack":"taken: n < (r+1)^2 / fallthrough: (r+1)^2 <= n","obligation":"-","status":"auto","kind":"branch"},{"lines":[19,20,21,22],"code":"r := r + 1","stack":"r' == r + 1","obligation":"no signed overflow (as 9-11)","status":"lemma","kind":"overflow"},{"lines":[23],"code":"br $grow","obligation":"inv preserved: 0 <= r' && r'*r' <= n;  measure: 0 <= n - r'^2 < n - r^2","status":"auto","kind":"inv-preserve"},{"lines":[26],"code":"local.get $r  (exit via br_if)","stack":"[(i32 | v == r)]","obligation":"post: 0 <= r && r*r <= n && n < (r+1)^2","status":"inv","kind":"post"}],"bugs":[{"id":"S1","title":"signed comparison of a product that may exceed 2^31-1","category":"code","flavor":"subtle: correct for every n < 46340^2 = 2147395600","edit":"line 17: `i32.gt_u` -> `i32.gt_s`","edits":[["replace",17,"i32.gt_u","i32.gt_s"]],"calls":[["isqrt",[2147483647]]],"expected_results":[46340],"observed_results":["(does not terminate)"],"runtime":"n = 2147483647: never terminates (no i32 is signed-greater than INT_MAX). n = 2147395600 (smallest failing input): returns 289398 after ~4.3M steps. The real run reaches the bad loop-head state (r = 46340) only at step 695,104, far past Codillon's 100k-step log, so the trace below is the counterexample-to-induction: start at a loop head satisfying the invariant and run one iteration (add 695,100 to each step number to get the real-run step).","static_failure":{"line":17,"obligation":"the comparison must mean (r+1)^2 > n","why":"signed reading of the line-15 product is faithful only if (r+1)^2 <= 2^31-1, i.e. r <= 46339; the invariant r*r <= n only gives r <= 46340. At r = 46340 the product 2147488281 wraps to -2147479015","status":"fails"},"first_dynamic_failure":{"s":695119,"ln":7,"kind":"invariant"},"trace_note":"counterexample-to-induction: one loop iteration from the loop-head state n = 2147483647, r = 46340 (which satisfies the invariant). Real-run step = s + 695100.","trace":[{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":2147483647,"r":46340},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":5,"fn":"isqrt","ln":9,"op":"local.get $r","stack":[46340],"loc":{"n":2147483647,"r":46340}},{"s":6,"fn":"isqrt","ln":10,"op":"i32.const 1","stack":[46340,1],"loc":{"n":2147483647,"r":46340}},{"s":7,"fn":"isqrt","ln":11,"op":"i32.add","stack":[46341],"loc":{"n":2147483647,"r":46340}},{"s":8,"fn":"isqrt","ln":12,"op":"local.get $r","stack":[46341,46340],"loc":{"n":2147483647,"r":46340}},{"s":9,"fn":"isqrt","ln":13,"op":"i32.const 1","stack":[46341,46340,1],"loc":{"n":2147483647,"r":46340}},{"s":10,"fn":"isqrt","ln":14,"op":"i32.add","stack":[46341,46341],"loc":{"n":2147483647,"r":46340}},{"s":11,"fn":"isqrt","ln":15,"op":"i32.mul","stack":[-2147479015],"loc":{"n":2147483647,"r":46340}},{"s":12,"fn":"isqrt","ln":16,"op":"local.get $n","stack":[-2147479015,2147483647],"loc":{"n":2147483647,"r":46340}},{"s":13,"fn":"isqrt","ln":17,"op":"i32.gt_s","stack":[0],"loc":{"n":2147483647,"r":46340}},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":2147483647,"r":46340}},{"s":15,"fn":"isqrt","ln":19,"op":"local.get $r","stack":[46340],"loc":{"n":2147483647,"r":46340}},{"s":16,"fn":"isqrt","ln":20,"op":"i32.const 1","stack":[46340,1],"loc":{"n":2147483647,"r":46340}},{"s":17,"fn":"isqrt","ln":21,"op":"i32.add","stack":[46341],"loc":{"n":2147483647,"r":46340}},{"s":18,"fn":"isqrt","ln":22,"op":"local.set $r","stack":[],"loc":{"n":2147483647,"r":46341}},{"s":19,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":2147483647,"r":46341},"checks":[{"ln":7,"kind":"invariant","ok":false},{"ln":8,"kind":"decreases","ok":false}]}]},{"id":"S2","title":"strict/non-strict swapped in the postcondition (spec bug)","category":"spec","flavor":"spec bug: fails exactly on perfect squares","edit":"line 1: result `v * v <= n && n < (v + 1) * (v + 1)` -> `v * v < n && n <= (v + 1) * (v + 1)`","edits":[["replace",1,"(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))","(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v < n && n <= (v + 1) * (v + 1)))"]],"calls":[["isqrt",[4]]],"expected_results":[2],"observed_results":[2],"runtime":"no trap; returns the correct 2 for n = 4 (also fails for n = 0, 1, 9, ...). n = 5 passes.","static_failure":{"line":26,"obligation":"post: r*r < n","why":"the invariant gives r*r <= n and the exit gives n < (r+1)^2; nothing excludes r*r == n","status":"fails"},"first_dynamic_failure":{"s":45,"ln":1,"kind":"ensures"},"trace":[{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":4,"r":0},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":0}},{"s":19,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":4,"r":1},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":29,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":1}},{"s":34,"fn":"isqrt","ln":23,"op":"br $grow","stack":[],"loc":{"n":4,"r":2},"checks":[{"ln":7,"kind":"invariant","ok":true},{"ln":8,"kind":"decreases","ok":true}]},{"s":44,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":4,"r":2}},{"s":45,"fn":"isqrt","ln":26,"op":"local.get $r","stack":[2],"loc":{"n":4,"r":2},"checks":[{"ln":1,"kind":"ensures","ok":false}]}]},{"id":"S3","title":"off-by-one initial value","category":"code","flavor":"edge case: wrong only for n = 0","edit":"line 3: `i32.const 0` -> `i32.const 1`","edits":[["replace",3,"i32.const 0","i32.const 1"]],"calls":[["isqrt",[0]]],"expected_results":[0],"observed_results":[1],"runtime":"no trap; isqrt(0) returns 1. Every n >= 1 is answered correctly, so tests on 1..100 all pass.","static_failure":{"line":6,"obligation":"inv on entry: 1*1 <= n","why":"only 0 <= n is known","status":"fails"},"first_dynamic_failure":{"s":4,"ln":7,"kind":"invariant"},"trace":[{"s":1,"fn":"isqrt","ln":3,"op":"i32.const 1","stack":[1],"loc":{"n":0,"r":0},"checks":[{"ln":1,"kind":"requires","ok":true}]},{"s":2,"fn":"isqrt","ln":4,"op":"local.set $r","stack":[],"loc":{"n":0,"r":1}},{"s":3,"fn":"isqrt","ln":5,"op":"block $done","stack":[],"loc":{"n":0,"r":1}},{"s":4,"fn":"isqrt","ln":6,"op":"loop $grow","stack":[],"loc":{"n":0,"r":1},"checks":[{"ln":7,"kind":"invariant","ok":false},{"ln":8,"kind":"decreases","ok":false}]},{"s":5,"fn":"isqrt","ln":9,"op":"local.get $r","stack":[1],"loc":{"n":0,"r":1}},{"s":6,"fn":"isqrt","ln":10,"op":"i32.const 1","stack":[1,1],"loc":{"n":0,"r":1}},{"s":7,"fn":"isqrt","ln":11,"op":"i32.add","stack":[2],"loc":{"n":0,"r":1}},{"s":8,"fn":"isqrt","ln":12,"op":"local.get $r","stack":[2,1],"loc":{"n":0,"r":1}},{"s":9,"fn":"isqrt","ln":13,"op":"i32.const 1","stack":[2,1,1],"loc":{"n":0,"r":1}},{"s":10,"fn":"isqrt","ln":14,"op":"i32.add","stack":[2,2],"loc":{"n":0,"r":1}},{"s":11,"fn":"isqrt","ln":15,"op":"i32.mul","stack":[4],"loc":{"n":0,"r":1}},{"s":12,"fn":"isqrt","ln":16,"op":"local.get $n","stack":[4,0],"loc":{"n":0,"r":1}},{"s":13,"fn":"isqrt","ln":17,"op":"i32.gt_u","stack":[1],"loc":{"n":0,"r":1}},{"s":14,"fn":"isqrt","ln":18,"op":"br_if $done","stack":[],"loc":{"n":0,"r":1}},{"s":15,"fn":"isqrt","ln":26,"op":"local.get $r","stack":[1],"loc":{"n":0,"r":1},"checks":[{"ln":1,"kind":"ensures","ok":false}]}]}],"correct_runs":{"calls":[["isqrt",[10]],["isqrt",[16]],["isqrt",[0]]],"results":[3,4,0],"total_steps":150,"spec_checks_failed":0}},{"id":"hashtable","title":"Open-addressing hash table (8 slots, linear probing, tombstones)","lines":["(memory 1)","(global $used (mut i32) (i32.const 0))","(@ghost global $M (Map i32 i32))","(@define EMPTY = 0, FULL = 1, TOMB = 2, CAP = 8, BASE = 65440)","(@define st(s) = load(BASE + 12*s), key(s) = load(BASE + 12*s + 4), val(s) = load(BASE + 12*s + 8))","(@define h(k) = k & 7, at(k, d) = (h(k) + d) & 7, dist(k, s) = (s - h(k)) & 7)","(@define R0 = forall s in 0..7. st(s) in {EMPTY, FULL, TOMB})","(@define R1 = forall s. st(s) == FULL ==> key(s) in M && M[key(s)] == val(s))","(@define R2 = forall k in M. #{s | st(s) == FULL && key(s) == k} == 1)","(@define R3 = forall s. st(s) == FULL ==> forall d <= dist(key(s), s). st(at(key(s), d)) != EMPTY)","(@define R4 = #{s | st(s) == FULL} == |M| && used == #{s | st(s) != EMPTY} && used < CAP)","(@define R = R0 && R1 && R2 && R3 && R4)","(func $slot (param $i (i32 | 0 <= v && v < CAP)) (result (i32 | v == BASE + 12*i))","  local.get $i","  i32.const 12","  i32.mul","  i32.const 65440","  i32.add",")","(func $find (param $k i32) (result (i32 | (v == -1 && !(k in M)) || (0 <= v && v < CAP && st(v) == FULL && key(v) == k)))","  (@requires R)","  (local $i i32)","  (local $p i32)","  (@ghost local $j i32)","  local.get $k","  i32.const 7","  i32.and","  local.set $i","  loop $probe","    (@invariant 0 <= j && j <= used && i == at(k, j))","    (@invariant forall d < j. st(at(k, d)) == TOMB || (st(at(k, d)) == FULL && key(at(k, d)) != k))","    (@decreases CAP - j)","    local.get $i","    call $slot","    local.tee $p","    i32.load","    i32.const 1","    i32.lt_u","    if","      i32.const -1","      return","    end","    local.get $p","    i32.load","    i32.const 1","    i32.eq","    local.get $p","    i32.load offset=4","    local.get $k","    i32.eq","    i32.and","    if","      local.get $i","      return","    end","    local.get $i","    i32.const 1","    i32.add","    i32.const 7","    i32.and","    local.set $i","    (@ghost j := j + 1)","    br $probe","  end","  unreachable",")","(func $lookup (param $k i32) (param $dflt i32) (result (i32 | v == (k in M ? M[k] : dflt)))","  (@requires R)","  (@ensures R)","  (local $i i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.lt_s","  if","    local.get $dflt","    return","  end","  local.get $i","  call $slot","  i32.load offset=8",")","(func $delete (param $k i32) (result (i32 | v == (k in old(M) ? 1 : 0)))","  (@requires R)","  (@ensures R && M == old(M) \\ {k})","  (local $i i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.lt_s","  if","    i32.const 0","    return","  end","  local.get $i","  call $slot","  i32.const 2","  i32.store","  (@ghost M := M \\ {k})","  i32.const 1",")","(func $insert (param $k i32) (param $x i32) (result (i32 | v == 1 || (v == 0 && !(k in M) && used == CAP - 1)))","  (@requires R)","  (@ensures R && M == (result == 1 ? old(M)[k := x] : old(M)))","  (local $i i32)","  (local $p i32)","  (@ghost local $j i32)","  local.get $k","  call $find","  local.tee $i","  i32.const 0","  i32.ge_s","  if","    local.get $i","    call $slot","    local.get $x","    i32.store offset=8","    (@ghost M := M[k := x])","    i32.const 1","    return","  end","  global.get $used","  i32.const 7","  i32.ge_u","  if","    i32.const 0","    return","  end","  local.get $k","  i32.const 7","  i32.and","  local.set $i","  loop $free","    (@invariant !(k in M) && 0 <= j && j <= used && i == at(k, j))","    (@invariant forall d < j. st(at(k, d)) != EMPTY)","    (@decreases CAP - j)","    local.get $i","    call $slot","    local.tee $p","    i32.load","    if","      local.get $i","      i32.const 1","      i32.add","      i32.const 7","      i32.and","      local.set $i","      (@ghost j := j + 1)","      br $free","    end","  end","  local.get $p","  i32.const 1","  i32.store","  local.get $p","  local.get $k","  i32.store offset=4","  local.get $p","  local.get $x","  i32.store offset=8","  global.get $used","  i32.const 1","  i32.add","  global.set $used","  (@ghost M := M[k := x])","  i32.const 1",")"],"functions":[{"name":"$slot","line":13,"signature":"(func $slot (param $i (i32 | 0 <= v && v < CAP)) (result (i32 | v == BASE + 12*i))"},{"name":"$find","line":20,"signature":"(func $find (param $k i32) (result (i32 | (v == -1 && !(k in M)) || (0 <= v && v < CAP && st(v) == FULL && key(v) == k)))"},{"name":"$lookup","line":67,"signature":"(func $lookup (param $k i32) (param $dflt i32) (result (i32 | v == (k in M ? M[k] : dflt)))"},{"name":"$delete","line":84,"signature":"(func $delete (param $k i32) (result (i32 | v == (k in old(M) ? 1 : 0)))"},{"name":"$insert","line":104,"signature":"(func $insert (param $k i32) (param $x i32) (result (i32 | v == 1 || (v == 0 && !(k in M) && used == CAP - 1)))"}],"specs":[{"line":3,"text":"(@ghost global $M (Map i32 i32))"},{"line":4,"text":"(@define EMPTY = 0, FULL = 1, TOMB = 2, CAP = 8, BASE = 65440)"},{"line":5,"text":"(@define st(s) = load(BASE + 12*s), key(s) = load(BASE + 12*s + 4), val(s) = load(BASE + 12*s + 8))"},{"line":6,"text":"(@define h(k) = k & 7, at(k, d) = (h(k) + d) & 7, dist(k, s) = (s - h(k)) & 7)"},{"line":7,"text":"(@define R0 = forall s in 0..7. st(s) in {EMPTY, FULL, TOMB})"},{"line":8,"text":"(@define R1 = forall s. st(s) == FULL ==> key(s) in M && M[key(s)] == val(s))"},{"line":9,"text":"(@define R2 = forall k in M. #{s | st(s) == FULL && key(s) == k} == 1)"},{"line":10,"text":"(@define R3 = forall s. st(s) == FULL ==> forall d <= dist(key(s), s). st(at(key(s), d)) != EMPTY)"},{"line":11,"text":"(@define R4 = #{s | st(s) == FULL} == |M| && used == #{s | st(s) != EMPTY} && used < CAP)"},{"line":12,"text":"(@define R = R0 && R1 && R2 && R3 && R4)"},{"line":21,"text":"(@requires R)"},{"line":24,"text":"(@ghost local $j i32)"},{"line":30,"text":"(@invariant 0 <= j && j <= used && i == at(k, j))"},{"line":31,"text":"(@invariant forall d < j. st(at(k, d)) == TOMB || (st(at(k, d)) == FULL && key(at(k, d)) != k))"},{"line":32,"text":"(@decreases CAP - j)"},{"line":62,"text":"(@ghost j := j + 1)"},{"line":68,"text":"(@requires R)"},{"line":69,"text":"(@ensures R)"},{"line":85,"text":"(@requires R)"},{"line":86,"text":"(@ensures R && M == old(M) \\ {k})"},{"line":101,"text":"(@ghost M := M \\ {k})"},{"line":105,"text":"(@requires R)"},{"line":106,"text":"(@ensures R && M == (result == 1 ? old(M)[k := x] : old(M)))"},{"line":109,"text":"(@ghost local $j i32)"},{"line":120,"text":"(@ghost M := M[k := x])"},{"line":136,"text":"(@invariant !(k in M) && 0 <= j && j <= used && i == at(k, j))"},{"line":137,"text":"(@invariant forall d < j. st(at(k, d)) != EMPTY)"},{"line":138,"text":"(@decreases CAP - j)"},{"line":150,"text":"(@ghost j := j + 1)"},{"line":167,"text":"(@ghost M := M[k := x])"}],"obligations":[{"lines":[14,15,16,17,18],"code":"$slot: i*12 + 65440","stack":"[(i32 | v == BASE + 12*i)]","obligation":"no overflow; post v == BASE + 12*i","status":"auto","kind":"post"},{"lines":[25,26,27,28],"code":"find: i := k & 7","stack":"i == h(k), 0 <= i < 8","obligation":"-","status":"auto","kind":"type"},{"lines":[29],"code":"loop $probe","obligation":"inv on entry: j == 0 <= used, i == at(k,0), path-so-far vacuous;  measure CAP - 0 >= 0","status":"auto","kind":"inv-entry"},{"lines":[33,34,35],"code":"call $slot; local.tee $p","stack":"[(i32 | v == BASE + 12*i)]","obligation":"pre of $slot: 0 <= i < CAP","status":"inv","kind":"pre"},{"lines":[36],"code":"i32.load","stack":"[(i32 | v == st(i))]","obligation":"in bounds: p + 4 <= 65536","status":"auto","kind":"trap"},{"lines":[37,38,39,40,41],"code":"st(i) < FULL ? return -1","stack":"[(i32 | v == -1)]","obligation":"post of $find: !(k in M)","status":"inv","kind":"post"},{"lines":[43,44,45,46,47,48,49,50,51],"code":"(st(i) == FULL) & (key(i) == k)","stack":"[(i32 | v == (st(i) == FULL && key(i) == k ? 1 : 0))]","obligation":"in bounds: p + 8 <= 65536","status":"auto","kind":"trap"},{"lines":[52,53,54],"code":"match ? return i","stack":"[(i32 | v == i)]","obligation":"post of $find: 0 <= i < CAP && st(i) == FULL && key(i) == k","status":"auto","kind":"post"},{"lines":[56,57,58,59,60,61],"code":"i := (i + 1) & 7","stack":"i' == at(k, j + 1)","obligation":"-","status":"auto","kind":"type"},{"lines":[62,63],"code":"j := j + 1; br $probe","obligation":"inv preserved: slot at distance j is TOMB or FULL-with-other-key; j + 1 <= used;  measure CAP - (j+1) < CAP - j, >= 0","status":"lemma","kind":"inv-preserve"},{"lines":[65],"code":"unreachable","obligation":"this point is dead","status":"auto","kind":"dead"},{"lines":[71,72,73,74,75,76,77,78],"code":"lookup: i := find(k); i < 0 ? return dflt","stack":"[(i32 | v == dflt)]","obligation":"pre of $find: R;  post: !(k in M) so result == dflt","status":"auto","kind":"post"},{"lines":[80,81,82],"code":"lookup: load val(i)","stack":"[(i32 | v == val(i))]","obligation":"post: val(i) == M[k];  R preserved","status":"inv","kind":"post"},{"lines":[88,89,90,91,92,93,94,95,96],"code":"delete: i := find(k); absent ? return 0","stack":"[(i32 | v == 0)]","obligation":"post: k not in old(M), M unchanged, R unchanged","status":"auto","kind":"post"},{"lines":[97,98,99,100,101],"code":"delete: st(i) := TOMB; M := M \\ {k}","obligation":"R after: R1 (slot i no longer FULL), R2 (k had exactly one slot), R3 (TOMB is not EMPTY, so no probe path gains an EMPTY), R4 (#FULL - 1 == |M| - 1; used unchanged)","status":"inv","kind":"R"},{"lines":[110,111,112,113,114,115],"code":"insert: i := find(k); i >= 0 ?","stack":"then: st(i) == FULL && key(i) == k / else: !(k in M)","obligation":"pre of $find: R","status":"auto","kind":"pre"},{"lines":[116,117,118,119,120],"code":"insert(update): val(i) := x; M := M[k := x]","obligation":"R1 for slot i with the new M; other clauses untouched","status":"auto","kind":"R"},{"lines":[124,125,126,127,128,129,130],"code":"used >= CAP-1 ? return 0","stack":"[(i32 | v == 0)]","obligation":"post: !(k in M) && used == CAP - 1","status":"auto","kind":"post"},{"lines":[131,132,133,134,135],"code":"i := h(k); loop $free","obligation":"inv on entry: !(k in M) (from find), j == 0, i == at(k, 0)","status":"auto","kind":"inv-entry"},{"lines":[139,140,141,142,143],"code":"st(i) != EMPTY ?","obligation":"pre of $slot: 0 <= i < CAP;  load in bounds","status":"inv","kind":"pre"},{"lines":[144,145,146,147,148,149,150,151],"code":"i := (i+1) & 7; j := j + 1; br $free","obligation":"inv preserved (path so far non-EMPTY; j + 1 <= used);  measure","status":"lemma","kind":"inv-preserve"},{"lines":[154,155,156,157,158,159,160,161,162],"code":"write FULL, k, x into EMPTY slot i","obligation":"stores in bounds","status":"auto","kind":"trap"},{"lines":[163,164,165,166,167],"code":"used := used + 1; M := M[k := x]","obligation":"R after: R1 (new slot maps k to x), R2 (k was absent: inv), R3 (path h(k)..i was non-EMPTY: inv; turning an EMPTY into FULL never breaks another key's path), R4 (#FULL + 1 == |M| + 1; used + 1 == #non-EMPTY because slot i WAS EMPTY; used + 1 < CAP because the check at 124-126 gave used < CAP - 1)","status":"inv","kind":"R"}],"bugs":[{"id":"Ha","title":"(a) probe index not wrapped","category":"code","flavor":"out-of-bounds trap","edit":"delete lines 147-148 (`i32.const 7`, `i32.and`) in $insert's free-slot loop","edits":[["delete",147,148]],"calls":[["insert",[7,70]],["insert",[15,150]]],"expected_results":[1,1],"observed_results":[1,"trap: out of bounds memory access"],"runtime":"insert(15, 150) traps \"out of bounds memory access\" at line 142 (address 65536 = BASE + 12*8).","static_failure":{"line":140,"obligation":"pre of $slot: 0 <= i < CAP","why":"after line 146 i == at(k, j) + 1, which is 8 when at(k, j) == 7. The back-edge invariant i == at(k, j+1) (line 136) fails first","status":"fails"},"first_dynamic_failure":{"s":143,"ln":136,"kind":"invariant"},"R_violation":"none: the trap fires before any write. With BASE = 0 instead of 65440 there would be no trap: \"slot 8\" (bytes 96..107) reads as EMPTY, the entry is written outside the table, and R2 (ii) fails because 15 is in M but in no FULL slot","op_boundaries":[{"call":["insert",[7,70]],"returned_at_step":61,"R_false":[]}],"trace":[{"s":17,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":7,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":22,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":7,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":46,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":56,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":61,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}]},{"s":78,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":15,"i":7,"p":65524,"j":0},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":108,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":15,"i":0,"p":65440,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":113,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":15,"i":0,"p":65440,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":137,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":15,"x":150,"i":7,"p":65524,"j":0},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]]},{"s":143,"fn":"insert","ln":151,"op":"br $free","stack":[],"loc":{"k":15,"x":150,"i":8,"p":65524,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"checks":[{"ln":136,"kind":"invariant","ok":false},{"ln":137,"kind":"invariant","ok":true},{"ln":138,"kind":"decreases","ok":true}]},{"s":145,"fn":"insert","ln":140,"op":"call $slot  (enter)","stack":[],"loc":{"k":15,"x":150,"i":8,"p":65524,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"checks":[{"ln":13,"kind":"requires","ok":false}]},{"s":153,"fn":"insert","ln":142,"op":"i32.load","stack":[65536],"loc":{"k":15,"x":150,"i":8,"p":65536,"j":1},"used":1,"M":[[7,70]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[1,7,70]],"trap":"out of bounds memory access"}]},{"id":"Hb","title":"(b) lookup treats TOMBSTONE as EMPTY","category":"code","flavor":"key becomes unreachable","edit":"line 38: `i32.lt_u` (state < FULL, i.e. EMPTY) -> `i32.ne` (state != FULL, i.e. EMPTY or TOMB)","edits":[["replace",38,"i32.lt_u","i32.ne"]],"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]]],"expected_results":[1,1,1,110],"observed_results":[1,1,1,-1],"runtime":"lookup(11, -1) returns -1 (expected 110). No trap. Cascade: a later insert(11, 111) sees \"absent\" and writes a second FULL slot for 11 (slot 5), now breaking R2 (ii).","static_failure":{"line":41,"obligation":"post of $find: !(k in M)","why":"the path condition at the early return is now st(i) in {EMPTY, TOMB}; R3 (iii) only promises no EMPTY on a key's probe path, so a TOMB there says nothing about k","status":"fails"},"first_dynamic_failure":{"s":241,"ln":20,"kind":"ensures"},"R_violation":"R stays TRUE at every step (delete correctly writes TOMB). What breaks is the stronger invariant the buggy lookup silently relies on, iii_strong = \"no non-FULL slot on any key's probe path\". It becomes false at step 217 (delete's i32.store, line 100), when slot 3 on key 11's path turns TOMB. The first obligation to fail at runtime is $find's postcondition, at step 241 (find returns -1 to lookup)","op_boundaries":[{"call":["insert",[3,30]],"returned_at_step":61,"R_false":[]},{"call":["insert",[11,110]],"returned_at_step":170,"R_false":[]},{"call":["delete",[3]],"returned_at_step":218,"R_false":[]},{"call":["lookup",[11,-1]],"returned_at_step":247,"R_false":[]}],"trace":[{"s":17,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":22,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":46,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":56,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":0,"M":[],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":61,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":3,"x":30,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":true,"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}]},{"s":78,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":87,"fn":"find","ln":48,"op":"i32.load offset=4","stack":[1,3],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":108,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":11,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":113,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":137,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":11,"x":110,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":155,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":165,"fn":"insert","ln":162,"op":"i32.store offset=8","stack":[],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":170,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":11,"x":110,"i":4,"p":65488,"j":1},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":true,"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":true}]},{"s":187,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":196,"fn":"find","ln":48,"op":"i32.load offset=4","stack":[1,3],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":202,"fn":"find","ln":54,"op":"return","stack":[3],"loc":{"k":3,"i":3,"p":65476,"j":0},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":true},{"s":217,"fn":"delete","ln":100,"op":"i32.store","stack":[],"loc":{"k":3,"i":3},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":218,"fn":"delete","ln":102,"op":"i32.const 1","stack":[1],"loc":{"k":3,"i":3},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":false,"checks":[{"ln":84,"kind":"ensures","ok":true},{"ln":86,"kind":"ensures","ok":true}]},{"s":235,"fn":"find","ln":36,"op":"i32.load","stack":[2],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":237,"fn":"find","ln":38,"op":"i32.ne","stack":[1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":240,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false},{"s":241,"fn":"lookup","ln":72,"op":"call $find  (return)","stack":[-1],"loc":{"k":11,"dflt":-1,"i":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"iii_strong":false,"checks":[{"ln":20,"kind":"ensures","ok":false}]},{"s":247,"fn":"lookup","ln":78,"op":"return","stack":[-1],"loc":{"k":11,"dflt":-1,"i":-1},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[2,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":true},"iii_strong":false,"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":true}]}]},{"id":"Hb_prime","title":"(b') delete writes EMPTY instead of TOMBSTONE","category":"code","flavor":"the same symptom, caused on the delete side","edit":"line 99: `i32.const 2` -> `i32.const 0`","edits":[["replace",99,"i32.const 2","i32.const 0"]],"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]]],"expected_results":[1,1,1,110],"observed_results":[1,1,1,-1],"runtime":"lookup(11, -1) returns -1 (expected 110).","static_failure":{"line":100,"obligation":"R3 (iii) after delete's store","why":"writing EMPTY into slot 3 places an EMPTY on key 11's path h(11)=3 .. 4","status":"fails"},"first_dynamic_failure":{"s":218,"ln":86,"kind":"ensures"},"R_violation":"R3 (iii) and R4 (iv: used == #non-EMPTY) become false at step 217 (line 100, the store)","op_boundaries":[{"call":["insert",[3,30]],"returned_at_step":61,"R_false":[]},{"call":["insert",[11,110]],"returned_at_step":170,"R_false":[]},{"call":["delete",[3]],"returned_at_step":218,"R_false":["iii","iv"]},{"call":["lookup",[11,-1]],"returned_at_step":247,"R_false":["iii","iv"]}],"trace":[{"s":217,"fn":"delete","ln":100,"op":"i32.store","stack":[],"loc":{"k":3,"i":3},"used":2,"M":[[3,30],[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]]},{"s":218,"fn":"delete","ln":102,"op":"i32.const 1","stack":[1],"loc":{"k":3,"i":3},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":false,"iv":false},"checks":[{"ln":84,"kind":"ensures","ok":true},{"ln":86,"kind":"ensures","ok":false}]},{"s":235,"fn":"find","ln":36,"op":"i32.load","stack":[0],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]]},{"s":240,"fn":"find","ln":41,"op":"return","stack":[-1],"loc":{"k":11,"i":3,"p":65476,"j":0},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]]},{"s":247,"fn":"lookup","ln":78,"op":"return","stack":[-1],"loc":{"k":11,"dflt":-1,"i":-1},"used":2,"M":[[11,110]],"slots":[[0,0,0],[0,0,0],[0,0,0],[0,3,30],[1,11,110],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":true,"ii":true,"iii":false,"iv":false},"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":false}]}]},{"id":"Hc","title":"(c) insert does not check for an existing key","category":"code","flavor":"duplicate key","edit":"delete lines 110-123 (the find-and-update group at the top of $insert)","edits":[["delete",110,123]],"calls":[["insert",[3,30]],["insert",[3,31]],["lookup",[3,-1]]],"expected_results":[1,1,31],"observed_results":[1,1,30],"runtime":"insert(3, 31) returns 1 but leaves two FULL slots with key 3; lookup(3, -1) returns the stale 30 (expected 31). No trap.","static_failure":{"line":135,"obligation":"inv on entry of $free: !(k in M)","why":"nothing establishes that k is absent any more","status":"fails"},"first_dynamic_failure":{"s":43,"ln":136,"kind":"invariant"},"R_violation":"R2 (ii): from step 78 (line 159, key store) slots 3 and 4 are both FULL with key 3. At insert's return (step 86) R1 (i) is false too (ghost M[3] = 31 but slot 3 still holds 30) and so is R4 (iv) (#FULL = 2 but |M| = 1)","op_boundaries":[{"call":["insert",[3,30]],"returned_at_step":34,"R_false":[]},{"call":["insert",[3,31]],"returned_at_step":86,"R_false":["i","ii","iv"]},{"call":["lookup",[3,-1]],"returned_at_step":132,"R_false":["i","ii","iv"]}],"trace":[{"s":43,"fn":"insert","ln":135,"op":"loop $free","stack":[],"loc":{"k":3,"x":31,"i":3,"p":0,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],"checks":[{"ln":136,"kind":"invariant","ok":false},{"ln":137,"kind":"invariant","ok":true},{"ln":138,"kind":"decreases","ok":true}]},{"s":53,"fn":"insert","ln":142,"op":"i32.load","stack":[1],"loc":{"k":3,"x":31,"i":3,"p":65476,"j":0},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":71,"fn":"insert","ln":142,"op":"i32.load","stack":[0],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":78,"fn":"insert","ln":159,"op":"i32.store offset=4","stack":[],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":1,"M":[[3,30]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,0],[0,0,0],[0,0,0],[0,0,0]]},{"s":86,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":3,"x":31,"i":4,"p":65488,"j":1},"used":2,"M":[[3,31]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,31],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":false,"ii":false,"iii":true,"iv":false},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":false}]},{"s":132,"fn":"lookup","ln":82,"op":"i32.load offset=8","stack":[30],"loc":{"k":3,"dflt":-1,"i":3},"used":2,"M":[[3,31]],"slots":[[0,0,0],[0,0,0],[0,0,0],[1,3,30],[1,3,31],[0,0,0],[0,0,0],[0,0,0]],"R":{"o":true,"i":false,"ii":false,"iii":true,"iv":false},"checks":[{"ln":67,"kind":"ensures","ok":false},{"ln":69,"kind":"ensures","ok":false}]}]},{"id":"Hd","title":"(d) load-factor check off by one","category":"code","flavor":"probe loop never terminates","edit":"line 125: `i32.const 7` -> `i32.const 8` (refuse only when used >= 8)","edits":[["replace",125,"i32.const 7","i32.const 8"]],"calls":[["insert",[0,0]],["insert",[1,10]],["insert",[2,20]],["insert",[3,30]],["insert",[4,40]],["insert",[5,50]],["insert",[6,60]],["insert",[7,70]],["lookup",[8,-1]]],"expected_results":[1,1,1,1,1,1,1,0,-1],"observed_results":[1,1,1,1,1,1,1,1,"(lookup does not terminate)"],"runtime":"The 8th insert succeeds (correct program refuses it with 0). lookup(8, -1) then probes slots 0,1,...,7,0,1,... forever: no trap, no result; Codillon's 100k-step log fills up.","static_failure":{"line":166,"obligation":"R4 (iv) after insert: used + 1 < CAP","why":"the check at 124-126 now only gives used < 8, which R4 already guaranteed; used + 1 <= 8 is all that follows","status":"fails"},"first_dynamic_failure":{"s":488,"ln":106,"kind":"ensures"},"R_violation":"R4 (iv): used < CAP. False from step 487 (line 166, global.set $used = 8) of the 8th insert; checked false at its return, step 488","op_boundaries":[{"call":["insert",[0,0]],"returned_at_step":61,"R_false":[]},{"call":["insert",[1,10]],"returned_at_step":122,"R_false":[]},{"call":["insert",[2,20]],"returned_at_step":183,"R_false":[]},{"call":["insert",[3,30]],"returned_at_step":244,"R_false":[]},{"call":["insert",[4,40]],"returned_at_step":305,"R_false":[]},{"call":["insert",[5,50]],"returned_at_step":366,"R_false":[]},{"call":["insert",[6,60]],"returned_at_step":427,"R_false":[]},{"call":["insert",[7,70]],"returned_at_step":488,"R_false":["iv"]}],"trace":[{"s":487,"fn":"insert","ln":166,"op":"global.set $used","stack":[],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":488,"fn":"insert","ln":168,"op":"i32.const 1","stack":[1],"loc":{"k":7,"x":70,"i":7,"p":65524,"j":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"R":{"o":true,"i":true,"ii":true,"iii":true,"iv":false},"checks":[{"ln":104,"kind":"ensures","ok":true},{"ln":106,"kind":"ensures","ok":false}]},{"s":489,"fn":"lookup","ln":71,"op":"local.get $k","stack":[8],"loc":{"k":8,"dflt":-1,"i":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":68,"kind":"requires","ok":false}]},{"s":490,"fn":"lookup","ln":72,"op":"call $find  (enter)","stack":[],"loc":{"k":8,"dflt":-1,"i":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":21,"kind":"requires","ok":false}]},{"s":505,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":0,"p":65440,"j":0},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":535,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":1,"p":65452,"j":1},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":565,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":2,"p":65464,"j":2},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":595,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":3,"p":65476,"j":3},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":625,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":4,"p":65488,"j":4},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":655,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":5,"p":65500,"j":5},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":685,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":6,"p":65512,"j":6},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":715,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":7,"p":65524,"j":7},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":745,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":0,"p":65440,"j":8},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":765,"fn":"find","ln":63,"op":"br $probe","stack":[],"loc":{"k":8,"i":1,"p":65440,"j":9},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":30,"kind":"invariant","ok":false},{"ln":31,"kind":"invariant","ok":true},{"ln":32,"kind":"decreases","ok":false}]},{"s":775,"fn":"find","ln":36,"op":"i32.load","stack":[1],"loc":{"k":8,"i":1,"p":65452,"j":9},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]]},{"s":795,"fn":"find","ln":63,"op":"br $probe","stack":[],"loc":{"k":8,"i":2,"p":65452,"j":10},"used":8,"M":[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50],[6,60],[7,70]],"slots":[[1,0,0],[1,1,10],[1,2,20],[1,3,30],[1,4,40],[1,5,50],[1,6,60],[1,7,70]],"checks":[{"ln":30,"kind":"invariant","ok":false},{"ln":31,"kind":"invariant","ok":true},{"ln":32,"kind":"decreases","ok":false}]}]}],"correct_runs":{"calls":[["insert",[3,30]],["insert",[11,110]],["delete",[3]],["lookup",[11,-1]],["lookup",[3,-1]]],"results":[1,1,1,110,-1],"total_steps":383,"spec_checks_failed":0}}]};
+// ---- line-level reference interpreter (same step convention as the fixture) ----
+const I32 = x => x | 0;
+const U32 = x => x >>> 0;
+const CAPN = 8, BASEA = 65440;
+
+function parseProgram(lines) {
+  const funcs = {}, struct = {}, order = [];
+  let cur = null;
+  const ctl = [];
+  lines.forEach((raw, idx) => {
+    const ln = idx + 1, t = raw.trim();
+    if (t.startsWith('(func ')) {
+      const name = t.match(/^\(func (\$[\w]+)/)[1];
+      const params = [...t.matchAll(/\(param (\$[\w]+)/g)].map(m => m[1].slice(1));
+      const nres = (t.match(/\(result/g) || []).length;
+      cur = { name, line: ln, params, locals: [], ghosts: [], nres, end: null };
+      funcs[name] = cur; order.push(cur);
+      return;
+    }
+    if (!cur) return;
+    if (t === ')') { cur.end = ln; cur = null; return; }
+    let m;
+    if ((m = t.match(/^\(local (\$[\w]+)/))) cur.locals.push(m[1].slice(1));
+    if ((m = t.match(/^\(@ghost local (\$[\w]+)/))) cur.ghosts.push(m[1].slice(1));
+    const op = t.split(/\s+/)[0];
+    if (op === 'block' || op === 'loop' || op === 'if') {
+      const lab = (t.match(/\$[\w]+/) || [null])[0];
+      ctl.push(ln); struct[ln] = { kind: op, label: lab, end: null, els: null };
+    } else if (op === 'else') {
+      struct[ctl[ctl.length - 1]].els = ln;
+    } else if (op === 'end') {
+      const o = ctl.pop(); struct[o].end = ln;
+    }
+  });
+  const fnOf = {};
+  order.forEach(f => { for (let l = f.line; l <= f.end; l++) fnOf[l] = f.name.slice(1); });
+  return { funcs, struct, order, fnOf };
+}
+
+// stack effect of an instruction line (inputs, outputs), static
+function stackEffect(t, prog, fname) {
+  const op = t.split(/\s+/)[0];
+  if (!op || op.startsWith('(') || op.startsWith(';;') || op === ')') return null;
+  if (op === 'local.get' || op === 'global.get' || op === 'i32.const') return [0, 1];
+  if (op === 'local.set' || op === 'global.set' || op === 'br_if' || op === 'if') return [1, 0];
+  if (op === 'local.tee' || op === 'i32.eqz' || op === 'i32.load') return [1, 1];
+  if (op === 'i32.store') return [2, 0];
+  if (/^i32\.(add|sub|mul|and|or|shr_s|shr_u|shl|eq|ne|lt_u|lt_s|gt_u|gt_s|ge_s|ge_u|le_s|le_u)$/.test(op)) return [2, 1];
+  if (op === 'call') { const f = prog.funcs[t.split(/\s+/)[1]]; return f ? [f.params.length, f.nres] : [1, 1]; }
+  if (op === 'return') { const f = prog.funcs['$' + fname]; return [f ? f.nres : 0, 0]; }
+  return [0, 0];
+}
+
+function makeMem() { return new DataView(new ArrayBuffer(65536)); }
+
+function run(prog, lines, calls, spec, opts = {}) {
+  const maxSteps = opts.maxSteps || 100000;
+  const mem = makeMem();
+  const st = { mem, used: 0, M: new Map() };
+  const trace = [];
+  let s = opts.stepOffset || 0;
+  let stopped = null;
+  const memSnap = () => {
+    if (!spec.memory) return null;
+    const out = [];
+    for (let i = 0; i < CAPN; i++) { const a = BASEA + 12 * i; out.push([mem.getInt32(a, true), mem.getInt32(a + 4, true), mem.getInt32(a + 8, true)]); }
+    return out;
+  };
+  let gen = 0;
+  const record = (f, ln, op, ins, outs, extra) => {
+    s++;
+    const rec = { s, fn: f.fn, ln, op, ins, outs, stack: f.stack.slice(), loc: Object.assign({}, f.locals), checks: [],
+      gens: Object.assign({}, f.genMap()), call: f.callId, top: topIdx };
+    if (spec.memory) { rec.slots = memSnap(); rec.used = st.used; rec.M = [...st.M.entries()].sort((a, b) => a[0] - b[0]); }
+    if (extra) Object.assign(rec, extra);
+    trace.push(rec);
+    return rec;
+  };
+  const lastRec = () => trace[trace.length - 1];
+  let callCounter = 0;
+
+  function newFrame(fname, args, caller) {
+    const fd = prog.funcs['$' + fname];
+    const locals = {};
+    fd.params.forEach((p, i) => locals[p] = args[i]);
+    fd.locals.forEach(l => locals[l] = 0);
+    fd.ghosts.forEach(l => locals[l] = 0);
+    const fr = { fn: fname, fd, pc: fd.line + 1, locals, stack: [], ctrl: [], caller, callId: ++callCounter,
+      old: { args: args.slice(), M: new Map(st.M), used: st.used }, loopMeasure: {} };
+    fr.gen = ++gen;
+    fr.genMap = () => { const m = caller ? caller.genMap() : {}; m[fname] = fr.callId + ':' + fr.gen; return m; };
+    return fr;
+  }
+  const addChecks = (rec, list) => { if (rec && list) list.forEach(c => rec.checks.push(c)); };
+
+  let topIdx = -1;
+  outer:
+  for (const call of calls) {
+    topIdx++;
+    let fname = call[0], args = call[1].map(I32);
+    let f = newFrame(fname, args, null);
+    let pendingReq = spec.requires && spec.requires[fname] ? spec.requires[fname](f.locals, st) : null;
+    if (call[2]) { // start-state override: {pc, locals}
+      Object.assign(f.locals, call[2].locals); f.pc = call[2].pc; pendingReq = null;
+    }
+    const rec0 = (f2, ln, op, ins, outs, extra) => {
+      const r = record(f2, ln, op, ins, outs, extra);
+      if (pendingReq) { addChecks(r, pendingReq); pendingReq = null; }
+      return r;
+    };
+    const doReturn = (fr, results, viaRec) => {
+      // fr returns results; ensures
+      const ens = spec.ensures && spec.ensures[fr.fn] ? spec.ensures[fr.fn](fr.locals, st, results[0], fr.old) : null;
+      if (fr.caller) {
+        const c = fr.caller;
+        results.forEach(v => c.stack.push(v));
+        const r = rec0(c, c.pc, lines[c.pc - 1].trim() + '  (return)', [], results.slice());
+        addChecks(r, ens);
+        r.ret = { fn: fr.fn, v: results[0] };
+        c.pc++;
+        return c;
+      } else {
+        const lr = viaRec || lastRec();
+        addChecks(lr, ens);
+        lr.ret = { fn: fr.fn, v: results[0], top: true };
+        return null;
+      }
+    };
+    while (f) {
+      if (s >= maxSteps) { stopped = 'cut'; break outer; }
+      const ln = f.pc, raw = lines[ln - 1];
+      if (raw === undefined) throw new Error('ran off program at ' + ln);
+      const t = raw.trim();
+      if (t === ')') { f = doReturn(f, f.stack.slice(f.stack.length - f.fd.nres)); continue; }
+      if (t === '' || t.startsWith(';;') || t.startsWith('(local') || t.startsWith('(@ghost local')) { f.pc++; continue; }
+      if (t.startsWith('(@')) {
+        if (spec.ghost && spec.ghost[ln]) spec.ghost[ln](f.locals, st);
+        if (spec.asserts && spec.asserts[ln]) addChecks(lastRec(), [{ ln, kind: 'assert', ok: spec.asserts[ln](f.locals, st) }]);
+        f.pc++; continue;
+      }
+      const parts = t.split(/\s+/), op = parts[0], arg = parts[1];
+      const S = f.stack;
+      const pop = () => S.pop();
+      let ins = [], outs = [];
+      const bin = (fn) => { const b = pop(), a = pop(); ins = [a, b]; const r = I32(fn(a, b)); S.push(r); outs = [r]; };
+      const offs = () => { const m = t.match(/offset=(\d+)/); return m ? +m[1] : 0; };
+      let jump = null, extraRec = null, checks = null;
+      const loopChecks = (loopLine, entry) => {
+        if (!spec.loops || !spec.loops[loopLine]) return null;
+        const prev = f.loopMeasure[loopLine];
+        const r = spec.loops[loopLine](f.locals, st, entry ? null : prev);
+        f.loopMeasure[loopLine] = r.measure;
+        return r.checks;
+      };
+      const doBr = (label) => {
+        for (let k = f.ctrl.length - 1; k >= 0; k--) {
+          const c = f.ctrl[k];
+          if (c.label === label) {
+            if (c.kind === 'loop') { f.ctrl.length = k + 1; f.gen = ++gen; checks = loopChecks(c.line, false); return c.line + 1; }
+            f.ctrl.length = k; return c.end + 1;
+          }
+        }
+        throw new Error('bad label ' + label);
+      };
+      switch (op) {
+        case 'local.get': S.push(f.locals[arg.slice(1)]); outs = [S[S.length - 1]]; break;
+        case 'local.set': ins = [pop()]; f.locals[arg.slice(1)] = ins[0]; break;
+        case 'local.tee': ins = [S[S.length - 1]]; f.locals[arg.slice(1)] = ins[0]; outs = [ins[0]]; break;
+        case 'global.get': S.push(st.used); outs = [st.used]; break;
+        case 'global.set': ins = [pop()]; st.used = ins[0]; break;
+        case 'i32.const': S.push(I32(+arg)); outs = [I32(+arg)]; break;
+        case 'i32.add': bin((a, b) => a + b); break;
+        case 'i32.sub': bin((a, b) => a - b); break;
+        case 'i32.mul': bin((a, b) => Math.imul(a, b)); break;
+        case 'i32.and': bin((a, b) => a & b); break;
+        case 'i32.shr_s': bin((a, b) => a >> (b & 31)); break;
+        case 'i32.shr_u': bin((a, b) => a >>> (b & 31)); break;
+        case 'i32.shl': bin((a, b) => a << (b & 31)); break;
+        case 'i32.eq': bin((a, b) => a === b ? 1 : 0); break;
+        case 'i32.ne': bin((a, b) => a !== b ? 1 : 0); break;
+        case 'i32.lt_u': bin((a, b) => U32(a) < U32(b) ? 1 : 0); break;
+        case 'i32.lt_s': bin((a, b) => a < b ? 1 : 0); break;
+        case 'i32.gt_u': bin((a, b) => U32(a) > U32(b) ? 1 : 0); break;
+        case 'i32.gt_s': bin((a, b) => a > b ? 1 : 0); break;
+        case 'i32.ge_u': bin((a, b) => U32(a) >= U32(b) ? 1 : 0); break;
+        case 'i32.ge_s': bin((a, b) => a >= b ? 1 : 0); break;
+        case 'i32.eqz': { const a = pop(); ins = [a]; const r = a === 0 ? 1 : 0; S.push(r); outs = [r]; break; }
+        case 'i32.load': {
+          const a = pop(); ins = [a]; const ea = U32(a) + offs();
+          if (ea + 4 > 65536) { S.push(a); extraRec = { trap: 'out of bounds memory access' }; break; }
+          const v = st.mem.getInt32(ea, true); S.push(v); outs = [v]; break;
+        }
+        case 'i32.store': {
+          const v = pop(), a = pop(); ins = [a, v]; const ea = U32(a) + offs();
+          if (ea + 4 > 65536) { extraRec = { trap: 'out of bounds memory access' }; break; }
+          st.mem.setInt32(ea, v, true); break;
+        }
+        case 'block': f.ctrl.push({ kind: 'block', label: arg, line: ln, end: prog.struct[ln].end }); break;
+        case 'loop': f.ctrl.push({ kind: 'loop', label: arg, line: ln, end: prog.struct[ln].end }); f.gen = ++gen; checks = loopChecks(ln, true); break;
+        case 'if': {
+          const c = pop(); ins = [c]; const sd = prog.struct[ln];
+          if (c !== 0) f.ctrl.push({ kind: 'if', label: null, line: ln, end: sd.end });
+          else if (sd.els) { f.ctrl.push({ kind: 'if', label: null, line: ln, end: sd.end }); jump = sd.els + 1; }
+          else jump = sd.end + 1;
+          break;
+        }
+        case 'else': { const c = f.ctrl.pop(); f.pc = c.end + 1; continue; }
+        case 'end': { f.ctrl.pop(); f.pc++; continue; }
+        case 'br': jump = doBr(arg); break;
+        case 'br_if': { const c = pop(); ins = [c]; if (c !== 0) jump = doBr(arg); break; }
+        case 'unreachable': extraRec = { trap: 'unreachable' }; break;
+        case 'return': {
+          const res = S.slice(S.length - f.fd.nres);
+          const r = rec0(f, ln, t, res.slice(), []);
+          f = doReturn(f, res, r);
+          continue;
+        }
+        case 'call': {
+          const callee = arg.slice(1), fd = prog.funcs[arg];
+          const a = S.splice(S.length - fd.params.length, fd.params.length);
+          const r = rec0(f, ln, t + '  (enter)', a.slice(), []);
+          const nf = newFrame(callee, a, f);
+          addChecks(r, spec.requires && spec.requires[callee] ? spec.requires[callee](nf.locals, st) : null);
+          f = nf; continue;
+        }
+        default: throw new Error('unknown op ' + op + ' at ' + ln);
+      }
+      const r = rec0(f, ln, t, ins, outs, extraRec);
+      addChecks(r, checks);
+      if (spec.lineChecks && spec.lineChecks[ln]) { const ok = spec.lineChecks[ln](ins, outs, f.locals); if (ok !== undefined) r.lineCheck = ok; }
+      if (extraRec && extraRec.trap) { stopped = 'trap'; break outer; }
+      f.pc = jump || (ln + 1);
+    }
+  }
+  return { trace, stopped };
+}
+
+// ---------------- specs evaluated at runtime ----------------
+const SPECS = {};
+SPECS.isqrt = {
+  requires: { isqrt: (L) => [{ ln: 1, kind: 'requires', ok: L.n >= 0 }] },
+  ensures: { isqrt: (L, st, v) => [{ ln: 1, kind: 'ensures', ok: SPECS.isqrt.post(v, L.n) }] },
+  post: (v, n) => 0 <= v && v * v <= n && n < (v + 1) * (v + 1),
+  loops: { 6: (L, st, prev) => {
+    const m = L.n - L.r * L.r;
+    const inv = 0 <= L.r && L.r * L.r <= L.n;
+    const dec = m >= 0 && (prev === null || prev === undefined || m < prev);
+    return { measure: m, checks: [{ ln: 7, kind: 'invariant', ok: inv }, { ln: 8, kind: 'decreases', ok: dec }] };
+  } },
+  lineChecks: { 15: (ins) => { const p = ins[0] * ins[1]; return p >= 0 && p < 4294967296; } }
+};
+const mod2 = x => ((x % 2) + 2) % 2;
+SPECS.parity = {
+  requires: { half: (L) => [{ ln: 7, kind: 'requires', ok: mod2(L.x) === 0 }] },
+  ensures: {
+    is_even: (L, st, v) => [{ ln: 1, kind: 'ensures', ok: v === (mod2(L.x) === 0 ? 1 : 0) }],
+    half: (L, st, v) => SPECS.parity.halfPost(L, v),
+    half_or_neg1: (L, st, v) => [{ ln: 12, kind: 'ensures', ok: (mod2(L.x) === 0 && v + v === L.x) || (mod2(L.x) === 1 && v === -1) }],
+  },
+  halfPost: (L, v) => [{ ln: 7, kind: 'ensures', ok: v + v === L.x }],
+  asserts: { 19: (L) => mod2(L.x) === 0 },
+};
+// hash table
+function htState(st) {
+  const sl = [];
+  for (let i = 0; i < CAPN; i++) { const a = BASEA + 12 * i; sl.push([st.mem.getInt32(a, true), st.mem.getInt32(a + 4, true), st.mem.getInt32(a + 8, true)]); }
+  return sl;
+}
+const hh = k => k & 7, at = (k, d) => (hh(k) + d) & 7, dist = (k, s) => (s - hh(k)) & 7;
+function evalR(slots, M, used) {
+  const R = {};
+  R.o = slots.every(s => s[0] === 0 || s[0] === 1 || s[0] === 2);
+  R.i = slots.every(s => s[0] !== 1 || (M.has(s[1]) && M.get(s[1]) === s[2]));
+  R.ii = [...M.keys()].every(k => slots.filter(s => s[0] === 1 && s[1] === k).length === 1);
+  R.iii = slots.every((s, idx) => {
+    if (s[0] !== 1) return true;
+    for (let d = 0; d <= dist(s[1], idx); d++) if (slots[at(s[1], d)][0] === 0) return false;
+    return true;
+  });
+  const nFull = slots.filter(s => s[0] === 1).length, nNE = slots.filter(s => s[0] !== 0).length;
+  R.iv = nFull === M.size && used === nNE && used < CAPN;
+  return R;
+}
+function Rchecks(ln, kind, st) {
+  const R = evalR(htState(st), st.M, st.used);
+  return [{ ln, kind, ok: R.o && R.i && R.ii && R.iii && R.iv, R }];
+}
+SPECS.hashtable = {
+  memory: true,
+  requires: {
+    slot: (L) => [{ ln: 13, kind: 'requires', ok: 0 <= L.i && L.i < CAPN }],
+    find: (L, st) => Rchecks(21, 'requires', st),
+    lookup: (L, st) => Rchecks(68, 'requires', st),
+    delete: (L, st) => Rchecks(85, 'requires', st),
+    insert: (L, st) => Rchecks(105, 'requires', st),
+  },
+  ensures: {
+    slot: (L, st, v) => [{ ln: 13, kind: 'ensures', ok: v === BASEA + 12 * L.i }],
+    find: (L, st, v) => {
+      const sl = htState(st);
+      const ok = (v === -1 && !st.M.has(L.k)) || (0 <= v && v < CAPN && sl[v][0] === 1 && sl[v][1] === L.k);
+      return [{ ln: 20, kind: 'ensures', ok }];
+    },
+    lookup: (L, st, v, old) => [{ ln: 67, kind: 'ensures', ok: v === (st.M.has(L.k) ? st.M.get(L.k) : L.dflt) }, ...Rchecks(69, 'ensures', st)],
+    delete: (L, st, v, old) => {
+      const r = Rchecks(86, 'ensures', st);
+      const exp = new Map(old.M); exp.delete(L.k);
+      r[0].ok = r[0].ok && mapEq(exp, st.M);
+      return [{ ln: 84, kind: 'ensures', ok: v === (old.M.has(L.k) ? 1 : 0) }, ...r];
+    },
+    insert: (L, st, v, old) => {
+      const r = Rchecks(106, 'ensures', st);
+      const exp = new Map(old.M); if (v === 1) exp.set(L.k, L.x);
+      r[0].ok = r[0].ok && mapEq(exp, st.M);
+      return [{ ln: 104, kind: 'ensures', ok: v === 1 || (v === 0 && !st.M.has(L.k) && st.used === CAPN - 1) }, ...r];
+    },
+  },
+  loops: {
+    29: (L, st, prev) => {
+      const sl = htState(st);
+      const a = 0 <= L.j && L.j <= st.used && L.i === at(L.k, L.j);
+      let b = true; for (let d = 0; d < L.j; d++) { const s = sl[at(L.k, d)]; if (!(s[0] === 2 || (s[0] === 1 && s[1] !== L.k))) b = false; }
+      const m = CAPN - L.j;
+      return { measure: m, checks: [{ ln: 30, kind: 'invariant', ok: a }, { ln: 31, kind: 'invariant', ok: b }, { ln: 32, kind: 'decreases', ok: m >= 0 && (prev == null || m < prev) }] };
+    },
+    135: (L, st, prev) => {
+      const sl = htState(st);
+      const a = !st.M.has(L.k) && 0 <= L.j && L.j <= st.used && L.i === at(L.k, L.j);
+      let b = true; for (let d = 0; d < L.j; d++) if (sl[at(L.k, d)][0] === 0) b = false;
+      const m = CAPN - L.j;
+      return { measure: m, checks: [{ ln: 136, kind: 'invariant', ok: a }, { ln: 137, kind: 'invariant', ok: b }, { ln: 138, kind: 'decreases', ok: m >= 0 && (prev == null || m < prev) }] };
+    },
+  },
+  ghost: {
+    62: (L) => { L.j = L.j + 1; },
+    150: (L) => { L.j = L.j + 1; },
+    101: (L, st) => { st.M.delete(L.k); },
+    120: (L, st) => { st.M.set(L.k, L.x); },
+    167: (L, st) => { st.M.set(L.k, L.x); },
+  },
+};
+// spec variants for spec bugs
+function specFor(id, bugId) {
+  const base = SPECS[id];
+  if (bugId === 'S2') return Object.assign({}, base, { ensures: { isqrt: (L, st, v) => [{ ln: 1, kind: 'ensures', ok: 0 <= v && v * v < L.n && L.n <= (v + 1) * (v + 1) }] } });
+  if (bugId === 'P3') return Object.assign({}, base, { ensures: Object.assign({}, base.ensures, { half: (L, st, v) => [{ ln: 7, kind: 'ensures', ok: v + v === L.x && v < L.x }] }) });
+  return base;
+}
+function mapEq(a, b) { if (a.size !== b.size) return false; for (const [k, v] of a) if (!b.has(k) || b.get(k) !== v) return false; return true; }
+
+function applyEdits(lines, edits) {
+  const out = lines.slice();
+  (edits || []).forEach(e => {
+    if (e[0] === 'replace') { out[e[1] - 1] = out[e[1] - 1].replace(e[2], e[3]); }
+    else if (e[0] === 'delete') { for (let l = e[1]; l <= e[2]; l++) out[l - 1] = ''; }
+  });
+  return out;
+}
+
+if (false) module.exports = { parseProgram, run, SPECS, specFor, applyEdits, stackEffect, evalR };
+
+'use strict';
+// ======================= engine: keyed SVG reconciliation + sequent drawing =======================
+const NS = 'http://www.w3.org/2000/svg';
+const $ = s => document.querySelector(s);
+const PROG = {}; FIXTURE.programs.forEach(p => PROG[p.id] = p);
+const fmtNum = v => (v < 0 ? '-' : '') + Math.abs(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function N(tag, k, a, extra) { return Object.assign({ tag, k, a: a || {} }, extra || {}); }
+
+function reconcile(parent, nodes, anim = true) {
+  const existing = new Map();
+  for (const ch of [...parent.children]) if (ch.__k !== undefined && !ch.__leaving) existing.set(ch.__k, ch);
+  const seen = new Set();
+  for (const n of nodes) {
+    if (!n) continue;
+    let el = existing.get(n.k);
+    if (!el || el.tagName !== n.tag) {
+      if (el) el.remove();
+      el = document.createElementNS(NS, n.tag); el.__k = n.k; el.__a = {};
+      if (anim && !n.noEnter) {
+        el.__entering = true;
+        requestAnimationFrame(() => requestAnimationFrame(() => { el.__entering = false; el.classList.remove('enter'); }));
+      }
+      parent.appendChild(el);
+    }
+    seen.add(n.k);
+    const a = n.a, prev = el.__a;
+    for (const key in a) {
+      let val = a[key];
+      if (key === 'class' && el.__entering) val = (val || '') + ' enter';
+      if (prev[key] !== val) { if (val === null || val === undefined) el.removeAttribute(key); else el.setAttribute(key, val); }
+    }
+    for (const key in prev) if (!(key in a)) el.removeAttribute(key);
+    if (!('class' in a) && el.__entering) el.setAttribute('class', 'enter');
+    el.__a = Object.assign({}, a);
+    if (el.__entering && 'class' in a) el.__a.class = a.class + ' enter';
+    if (n.html !== undefined) { if (el.__html !== n.html) { el.innerHTML = n.html; el.__html = n.html; } }
+    else if (n.text !== undefined) { if (el.__text !== n.text) { el.textContent = n.text; el.__text = n.text; } }
+    if (n.ch) reconcile(el, n.ch, anim);
+  }
+  for (const [k, el] of existing) if (!seen.has(k)) {
+    if (anim) { el.__leaving = true; el.classList.add('leaving'); setTimeout(() => el.remove(), 260); } else el.remove();
+  }
+}
+
+// ---------------- chip icon vocabulary (12 x 12 box) ----------------
+const T = (s, fs) => `<text x="6" y="9.6" text-anchor="middle" font-size="${fs || 10.5}" fill="currentColor" stroke="none" font-family="DejaVu Sans, sans-serif">${s}</text>`;
+const ICON = {
+  ge0: '<path d="M2 2.5V9.5M2 6H11"/>',
+  lt: '<path d="M1 6H8"/><circle cx="9.8" cy="6" r="1.8"/>',
+  le: '<path d="M1 6H10M10 2.5V9.5"/>',
+  range: '<path d="M1.5 2.5V9.5M1.5 6H8"/><circle cx="9.8" cy="6" r="1.8"/>',
+  even: '<path d="M1 9.5H11M1.6 9.5V3.2M6 9.5V3.2M10.4 9.5V3.2"/>',
+  odd: '<path d="M1 9.5H11M3.8 9.5V3.2M8.2 9.5V3.2"/>',
+  eq: '<path d="M2 4.6H10M2 7.6H10"/>',
+  ne: '<path d="M2 4.6H10M2 7.6H10M8.2 2L3.8 10.2"/>',
+  half: T('½', 10),
+  sqle: '<rect x="1" y="3.5" width="5" height="5"/><path d="M10.3 2.5V9.5M6 6H10.3"/>',
+  sqlt: '<rect x="1" y="3.5" width="5" height="5"/><path d="M6 6H7.9"/><circle cx="9.8" cy="6" r="1.8"/>',
+  sq1gt: '<circle cx="2.1" cy="6" r="1.7"/><path d="M3.8 6H4.6"/><rect x="4.6" y="2.3" width="7.2" height="7.4"/>',
+  sq1ge: '<path d="M1.3 2V10M1.3 6H4.6"/><rect x="4.6" y="2.3" width="7.2" height="7.4"/>',
+  sq1le: '<rect x=".3" y="2.3" width="7.2" height="7.4"/><path d="M10.7 2V10M7.5 6H10.7"/>',
+  sq1les: '<rect x=".3" y="2.3" width="7.2" height="7.4"/><path d="M10.7 2V10M7.5 6H10.7"/><text x="3.9" y="8.6" text-anchor="middle" font-size="6.5" fill="currentColor" stroke="none">s</text>',
+  sq1: '<rect x="2.4" y="2.4" width="7.2" height="7.2"/><path d="M3.6 8.4L8.4 3.6"/>',
+  fitu: '<path d="M.5 1.6H11.5"/><path d="M6 11V4.6M4.1 6.5L6 4.6 7.9 6.5"/>',
+  fits: '<path d="M.5 5.2H11.5" stroke-dasharray="1.6 1"/><path d="M6 11.2V7.6M4.3 9.3L6 7.6 7.7 9.3"/>',
+  flag: '<circle cx="6" cy="6" r="4.2"/><path d="M6 1.8A4.2 4.2 0 0 1 6 10.2Z" fill="currentColor"/>',
+  dec: '<path d="M2 2.5V10.5M6 5V10.5M10 7.5V10.5" stroke-width="1.9"/>',
+  inM: T('∈'), notinM: T('∉'),
+  path: '<rect x=".4" y="4.5" width="2.7" height="3" fill="currentColor"/><rect x="4" y="4.5" width="2.7" height="3" fill="currentColor"/><path d="M8 3.4L10.7 6 8 8.6"/>',
+  empty: '<rect x="2.4" y="2.4" width="7.2" height="7.2"/>',
+  full: '<rect x="2.4" y="2.4" width="7.2" height="7.2" fill="currentColor"/>',
+  tomb: '<rect x="2.4" y="2.4" width="7.2" height="7.2"/><path d="M6 3.6V8.6M4.3 5.3H7.7"/>',
+  notfull: '<rect x="2.4" y="2.4" width="7.2" height="7.2"/><path d="M2.4 9.6L9.6 2.4"/>',
+  notempty: '<rect x="2.4" y="2.4" width="7.2" height="7.2" fill="currentColor" fill-opacity=".35"/>',
+  tombOrOther: '<rect x=".6" y="2.4" width="4.8" height="7.2"/><path d="M3 3.6V8.4M1.8 5.2H4.2"/><rect x="6.6" y="2.4" width="4.8" height="7.2" fill="currentColor" fill-opacity=".35"/>',
+  hit: '<rect x=".8" y="3" width="6" height="6" fill="currentColor"/><path d="M8.4 4.8H11.6M8.4 7.4H11.6"/>',
+  bounds: '<path d="M2.6 1.8H1V10.2H2.6M9.4 1.8H11V10.2H9.4"/><rect x="4.3" y="4.4" width="3.4" height="3.2" fill="currentColor"/>',
+  states3: '<circle cx="2.2" cy="6" r="1.35" fill="currentColor"/><circle cx="6" cy="6" r="1.35" fill="currentColor"/><circle cx="9.8" cy="6" r="1.35" fill="currentColor"/>',
+  r1: '<rect x=".6" y="3.5" width="4.4" height="5" fill="currentColor"/><path d="M6.2 6H11.2M9.4 4.2L11.2 6 9.4 7.8"/>',
+  r2: T('1!', 9.5),
+  r3: '<rect x=".4" y="4.6" width="2.3" height="2.8" fill="currentColor"/><path d="M2.7 6H6"/><path d="M6 3.2L8.8 6 6 8.8" /><rect x="9" y="3.2" width="2.6" height="5.6" fill="currentColor"/>',
+  r4: '<rect x=".4" y="3.8" width="3.2" height="4.4" fill="currentColor"/><rect x="4.4" y="3.8" width="3.2" height="4.4" fill="currentColor"/><rect x="8.4" y="3.8" width="3.2" height="4.4"/>',
+  Rall: T('R', 10),
+  eqM: T('=M', 7.5),
+  jle: T('j≤', 8.5),
+  lt7: T('<7', 8.5), lt8: T('<8', 8.5),
+  minus: T('∖k', 9),
+  bot: T('⊥', 11),
+  u: T('u', 10),
+};
+const STRANK = { ok: 0, vac: 1, dyn: 2, unk: 3, refg: 4, ref: 5 };
+const STWORD = { ok: 'proven (quiet)', ref: 'REFUTED — witness replayed', refg: 'refuted — witness found, not yet replayed', unk: 'unknown — needs a hint (no proof, no counterexample)', dyn: 'held on this run only (runtime check)', vac: 'assumed / vacuous — constrains nothing', plain: 'no obligation' };
+
+function chipNode(key, ch, x, y, st, extra) {
+  const sup = st === 'unk' ? '<text class="sup" x="12.6" y="2.6">?</text>'
+    : st === 'dyn' ? `<text class="sup" x="12.4" y="2.8">∘${extra && extra.count || ''}</text>`
+    : st === 'vac' ? '<text class="sup" x="12.4" y="2.8">○</text>' : '';
+  const seat = ch.need ? '<path class="seat" d="M-1 13.3H13"/>' : '';
+  const dm = ch.drop ? '<path class="dropmark" d="M-1 14H13"/>' : '';
+  const html = `<rect class="cbox" x="-1.2" y="-1.2" width="14.4" height="14.4" rx="2"/><g class="ic" fill="none" stroke="currentColor" stroke-width="1.1">${ICON[ch.k] || T('?')}</g>${sup}${seat}${dm}`;
+  const tip = `<b>${esc(ch.t)}</b><div class="st">${ch.need ? 'required at this cup · ' : ''}${STWORD[st]}${ch.from && ch.from.length ? ' · from line ' + ch.from.join(', ') : ''}${ch.drop ? ' · this is where the needed fact was lost' : ''}</div>`;
+  return N('g', key, { class: `chip ${st}${ch.need ? ' need' : ''}${ch.drop ? ' drop' : ''}`, style: `transform:translate(${x}px,${y}px)`, 'data-tip': tip }, { html });
+}
+function starPath(cx, cy, R, r) {
+  let d = '';
+  for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; d += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(2) + ' ' + (cy + rr * Math.sin(a)).toFixed(2); }
+  return d + 'Z';
+}
+function ruleNode(key, x0, yc, W, st, extra) {
+  const w2 = W / 2;
+  const html = `<rect class="hl" x="0" y="-.6" width="${w2}" height="1.2"/><rect class="hr" x="${w2}" y="-.6" width="${w2}" height="1.2"/>` +
+    `<line class="hl" x1="0" y1="0" x2="${w2}" y2="0"/><line class="hr" x1="${w2}" y1="0" x2="${W}" y2="0"/>`;
+  return N('g', key, { class: 'rule ' + st, style: `transform:translate(${x0}px,${yc}px)` }, { html: html + ruleCss(st, W) });
+}
+function ruleCss(st, W) { // geometry by status (kept inside html so halves persist across statuses with equal W)
+  return '';
+}
+function ruleEnd(key, x, yc, st, extra) {
+  let html = '';
+  if (st === 'unk') html = `<path d="${starPath(6, 0, 6.2, 2.6)}" fill="#fffff0" stroke="indigo" stroke-width="1.1"/><text x="13.5" y="3.5" fill="indigo">?</text>`;
+  else if (st === 'dyn') html = `<text x="1" y="3.5" fill="slategray">∘${extra.count}</text>`;
+  else if (st === 'vac') html = `<text x="1" y="3.8" fill="#666">○</text>`;
+  else if (st === 'refg') html = `<text x="1" y="3.6" fill="darkred" font-size="9">ghost</text>`;
+  return N('g', key, { class: 'rend', transform: `translate(${x},${yc})` }, { html });
+}
+const CUP_IN = 'M -4.9,-12 H -15 V 0 H 15 V -12 H 4.9';
+const CUP_OUT = 'M -15,0 V 12 H 15 V 0 Z';
+function cupNode(key, cx, yc, kind, old) {
+  if (kind === 'in') return N('path', key, { class: 'shape' + (old ? ' old' : ''), d: CUP_IN, transform: `translate(${cx},${yc})`, fill: '#d2cee6', stroke: '#6A5ACD', 'stroke-width': 1.6 });
+  if (kind === 'miss') return N('path', key, { class: 'shape cupmiss', d: CUP_IN, transform: `translate(${cx},${yc})`, fill: 'url(#fade-up)', stroke: '#6A5ACD', 'stroke-width': 1.6 });
+  if (kind === 'mem') return N('path', key, { class: 'shape', d: 'M -15,0 V 12 H 15 V 0 Z M -5,0 V 12 M 5,0 V 12', transform: `translate(${cx},${yc})`, fill: '#d2cee6', stroke: '#6A5ACD', 'stroke-width': 1.3 });
+  return N('path', key, { class: 'shape' + (old ? ' old' : ''), d: CUP_OUT, transform: `translate(${cx},${yc})`, fill: '#6A5ACD', stroke: '#fffff0', 'stroke-width': 1 });
+}
+function valueNode(key, cx, y, v, isOut, old, wit) {
+  if (v === undefined || v === null) return null;
+  const s = fmtNum(v);
+  const w = [...s].reduce((a, c) => a + (c === ',' ? 2.8 : c === '-' ? 3.4 : 5.07), 0);
+  const sc = w > 25 ? 25 / w : 1;
+  const fill = wit ? (isOut ? '#fffff0' : 'darkred') : (isOut ? '#fffff0' : '#000');
+  return N('text', key, { class: 'slot-value' + (old ? ' old' : '') + (wit ? ' wit' : ''), x: cx, y, fill, style: sc < 1 ? `transform:scale(${sc.toFixed(3)})` : '' }, { text: s });
+}
+
+// ---------------- surface syntax (01-language-design §1: $-names, named results) ----------------
+function compactSp(P) { return P.replace(/\s*\*\s*/g, '*').replace(/(\w|\)) \+ 1\b/g, '$1+1'); }
+function prefixNames(P, names, vName) {
+  return P.replace(/(?<![\$\w.])([A-Za-z_]\w*)(?![\w(])/g, (m, id) => id === 'v' ? vName : names.includes(id) ? '$' + id : id);
+}
+function surface(line, names) {
+  const t = line.trim();
+  if (!t) return line;
+  if (t.startsWith('(@define')) return line.replace(/(?<![\$\w])(M|used)(?![\w(])/g, '$$$1');
+  if (t.startsWith('(@')) { const m = line.match(/^(\s*\(@\w+(?: local| global)?)(.*)$/); return m[1] + compactSp(prefixNames(m[2], names, '$v')); }
+  let out = '', i = 0;
+  for (;;) {
+    const j = line.indexOf('(i32 |', i);
+    if (j < 0) { out += line.slice(i); break; }
+    let d = 0, e = j;
+    for (; e < line.length; e++) { if (line[e] === '(') d++; else if (line[e] === ')') { d--; if (d === 0) break; } }
+    let before = line.slice(i, j);
+    const P = line.slice(j + 6, e);
+    const pm = before.match(/\(param (\$\w+) $/);
+    if (!pm && /\(result $/.test(before)) before = before.replace(/\(result $/, '(result $v ');
+    out += before + '(i32 |' + compactSp(prefixNames(P, names, pm ? pm[1] : '$v')) + ')';
+    i = e + 1;
+  }
+  return out;
+}
+function lineKind(t) {
+  if (t === '') return 'blank';
+  if (t === ')') return 'close';
+  if (t.startsWith('(@')) return 'spec';
+  if (t.startsWith(';;')) return 'comment';
+  if (/^\((func|local|memory|global)/.test(t)) return 'meta';
+  return 'instr';
+}
+
+// ---------------- Listing: rows + overlay ----------------
+class Listing {
+  constructor(host, cfg) {
+    this.host = host; this.cfg = cfg;
+    host.innerHTML = '';
+    host.classList.add('listing');
+    this.rowsEl = document.createElement('div'); host.appendChild(this.rowsEl);
+    this.svg = document.createElementNS(NS, 'svg'); this.svg.setAttribute('class', 'over'); host.appendChild(this.svg);
+    this.commEl = document.createElement('div'); host.appendChild(this.commEl);
+    this.layers = {};
+    ['frames', 'conns', 'sqs', 'wires', 'arrow'].forEach(n => { const g = document.createElementNS(NS, 'g'); g.__k = n; this.svg.appendChild(g); this.layers[n] = g; });
+    this.rowEls = new Map();
+    this.geom = {};
+    this.svg.addEventListener('click', e => { const h = e.target.closest('[data-line]'); if (h && this.onSeqClick) this.onSeqClick(+h.dataset.line, e); });
+    this.svg.addEventListener('mouseover', e => { const h = e.target.closest('[data-line]'); if (h && this.onHover) this.onHover(+h.dataset.line); });
+    this.svg.addEventListener('mouseout', e => { const h = e.target.closest('[data-line]'); if (h && this.onHover && !(e.relatedTarget && h.contains(e.relatedTarget))) this.onHover(null); });
+    this.rowsEl.addEventListener('click', e => { const g = e.target.closest('.gut.g-bad'); if (g && this.onSeqClick) this.onSeqClick(+g.dataset.line, e); });
+  }
+  // model: {orig (original lines), lines (display lines after edits), struck:Set, changed:Set, range:[a,b], names, prog}
+  setModel(m) {
+    this.m = m;
+    const c = this.cfg, rows = [];
+    let y = c.top || 4;
+    this.lineGeo = {};
+    const [a, b] = m.range || [1, m.lines.length];
+    for (let ln = a; ln <= b; ln++) {
+      const struck = m.struck && m.struck.has(ln);
+      const raw = struck ? m.orig[ln - 1] : m.lines[ln - 1];
+      const disp = surface(raw, m.names);
+      const t = raw.trim();
+      const kind = struck ? 'struck' : lineKind(t);
+      let parts = [disp];
+      if (kind === 'meta' && t.startsWith('(func') && disp.includes(' (result')) {
+        const k = disp.indexOf(' (result');
+        parts = [disp.slice(0, k), ' '.repeat(disp.length - disp.trimStart().length) + '      ' + disp.slice(k + 1)];
+      }
+      const geo = { y0: y, rows: parts.length, kind, t, disp };
+      geo.yc = parts.length === 2 ? y + c.rowH : y + c.rowH / 2;
+      this.lineGeo[ln] = geo;
+      parts.forEach((p, i) => { rows.push({ key: ln + ':' + i, ln, part: i, text: p, y, kind: i ? (kind === 'meta' ? 'cont' : kind) : kind }); y += c.rowH; });
+    }
+    this.height = y + 10;
+    this.host.style.height = this.height + 'px';
+    this.host.style.width = c.width + 'px';
+    this.svg.setAttribute('width', c.width); this.svg.setAttribute('height', this.height);
+    const keep = new Set();
+    for (const r of rows) {
+      keep.add(r.key);
+      let el = this.rowEls.get(r.key);
+      if (!el) {
+        el = document.createElement('div'); el.className = 'row';
+        el.innerHTML = '<span class="gut"></span><span class="code"></span>';
+        this.rowsEl.appendChild(el); this.rowEls.set(r.key, el);
+      }
+      el.style.top = r.y + 'px'; el.style.height = c.rowH + 'px';
+      el.style.fontSize = c.font + 'px';
+      const code = el.children[1];
+      code.style.width = c.codeW + 'px';
+      const txt = r.text;
+      if (code.__t !== txt || code.__k !== r.kind) {
+        const wasSet = code.__t !== undefined;
+        code.textContent = txt; code.__t = txt; code.__k = r.kind;
+        code.className = 'code k-' + r.kind;
+        code.title = txt.trim();
+        if (wasSet && m.changed && m.changed.has(r.ln)) { el.classList.remove('changed'); void el.offsetWidth; el.classList.add('changed'); }
+      }
+    }
+    for (const [k, el] of this.rowEls) if (!keep.has(k)) { el.remove(); this.rowEls.delete(k); }
+  }
+  // indentation x of a line's code
+  codeX(ln) { const g = this.lineGeo[ln]; const sp = g.disp.length - g.disp.trimStart().length; return 52 + sp * this.cfg.font * 0.42; }
+}
+
+// ======================= Listing.render: sequents, connections, proof wires, arrow, gutter =======================
+const ARROW = 'm -95.773,0.938 -3.75,5.625 h 1.406 l 3.75,-5.625 z  m -2.812,0 -3.75,5.625 h 1.406 l 3.75,-5.625 z  m -2.813,0 -3.75,5.625 h 1.406 l 3.75,-5.625 z  m -2.812,0 -3.75,5.625 h 1.406 l 3.75,-5.625 z  m -1.406,0 v -1.875 L -110,-7.5 h 12.656 l 4.383,5.563 H -6.344 V -5.453 L -0.001,0 -6.344,5.453 V 1.938 H -92.96 l -4.383,5.562 h -12.656 z  m 9.844,-1.875 h 1.406 l -3.75,-5.625 h -1.406 z  m -2.812,0 h 1.406 l -3.75,-5.625 h -1.406 z  m -2.813,0 h 1.406 l -3.75,-5.625 h -1.406 z  m -2.812,0 h 1.406 l -3.75,-5.625 h -1.406 z';
+const STAR_SVG = (col) => `<svg width="15" height="15" viewBox="-7.5 -7.5 15 15"><path d="${starPath(0, 0.6, 6.6, 2.7)}" fill="#fffff0" stroke="${col}" stroke-width="1.2"/></svg>`;
+
+function byLn(trace) {
+  if (!trace.__byLn) { const m = {}; trace.forEach((r, i) => { (m[r.ln] = m[r.ln] || []).push(i); }); trace.__byLn = m; }
+  return trace.__byLn;
+}
+function lastLE(arr, idx) { let lo = 0, hi = arr.length - 1, best = -1; while (lo <= hi) { const mid = (lo + hi) >> 1; if (arr[mid] <= idx) { best = mid; lo = mid + 1; } else hi = mid - 1; } return best; }
+function execAt(trace, ln, idx) {
+  if (!trace || idx < 0) return null;
+  const arr = byLn(trace)[ln]; if (!arr) return null;
+  const b = lastLE(arr, idx); if (b < 0) return null;
+  const r = trace[arr[b]];
+  let ins = r.ins, outs = r.outs;
+  if (r.op.endsWith('(return)')) { for (let q = b - 1; q >= 0; q--) { const p = trace[arr[q]]; if (p.op.endsWith('(enter)') && p.call === r.call) { ins = p.ins; break; } } }
+  const cur = trace[idx];
+  const old = !(cur && cur.gens && r.gens && cur.gens[r.fn] && cur.gens[r.fn] === r.gens[r.fn]);
+  return { r, ins, outs, loc: r.loc, used: r.used, old, idx: arr[b] };
+}
+function sigExec(trace, idx, fn) {
+  if (!trace || idx < 0) return null;
+  let loc = null, ret, old = true;
+  for (let i = idx; i >= 0; i--) { const r = trace[i]; if (!loc && r.fn === fn) { loc = r.loc; old = !(trace[idx].fn === fn || (trace[idx].gens && trace[idx].gens[fn])); } if (ret === undefined && r.ret && r.ret.fn === fn) ret = r.ret.v; if (loc && ret !== undefined) break; }
+  if (!loc) return null;
+  return { loc, ins: [], outs: ret === undefined ? [] : [ret], old };
+}
+function dynStatus(trace, idx, dyn) {
+  if (!trace) return { st: 'unk', count: 0 };
+  const arr = byLn(trace)[dyn.ln] || [];
+  let n = 0;
+  for (const i of arr) {
+    if (i > idx) break;
+    const r = trace[i];
+    let ok;
+    if (dyn.check) { const ch = r.checks.find(c => c.ln === dyn.check); if (!ch) continue; ok = ch.ok; } else { if (r.lineCheck === undefined) continue; ok = r.lineCheck; }
+    if (!ok) return { st: 'ref', count: n, w: i };
+    n++;
+  }
+  return n ? { st: 'dyn', count: n } : { st: 'unk', count: 0 };
+}
+
+Listing.prototype.render = function (S) {
+  const c = this.cfg, m = this.m;
+  const [a, b] = m.range || [1, m.lines.length];
+  const cur = S.trace && S.idx >= 0 ? S.trace[S.idx] : null;
+  const X0 = c.seqX;
+  const sqNodes = [], connNodes = [], wireNodes = [], frameNodes = [];
+  const geom = this.geom = {};
+  const cexIdx = (w) => S.cexTrace ? S.cexTrace.findIndex(r => r.s === w) : -1;
+  for (let ln = a; ln <= b; ln++) {
+    const g = this.lineGeo[ln]; if (!g) continue;
+    const { kind, t, yc } = g;
+    if (kind === 'struck' || kind === 'blank' || kind === 'comment' || kind === 'close') continue;
+    const spec = S.seq[ln], defs = S.defs && S.defs[ln];
+    if (defs) {
+      let x = X0; const ch = [];
+      defs.forEach((d, i) => { ch.push(chipNode('d' + i, d, x, yc - 6.5, d.st || 'ok', {})); x += 15; });
+      sqNodes.push(N('g', 'def' + ln, { class: 'defc' }, { ch }));
+      geom[ln] = { yc, X0, conEnd: x, hypEnd: x, rs: 'def', chips: [], def: true };
+      continue;
+    }
+    const isSig = kind === 'meta' && t.startsWith('(func');
+    if (kind !== 'instr' && !isSig) continue;
+    const eff = kind === 'instr' ? stackEffect(t, m.prog, m.prog.fnOf[ln]) : null;
+    if (!spec && (!eff || (eff[0] === 0 && eff[1] === 0))) continue;
+    const hs = spec ? spec.h || [] : [], cs = spec ? spec.c || [] : [];
+    const hyp = [], con = [];
+    if (eff) {
+      for (let i = 0; i < eff[0]; i++) hyp.push({ kind: 'in', idx: i, chips: (hs.find(x => x.s === 'in' + i) || {}).chips || [] });
+      for (let i = 0; i < eff[1]; i++) con.push({ kind: 'out', idx: i, chips: (cs.find(x => x.s === 'out' + i) || {}).chips || [] });
+    } else if (isSig) {
+      const o = cs.find(x => x.s === 'out0'); if (o) con.push({ kind: 'out', idx: 0, chips: o.chips });
+    }
+    for (const e of hs) if (!/^in\d/.test(e.s)) hyp.push({ kind: e.s === 'ctx' ? 'ctxi' : e.s, name: e.name, label: e.label, chips: e.chips || [] });
+    for (const e of cs) if (!/^out\d/.test(e.s)) con.push({ kind: e.s === 'ctx' ? 'ctxo' : e.s, name: e.name, label: e.label, chips: e.chips || [] });
+    // statuses
+    let rank = -1, wDyn = null, maxCount = 0;
+    const resolveChip = (ch, counts) => {
+      let st = ch.st || 'ok', extra = {};
+      if (ch.dyn) { const d = dynStatus(S.trace, S.idx, ch.dyn); st = d.st; extra = d; if (d.w !== undefined) wDyn = d.w; maxCount = Math.max(maxCount, d.count || 0); }
+      else if (st === 'dyn') { extra = { count: ch.count || '' }; maxCount = Math.max(maxCount, ch.count || 0); }
+      if (counts) rank = Math.max(rank, STRANK[st]);
+      return { st, extra };
+    };
+    hyp.forEach(s => s.res = s.chips.map(ch => resolveChip(ch, ch.need || s.kind === 'miss')));
+    con.forEach(s => s.res = s.chips.map(ch => resolveChip(ch, true)));
+    let rs = spec && spec.st ? spec.st : rank < 0 ? 'plain' : Object.keys(STRANK).find(k => STRANK[k] === rank);
+    // layout
+    const lay = (slots) => {
+      let x = X0;
+      for (const s of slots) {
+        const lab = s.name || s.label;
+        if (lab) { s.labX = x + lab.length * 5.4 + 1; x = s.labX + 3; }
+        if (['in', 'out', 'ctxi', 'ctxo', 'miss', 'mem'].includes(s.kind)) { s.cx = x + 15; x += 33; }
+        s.chipX = s.chips.map(() => { if (s.kind === 'miss') return s.cx - 6; const cx = x; x += 14.5; return cx; });
+        x += 6;
+      }
+      return x;
+    };
+    const hypEnd = lay(hyp), conEnd = lay(con);
+    const W = Math.max(hypEnd, conEnd, X0 + 34) - X0 - 2;
+    // values
+    let E = null, wit = false;
+    const fn = m.prog.fnOf[ln];
+    if (spec && spec.w !== undefined && S.cexTrace) {
+      const wi = cexIdx(spec.w);
+      if (wi >= 0) { E = isSig ? sigExec(S.cexTrace, wi, fn) : execAt(S.cexTrace, ln, wi); if (E && !E.loc) E.loc = S.cexTrace[wi].loc; if (E && !isSig && S.cexTrace[wi].ln !== ln) E = Object.assign({}, E, { loc: S.cexTrace[wi].loc, used: S.cexTrace[wi].used }); wit = !!E; }
+    }
+    if (!E && S.vals) { E = S.vals[ln] || null; if (E && S.valsWit) wit = true; }
+    if (!E && S.trace) E = isSig ? sigExec(S.trace, S.idx, fn) : execAt(S.trace, ln, S.idx);
+    const nodes = [];
+    nodes.push(N('rect', 'hit', { class: 'hit', x: X0 - 8, y: yc - 15, width: W + 26, height: 30, fill: 'transparent', 'data-line': ln, 'data-tip': `<b>line ${ln}</b> · ${spec && spec.site ? spec.site + ' obligation' : 'stack effect'}<div class="st">${STWORD[rs]}${spec && spec.w !== undefined ? ' · click: jump to witness step ' + spec.w : ' · click: pin proof wires'}</div>` }));
+    const chipGeo = [];
+    const emitTier = (slots, isHyp) => {
+      slots.forEach((s, si) => {
+        const pre = (isHyp ? 'h' : 'c') + si;
+        const lab = s.name || s.label;
+        if (lab) nodes.push(N('text', pre + 'lab', { class: s.name ? 'nm' : 'tierlab', x: s.labX, y: isHyp ? yc - 3 : yc + 9.5, 'text-anchor': 'end' }, { text: lab }));
+        if (s.cx !== undefined) {
+          const sk = s.kind === 'in' || s.kind === 'ctxi' ? 'in' : s.kind === 'miss' ? 'miss' : s.kind === 'mem' ? 'mem' : 'out';
+          nodes.push(cupNode(pre + 'shape', s.cx, yc, sk, E && E.old && !wit));
+          let v;
+          if (E) {
+            if (s.kind === 'in') v = E.ins && E.ins[s.idx];
+            else if (s.kind === 'out') v = E.outs && E.outs[s.idx];
+            else if (s.kind === 'ctxi' || s.kind === 'ctxo') v = s.name === 'used' ? (E.used !== undefined ? E.used : E.r && E.r.used) : E.loc && E.loc[s.name.replace('$', '')];
+          }
+          const isOut = sk === 'out';
+          if (v !== undefined && sk !== 'miss' && sk !== 'mem') nodes.push(valueNode(pre + 'v', s.cx, isOut ? yc + 6.4 : yc - 5.6, v, isOut, E && E.old && !wit, wit));
+          if (wit && isOut && v !== undefined) nodes.push(N('path', pre + 'wu', { d: `M${s.cx - 15} ${yc + 14.2}H${s.cx + 15}`, stroke: 'darkred', 'stroke-width': 1.6 }));
+        }
+        s.chips.forEach((ch, ci) => {
+          const x = s.chipX[ci], y = s.kind === 'miss' ? yc - 12.6 : isHyp ? yc - 13.4 : yc + 1.4;
+          const { st, extra } = s.res[ci];
+          nodes.push(chipNode(pre + 'k' + ci + ch.k, ch, x, y, st, extra));
+          chipGeo.push({ x, y, ch, isHyp, miss: s.kind === 'miss', st });
+        });
+      });
+    };
+    emitTier(hyp, true); emitTier(con, false);
+    const ruleSt = rs === 'plain' ? 'plain' : rs;
+    nodes.push(ruleNode('rule', X0 - 4, yc, W + 4, ruleSt));
+    const rendX = X0 + W + 6;
+    const count = maxCount;
+    nodes.push(ruleEnd('rend', rendX, yc, ruleSt, { count }));
+    sqNodes.push(N('g', 'sq' + ln, { class: 'sq' + (rs === 'vac' ? ' vacq' : '') }, { ch: nodes }));
+    geom[ln] = { yc, X0, hypEnd, conEnd, W, rs, chips: chipGeo, hasCon: con.length > 0,
+      inCx: hyp.filter(s => s.kind === 'in').map(s => s.cx), outCx: con.filter(s => s.kind === 'out').map(s => s.cx),
+      w: spec && spec.w !== undefined ? spec.w : wDyn !== null ? S.trace[wDyn].s : undefined, wDynIdx: wDyn };
+  }
+  // frames
+  if (m.prog && m.prog.struct) {
+    for (const k in m.prog.struct) {
+      const sd = m.prog.struct[k], s0 = +k;
+      if (s0 < a || !sd.end || sd.end > b) continue;
+      const g0 = this.lineGeo[s0], g1 = this.lineGeo[sd.end];
+      if (!g0 || !g1 || g0.kind === 'struck') continue;
+      const x = this.codeX(s0) - 7;
+      frameNodes.push(N('path', 'fr' + s0, { class: 'frame', d: `M${x + 5} ${g0.yc + 9}H${x}V${g1.yc - 2}H${x + 5}` }));
+      if (sd.kind === 'loop') frameNodes.push(N('text', 'frl' + s0, { class: 'framelab', x: x - 2, y: (g0.yc + g1.yc) / 2, 'text-anchor': 'end' }, { text: 'loop' }));
+    }
+  }
+  // dataflow connections (Codillon idiom, muted i32)
+  for (const [s1, o, d1, i] of (S.conns || [])) {
+    const A = geom[s1], B = geom[d1];
+    if (!A || !B || A.outCx[o] === undefined || B.inCx[i] === undefined) continue;
+    const x1 = A.outCx[o], y1 = A.yc + 12, x2 = B.inCx[i], y2 = B.yc - 12;
+    const dy = Math.max(6, (y2 - y1) * 0.5);
+    connNodes.push(N('path', `cn${s1}.${o}.${d1}.${i}`, { class: 'conn', d: `M${x1} ${y1}C${x1} ${y1 + dy},${x2} ${y2 - dy},${x2} ${y2}` }));
+  }
+  // proof wires
+  const show = new Set([...(S.pinned || []), ...(S.hover ? [S.hover] : [])]);
+  for (const ln in geom) if (geom[ln].rs === 'ref' || geom[ln].rs === 'refg') show.add(+ln);
+  (S.alwaysWires || []).forEach(l => show.add(l));
+  let wk = 0;
+  for (const ln of show) {
+    const G = geom[ln]; if (!G || G.def) continue;
+    for (const cg of G.chips) {
+      for (const f of (cg.ch.from || [])) {
+        const src = geom[f], sg = this.lineGeo[f];
+        if (!sg) continue;
+        const xs = src ? src.conEnd + 1 : X0 - 14, ys = src ? (src.def ? sg.yc : sg.yc + (src.hasCon ? 7 : -6)) : sg.yc;
+        const bad = cg.miss || cg.st === 'ref' || cg.st === 'refg' || (src && src.rs === 'ref' && cg.ch.drop);
+        let xt, yt, d;
+        const lane = Math.max(xs, cg.x + 14) + 14 + (wk % 5) * 6;
+        if (cg.isHyp || cg.miss) { xt = cg.x + 6; yt = cg.y - 1.5; d = `M${xs} ${ys}C${lane} ${ys},${xt + 2} ${yt - Math.min(70, Math.abs(yt - ys) * 0.55 + 8)},${xt} ${yt}`; }
+        else { xt = cg.x + 13.5; yt = cg.y + 6; d = `M${xs} ${ys}C${lane} ${ys},${lane} ${yt},${xt} ${yt}`; }
+        wireNodes.push(N('path', `w${ln}.${f}.${cg.x}.${cg.isHyp}`, { class: 'wire' + (bad ? ' bad' : ''), d }));
+        wireNodes.push(N('circle', `wd${ln}.${f}.${cg.x}.${cg.isHyp}`, { class: 'wdot' + (bad ? ' bad' : ''), cx: xs, cy: ys, r: 1.8 }));
+        wk++;
+      }
+    }
+  }
+  // arrow
+  const arrowNodes = [];
+  if (cur && S.showArrow !== false && this.lineGeo[cur.ln] && cur.ln >= a && cur.ln <= b) {
+    const g = this.lineGeo[cur.ln];
+    arrowNodes.push(N('path', 'arrow', { d: ARROW, style: `transform:translate(${X0 - 9}px,${g.yc}px) scale(.3)`, fill: '#000080', stroke: '#fffff0', 'stroke-width': 1.5, 'paint-order': 'stroke', class: 'sq' }));
+  }
+  const anim = S.anim !== false;
+  reconcile(this.layers.frames, frameNodes, anim);
+  reconcile(this.layers.conns, connNodes, anim);
+  reconcile(this.layers.sqs, sqNodes, anim);
+  reconcile(this.layers.wires, wireNodes, anim);
+  reconcile(this.layers.arrow, arrowNodes, anim);
+  // gutters + commentary
+  for (let ln = a; ln <= b; ln++) {
+    const el = this.rowEls.get(ln + ':0'); if (!el) continue;
+    const gut = el.children[0], code = el.children[1], g = this.lineGeo[ln], G = geom[ln];
+    let cls = 'gut', html = String(ln);
+    const trapHere = S.trap && S.trap.ln === ln && S.idx >= S.trap.idx;
+    if (trapHere) { cls += ' g-trap'; html = '💣'; }
+    else if ((S.blame && S.blame.has(ln)) || (G && G.rs === 'ref')) { cls += ' g-bad'; html = '⚖︎'; }
+    else if (G && G.rs === 'refg') { cls += ' g-ghost'; html = '⚖︎'; }
+    else if (G && G.rs === 'unk') { cls += ' g-unk'; html = STAR_SVG('indigo'); }
+    else if (G && G.rs === 'vac') { cls += ' g-vac'; html = '○'; }
+    if (gut.__h !== html || gut.className !== cls) { gut.innerHTML = html; gut.className = cls; gut.__h = html; }
+    gut.dataset.line = ln;
+    code.classList.toggle('trapline', !!trapHere);
+    const desc = G ? `line ${ln}: ${STWORD[G.rs] || ''}` : `line ${ln}`;
+    el.setAttribute('aria-label', desc + (S.notes && S.notes[ln] ? ' — ' + S.notes[ln] : ''));
+    if (G && G.rs === 'ref') gut.title = 'spec violated — click to replay the witness'; else gut.removeAttribute('title');
+  }
+  let ch = '';
+  for (const ln in (S.notes || {})) {
+    const g = this.lineGeo[ln]; if (!g) continue;
+    ch += `<div class="comm" style="right:${c.width - (c.seqX - 14)}px;top:${g.y0 + c.rowH / 2 - 10}px">${esc(S.notes[ln])}</div>`;
+  }
+  if (this.commEl.__h !== ch) { this.commEl.innerHTML = ch; this.commEl.__h = ch; }
+};
+
+// ======================= sequent data: what each line knows (above) and claims (below) =======================
+const c = (k, t, o) => Object.assign({ k, t }, o || {});
+const need = (k, t, o) => c(k, t, Object.assign({ need: true }, o));
+const IN = (i, chips) => ({ s: 'in' + i, chips });
+const OUT = (i, chips) => ({ s: 'out' + i, chips });
+const CTX = (name, chips) => ({ s: 'ctx', name, chips });
+const FREE = (label, chips) => ({ s: 'free', label, chips });
+const MISS = (chips) => ({ s: 'miss', chips });
+const MEM = (chips) => ({ s: 'mem', chips });
+
+// ---------------- isqrt ----------------
+const fitsR1 = (ln) => ({ c: [OUT(0, [c('fits', '$r+1 ≤ 2³¹−1: no signed overflow (proved by nonlinear search from the invariant $r*$r ≤ $n)', { from: [7] })])] });
+const ISQ_SEQ = {
+  1: { site: 'sig', h: [CTX('n', [c('ge0', '0 ≤ $n — precondition: assumed in the body, proved by every caller')])],
+       c: [OUT(0, [c('ge0', 'post: 0 ≤ $v'), c('sqle', 'post: $v*$v ≤ $n'), c('sq1gt', 'post: $n < ($v+1)*($v+1)')])] },
+  6: { site: 'frame', h: [CTX('n', [c('ge0', '0 ≤ $n', { from: [1] })]), CTX('r', [c('eq', '$r = 0', { from: [3] })])],
+       c: [CTX('r', [c('ge0', 'invariant on entry, conjunct 1: 0 ≤ $r', { from: [7] }), c('sqle', 'invariant on entry, conjunct 2: $r*$r ≤ $n', { from: [7] })]), FREE('', [c('dec', 'measure on entry: $n − $r*$r ≥ 0', { from: [8] })])] },
+  11: fitsR1(11), 14: fitsR1(14), 21: fitsR1(21),
+  15: { h: [IN(0, [c('eq', '= $r+1', { from: [11] })]), IN(1, [c('eq', '= $r+1', { from: [14] })])],
+        c: [OUT(0, [c('sq1', 'u(v) = ($r+1)*($r+1)'), c('fitu', '($r+1)*($r+1) < 2³²: no unsigned overflow — needs $r ≤ 46340, a nonlinear consequence of $r*$r ≤ $n (lemma)', { dyn: { ln: 15 }, from: [7] })])] },
+  17: { h: [IN(0, [c('sq1', 'u(v) = ($r+1)*($r+1)', { from: [15] }), c('fitu', 'fits in 32 bits read unsigned', { from: [15] })]), IN(1, [c('ge0', '0 ≤ $n, so u($n) = $n', { from: [1] })])],
+        c: [OUT(0, [c('flag', 'v = 1 ⇔ ($r+1)*($r+1) > $n (gt_u compares the true square)')])] },
+  18: { h: [IN(0, [c('flag', 'v = 1 ⇔ ($r+1)*($r+1) > $n', { from: [17] })])],
+        c: [FREE('↓', [c('sq1le', 'fallthrough: ($r+1)*($r+1) ≤ $n')]), FREE('exit', [c('sq1gt', 'taken (to $done): $n < ($r+1)*($r+1)')])] },
+  23: { site: 'frame', h: [CTX('r', [c('ge0', '0 ≤ $r (invariant)', { from: [7] }), c('sqle', '$r*$r ≤ $n — the fallthrough fact of line 18, now that $r := $r+1', { from: [18] })]), CTX('n', [c('ge0', '0 ≤ $n', { from: [1] })])],
+        c: [CTX('r', [c('ge0', 'invariant preserved: 0 ≤ $r', { from: [7] }), c('sqle', 'invariant preserved: $r*$r ≤ $n', { from: [7] })]), FREE('', [c('dec', 'measure: 0 ≤ $n − $r*$r < its previous value', { from: [8] })])] },
+  26: { site: 'frame', h: [CTX('r', [c('ge0', '0 ≤ $r (invariant)', { from: [7] }), c('sqle', '$r*$r ≤ $n (invariant)', { from: [7] }), c('sq1gt', '$n < ($r+1)*($r+1) (exit of line 18)', { from: [18] })])],
+        c: [OUT(0, [c('ge0', 'post: 0 ≤ $v', { from: [1] }), c('sqle', 'post: $v*$v ≤ $n', { from: [1] }), c('sq1gt', 'post: $n < ($v+1)*($v+1)', { from: [1] })])] },
+};
+const ISQ_DEFS = { 7: [c('ge0', 'invariant: 0 ≤ $r'), c('sqle', 'invariant: $r*$r ≤ $n')], 8: [c('dec', 'decreases $n − $r*$r')] };
+const ISQ_BUGS = {
+  S1: { blame: [17], notes: { 17: 'gt_s reads 46341² as −2,147,479,015' }, focus: 17,
+    seq: {
+      17: { site: 'wire', w: 13,
+        h: [IN(0, [c('sq1', 'u(v) = ($r+1)*($r+1)', { from: [15] }), c('fitu', 'fits unsigned', { from: [15] })]), IN(1, [c('ge0', '0 ≤ $n', { from: [1] })]),
+            MISS([c('fits', 'needed by gt_s: ($r+1)*($r+1) ≤ 2³¹−1, so that the SIGNED reading is the true square. Nothing provides it: the invariant allows $r = 46340', { st: 'ref', from: [7] })])],
+        c: [OUT(0, [c('flag', 'claimed: v = 1 ⇔ ($r+1)*($r+1) > $n. Witness r = 46340: 46341² = 2,147,488,281 > $n, but gt_s sees −2,147,479,015 and answers 0', { st: 'ref' })])] },
+      18: { h: [IN(0, [c('flag', 'v = 1 ⇔ s(($r+1)*($r+1)) > $n (signed reading)', { from: [17] })])],
+            c: [FREE('↓', [c('sq1les', 'fallthrough: only s(($r+1)*($r+1)) ≤ $n — the wrapped, signed reading', { drop: true })]), FREE('exit', [c('sq1gt', 'taken: $n < s(($r+1)*($r+1))')])] },
+      23: { site: 'frame', w: 19,
+        h: [CTX('r', [c('ge0', '0 ≤ $r', { from: [7] })]), CTX('n', [c('ge0', '0 ≤ $n', { from: [1] })]),
+            MISS([c('sqle', "needed: $r*$r ≤ $n — it used to be line 18's fallthrough; with gt_s only the wrapped square was compared", { st: 'ref', from: [18] })])],
+        c: [CTX('r', [c('ge0', '0 ≤ $r'), c('sqle', 'invariant preserved: $r*$r ≤ $n — witness 46341² = 2,147,488,281 > 2,147,483,647', { st: 'ref', from: [7] })]),
+            FREE('', [c('dec', 'measure: $n − $r*$r ≥ 0 — witness −4,634', { st: 'ref', from: [8] })])] },
+    } },
+  S2: { blame: [1], notes: { 1: 'claims 2·2 < 4' }, focus: 26,
+    seq: {
+      1: { site: 'sig', w: 45, h: [CTX('n', [c('ge0', '0 ≤ $n')])],
+           c: [OUT(0, [c('ge0', 'post: 0 ≤ $v'), c('sqlt', 'post: $v*$v < $n — refuted on every perfect square (witness $n = 4, $v = 2). The CODE is right; this claim is too strong', { st: 'ref' }), c('sq1ge', 'post: $n ≤ ($v+1)*($v+1)')])] },
+      26: { site: 'frame', w: 45,
+        h: [CTX('r', [c('ge0', '0 ≤ $r', { from: [7] }), c('sqle', '$r*$r ≤ $n (invariant: ≤, not <)', { from: [7] }), c('sq1gt', '$n < ($r+1)*($r+1)', { from: [18] })]),
+            MISS([c('ne', 'needed: $r*$r ≠ $n — no line provides it, and none should: isqrt(4) = 2 is correct', { st: 'ref', from: [1] })])],
+        c: [OUT(0, [c('ge0', 'post: 0 ≤ $v', { from: [1] }), c('sqlt', 'post: $v*$v < $n — 2*2 < 4 is false', { st: 'ref', from: [1] }), c('sq1ge', 'post: $n ≤ ($v+1)*($v+1)', { from: [1] })])] },
+    } },
+  S3: { blame: [3], notes: { 3: 'starts at 1: 1·1 ≤ n fails for n = 0' }, focus: 6,
+    seq: {
+      3: { c: [OUT(0, [c('eq', '= 1 — the initial value the loop-entry obligation cannot live with', { drop: true })])] },
+      6: { site: 'frame', w: 4,
+        h: [CTX('n', [c('ge0', '0 ≤ $n', { from: [1] })]), CTX('r', [c('eq', '$r = 1', { from: [3], drop: true })])],
+        c: [CTX('r', [c('ge0', '0 ≤ $r', { from: [7] }), c('sqle', 'invariant on entry: 1*1 ≤ $n — witness $n = 0', { st: 'ref', from: [7] })]),
+            FREE('', [c('dec', 'measure on entry: $n − 1 ≥ 0 — witness −1', { st: 'ref', from: [8] })])] },
+    } },
+};
+
+// ---------------- hash table ----------------
+const bnd = (t, from) => need('bounds', t, from ? { from } : undefined);
+const R_ = (t, from) => c('Rall', t, { from });
+const HT_SEQ = {
+  13: { site: 'sig', h: [CTX('i', [c('range', 'precondition: 0 ≤ $i < CAP')])], c: [OUT(0, [c('eq', 'post: $v = BASE + 12*$i')])] },
+  18: { c: [OUT(0, [c('eq', '= BASE + 12*$i', { from: [13] }), c('le', '≤ 65524: no overflow (0 ≤ $i < 8)', { from: [13] })])] },
+  20: { site: 'sig', h: [CTX('k', []), FREE('R', [R_('requires R (line 21)', [21])])],
+        c: [OUT(0, [c('notinM', 'post: $v = −1 ⇒ $k ∉ $M'), c('hit', 'post: $v ≥ 0 ⇒ st($v) = FULL ∧ key($v) = $k')])] },
+  27: { c: [OUT(0, [c('range', '0 ≤ v < 8: x & 7 for every i32, negatives included (bit-vector)')])] },
+  29: { site: 'frame', h: [CTX('i', [c('eq', '$i = h($k)', { from: [28] })])],
+        c: [CTX('i', [c('eq', 'invariant on entry: $i = at($k, 0)', { from: [30] })]), FREE('j', [c('path', 'invariant on entry: no slot visited yet (empty range)', { from: [31] }), c('jle', '0 ≤ $j = 0 ≤ $used', { from: [30] }), c('dec', 'measure: CAP − $j ≥ 0', { from: [32] })])] },
+  34: { site: 'wire', h: [IN(0, [c('eq', '$i = at($k, $j)', { from: [30] }), need('range', 'pre of $slot: 0 ≤ $i < CAP', { from: [30] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i', { from: [13] })])] },
+  36: { site: 'wire', h: [IN(0, [c('eq', '$p = slot($i)', { from: [35] }), bnd('in bounds: $p + 4 ≤ 65536')])], c: [OUT(0, [c('states3', 'v = st($i) ∈ {EMPTY, FULL, TOMB} (R0)', { from: [7] })])] },
+  38: { c: [OUT(0, [c('empty', 'v = 1 ⇔ st($i) < FULL ⇔ st($i) = EMPTY (by R0)', { from: [36] })])] },
+  39: { h: [IN(0, [c('empty', 'v = 1 ⇔ st($i) = EMPTY', { from: [38] })])], c: [FREE('then', [c('empty', 'then-arm: st($i) = EMPTY')])] },
+  41: { site: 'frame', h: [IN(0, [c('eq', '$v = −1')]), CTX('k', []), CTX('i', [c('empty', 'st($i) = EMPTY (then-arm of line 39)', { from: [39] })]),
+                         FREE('', [c('path', 'probe invariant: each slot before $j is TOMB, or FULL with key ≠ $k', { from: [31] }), c('r3', "R3: no EMPTY on any key's probe path", { from: [10] }), c('r2', 'R2: a key of $M sits in exactly one FULL slot', { from: [9] })])],
+        c: [OUT(0, [c('notinM', 'post of $find: $v = −1 ⇒ $k ∉ $M', { from: [20] })])] },
+  44: { site: 'wire', h: [IN(0, [bnd('in bounds: $p + 4 ≤ 65536')])], c: [OUT(0, [c('states3', 'v = st($i) (R0)', { from: [7] })])] },
+  48: { site: 'wire', h: [IN(0, [c('eq', '$p = slot($i)'), bnd('in bounds: $p + 8 ≤ 65536')])], c: [OUT(0, [c('eq', '= key($i)')])] },
+  51: { c: [OUT(0, [c('hit', 'v = 1 ⇔ st($i) = FULL ∧ key($i) = $k')])] },
+  52: { h: [IN(0, [c('hit', 'v = 1 ⇔ FULL ∧ key = $k', { from: [51] })])], c: [FREE('then', [c('hit', 'then-arm: st($i) = FULL ∧ key($i) = $k')])] },
+  54: { site: 'frame', h: [IN(0, [c('range', '0 ≤ $i < 8', { from: [30] })]), FREE('', [c('hit', 'slot $i holds $k (then-arm of 52)', { from: [52] })])],
+        c: [OUT(0, [c('range', 'post: 0 ≤ $v < CAP', { from: [20] }), c('hit', 'post: st($v) = FULL ∧ key($v) = $k', { from: [20] })])] },
+  60: { c: [OUT(0, [c('range', '0 ≤ v < 8 (& 7)')])] },
+  63: { site: 'frame', h: [FREE('', [c('tombOrOther', 'slot at distance $j was TOMB, or FULL with key ≠ $k (fallthrough of 39 and 52)', { from: [39, 52] }), c('r4', 'R4: $used < CAP', { from: [11] })])],
+        c: [FREE('', [c('path', 'invariant preserved: ∀d < $j+1. TOMB or FULL ≠ $k', { from: [31] }), c('jle', '$j+1 ≤ $used — the visited slots are distinct and non-EMPTY (counting / pigeonhole lemma)', { dyn: { ln: 63, check: 30 }, from: [30] }), c('dec', 'measure: CAP − ($j+1) < CAP − $j', { from: [32] })])] },
+  65: { site: 'line', st: 'vac', c: [FREE('', [c('bot', 'dead code: the loop body always ends in br, so this point is unreachable — vacuously proven', { st: 'vac' })])] },
+  67: { site: 'sig', h: [CTX('k', []), CTX('dflt', []), FREE('R', [R_('requires R', [68])])],
+        c: [OUT(0, [c('eqM', 'post: $v = ($k ∈ $M ? $M[$k] : $dflt)')]), FREE('R', [R_('ensures R', [69])])] },
+  72: { site: 'wire', h: [IN(0, []), FREE('R', [need('Rall', 'pre of $find: R', { from: [68] })])], c: [OUT(0, [c('notinM', '$v = −1 ⇒ $k ∉ $M', { from: [20] }), c('hit', '$v ≥ 0 ⇒ slot $v holds $k', { from: [20] })])] },
+  78: { site: 'frame', h: [IN(0, [c('eq', '= $dflt')]), FREE('', [c('notinM', '$k ∉ $M ($find said −1)', { from: [72] })])], c: [OUT(0, [c('eqM', 'post: $v = $dflt, since $k ∉ $M', { from: [67] })])] },
+  81: { site: 'wire', h: [IN(0, [need('range', "pre of $slot: 0 ≤ $i < CAP ($find's result)", { from: [72] })])] },
+  82: { site: 'frame', h: [IN(0, [bnd('in bounds: $p + 12 ≤ 65536')]), FREE('', [c('hit', 'slot $i holds $k', { from: [72] }), c('r1', 'R1: a FULL slot stores $M[key]', { from: [8] })])], c: [OUT(0, [c('eqM', 'post: $v = $M[$k]', { from: [67] })])] },
+  84: { site: 'sig', h: [CTX('k', []), FREE('R', [R_('requires R', [85])])],
+        c: [OUT(0, [c('flag', 'post: $v = ($k ∈ old($M) ? 1 : 0)')]), FREE('', [R_('ensures R', [86]), c('minus', 'ensures $M = old($M) ∖ {$k}', { from: [86] })])] },
+  89: { site: 'wire', h: [IN(0, []), FREE('R', [need('Rall', 'pre of $find: R', { from: [85] })])] },
+  98: { site: 'wire', h: [IN(0, [need('range', 'pre of $slot: 0 ≤ $i < CAP', { from: [89] })])] },
+  99: { c: [OUT(0, [c('tomb', '= TOMB (2)')])] },
+  100: { site: 'R', h: [IN(0, [c('eq', '$p = slot($i)'), bnd('in bounds')]), IN(1, [c('tomb', 'TOMB', { from: [99] })])],
+         c: [MEM([c('r1', 'R1: slot $i is no longer FULL', { from: [8] }), c('r2', 'R2: $k had exactly one FULL slot', { from: [9] }), c('r3', 'R3: TOMB is not EMPTY — no probe path gains an EMPTY', { from: [10] }), c('r4', 'R4: $used unchanged; #FULL−1 = |$M|−1', { from: [11] })])] },
+  104: { site: 'sig', h: [CTX('k', []), CTX('x', []), FREE('R', [R_('requires R', [105])])],
+         c: [OUT(0, [c('flag', 'post: $v = 1 ∨ ($v = 0 ∧ $k ∉ $M ∧ $used = CAP − 1)')]), FREE('', [R_('ensures R', [106]), c('eqM', 'ensures $M = (result = 1 ? old($M)[$k := $x] : old($M))', { from: [106] })])] },
+  111: { site: 'wire', h: [IN(0, []), FREE('R', [need('Rall', 'pre of $find: R', { from: [105] })])] },
+  115: { h: [IN(0, [c('flag', 'v = 1 ⇔ $i ≥ 0')])], c: [FREE('then', [c('hit', 'then-arm: slot $i holds $k', { from: [111] })]), FREE('else', [c('notinM', 'else-arm: $k ∉ $M', { from: [111] })])] },
+  117: { site: 'wire', h: [IN(0, [need('range', 'pre of $slot: 0 ≤ $i < CAP', { from: [111] })])] },
+  119: { site: 'R', h: [IN(0, [c('eq', '$p = slot($i)'), bnd('in bounds')]), IN(1, [])], c: [MEM([c('r1', 'R1: slot $i maps $k to $x (with the ghost update on line 120)', { from: [8] })])] },
+  126: { c: [OUT(0, [c('flag', 'v = 1 ⇔ $used ≥ 7')])] },
+  127: { h: [IN(0, [c('flag', 'v = 1 ⇔ $used ≥ 7', { from: [126] })])], c: [FREE('else', [c('lt7', 'fallthrough: $used < CAP − 1')])] },
+  129: { site: 'frame', c: [OUT(0, [c('r4', 'post: $v = 0 ∧ $k ∉ $M ∧ $used = CAP − 1 (table full)', { from: [104] })])] },
+  133: { c: [OUT(0, [c('range', '0 ≤ v < 8 (& 7)')])] },
+  135: { site: 'frame', h: [FREE('', [c('notinM', '$k ∉ $M (else-arm of line 115: $find said −1)', { from: [115] })]), CTX('i', [c('eq', '$i = h($k)', { from: [134] })])],
+         c: [FREE('', [c('notinM', 'invariant on entry: $k ∉ $M', { from: [136] }), c('path', 'invariant on entry: nothing visited yet', { from: [137] }), c('dec', 'measure: CAP − 0 ≥ 0', { from: [138] })]), CTX('i', [c('eq', '$i = at($k, 0)', { from: [136] })])] },
+  140: { site: 'wire', h: [IN(0, [c('eq', '$i = at($k, $j)', { from: [136] }), need('range', 'pre of $slot: 0 ≤ $i < CAP', { from: [136] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i', { from: [13] })])] },
+  142: { site: 'wire', h: [IN(0, [bnd('in bounds: $p + 4 ≤ 65536')])], c: [OUT(0, [c('states3', 'v = st($i) (R0)', { from: [7] })])] },
+  143: { h: [IN(0, [c('states3', 'v = st($i)', { from: [142] })])], c: [FREE('then', [c('notempty', 'then-arm: st($i) ≠ EMPTY — keep probing')]), FREE('exit', [c('empty', 'exit: st($i) = EMPTY')])] },
+  148: { c: [OUT(0, [c('range', '0 ≤ v < 8 (& 7)')])] },
+  151: { site: 'frame', h: [FREE('', [c('notempty', 'st($i) ≠ EMPTY (then-arm of 143)', { from: [143] }), c('r4', 'R4: $used < CAP', { from: [11] })])],
+         c: [CTX('i', [c('eq', 'invariant preserved: $i = at($k, $j+1)', { from: [136] })]), FREE('', [c('path', 'invariant preserved: ∀d < $j+1. st ≠ EMPTY', { from: [137] }), c('jle', '$j+1 ≤ $used — counting lemma', { dyn: { ln: 151, check: 136 }, from: [136] }), c('dec', 'measure decreases', { from: [138] })])] },
+  156: { site: 'wire', h: [IN(0, [c('eq', '$p = slot($i)', { from: [141] }), bnd('in bounds')]), IN(1, [c('full', '= FULL')])] },
+  159: { site: 'R', h: [IN(0, [c('eq', '$p = slot($i)', { from: [141] }), bnd('in bounds: $p + 8 ≤ 65536')]), IN(1, [c('notinM', '$k ∉ $M (loop invariant, line 136)', { from: [136] })]),
+                       FREE('', [c('path', 'every slot from h($k) up to $i is non-EMPTY (loop invariant, line 137)', { from: [137] }), c('empty', 'slot $i was EMPTY (loop exit, line 143)', { from: [143] })])],
+         c: [MEM([c('r3', 'R3 for the new FULL slot: no EMPTY between h($k) and $i, so $k is reachable', { from: [10] }), c('r2', 'R2: $k now sits in exactly one FULL slot (it was absent)', { from: [9] })])] },
+  162: { site: 'R', h: [IN(0, [c('eq', '$p = slot($i)'), bnd('in bounds: $p + 12 ≤ 65536')]), IN(1, [])], c: [MEM([c('r1', 'R1 after the ghost update (line 167): val($i) = $M[$k]', { from: [8] })])] },
+  166: { site: 'R', h: [IN(0, [c('eq', '= $used + 1', { from: [165] }), c('lt7', '$used < CAP − 1 (fallthrough of line 127)', { from: [127] })])],
+         c: [CTX('used', [c('r4', 'R4: $used < CAP — at least one EMPTY slot remains, so every probe stops', { from: [11] })])] },
+};
+const HT_DEFS = {
+  7: [c('states3', 'R0: every state is EMPTY, FULL or TOMB')], 8: [c('r1', 'R1: every FULL slot is an entry of $M')], 9: [c('r2', 'R2: every key of $M sits in exactly one FULL slot')],
+  10: [c('r3', "R3 (reachability): walking from h(key) to the key's slot never crosses an EMPTY slot (TOMBs are fine)")], 11: [c('r4', 'R4: #FULL = |$M|, $used = #non-EMPTY, $used < CAP')], 12: [c('Rall', 'R = R0 ∧ R1 ∧ R2 ∧ R3 ∧ R4')],
+  21: [c('Rall', 'requires R')], 30: [c('eq', '$i = at($k, $j)'), c('jle', '0 ≤ $j ≤ $used')], 31: [c('path', '∀d < $j. TOMB or FULL ≠ $k')], 32: [c('dec', 'decreases CAP − $j')],
+  68: [c('Rall', 'requires R')], 69: [c('Rall', 'ensures R')], 85: [c('Rall', 'requires R')], 86: [c('Rall', 'ensures R'), c('minus', '$M = old($M) ∖ {$k}')],
+  105: [c('Rall', 'requires R')], 106: [c('Rall', 'ensures R'), c('eqM', '$M updated')], 136: [c('notinM', '$k ∉ $M'), c('jle', '0 ≤ $j ≤ $used'), c('eq', '$i = at($k, $j)')], 137: [c('path', '∀d < $j. st ≠ EMPTY')], 138: [c('dec', 'decreases CAP − $j')],
+};
+const HT_BUGS = {
+  Ha: { blame: [146], notes: { 146: 'no "& 7" after: $i can reach 8' }, focus: 140,
+    seq: {
+      146: { c: [OUT(0, [c('eq', '= $i + 1 — the "& 7" that kept it in range is gone', { drop: true })])] },
+      140: { site: 'wire', w: 145, h: [IN(0, [c('eq', '$i = at($k, $j) + 1, unmasked', { from: [146], drop: true }), need('range', 'pre of $slot: 0 ≤ $i < CAP — witness $i = 8', { st: 'ref', from: [146] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i')])] },
+      151: { site: 'frame', w: 143, h: [FREE('', [c('notempty', 'st($i) ≠ EMPTY', { from: [143] })])],
+             c: [CTX('i', [c('eq', 'invariant preserved: $i = at($k, $j+1) — witness $i = 8 but at(15, 1) = 0', { st: 'ref', from: [136] })]), FREE('', [c('path', '∀d < $j+1. st ≠ EMPTY', { from: [137] }), c('dec', 'measure', { from: [138] })])] },
+    } },
+  Hb: { blame: [38], notes: { 38: '≠ FULL: a TOMB now ends the probe' }, focus: 41,
+    seq: {
+      38: { c: [OUT(0, [c('notfull', 'v = 1 ⇔ st($i) ≠ FULL ⇔ st($i) ∈ {EMPTY, TOMB}', { drop: true })])] },
+      39: { h: [IN(0, [c('notfull', 'v = 1 ⇔ st($i) ≠ FULL', { from: [38] })])], c: [FREE('then', [c('notfull', 'then-arm: st($i) ∈ {EMPTY, TOMB}', { drop: true })])] },
+      41: { site: 'frame', w: 240,
+        h: [IN(0, [c('eq', '$v = −1')]), CTX('k', []), CTX('i', [c('notfull', 'st($i) ∈ {EMPTY, TOMB} (then-arm of 39)', { from: [39] })]),
+            FREE('', [c('path', 'probe invariant', { from: [31] }), c('r3', "R3: no EMPTY on any key's path — it says nothing about TOMBs", { from: [10] }), c('r2', 'R2', { from: [9] })]),
+            MISS([c('empty', 'needed: st($i) = EMPTY — only an EMPTY slot lets R3 rule out $k further along', { st: 'ref', from: [38] })])],
+        c: [OUT(0, [c('notinM', 'post of $find: $k ∉ $M — witness $k = 11 sits in slot 4, just past the TOMB in slot 3', { st: 'ref', from: [20] })])] },
+    } },
+  Hb_prime: { blame: [99], notes: { 99: 'writes EMPTY, not TOMB' }, focus: 100,
+    seq: {
+      99: { c: [OUT(0, [c('empty', '= EMPTY (0)', { drop: true })])] },
+      100: { site: 'R', w: 217, h: [IN(0, [c('eq', '$p = slot($i)'), bnd('in bounds')]), IN(1, [c('empty', 'EMPTY', { from: [99] })])],
+             c: [MEM([c('r1', 'R1', { from: [8] }), c('r2', 'R2', { from: [9] }), c('r3', "R3: an EMPTY now sits on key 11's path 3 → 4", { st: 'ref', from: [10] }), c('r4', 'R4: $used = 2 but only 1 slot is non-EMPTY', { st: 'ref', from: [11] })])] },
+    } },
+  Hc: { blame: [135], notes: { 135: 'nothing establishes $k ∉ $M now' }, focus: 135,
+    seq: {
+      135: { site: 'frame', w: 43,
+        h: [MISS([c('notinM', 'needed: $k ∉ $M — it came from $find on lines 110–123, now deleted', { st: 'ref', from: [115] })]), CTX('k', []), CTX('i', [c('eq', '$i = h($k)', { from: [134] })])],
+        c: [FREE('', [c('notinM', 'invariant on entry: $k ∉ $M — witness $k = 3, $M = {3 ↦ 30}', { st: 'ref', from: [136] }), c('path', 'nothing visited yet', { from: [137] }), c('dec', 'measure', { from: [138] })]), CTX('i', [c('eq', '$i = at($k, 0)', { from: [136] })])] },
+      159: { site: 'R', w: 78,
+        h: [IN(0, [c('eq', '$p = slot($i)', { from: [141] }), bnd('in bounds: $p + 8 ≤ 65536')]), IN(1, [c('notinM', '$k ∉ $M — assumed from the loop invariant (line 136); FALSE in the witness: 3 ∈ $M. The inference here is valid; its premise is not', { st: 'ref', from: [136] })]),
+            FREE('', [c('path', 'path from h($k) to $i non-EMPTY', { from: [137] }), c('empty', 'slot $i was EMPTY', { from: [143] })])],
+        c: [MEM([c('r3', 'R3 for the new slot', { from: [10] }), c('r2', 'R2: exactly one FULL slot for $k — holds only if the premise $k ∉ $M does', { from: [9] })])] },
+    } },
+  Hd: { blame: [125], notes: { 125: 'refuses only when $used ≥ 8' }, focus: 166,
+    seq: {
+      125: { c: [OUT(0, [c('eq', '= 8', { drop: true })])] },
+      126: { c: [OUT(0, [c('flag', 'v = 1 ⇔ $used ≥ 8')])] },
+      127: { h: [IN(0, [c('flag', 'v = 1 ⇔ $used ≥ 8', { from: [126] })])], c: [FREE('else', [c('lt8', 'fallthrough: only $used < 8 — which R4 already said', { drop: true })])] },
+      166: { site: 'R', w: 487,
+        h: [IN(0, [c('eq', '= $used + 1', { from: [165] }), c('lt8', '$used < 8 (fallthrough of 127)', { from: [127] })]), MISS([c('lt7', 'needed: $used < CAP − 1', { st: 'ref', from: [127] })])],
+        c: [CTX('used', [c('r4', 'R4: $used < CAP — witness $used = 8: no EMPTY slot is left, so a probe for an absent key never stops', { st: 'ref', from: [11] })])] },
+    } },
+};
+
+// ---------------- parity (Section A) ----------------
+const PAR_SEQ_A1 = {
+  7: { site: 'sig', h: [CTX('x', [c('even', 'precondition: $x % 2 = 0')])], c: [OUT(0, [c('half', 'post: $v + $v = $x')])] },
+  8: { c: [OUT(0, [c('even', '$x is even (from its parameter type)', { from: [7] })])] },
+  10: { h: [IN(0, [c('even', 'even', { from: [8] })]), IN(1, [c('eq', '= 1')])], c: [OUT(0, [c('half', 'v = floor($x / 2), so $v + $v = $x because $x is even', { from: [7] })])] },
+};
+const PAR_SEQ_A2 = {
+  14: { site: 'wire', c: [OUT(0, [c('flag', "v = 1 ⇔ $x even ($is_even's result type)")])] },
+  15: { c: [OUT(0, [c('flag', 'v = 1 ⇔ $x odd', { from: [14] })])] },
+  16: { h: [IN(0, [c('flag', 'v = 1 ⇔ $x odd', { from: [15] })])], c: [FREE('then', [c('odd', 'then-arm: $x odd')]), FREE('else', [c('even', 'else-arm: $x even')])] },
+  20: { c: [OUT(0, [c('even', '$x even (else-arm path condition)', { from: [16] })])] },
+  21: { site: 'wire', h: [IN(0, [c('even', '$x even', { from: [20] }), need('even', 'pre of $half: $x % 2 = 0')])], c: [OUT(0, [c('half', '$v + $v = $x')])] },
+};
+const PAR_DEFS_A2 = { 19: [c('even', 'assert $x % 2 = 0 — proven by the else-arm path condition')] };
+
+// ======================= sections =======================
+const QS = new URLSearchParams(location.search);
+if (QS.get('gray')) document.body.classList.add('gray');
+
+function computeConns(lines, prog) {
+  const conns = []; let stack = [];
+  for (let ln = 1; ln <= lines.length; ln++) {
+    const t = lines[ln - 1].trim(), k = lineKind(t);
+    if (k === 'meta' && t.startsWith('(func')) { stack = []; continue; }
+    if (k !== 'instr') continue;
+    const op = t.split(/\s+/)[0];
+    if (['block', 'loop', 'end', 'else'].includes(op)) { stack = []; continue; }
+    const eff = stackEffect(t, prog, prog.fnOf[ln]); if (!eff) continue;
+    for (let i = eff[0] - 1; i >= 0; i--) { const p = stack.pop(); if (p) conns.push([p[0], p[1], ln, i]); }
+    for (let i = 0; i < eff[1]; i++) stack.push([ln, i]);
+    if (['br', 'return', 'unreachable'].includes(op)) stack = [];
+  }
+  return conns;
+}
+function pillsFor(trace) {
+  const pills = [], seen = new Set();
+  trace.forEach((r, i) => {
+    if (r.trap) pills.push({ i, s: r.s, kind: 'trap', ln: r.ln, why: r.trap });
+    for (const ch of r.checks) if (!ch.ok && !seen.has(ch.ln + ch.kind)) { seen.add(ch.ln + ch.kind); pills.push({ i, s: r.s, kind: 'spec', ln: ch.ln, why: `${ch.kind} (line ${ch.ln}) fails` }); }
+  });
+  return pills.slice(0, 7);
+}
+let ACTIVE = null;
+
+class Section {
+  constructor(o) {
+    Object.assign(this, o);
+    this.p = PROG[this.pid];
+    this.listing = new Listing(this.listingHost, this.cfg);
+    this.listing.onSeqClick = (ln) => this.clickSeq(ln);
+    this.listing.onHover = (ln) => { if (this.hover !== ln) { this.hover = ln; this.render(); } };
+    this.pinned = new Set(this.defaultPin || []);
+    this.cache = {};
+    this.runIdx = 0; this.idx = 0;
+    this.buildBar();
+    this.root.addEventListener('pointerdown', () => ACTIVE = this);
+    this.setBug(this.initialBug || 'none', false);
+  }
+  model(bugId) {
+    if (this.cache[bugId]) return this.cache[bugId];
+    const bug = this.p.bugs.find(b => b.id === bugId) || null;
+    const lines = applyEdits(this.p.lines, bug ? bug.edits : []);
+    const prog = parseProgram(lines);
+    const spec = specFor(this.pid, bugId);
+    const struck = new Set(), changed = new Set();
+    (bug ? bug.edits : []).forEach(e => { if (e[0] === 'delete') { for (let l = e[1]; l <= e[2]; l++) struck.add(l); } else changed.add(e[1]); });
+    const mk = (R, extra) => { R.pills = pillsFor(R.trace); const tr = R.trace.findIndex(r => r.trap); R.trap = tr >= 0 ? { ln: R.trace[tr].ln, idx: tr } : null; return Object.assign(R, extra); };
+    const student = run(prog, lines, this.studentCalls, spec, { maxSteps: 5000 });
+    const runs = [mk(student, { label: this.studentLabel, kind: 'student', calls: this.studentCalls })];
+    if (bug) {
+      const cx = this.cexFor(bug);
+      const r = run(prog, lines, cx.calls, spec, cx.opts || {});
+      if (cx.dropBefore) r.trace = r.trace.filter(x => x.s >= cx.dropBefore);
+      runs.push(mk(r, { label: cx.label, kind: cx.kind, ghost: cx.ghost, calls: cx.calls, expected: bug.expected_results }));
+    }
+    const bm = (bug && this.bugSeq[bugId]) || {};
+    const seq = Object.assign({}, this.seq, bm.seq || {});
+    const defs = Object.assign({}, this.defs, bm.defs || {});
+    return this.cache[bugId] = { bug, lines, prog, runs, seq, defs, notes: bm.notes || {}, blame: new Set(bm.blame || []), struck, changed, conns: computeConns(lines, prog), focus: bm.focus };
+  }
+  setBug(bugId, animate) {
+    const M = this.model(bugId);
+    const prevS = this.lastS;
+    this.bugId = bugId; this.M = M;
+    this.sel.value = bugId;
+    this.listing.setModel({ orig: this.p.lines, lines: M.lines, struck: M.struck, changed: animate ? M.changed : new Set(), names: this.names, prog: M.prog, range: this.range });
+    if (M.bug) {
+      this.runIdx = 1;
+      const w = M.seq[M.focus] && M.seq[M.focus].w;
+      const wi = w !== undefined ? M.runs[1].trace.findIndex(r => r.s === w) : -1;
+      this.idx = wi >= 0 ? wi : M.runs[1].trace.length - 1;
+    } else { this.runIdx = 0; this.idx = this.defaultIdx ? this.defaultIdx(M.runs[0].trace) : M.runs[0].trace.length - 1; }
+    if (M.focus) this.pinned = new Set([M.focus]); else this.pinned = new Set(this.defaultPin || []);
+    this.fillRunSel();
+    if (animate && prevS) {
+      this.listing.host.classList.add('stale');
+      this.listing.render(Object.assign({}, prevS, { seq: prevS.seq }));
+      clearTimeout(this._st);
+      this._st = setTimeout(() => { this.listing.host.classList.remove('stale'); this.render(); this.scrollToLine(M.focus || (this.M.runs[this.runIdx].trace[this.idx] || {}).ln, true); }, 480);
+    } else { this.render(); this.scrollToLine(M.focus || (this.M.runs[this.runIdx].trace[this.idx] || {}).ln, false); }
+  }
+  get R() { return this.M.runs[this.runIdx]; }
+  render() {
+    const R = this.R, cex = this.M.runs[1];
+    const S = { seq: this.M.seq, defs: this.M.defs, trace: R.trace, idx: this.idx, cexTrace: cex ? cex.trace : null, pinned: this.pinned, hover: this.hover,
+      notes: this.M.notes, blame: this.M.blame, conns: this.M.conns, trap: R.trap };
+    this.listing.render(S); this.lastS = S;
+    this.updateBar();
+    if (this.memHost) this.renderMem();
+    if (this.pane) this.follow();
+  }
+  setIdx(i) { const n = this.R.trace.length; this.idx = Math.max(0, Math.min(n - 1, i)); this.render(); }
+  clickSeq(ln) {
+    const G = this.listing.geom[ln];
+    if (G && G.rs === 'ref') {
+      if (G.wDynIdx !== null && G.wDynIdx !== undefined) this.idx = G.wDynIdx;
+      else if (G.w !== undefined && this.M.runs[1]) { this.runIdx = 1; this.idx = Math.max(0, this.M.runs[1].trace.findIndex(r => r.s === G.w)); this.fillRunSel(); }
+    } else if (this.M.blame.has(ln) && this.M.focus && this.M.runs[1]) {
+      const w = this.M.seq[this.M.focus].w; this.runIdx = 1; this.idx = Math.max(0, this.M.runs[1].trace.findIndex(r => r.s === w)); this.fillRunSel();
+    }
+    if (G && !G.def) { if (this.pinned.has(ln) && G.rs !== 'ref') this.pinned.delete(ln); else this.pinned.add(ln); }
+    this.render();
+  }
+  buildBar() {
+    const b = this.barHost;
+    b.className = 'bar';
+    b.innerHTML = `<div class="ctl"><label>Seed bug <select class="bugsel"></select></label>
+      <label>Run <select class="runsel"></select></label><span class="runbadge"></span>
+      <button class="prev" title="step back (←)">◀</button><button class="next" title="step forward (→)">▶</button>
+      <span class="readout"></span></div>
+      <div class="ghosttrack"></div>
+      <div class="slwrap"><input type="range" class="step-slider" min="0" value="0"></div>
+      <div class="slider-ticks"></div>`;
+    this.sel = b.querySelector('.bugsel');
+    this.sel.innerHTML = this.bugs.map(x => `<option value="${x.id}">${esc(x.label)}</option>`).join('');
+    this.sel.addEventListener('change', () => { ACTIVE = this; this.setBug(this.sel.value, true); });
+    this.runSel = b.querySelector('.runsel');
+    this.runSel.addEventListener('change', () => { this.runIdx = +this.runSel.value; this.idx = Math.min(this.idx, this.R.trace.length - 1); this.render(); });
+    this.slider = b.querySelector('.step-slider');
+    this.slider.addEventListener('input', () => { ACTIVE = this; this.setIdx(+this.slider.value); });
+    b.querySelector('.prev').addEventListener('click', () => this.setIdx(this.idx - 1));
+    b.querySelector('.next').addEventListener('click', () => this.setIdx(this.idx + 1));
+    this.ticks = b.querySelector('.slider-ticks');
+    this.ticks.addEventListener('click', e => { const t = e.target.closest('[data-i]'); if (t) this.setIdx(+t.dataset.i); });
+    this.ghost = b.querySelector('.ghosttrack');
+  }
+  fillRunSel() {
+    this.runSel.innerHTML = this.M.runs.map((r, i) => `<option value="${i}">${esc(r.label)}</option>`).join('');
+    this.runSel.value = this.runIdx;
+  }
+  updateBar() {
+    const R = this.R, n = R.trace.length, cur = R.trace[this.idx];
+    this.slider.max = n - 1; this.slider.value = this.idx;
+    const badge = this.barHost.querySelector('.runbadge');
+    badge.className = 'runbadge' + (R.kind === 'student' ? '' : R.kind === 'loophead' ? ' cexl' : ' cex');
+    badge.textContent = R.kind === 'student' ? 'your run' : R.kind === 'loophead' ? '⚖︎ counterexample-to-induction · one-iteration replay' : '⚖︎ counterexample run (reachable input)';
+    this.barHost.querySelector('.readout').textContent = cur ? `step ${fmtNum(cur.s)} · line ${cur.ln} · ${cur.fn}${cur.trap ? ' · trap: ' + cur.trap : ''}${R.stopped === 'cut' && this.idx === n - 1 ? ' · run cut off (does not terminate)' : ''}` : '';
+    const pos = i => (n <= 1 ? 0 : (i / (n - 1)) * 100);
+    let html = '';
+    const taken = [pos(this.idx)];
+    R.pills.forEach(p => taken.push(pos(p.i)));
+    const nT = 8;
+    for (let k = 0; k <= nT; k++) {
+      const i = Math.round(k * (n - 1) / nT), x = pos(i);
+      if (taken.some(t => Math.abs(t - x) < 5)) continue;
+      html += `<span class="slider-tick plain" style="left:${x}%" data-i="${i}">${fmtNum(R.trace[i].s)}</span>`;
+    }
+    R.pills.forEach(p => { if (p.i !== this.idx) html += `<span class="slider-tick ${p.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick'}" style="left:${pos(p.i)}%" data-i="${p.i}" title="${esc(p.why)}">${p.kind === 'trap' ? '💣' : '⚖︎'} ${fmtNum(p.s)}</span>`; });
+    const curBad = R.pills.find(p => p.i === this.idx);
+    html += `<span class="slider-tick ${curBad ? (curBad.kind === 'trap' ? 'trap-slider-tick' : 'bad-slider-tick') : 'current-slider-tick'}" style="left:${pos(this.idx)}%;z-index:3${curBad ? ';outline:2px solid darkblue' : ''}" data-i="${this.idx}">${curBad ? (curBad.kind === 'trap' ? '💣 ' : '⚖︎ ') : ''}${cur ? fmtNum(cur.s) : ''}</span>`;
+    this.ticks.innerHTML = html;
+    this.ghost.innerHTML = R.ghost ? `<span class="ghost-tick" title="${esc(R.ghost.tip)}">${esc(R.ghost.label)}</span>` : '';
+    this.ghost.style.display = R.ghost ? '' : 'none';
+  }
+  scrollToLine(ln, smooth) {
+    if (!this.pane || !ln) return;
+    const g = this.listing.lineGeo[ln]; if (!g) return;
+    this.pane.scrollTo({ top: Math.max(0, g.yc - this.pane.clientHeight * 0.42), behavior: smooth ? 'smooth' : 'auto' });
+  }
+  follow() {
+    const cur = this.R.trace[this.idx]; if (!cur) return;
+    const g = this.listing.lineGeo[cur.ln]; if (!g) return;
+    const top = this.pane.scrollTop, h = this.pane.clientHeight;
+    if (g.yc < top + 40 || g.yc > top + h - 40) this.pane.scrollTo({ top: Math.max(0, g.yc - h * 0.42), behavior: 'smooth' });
+  }
+}
+
+// ---------------- memory panel (hash table): slots, ghost map, and the operation's R-sequent ----------------
+const STATE_ICON = ['empty', 'full', 'tomb'];
+Section.prototype.renderMem = function () {
+  const R = this.R, rec = R.trace[this.idx]; if (!rec || !rec.slots) return;
+  if (!this.memSvg) {
+    this.memHost.innerHTML = '<div class="lab muted">memory at this step · BASE 65440, 8 slots × (state, key, value)</div><svg class="memsvg" width="410" height="300" style="overflow:visible"></svg><div class="ops"></div>';
+    this.memSvg = this.memHost.querySelector('svg'); this.memOps = this.memHost.querySelector('.ops');
+  }
+  const nodes = [], X = s => 52 + s * 44;
+  ['st', 'key', 'val'].forEach((l, r) => nodes.push(N('text', 'rl' + l, { class: 'nm', x: 20, y: 46 + r * 16, 'text-anchor': 'end' }, { text: l })));
+  for (let s = 0; s < 8; s++) {
+    const [st, key, val] = rec.slots[s], x = X(s);
+    nodes.push(N('text', 'ix' + s, { class: 'nm', x, y: 12, 'text-anchor': 'middle' }, { text: String(s) }));
+    nodes.push(chipNode('si' + s, { k: STATE_ICON[st] || 'states3', t: `slot ${s}: ${['EMPTY', 'FULL', 'TOMB'][st] || 'state ' + st}` }, x - 6, 17, 'ok', {}));
+    [st, key, val].forEach((v, r) => {
+      nodes.push(N('path', `sh${s}.${r}`, { class: 'shape', d: CUP_OUT, transform: `translate(${x},${36 + r * 16})`, fill: '#6A5ACD', stroke: '#fffff0', 'stroke-width': 1, opacity: st === 0 && r > 0 ? 0.3 : 1 }));
+      nodes.push(valueNode(`sv${s}.${r}`, x, 36 + r * 16 + 6.4, v, true, false, false));
+    });
+  }
+  // probe pointer
+  if ((rec.fn === 'find' || rec.fn === 'insert') && rec.loc && rec.loc.i !== undefined && rec.loc.i >= 0) {
+    const i = rec.loc.i, x = X(i), bad = i > 7;
+    nodes.push(N('path', 'probe', { d: `M${x} 86l-5 8h10z`, fill: bad ? 'none' : '#000080', stroke: bad ? 'darkred' : '#000080', 'stroke-dasharray': bad ? '2 1.5' : null, style: 'transition:transform .25s' }));
+    nodes.push(N('text', 'probel', { class: 'nm', x: x, y: 104, 'text-anchor': 'middle', fill: bad ? 'darkred' : '#000080' }, { text: `i = ${i}` + (bad ? ' (off the table)' : '') }));
+  }
+  // reachability arcs (R3): each FULL key's path from h(key)
+  rec.slots.forEach((sl, s) => {
+    if (sl[0] !== 1) return;
+    const h = sl[1] & 7; if (h === s) return;
+    let bad = false; for (let d = 0; d <= ((s - h) & 7); d++) if (rec.slots[(h + d) & 7][0] === 0) bad = true;
+    const x1 = X(h), x2 = X(s) + (s < h ? 44 * 8 : 0);
+    nodes.push(N('path', 'arc' + s, { d: `M${x1} 84C${x1} 100,${x2} 100,${x2} 84`, fill: 'none', stroke: bad ? 'darkred' : '#8a8a8a', 'stroke-width': 1, 'stroke-dasharray': bad ? '2 2' : null, 'data-tip': `probe path of key ${sl[1]}: h = ${h} → slot ${s}${bad ? ' crosses an EMPTY slot (R3 broken)' : ''}` }));
+  });
+  // ghost map + used
+  nodes.push(N('text', 'Ml', { class: 'nm', x: 20, y: 128, 'text-anchor': 'end' }, { text: 'M' }));
+  let mx = 28;
+  (rec.M || []).forEach(([k, v]) => { const t = `${k} ↦ ${v}`, w = t.length * 5.6 + 10; nodes.push(N('rect', 'Mb' + k, { x: mx, y: 118, width: w, height: 15, rx: 7, fill: 'none', stroke: '#777', 'stroke-dasharray': '3 2' })); nodes.push(N('text', 'Mt' + k, { class: 'nm', x: mx + w / 2, y: 129, 'text-anchor': 'middle', fill: '#333' }, { text: t })); mx += w + 6; });
+  if (!rec.M || !rec.M.length) nodes.push(N('text', 'Me', { class: 'nm', x: 30, y: 129 }, { text: '{ }  (ghost map, spec-only)' }));
+  nodes.push(N('text', 'ul', { class: 'nm', x: 330, y: 128, 'text-anchor': 'end' }, { text: 'used' }));
+  nodes.push(N('path', 'us', { class: 'shape', d: CUP_OUT, transform: 'translate(352,118)', fill: '#6A5ACD', stroke: '#fffff0' }));
+  nodes.push(valueNode('uv', 352, 124.4, rec.used, true, false, false));
+  // operation sequent: R at entry (above) / R at exit (below)
+  const op = rec.top, calls = R.calls || [];
+  let entry = null, exit = null, retv;
+  for (let i = 0; i < R.trace.length; i++) { const r = R.trace[i]; if (r.top !== op) continue; if (!entry) entry = r; if (r.ret && r.ret.top) { if (i <= this.idx) { exit = r; retv = r.ret.v; } break; } }
+  const Rof = r => { if (!r) return null; const ch = r.checks.find(x => x.R); return ch ? ch.R : null; };
+  const RE = Rof(entry), RX = exit ? Rof(exit) : null;
+  const clauses = [['o', 'states3', 'R0 well-formed states'], ['i', 'r1', 'R1 FULL slots are entries of M'], ['ii', 'r2', 'R2 exactly one slot per key'], ['iii', 'r3', 'R3 no EMPTY on a key’s path'], ['iv', 'r4', 'R4 counts agree; used < CAP']];
+  const call = calls[op];
+  nodes.push(N('text', 'opl', { class: 'nm', x: 0, y: 166, fill: '#000' }, { text: call ? `${call[0]}(${call[1].join(', ')})  ⊢  R ⇒ R` : '' }));
+  const y0 = 196;
+  let anyFalse = false;
+  clauses.forEach(([key, icon, name], j) => {
+    const x = 22 + j * 18;
+    const eOk = RE ? RE[key] : true, xOk = RX ? RX[key] : null;
+    nodes.push(chipNode('re' + key, { k: icon, t: name + ' at entry' }, x, y0 - 13.4, eOk ? 'ok' : 'ref', {}));
+    if (RX) { if (!xOk) anyFalse = true; nodes.push(chipNode('rx' + key, { k: icon, t: name + ' at exit' + (xOk ? '' : ' — FALSE at this boundary') }, x, y0 + 1.4, xOk ? 'ok' : 'ref', {})); }
+  });
+  nodes.push(N('text', 'rel', { class: 'tierlab', x: 18, y: y0 - 3, 'text-anchor': 'end' }, { text: 'entry' }));
+  nodes.push(N('text', 'rxl', { class: 'tierlab', x: 18, y: y0 + 10, 'text-anchor': 'end' }, { text: 'exit' }));
+  nodes.push(ruleNode('oprule', 16, y0, 100, RX ? (anyFalse ? 'ref' : 'ok') : 'plain'));
+  if (!RX) nodes.push(N('text', 'pend', { class: 'tierlab', x: 26, y: y0 + 11 }, { text: '… operation in progress (R may be false mid-operation)' }));
+  if (retv !== undefined) {
+    nodes.push(N('text', 'resl', { class: 'nm', x: 150, y: y0 + 10, 'text-anchor': 'end' }, { text: 'result' }));
+    nodes.push(N('path', 'ress', { class: 'shape', d: CUP_OUT, transform: `translate(170,${y0})`, fill: '#6A5ACD', stroke: '#fffff0' }));
+    nodes.push(valueNode('resv', 170, y0 + 6.4, retv, true, false, false));
+  }
+  reconcile(this.memSvg, nodes, true);
+  // op log (results vs expected)
+  const expected = R.expected || (this.M.runs[0] === R ? this.cleanResults : null) || [];
+  let html = '<div class="lab muted" style="margin-top:2px">operations in this run</div>';
+  calls.forEach((cl, i) => {
+    let res = '…';
+    for (const r of R.trace) { if (r.top === i && r.ret && r.ret.top) { res = R.trace.indexOf(r) <= this.idx ? r.ret.v : '…'; break; } }
+    if (i === calls.length - 1 && R.stopped && res === '…') res = R.stopped === 'trap' ? 'trap 💣' : 'does not return';
+    const exp = expected[i];
+    const bad = res !== '…' && exp !== undefined && res !== exp;
+    html += `<div class="${i === op ? 'cur' : ''} ${bad ? 'badres' : ''}">${cl[0]}(${cl[1].join(', ')}) → ${res}${bad ? `  (spec says ${exp})` : ''}</div>`;
+  });
+  this.memOps.innerHTML = html;
+};
+
+// ======================= instantiate: Section B (isqrt), Section C (hash table), Section A cards, legend =======================
+const fmtCall = cl => `${cl[0]}(${cl[1].map(fmtNum).join(', ')})`;
+
+const secB = new Section({
+  root: $('#secB'), pid: 'isqrt', names: ['n', 'r'],
+  listingHost: $('#lstB'), barHost: $('#barB'),
+  cfg: { rowH: 45, font: 21, codeW: 650, seqX: 730, width: 1360 },
+  bugs: [{ id: 'none', label: 'no bug' }, { id: 'S1', label: 'S1 · line 17: gt_u → gt_s (overflow, subtle)' }, { id: 'S2', label: 'S2 · line 1: ≤ and < swapped (spec bug)' }, { id: 'S3', label: 'S3 · line 3: r starts at 1 (edge case n = 0)' }],
+  seq: ISQ_SEQ, defs: ISQ_DEFS, bugSeq: ISQ_BUGS,
+  studentCalls: PROG.isqrt.correct_runs.calls, studentLabel: 'your run: isqrt(10), isqrt(16), isqrt(0)',
+  cexFor: bug => bug.id === 'S1'
+    ? { calls: [['isqrt', [2147483647], { pc: 5, locals: { r: 46340 } }]], opts: { stepOffset: 2, maxSteps: 19 }, dropBefore: 4, kind: 'loophead',
+        label: 'counterexample-to-induction: loop head n = 2,147,483,647, r = 46,340',
+        ghost: { label: '⚖︎ reachable input n = 2,147,483,647 fails at step 695,119 — beyond the 100k-step log, not replayed ›', tip: 'The real run from this input reaches r = 46,340 only at step 695,104, past Codillon’s 100k-step log, so it is drawn as a ghost (dashed outline): refuted, witness not replayed. The slider instead replays one loop iteration from the loop-head state.' } }
+    : { calls: bug.calls, kind: 'input', label: 'counterexample run: ' + bug.calls.map(fmtCall).join(', ') },
+  defaultPin: [26], defaultIdx: tr => Math.max(0, tr.findIndex(r => r.s === 60)),
+  initialBug: QS.get('b') || 'none',
+});
+
+const secC = new Section({
+  root: $('#secC'), pid: 'hashtable', names: ['k', 'x', 'i', 'j', 'p', 'dflt', 'used', 'M'],
+  listingHost: $('#lstC'), barHost: $('#barC'), pane: $('#paneC'), memHost: $('#memC'),
+  cfg: { rowH: 38, font: 17, codeW: 470, seqX: 545, width: 930 },
+  bugs: [{ id: 'none', label: 'no bug' }, { id: 'Ha', label: '(a) probe index not wrapped (trap)' }, { id: 'Hb', label: '(b) lookup treats TOMB as EMPTY' }, { id: 'Hb_prime', label: '(b′) delete writes EMPTY' }, { id: 'Hc', label: '(c) insert skips the existing-key check' }, { id: 'Hd', label: '(d) load-factor check off by one' }],
+  seq: HT_SEQ, defs: HT_DEFS, bugSeq: HT_BUGS,
+  studentCalls: PROG.hashtable.correct_runs.calls, studentLabel: 'your run: insert(3,30) insert(11,110) delete(3) lookup(11,−1) lookup(3,−1)',
+  cexFor: bug => ({ calls: bug.calls, opts: bug.id === 'Hd' ? { maxSteps: 900 } : {}, kind: 'input', label: 'counterexample run: ' + bug.calls.map(fmtCall).join(' ') }),
+  cleanResults: PROG.hashtable.correct_runs.results,
+  defaultPin: [159], defaultIdx: tr => { let n = 0; for (let i = 0; i < tr.length; i++) if (tr[i].ln === 159 && ++n === 2) return i; return 0; },
+  initialBug: QS.get('c') || 'none',
+});
+if (QS.get('tB')) secB.setIdx(+QS.get('tB'));
+if (QS.get('tC')) secC.setIdx(+QS.get('tC'));
+
+// self-check against the fixture's key frames (console only)
+(function () {
+  let bad = 0;
+  [['isqrt', secB], ['hashtable', secC]].forEach(([id, sec]) => {
+    for (const b of PROG[id].bugs) {
+      const M = sec.model(b.id); const tr = M.runs[1].trace; const byS = {}; tr.forEach(r => byS[r.s] = r);
+      for (const k of b.trace) { const m = byS[k.s]; if (!m || m.ln !== k.ln || JSON.stringify(m.stack) !== JSON.stringify(k.stack)) { bad++; } }
+    }
+  });
+  console.log(bad ? `fixture self-check: ${bad} mismatching key frames` : 'fixture self-check: every key frame of every bug trace reproduced');
+})();
+
+// ---------------- Section A: three snippets ----------------
+const PAR = PROG.parity;
+function card(host, title, capHtml) {
+  const d = document.createElement('div'); d.className = 'card';
+  d.innerHTML = `<div class="cap"><h4>${title}</h4>${capHtml}</div><div class="lst"></div>`;
+  host.appendChild(d);
+  return { el: d, cap: d.querySelector('.cap'), lst: d.querySelector('.lst') };
+}
+function btnRow(cap, label, opts, get, set) {
+  const row = document.createElement('div'); row.className = 'btns';
+  row.innerHTML = `<span class="lab muted">${label}</span>` + opts.map(o => `<button data-v="${o[0]}">${o[1]}</button>`).join('');
+  cap.appendChild(row);
+  const sync = () => row.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === String(get())));
+  row.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { set(b.dataset.v); sync(); } });
+  sync();
+  return sync;
+}
+const A1 = { code: 'shr_s', spec: 'plain', x: 6 };
+const cA1 = card($('#cardsA'), 'A1 · a fact carried and consumed ($half)', `<div>The parameter type says <i>even</i> (comb chip). It rides into the body on the value, and the shift's sequent uses it to prove the dependent result <i>$v + $v = $x</i> (½ chip). Toggle the code bug P2 or the spec bug P3: in both the rule snaps, but in P2 the darkred lands on the <i>code</i> line's claim and in P3 on the <i>header's</i> claim.</div>`);
+const LA1 = new Listing(cA1.lst, { rowH: 45, font: 21, codeW: 560, seqX: 610, width: 980 });
+btnRow(cA1.cap, 'line 10', [['shr_s', 'i32.shr_s'], ['shr_u', 'i32.shr_u (P2)']], () => A1.code, v => { A1.code = v; drawA1(); });
+btnRow(cA1.cap, 'line 7', [['plain', '$v+$v == $x'], ['lt', '… && $v < $x (P3)']], () => A1.spec, v => { A1.spec = v; drawA1(); });
+btnRow(cA1.cap, 'call $half(x) with x =', [['6', '6'], ['-4', '−4'], ['0', '0'], ['10', '10']], () => A1.x, v => { A1.x = +v; drawA1(); });
+function drawA1() {
+  const edits = [];
+  if (A1.code === 'shr_u') edits.push(...PAR.bugs.find(b => b.id === 'P2').edits);
+  if (A1.spec === 'lt') edits.push(...PAR.bugs.find(b => b.id === 'P3').edits);
+  const lines = applyEdits(PAR.lines, edits), prog = parseProgram(lines);
+  const spec = specFor('parity', A1.spec === 'lt' ? 'P3' : 'none');
+  const tr = run(prog, lines, [['half', [A1.x]]], spec).trace;
+  const seq = Object.assign({}, PAR_SEQ_A1);
+  let cex = null;
+  if (A1.code === 'shr_u' || A1.spec === 'lt') {
+    const wx = A1.code === 'shr_u' ? -4 : 0;
+    cex = run(prog, lines, [['half', [wx]]], spec).trace;
+    const halfC = A1.code === 'shr_u' ? c('half', 'claimed $v + $v = $x — shr_u computes u($x)/2: witness $x = −4 gives 2,147,483,646', { st: 'ref', from: [7] }) : PAR_SEQ_A1[10].c[0].chips[0];
+    const ltC = A1.spec === 'lt' ? [c('lt', 'post: $v < $x — false for $x = 0 (and every negative even $x)', { st: 'ref', from: [7] })] : [];
+    seq[10] = Object.assign({}, PAR_SEQ_A1[10], { w: 3, c: [OUT(0, [halfC, ...ltC])] });
+    if (A1.spec === 'lt') seq[7] = { site: 'sig', w: 3, h: PAR_SEQ_A1[7].h, c: [OUT(0, [c('half', 'post: $v + $v = $x'), c('lt', 'post: $v < $x — too strong: 0 < 0 is false', { st: 'ref' })])] };
+  }
+  LA1.setModel({ orig: PAR.lines, lines, struck: new Set(), changed: new Set([7, 10]), names: ['x'], prog, range: [7, 11] });
+  LA1.render({ seq, defs: {}, trace: tr, idx: tr.length - 1, cexTrace: cex, pinned: new Set([10]), conns: computeConns(lines, prog), showArrow: false,
+    notes: A1.spec === 'lt' ? { 7: 'claims 0 < 0' } : A1.code === 'shr_u' ? { 10: 'shr_u: −4 ↦ 2,147,483,646' } : {}, blame: new Set(A1.spec === 'lt' ? [7] : []) });
+}
+const A2 = { gate: 'yes', x: 6 };
+const cA2 = card($('#cardsA'), 'A2 · the gate makes the fact (path-sensitive)', `<div>Evenness of $x is never computed <i>on</i> $x: it is born from the test on line 16 and lives only in the else-arm. The call on line 21 has a cup that <i>demands</i> it (a seated chip). Delete the <code>i32.eqz</code> (P1) and the else-arm now knows <i>odd</i>: the demanded chip unseats (floats up, darkred), and the missing fact appears as Codillon's empty fade-up cup, wired back to the gate.</div>`);
+const LA2 = new Listing(cA2.lst, { rowH: 45, font: 21, codeW: 560, seqX: 610, width: 980 });
+btnRow(cA2.cap, 'line 15', [['yes', 'i32.eqz'], ['no', 'deleted (P1)']], () => A2.gate, v => { A2.gate = v; drawA2(); });
+btnRow(cA2.cap, '$half_or_neg1(x), x =', [['6', '6'], ['3', '3'], ['-4', '−4']], () => A2.x, v => { A2.x = +v; drawA2(); });
+function drawA2() {
+  const bug = A2.gate === 'no';
+  const lines = applyEdits(PAR.lines, bug ? PAR.bugs.find(b => b.id === 'P1').edits : []), prog = parseProgram(lines);
+  const tr = run(prog, lines, [['half_or_neg1', [A2.x]]], SPECS.parity).trace;
+  const seq = Object.assign({}, PAR_SEQ_A2), defs = Object.assign({}, PAR_DEFS_A2);
+  let cex = null;
+  if (bug) {
+    cex = run(prog, lines, [['half_or_neg1', [3]]], SPECS.parity).trace;
+    seq[16] = { h: [IN(0, [c('flag', 'v = 1 ⇔ $x even (no negation any more)', { from: [14] })])], c: [FREE('then', [c('even', 'then-arm: $x even')]), FREE('else', [c('odd', 'else-arm: $x odd — the gate is inverted', { drop: true })])] };
+    seq[20] = { c: [OUT(0, [c('odd', '$x odd (else-arm path)', { from: [16] })])] };
+    seq[21] = { site: 'wire', w: 10, h: [IN(0, [c('odd', '$x odd', { from: [20] }), need('even', 'pre of $half: $x % 2 = 0 — witness $x = 3', { st: 'ref' })]), MISS([c('even', 'needed: $x even — the gate no longer provides it', { st: 'ref', from: [16] })])], c: [OUT(0, [c('half', '$v + $v = $x')])] };
+    defs[19] = [c('even', 'assert $x % 2 = 0 — refuted, witness $x = 3', { st: 'ref' })];
+  }
+  LA2.setModel({ orig: PAR.lines, lines, struck: new Set(bug ? [15] : []), changed: new Set(), names: ['x'], prog, range: [13, 22] });
+  LA2.render({ seq, defs, trace: tr, idx: tr.length - 1, cexTrace: cex, pinned: new Set([21]), conns: computeConns(lines, prog), showArrow: false,
+    notes: bug ? { 21: 'caller blamed: $x = 3 is odd' } : {}, blame: new Set(bug ? [19] : []) });
+}
+const A3 = { v: 'ok' };
+const cA3 = card($('#cardsA'), 'A3 · one obligation, six epistemic states', `<div>The same wire obligation — the cup of <code>call $slot</code> demands <i>0 ≤ $i &lt; 8</i> (range chip, seated) — under each verdict the checker can return. The rule and the chip's box carry the state; the gutter repeats it. Try them in grayscale: solid, offset-solid, offset-hollow, dashed + star, dotted + ∘N, ghosted + ○.</div>`);
+const LA3 = new Listing(cA3.lst, { rowH: 45, font: 21, codeW: 560, seqX: 610, width: 980 });
+const A3V = {
+  ok: { lines: ['(func $at (param $i i32) (result i32)', '  local.get $i', '  i32.const 7', '  i32.and', '  call $slot', ')'],
+    seq: { 4: { c: [OUT(0, [c('range', '0 ≤ v < 8 ($i & 7)')])] }, 5: { site: 'wire', h: [IN(0, [c('range', '0 ≤ $i < 8', { from: [4] }), need('range', 'pre of $slot: 0 ≤ $i < CAP', { from: [4] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i')])] } },
+    vals: { 2: { outs: [13] }, 3: { outs: [7] }, 4: { ins: [13, 7], outs: [5] }, 5: { ins: [5], outs: [65500] } } },
+  refg: { lines: ['(func $at (param $i i32) (result i32)', '  local.get $i', '  i32.const 15', '  i32.and', '  call $slot', ')'],
+    seq: { 4: { c: [OUT(0, [c('range', '0 ≤ v < 16 ($i & 15)')])] }, 5: { site: 'wire', h: [IN(0, [c('range', '0 ≤ $i < 16', { from: [4] }), need('range', 'pre of $slot: 0 ≤ $i < CAP — the solver proposes $i = 15; not yet run', { st: 'refg', from: [4] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i')])] } },
+    vals: {} },
+  ref: { lines: ['(func $at (param $i i32) (result i32)', '  local.get $i', '  i32.const 15', '  i32.and', '  call $slot', ')'],
+    seq: { 4: { c: [OUT(0, [c('range', '0 ≤ v < 16 ($i & 15)')])] }, 5: { site: 'wire', h: [IN(0, [c('range', '0 ≤ $i < 16', { from: [4] }), need('range', 'pre of $slot: 0 ≤ $i < CAP — witness $i = 15, replayed', { st: 'ref', from: [4] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i')])] } },
+    vals: { 2: { outs: [15] }, 3: { outs: [15] }, 4: { ins: [15, 15], outs: [15] }, 5: { ins: [15], outs: [65620] } }, wit: true, notes: { 5: 'witness $i = 15' } },
+  unk: { lines: ['(func $at (param $i (i32 | 0 <= $i && $i*$i < 64)) (result i32)', '  local.get $i', '  call $slot', ')'],
+    seq: { 1: { site: 'sig', h: [CTX('i', [c('ge0', '0 ≤ $i'), c('sqlt', '$i*$i < 64')])], c: [OUT(0, [])] }, 3: { site: 'wire', h: [IN(0, [c('ge0', '0 ≤ $i', { from: [1] }), c('sqlt', '$i*$i < 64', { from: [1] }), need('range', 'pre of $slot: $i < 8 — follows from $i*$i < 64, but that is a nonlinear inequality outside the automatic fragment', { st: 'unk', from: [1] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i')])] } },
+    vals: {} },
+  dyn: { lines: ['(func $at (param $i (i32 | 0 <= $i && $i*$i < 64)) (result i32)', '  local.get $i', '  call $slot', ')'],
+    seq: { 1: { site: 'sig', h: [CTX('i', [c('ge0', '0 ≤ $i'), c('sqlt', '$i*$i < 64')])], c: [OUT(0, [])] }, 3: { site: 'wire', h: [IN(0, [c('ge0', '0 ≤ $i', { from: [1] }), c('sqlt', '$i*$i < 64', { from: [1] }), need('range', 'pre of $slot — still unproven statically; its runtime check held on the 3 calls of this run', { st: 'dyn', count: 3, from: [1] })])], c: [OUT(0, [c('eq', '= BASE + 12*$i')])] } },
+    vals: { 1: { loc: { i: 5 }, outs: [65500] }, 2: { outs: [5] }, 3: { ins: [5], outs: [65500] } } },
+  asm: { lines: ['(func $at (param $i i32) (result i32)', '  (@assume 0 <= $i && $i < 8)', '  local.get $i', '  call $slot', ')'],
+    defs: { 2: [c('range', 'assumed without proof (checked only at run time)', { st: 'vac' })] },
+    seq: { 4: { site: 'wire', st: 'vac', h: [IN(0, [c('range', '0 ≤ $i < 8 — assumed on line 2', { st: 'vac', from: [2] }), need('range', 'pre of $slot — discharged only by the assumption', { st: 'vac' })])], c: [OUT(0, [c('eq', '= BASE + 12*$i', { st: 'vac' })])] } },
+    vals: { 3: { outs: [3] }, 4: { ins: [3], outs: [65476] } } },
+  vac: { lines: ['(func $at (param $i (i32 | $i < 0 && $i > 5)) (result i32)', '  local.get $i', '  call $slot', ')'],
+    seq: { 1: { site: 'sig', st: 'vac', h: [CTX('i', [c('bot', '$i < 0 ∧ $i > 5 — unsatisfiable: no caller can ever call this', { st: 'vac' })])], c: [OUT(0, [])] },
+           2: { st: 'vac', c: [OUT(0, [c('bot', '⊥ carried along', { st: 'vac', from: [1] })])] },
+           3: { site: 'wire', st: 'vac', h: [IN(0, [c('bot', '⊥', { st: 'vac', from: [2] }), need('range', 'pre of $slot — vacuously “proven” from ⊥', { st: 'vac' })])], c: [OUT(0, [c('eq', '= BASE + 12*$i', { st: 'vac' })])] } },
+    vals: {} },
+};
+btnRow(cA3.cap, 'verdict', [['ok', 'proven'], ['refg', 'refuted · not replayed'], ['ref', 'refuted · replayed'], ['unk', 'unknown'], ['dyn', 'held on this run'], ['asm', 'assumed'], ['vac', 'vacuous']], () => A3.v, v => { A3.v = v; drawA3(); });
+function drawA3() {
+  const V = A3V[A3.v];
+  const prog = parseProgram(V.lines);
+  LA3.setModel({ orig: V.lines, lines: V.lines, struck: new Set(), changed: new Set(), names: ['i'], prog, range: [1, V.lines.length] });
+  LA3.render({ seq: V.seq, defs: V.defs || {}, trace: null, idx: -1, vals: V.vals, valsWit: !!V.wit, pinned: new Set(Object.keys(V.seq).map(Number)), conns: computeConns(V.lines, prog), notes: V.notes || {}, blame: new Set() });
+}
+drawA1(); drawA2(); drawA3();
+
+// ---------------- legend ----------------
+function miniSvg(w, h, nodes) { const s = document.createElementNS(NS, 'svg'); s.setAttribute('width', w); s.setAttribute('height', h); s.style.overflow = 'visible'; reconcile(s, nodes, false); return s; }
+function legendItem(svg, html) { const d = document.createElement('div'); d.className = 'item'; if (svg) d.appendChild(svg); const t = document.createElement('div'); t.innerHTML = html; d.appendChild(t); return d; }
+function ruleDemo(st, chipSt, extra) {
+  const nodes = [cupNode('cup', 20, 20, 'in'), chipNode('ch', { k: 'range', t: '0 ≤ $i < 8', need: true }, 38, 20 - 13.4, chipSt || st, extra || {}), cupNode('out', 20, 20, 'out'), ruleNode('r', 3, 20, 54, st), ruleEnd('e', 63, 20, st, extra || {})];
+  return miniSvg(84, 36, nodes);
+}
+const LG = $('#legend');
+const h3 = t => { const e = document.createElement('h3'); e.textContent = t; LG.appendChild(e); };
+h3('the sequent fraction');
+{
+  const n = [cupNode('a', 20, 22, 'in'), chipNode('a1', { k: 'sq1', t: '' }, 37, 8.6, 'ok'), chipNode('a2', { k: 'fitu', t: '' }, 51.5, 8.6, 'ok'), cupNode('b', 86, 22, 'in'), chipNode('b1', { k: 'ge0', t: '' }, 103, 8.6, 'ok'),
+    cupNode('o', 20, 22, 'out'), chipNode('o1', { k: 'flag', t: '' }, 37, 23.4, 'ok'), ruleNode('r', 2, 22, 118, 'ok'),
+    valueNode('va', 20, 16.4, 46341, false), valueNode('vb', 86, 16.4, 10, false), valueNode('vo', 20, 28.4, 1, true)];
+  LG.appendChild(legendItem(miniSvg(124, 40, n), '<b>hypotheses ⁄ conclusions.</b> Above the rule: input cups (Codillon shapes, runtime value inside) and chips for what is <i>known</i> about each. Below: outputs and chips for what is <i>claimed</i>.'));
+  const m = [cupNode('c', 20, 22, 'in'), N('text', 'n', { class: 'nm', x: 2, y: 19 }, { text: 'r' }), valueNode('v', 20, 16.4, 3, false), chipNode('k', { k: 'sqle', t: '' }, 37, 8.6, 'ok'), FREEDEMO('j'), ruleNode('r', 0, 22, 70, 'ok'), chipNode('d', { k: 'dec', t: '' }, 6, 23.4, 'ok')];
+  LG.appendChild(legendItem(miniSvg(80, 40, m.filter(Boolean)), '<b>context cups.</b> Frame obligations (loop entry, back-edge, return) name the locals they speak about; a free chip (no cup) is a fact about state, e.g. the termination measure.'));
+  const w = [cupNode('m', 20, 22, 'miss'), chipNode('mc', { k: 'fits', t: '' }, 14, 9.4, 'ref'), N('path', 'wb', { class: 'wire bad', d: 'M60 4C40 4,30 4,20 8' }), ruleNode('r', 2, 22, 40, 'ref')];
+  LG.appendChild(legendItem(miniSvg(66, 40, w), '<b>missing hypothesis.</b> Codillon’s empty fade-up cup (“no operand here”) now means “no fact here”: it holds the needed chip, and a darkred dotted wire points to the line that should have supplied it.'));
+  const pw = [N('path', 'w1', { class: 'wire', d: 'M4 6C40 6,48 30,52 34' }), N('circle', 'd1', { class: 'wdot', cx: 4, cy: 6, r: 1.8 }), N('path', 'w2', { class: 'wire bad', d: 'M4 20C30 20,58 28,70 34' }), N('circle', 'd2', { class: 'wdot bad', cx: 4, cy: 20, r: 1.8 })];
+  LG.appendChild(legendItem(miniSvg(76, 40, pw), '<b>proof wires.</b> From a chip back to the line whose fact it used (the checker’s unsat core), drawn like dataflow curves. Shown for pinned / hovered sequents and always for refuted ones; darkred dotted = the wire of a fact that is missing or false.'));
+}
+h3('the rule is the verdict (six states; readable in grayscale)');
+LG.appendChild(legendItem(ruleDemo('ok'), '<b>proven.</b> Solid quiet rule; chips unboxed. Silence is success; gutter keeps its line number.'));
+LG.appendChild(legendItem(ruleDemo('ref'), '<b>refuted, witness replayed.</b> Rule snapped into two offset darkred halves; failing chip boxed, a demanded chip <i>unseats</i>. Counterexample values sit in the shapes in darkred. Gutter ⚖; slider pill ⚖.'));
+LG.appendChild(legendItem(ruleDemo('refg'), '<b>refuted, witness not yet replayed.</b> Same break, drawn hollow and dashed (a ghost); hollow ⚖ in the gutter; a dashed pill above the slider.'));
+LG.appendChild(legendItem(ruleDemo('unk'), '<b>unknown / needs a hint.</b> Dashed indigo rule ending in Codillon’s mystery star; chip boxed with dashes and “?”. Gutter star. Never drawn as success.'));
+LG.appendChild(legendItem(ruleDemo('dyn', 'dyn', { count: 3 }), '<b>held on this run only.</b> Dotted slate rule; ∘N counts runtime checks that passed up to the slider position. Never a check mark: it becomes “unknown” again before the first check runs.'));
+LG.appendChild(legendItem(ruleDemo('vac'), '<b>assumed / vacuous.</b> Ghosted to 45% with ○; everything that depends on it is ghosted too (an @assume, a contradictory precondition, dead code).'));
+LG.appendChild(legendItem(miniSvg(84, 36, [cupNode('c', 20, 20, 'in'), cupNode('o', 20, 20, 'out'), ruleNode('r', 3, 20, 34, 'plain')]), '<b>no obligation.</b> Codillon’s plain fraction: gray rule, no chips.'));
+LG.appendChild(legendItem(miniSvg(84, 36, [cupNode('c', 20, 20, 'in'), valueNode('v', 20, 14.4, 2147483647, false, false, true), cupNode('o', 58, 20, 'out'), valueNode('vo', 58, 26.4, 0, true, false, true), N('path', 'u', { d: 'M43 34.2H73', stroke: 'darkred', 'stroke-width': 1.6 })]), '<b>witness values.</b> In a refuted sequent the counterexample’s values replace the runtime values, in darkred (outputs underlined). Click the sequent to scrub that run.'));
+h3('chips: one per conjunct, tiny and iconic (text on hover)');
+const CH = [['ge0', 'lower fence: 0 ≤ v'], ['range', 'range 0 ≤ v < n (post = inclusive, ring = exclusive)'], ['lt', 'upper bound v < n'], ['even', 'parity comb: even'], ['odd', 'parity comb: odd'], ['eq', 'equals a term'], ['half', 'v + v = x'],
+  ['sqle', 'square bound r·r ≤ n'], ['sqlt', 'strict square bound r·r < n'], ['sq1gt', 'n < (r+1)²'], ['sq1', 'v is the square (r+1)²'], ['fitu', 'fits under 2³² (no unsigned overflow)'], ['fits', 'fits under 2³¹ (no signed overflow)'], ['flag', 'boolean that reflects a test'],
+  ['dec', 'termination measure decreases'], ['notinM', 'k ∉ M (ghost map)'], ['path', 'probe path so far: no stop'], ['empty', 'slot EMPTY'], ['full', 'slot FULL'], ['tomb', 'slot TOMB'], ['notfull', 'EMPTY or TOMB'],
+  ['bounds', 'address in bounds'], ['states3', 'R0 states well-formed'], ['r1', 'R1 FULL ⇒ entry of M'], ['r2', 'R2 exactly one slot per key'], ['r3', 'R3 reachable: no EMPTY on path'], ['r4', 'R4 counts; a free slot remains'], ['Rall', 'whole invariant R']];
+{
+  const wrap = document.createElement('div'); wrap.className = 'item'; wrap.style.gridColumn = '1 / -1'; wrap.style.flexWrap = 'wrap'; wrap.style.gap = '4px 16px';
+  CH.forEach(([k, t]) => { const s = document.createElement('span'); s.style.display = 'inline-flex'; s.style.alignItems = 'center'; s.style.gap = '4px'; s.appendChild(miniSvg(16, 16, [chipNode('c', { k, t }, 2, 2, 'ok')])); s.appendChild(document.createTextNode(t)); wrap.appendChild(s); });
+  LG.appendChild(wrap);
+}
+LG.appendChild(legendItem(miniSvg(84, 36, [cupNode('c', 20, 22, 'in'), chipNode('a', { k: 'range', t: '', need: true }, 38, 8.6, 'ok'), chipNode('b', { k: 'range', t: '', need: true }, 58, 8.6, 'ref')]), '<b>demanded chip.</b> A cup’s requirement (call argument, address, store) sits on a seat line; when refuted it floats off the seat.'));
+LG.appendChild(legendItem(miniSvg(40, 36, [chipNode('a', { k: 'notfull', t: '', drop: true }, 12, 10, 'ok')]), '<b>dropped fact.</b> Dotted darkred under-mark: the chip a missing hypothesis traces back to — where the needed fact was lost (blame).'));
+LG.appendChild(legendItem(null, '<b>gutter</b> (precedence 💣 &gt; ⚖ &gt; ★ &gt; ○ &gt; number): <span style="color:darkred">⚖&#xFE0E;</span> refuted here or blamed here (click: jump to witness) · <span style="color:transparent;-webkit-text-stroke:.9px darkred">⚖&#xFE0E;</span> refuted, not replayed · <span>' + STAR_SVG('indigo') + '</span> unknown · ○ vacuous · 💣 trap.'));
+LG.appendChild(legendItem(null, '<b>slider</b>: <span class="current-slider-tick" style="position:static">12</span> current step · <span class="bad-slider-tick">⚖&#xFE0E; 45</span> spec check failed · <span class="trap-slider-tick">💣 153</span> trap · <span class="ghost-tick" style="position:static">⚖&#xFE0E; beyond the log</span> witness not replayable. Run selector + badge: your run vs. a counterexample run.'));
+function FREEDEMO() { return null; }
+
+// ---------------- tooltip + keyboard ----------------
+const tip = $('#tip');
+document.addEventListener('mouseover', e => { const t = e.target.closest && e.target.closest('[data-tip]'); if (t) { tip.innerHTML = t.getAttribute('data-tip'); tip.style.display = 'block'; } else tip.style.display = 'none'; });
+document.addEventListener('mousemove', e => { if (tip.style.display === 'block') { tip.style.left = Math.min(e.clientX + 14, innerWidth - 470) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; } });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;
+  let sec = ACTIVE;
+  if (!sec) { const mid = innerHeight / 2; sec = [secB, secC].find(s => { const r = s.root.getBoundingClientRect(); return r.top < mid && r.bottom > mid; }) || secB; }
+  sec.setIdx(sec.idx + (e.key === 'ArrowLeft' ? -1 : 1)); e.preventDefault();
+});
+if (QS.get('scroll')) setTimeout(() => { const el = document.getElementById(QS.get('scroll')); if (el) el.scrollIntoView(); }, 50);
+
+// footer filled later
+
+</script>
+</body>
+</html>

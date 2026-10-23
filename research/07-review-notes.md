@@ -21,3 +21,9 @@ followed by the coordinator's own observations from the screenshots and the file
 - The substituted-predicate card (values on top, evaluated sides below, false conjunct underlined, later conjuncts dimmed) is the clearest rendering of *why* a predicate is false in any prototype; the hash-table version splits `$find`'s either/or ensures into groups.
 - Spurious witnesses are handled honestly: struck through, obligation falls back to unknown. Six states demonstrated on one obligation in A3.
 - Weakness the builder admits and I agree with: shapes never carry predicates (predicate-on-shape 2); facts only appear in the card when something fails. This idea is a complement to 01/03/04, not a substitute.
+
+## 05 · Invariant horizon — self 4,4,5,4,2,3,5,3,3,3
+- The gate + horizon + lap chart reads well on isqrt: at the S1 replay the chart hatches "⋯ 46 340 laps not run", drops a ◇ injected column, then one back-edge column with `r·r ≤ n` dark, the staircase at −4634 and the L15 overflow row dark. The hatch for un-run laps is an honest and reusable device.
+- Cells get fill from the run and border/glyph from the checker: a clean separation of "held on this run" from "proven" that other prototypes should copy.
+- On the hash table the chart is dense but legible: the column header shows the slot visited (□/■/⊠) so the tombstone lap is self-identifying; the "(iii)-strong" chip in the memory strip says "false since step 217" and jumps there.
+- Cost is real: each chart is 5–7 rows tall, which breaks the fixed-row-height requirement for loops (builder scores Scale 3, Ink 3 and I agree). Fine as an on-selection panel; too heavy as always-on.

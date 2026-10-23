@@ -108,6 +108,7 @@ select,button{font-family:var(--sans);font-size:13px;background:#fffff8;border:1
 .acard .code{font-size:20px}
 .acard .row.meta .code{font-size:16px}
 .acard .row.spec .code{font-size:16px}
+.acard .commentary{position:static;transform:none;display:inline-block;margin-left:6px;vertical-align:1px}
 .ainner{display:grid;grid-template-columns:520px 1fr;gap:10px;align-items:start}
 .xctl{display:flex;gap:10px;align-items:center;font-family:var(--sans);font-size:13px;margin:8px 0}
 .xctl input{width:420px;accent-color:darkblue}
@@ -1095,7 +1096,7 @@ function createRelPlot(parent, cfg) {
         if (vac || !pred) continue;
         let ys;
         if (p.y.discrete) ys = p.y.vals.map(v => ({ v, h: p.h / p.y.n }));
-        else { const nr = Math.floor(p.h / 3); ys = Array.from({ length: nr }, (_, i) => ({ v: p.y.inv((i + 0.5) / nr), h: 3 })); for (const hv of (cfg.hintY ? cfg.hintY(c.v) : [])) if (p.y.contains(hv)) ys.push({ v: hv, h: 2.5 }); }
+        else { const nr = Math.floor(p.h / 3); ys = Array.from({ length: nr }, (_, i) => ({ v: p.y.inv((i + 0.5) / nr), h: 3 })); for (const hv of (cfg.hintY ? cfg.hintY(c.v) : [])) if (p.y.contains(hv)) ys.push({ v: hv, h: 4 }); }
         for (const y of ys) {
           let ok = false; try { ok = pred(c.v, y.v); } catch (e) { ok = false; }
           if (ok) { const yy = p.y0 + p.h - p.y.frac(y.v) * p.h; gRegion.append(sv('rect', { x: c.x - c.w / 2, y: yy - y.h / 2, width: c.w + (p.x.discrete ? 0 : 0.6), height: Math.max(2, y.h), fill: COL.i32m })); }
@@ -1202,7 +1203,7 @@ hidden.innerHTML = `<defs><pattern id="hatch" width="4" height="4" patternUnits=
 document.body.prepend(hidden);
 let ACTIVE = null; // section whose slider ←/→ drive
 document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
   if (!ACTIVE) return;
   if (e.key === 'ArrowRight') { ACTIVE.slider.step(e.shiftKey ? 10 : 1); e.preventDefault(); }
   if (e.key === 'ArrowLeft') { ACTIVE.slider.step(e.shiftKey ? -10 : -1); e.preventDefault(); }
@@ -1245,7 +1246,7 @@ const B_VARIANTS = {
 };
 const ISQ_PROBES = [-1, -16, I32MIN, 0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 15, 16, 17, 24, 25, 26, 31, 32, 35, 36,
   64, 100, 256, 1000, 1024, 4096, 10000, 65536, 1000000, 1048576, 16777216, 100000000, 268435456, 900000000, P30, 2000000000, 2147302920,
-  2147302921, 2147395599, 2147395600, 2147483646, I32MAX];
+  2147302921, 2147395599, 2147395600, 2147440000, I32MAX];
 const GCD_V = [I32MIN, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 462, 1071, P30, I32MAX];
 
 function makeSectionB() {
@@ -1267,6 +1268,7 @@ function makeSectionB() {
     B.expl = el('div', { class: 'cap', style: 'margin-top:8px;line-height:1.4' });
     col.append(B.proofEl, B.head, B.plotHost, B.capEl, B.chips, B.expl);
     B.plot = pid === 'isqrt' ? makeIsqrtPlot(B.plotHost) : makeGcdGrid(B.plotHost);
+    B.proofEl.addEventListener('click', e => { const ln = e.target.dataset && e.target.dataset.ln; if (ln) B.listing.rows[+ln].row.scrollIntoView({ block: 'center', behavior: 'smooth' }); });
     B.variant = null; B.setVariant('none', false);
   };
   B.setVariant = (vid, animate) => {
@@ -1291,7 +1293,8 @@ function makeSectionB() {
     if (sampleCall) { B.sample = { id: 'sample', kind: 'sample', label: 'sample: ' + B.pid + '(' + sampleCall[1].join(', ') + ')', calls: [sampleCall] }; }
     const all = B.allRuns(); const run = all.find(r => r.id === rid); if (!run || run.kind === 'ghost') return;
     B.run = run;
-    const known = sampleCall ? (Sampler.cache.get(B.key(sampleCall[1])) || {}).steps : null;
+    let known = sampleCall ? (Sampler.cache.get(B.key(sampleCall[1])) || {}).steps : null;
+    if (sampleCall && known === undefined) known = runProgram(B.prog, { calls: run.calls, budget: 4.5e6, spec: 'expr' }).steps;
     const r = recordRun(B.prog, run, 'expr', null, known);
     B.trace = r.trace; B.runRes = r;
     B.slider.setTrace(r.trace, run.offset);
@@ -1358,12 +1361,12 @@ function makeSectionB() {
     B.plot.setPoints(pts, B);
     const space = B.pid === 'isqrt' ? '2³¹ admitted inputs' : '2⁶² admitted input pairs';
     B.head.innerHTML = `<b>Samples · not proof</b><span>${total} of ${B.probes.length} probes run · ∘ ${held} held · ⚖ ${failed} failed · ☆ ${unk} unfinished · × ${excl} excluded</span>`;
-    B.capEl.innerHTML = `${total - excl} sampled out of ${space}. Blank area = never run, not “fine”.` + (unk ? ' ☆ = run exceeded the 4.5M-step sampling budget.' : '');
+    B.capEl.innerHTML = (total && excl === total) ? 'The requires admits no input at all: every probe is excluded, nothing was tested.' : `${total - excl} sampled out of ${space}. Blank area = never run, not “fine”.` + (unk ? ' ☆ = run exceeded the 4.5M-step sampling budget.' : '');
     // thumbnails
     B.plot.thumbs(B);
     const pr = Object.assign({}, B.variant.proof);
     B.proofEl.className = 'proofline ' + pr.state;
-    B.proofEl.innerHTML = pr.state === 'proven' ? `<b style="font-weight:normal">PROOF</b> · ${pr.summary || 'every obligation discharged (silence in the gutter)'}` : pr.state === 'vacuous' ? `<b style="font-weight:normal">PROOF</b> · ○ vacuous at line ${pr.line}: ${esc(pr.why)}` : `<b style="font-weight:normal">PROOF</b> · ⚖ refuted at line ${pr.line}: ${esc(pr.obligation)}`;
+    B.proofEl.innerHTML = pr.state === 'proven' ? `<b style="font-weight:normal">PROOF</b> · ${pr.summary || 'every obligation discharged (silence in the gutter)'}` : pr.state === 'vacuous' ? `<b style="font-weight:normal">PROOF</b> · ○ vacuous at line ${pr.line}: ${esc(pr.why)}` : `<b style="font-weight:normal">PROOF</b> · ⚖ refuted at <u style="cursor:pointer" data-ln="${pr.line}">line ${pr.line}</u>: ${esc(pr.obligation)}`;
     B.paintStep(true);
   };
   B.paintStep = (noListing) => {
@@ -1387,7 +1390,9 @@ function makeSectionB() {
     if (f && B.run && B.run.kind !== 'cti') {
       const ci = f.call, call = B.run.calls[ci], res = B.runRes.results[ci];
       const fnObj = B.prog.funcs[B.pid];
-      if (res !== undefined && fnObj.resultPred) {
+      const reqFail = (B.runRes.failures || []).find(x => x.kind === 'requires' && x.call === ci);
+      if (reqFail) B.chips.append(el('span', { class: 'cchip fail' }, `${B.pid}(${call[1].join(', ')}): requires is false for this input`, el('span', { class: 'st' }, '⚖ caller blamed')));
+      else if (res !== undefined && fnObj.resultPred) {
         const env = {}; fnObj.params.forEach((p, i) => env[p] = call[1][i]); env.v = res;
         B.chips.append(el('span', { class: 'lbl' }, `${B.pid}(${call[1].join(', ')}) = ${res}:`));
         const conj = splitConjuncts(fnObj.resultPred);
@@ -1457,7 +1462,7 @@ function makeIsqrtPlot(host) {
       const id = B.variant.id;
       return {
         none: 'Ivory dots sit on the shaded staircase everywhere they were sampled; the √-scaled middle panel shows how thin the sampled coverage really is. The proof line above, not the dots, is what says “for all n”.',
-        S1: 'Only the top-right corner lights: n = 46340² returns 289398 (off-scale ↑), the two largest inputs never finish (☆, and the dashed ring is the solver’s input witness that could not be replayed), and the ◆ loop-head witness sits one row above the staircase. Every input below 46340² is fine — which is why your run passes. The gutter blames line 17 (the compare), the thumbnails show where the clauses broke (lines 1, 7, 8).',
+        S1: 'Only the top-right corner lights: n = 46340² returns 289398 (off-scale ↑), 2147440000 and INT_MAX never finish (☆; the dashed ring at INT_MAX is the solver’s input witness that could not be replayed), and the ◆ loop-head witness sits one row above the staircase. Every input below 46340² is fine — which is why your run passes. The gutter blames line 17 (the compare), the thumbnails show where the clauses broke (lines 1, 7, 8).',
         S2: 'The shading moved, not the dots: with v*v < n the staircase steps one column late, so every perfect square (0, 1, 4, 9, 16, 25, 36, …) is now a darkred dot just above the shading. Spec bug: blame is on the header (line 1), and line 7/8 thumbnails stay calm.',
         S3: 'One dot moved: n = 0 now returns 1 and sits above the staircase. Line 7’s thumbnail has one tall tick at n = 0 (invariant fails on entry); everything else is unchanged — tests on 1..100 would all pass.',
         K: 'Every dot is inside, and the proof succeeds, but the shading is a fat wedge: the spec admits any r with r*r ≤ n. Spec-too-weak reads as slack between the dots and the shaded edge.',
@@ -1566,7 +1571,7 @@ function aPanels(yMid, withFar) {
   const xs = [axis('list', [I32MIN, -P30]), axis('lin', -6, 6), axis('list', [P30, 2147483646, I32MAX])];
   const xw = [[40, 46], [94, 380], [482, 92]];
   const xt = [[[I32MIN, 'MIN'], [-P30, '−2³⁰']], [[-6, '−6'], [-4, '−4'], [-2, '−2'], [0, '0'], [2, '2'], [4, '4'], [6, '6']], [[P30, '2³⁰'], [I32MAX, 'MAX']]];
-  const ys = withFar ? [[axis('logpos', yMid.hi + 1, I32MAX), 10, 44, [[2 ** 10, '2¹⁰'], [2 ** 30, '2³⁰']]], [yMid, 60, 110, null], [axis('logneg', I32MIN, yMid.lo - 1), 176, 44, [[-(2 ** 10), '−2¹⁰'], [-(2 ** 30), '−2³⁰']]]] : [[yMid, 14, 90, null]];
+  const ys = withFar ? [[axis('logpos', yMid.hi + 1, I32MAX), 18, 44, [[2 ** 10, '2¹⁰'], [2 ** 30, '2³⁰']]], [yMid, 68, 110, null], [axis('logneg', I32MIN, yMid.lo - 1), 184, 44, [[-(2 ** 10), '−2¹⁰'], [-(2 ** 30), '−2³⁰']]]] : [[yMid, 18, 90, null]];
   const panels = [];
   for (const [y, y0, h, yt] of ys) xs.forEach((x, i) => panels.push({ x, y, x0: xw[i][0], w: xw[i][1], y0, h, xticks: y0 === ys[ys.length - 1][1] ? xt[i] : null, yticks: i === 0 ? (yt || y.vals.filter(v => y.vals.length < 6 || v % (y.vals.length > 12 ? 6 : 2) === 0).map(v => [v, String(v).replace('-', '−')])) : null }));
   return { panels, h: ys[ys.length - 1][1] + ys[ys.length - 1][2] + 18 };
@@ -1682,6 +1687,7 @@ function makeSectionC() {
   C.mem = el('div', { class: 'memview' }); C.expl = el('div', { class: 'cap', style: 'margin-top:8px;line-height:1.4' });
   col.append(C.proofEl, C.head, C.gridHost, C.capEl, C.expl, C.mem);
   C.grid = makeHashGrid(C.gridHost, C);
+  C.proofEl.addEventListener('click', e => { const ln = e.target.dataset && e.target.dataset.ln; if (ln) { const R = C.listing.rows[+ln]; list.scrollTop = Math.max(0, R.row.offsetTop - list.clientHeight / 2); } });
   C.setVariant = (vid, animate) => {
     const v = C_VARIANTS.find(x => x.id === vid); C.variant = v; bugSel.value = vid;
     C.lines = applyEdits(C.p.lines, v.edits); C.prog = parseProgram(C.lines);
@@ -1695,7 +1701,7 @@ function makeSectionC() {
   };
   C.allRuns = () => C.sample ? [...C.runs, C.sample] : C.runs;
   C.selectRun = (rid, sample) => {
-    if (sample) C.sample = { id: 'sample', kind: 'sample', label: `sampled cell: ${C_ROWS[sample.r].t.replace(/k/g, nameOf(sample.k))}`, calls: C_ROWS[sample.r].f(sample.k), cell: sample, budget: 900 };
+    if (sample) C.sample = { id: 'sample', kind: 'sample', label: `sampled cell: ${C_ROWS[sample.r].t.replace(/\bk\b/g, nameOf(sample.k))}`, calls: C_ROWS[sample.r].f(sample.k), cell: sample, budget: 900 };
     const run = C.allRuns().find(r => r.id === rid); if (!run) return;
     C.run = run;
     if (C.variant.hv && C.variant.hv.reqFalse) { C.runRes = { trace: [], results: [], status: 'excluded' }; C.slider.setTrace([]); C.drawRuns(); C.slider.note.textContent = 'Every call starts with insert, whose requires is false: there is no admissible run to replay.'; C.paintStep(); return; }
@@ -1741,7 +1747,7 @@ function makeSectionC() {
     }
     const pr = C.variant.proof;
     C.proofEl.className = 'proofline ' + pr.state;
-    C.proofEl.innerHTML = pr.state === 'proven' ? '<b style="font-weight:normal">PROOF</b> · every obligation discharged, R preserved by all four operations' : pr.state === 'vacuous' ? `<b style="font-weight:normal">PROOF</b> · ○ vacuous at line ${pr.line}: ${esc(pr.why)}` : `<b style="font-weight:normal">PROOF</b> · ⚖ refuted at line ${pr.line}: ${esc(pr.obligation)}`;
+    C.proofEl.innerHTML = pr.state === 'proven' ? '<b style="font-weight:normal">PROOF</b> · every obligation discharged, R preserved by all four operations' : pr.state === 'vacuous' ? `<b style="font-weight:normal">PROOF</b> · ○ vacuous at line ${pr.line}: ${esc(pr.why)}` : `<b style="font-weight:normal">PROOF</b> · ⚖ refuted at <u style="cursor:pointer" data-ln="${pr.line}">line ${pr.line}</u>: ${esc(pr.obligation)} <span class="lbl">(click to show)</span>`;
     C.expl.innerHTML = ({
       none: 'Calm: every cell held on its sample (dotted ivory). The gutter is silent because the proof succeeded; the grid only says which sequences were tried.',
       Ha: 'Traps (💣) appear only in the h(k) = 7 columns (7, −1, INT_MAX) and only on rows that make insert probe past slot 7. Every other seed is fine — the bug is an edge, and the grid shows exactly which edge.',
@@ -1857,7 +1863,7 @@ function buildLegend() {
   it(glyphSvg('fails'), '<b>refuted, witness replayed</b> — darkred dot / <span style="color:darkred">⚖</span> in gutter / darkred slider pill');
   it(glyphSvg('ghost'), '<b>refuted, witness not yet replayed</b> — dashed darkred ring, hollow ⚖, dashed run chip');
   it(glyphSvg('holds'), '<b>held on this run only</b> — ivory dot, dotted slategray; counts read “∘ N held”, never a check mark');
-  it(glyphSvg('dnf'), '<b>unknown / did not finish</b> — indigo dashed star with ?, ☆ in gutter');
+  it(glyphSvg('dnf'), '<b>unknown / did not finish</b> — indigo dashed star with ? (sample ran past the step budget)');
   it(glyphSvg('vacuous'), '<b>vacuous</b> — hollow ○ at 50%, no shaded region; ○ in gutter, lines below ghosted');
   grp('On the relation plot and the edge-case grid');
   it(sq(COL.i32m), '<b>spec region</b>: (input, result) pairs the result refinement admits, in the i32 colour, computed from the spec text');
@@ -1913,6 +1919,8 @@ buildFooter();
   if (h.get('prog')) { document.getElementById('B-prog').value = h.get('prog'); SB.load(h.get('prog')); }
   if (h.get('B')) SB.setVariant(h.get('B'), false);
   if (h.get('C')) SC.setVariant(h.get('C'), false);
+  if (h.get('pickB')) SB.selectRun('sample', [SB.pid, h.get('pickB').split(',').map(Number)]);
+  if (h.get('pickC')) { const [r, c] = h.get('pickC').split(',').map(Number); SC.selectRun('sample', { r, k: C_SEEDS[c] }); }
   if (h.get('gray')) document.body.style.filter = 'grayscale(1)';
   setTimeout(() => { document.body.dataset.pos = ['secA', 'secB', 'secC', 'footer'].map(id => document.getElementById(id).getBoundingClientRect().top + scrollY).join(','); }, 3000);
   if (h.get('scroll')) setTimeout(() => document.getElementById(h.get('scroll')).scrollIntoView(), 50);

@@ -43,7 +43,8 @@ section>p.lede{font-size:16.5px;line-height:1.4;margin:2px 0 8px;max-width:1300p
 .sl input{position:absolute;left:0;top:14px;width:820px;margin:0;height:16px;opacity:0;cursor:pointer;z-index:3}
 .sl svg{position:absolute;left:0;top:0;overflow:visible}
 .ghosttrack{cursor:pointer}
-.stepinfo{min-width:190px;font-variant-numeric:tabular-nums}
+.stepinfo{min-width:200px;font-variant-numeric:tabular-nums;line-height:1.3}
+.desc2{flex:1;color:#666;font-size:11.5px;line-height:1.3;min-width:120px}
 .stage{position:relative;overflow:hidden}
 .stage .row{position:absolute;left:0;height:32px;line-height:32px;white-space:nowrap;transition:top .25s,opacity .25s,height .25s}
 .row .txt{position:absolute;top:0;font-size:22px;overflow:hidden;text-overflow:ellipsis;transition:left .25s}
@@ -367,8 +368,8 @@ class Panel {
   constructor(id, title) {
     this.root = document.getElementById(id); this.title = title;
     this.ctl = document.createElement('div'); this.ctl.className = 'ctl';
-    this.ctl.innerHTML = `<div class="line l1"><span class="ttl">${title}</span><span class="custom"></span></div>
-      <div class="line l2"><span class="runs"></span><div class="sl"><svg class="slsvg" width="820" height="44"></svg><input type="range" min="1" max="2" value="1"></div><span class="stepinfo"></span></div>
+    this.ctl.innerHTML = `<div class="line l1"><span class="ttl">${title}</span><span class="custom"></span><span class="runs"></span></div>
+      <div class="line l2"><div class="sl"><svg class="slsvg" width="820" height="44"></svg><input type="range" min="1" max="2" value="1"></div><span class="stepinfo"></span><span class="desc2"></span></div>
       <div class="line l3" style="display:none"></div>`;
     this.stage = document.createElement('div'); this.stage.className = 'stage';
     this.rowsEl = document.createElement('div'); this.stage.appendChild(this.rowsEl);
@@ -381,6 +382,7 @@ class Panel {
     this.rowEls = new Map(); this.cur = 1; panels.push(this); if (!activePanel) activePanel = this;
   }
   get custom() { return this.ctl.querySelector('.custom'); }
+  setDesc(t) { this.ctl.querySelector('.desc2').textContent = t; }
   setRuns(runs, sel, onPick) {
     const el = this.ctl.querySelector('.runs'); el.innerHTML = '';
     for (const r of runs) {
@@ -609,7 +611,7 @@ Panel.prototype.renderLap = function ({ lp, an }) {
   const fx = CODEX + fr.depth * IND + 6, ry = this.yOf(lp.line), hy = ry + ROW - 5, K = 'lp' + lp.line + '_';
   let A = null, ai = -1; an.acts.forEach((a, i) => { if (a.start <= cur) { A = a; ai = i; } });
   const arr = A ? A.arr.filter(r => r.s <= cur) : [];
-  const bad = r => r.conj.includes(false) || !r.mOk;
+  const bad = r => r.conj.some((v, j) => v === false && !lp.rows[j].test) || !r.mOk;
   const firstFail = arr.findIndex(bad);
   const bodyFailLaps = []; if (A) for (const id in A.body) for (const c of A.body[id]) if (c.s <= cur && (!c.ok || c.trap)) bodyFailLaps.push(c.lap);
   const items = computeCols(arr.length, [firstFail, ...bodyFailLaps.slice(0, 1)]);
@@ -641,8 +643,8 @@ Panel.prototype.renderLap = function ({ lp, an }) {
   // R chip (hash)
   if (lp.gateR && A) {
     const R = Rclauses(A.arr[0].M); const names = ['o', 'i', 'ii', 'iii', 'iv'];
-    let h = T(0, 9, 'gate assumes R', { fs: 10, fill: '#555' });
-    names.forEach((n, j) => { h += `<g transform="translate(${56 + j * 22},0)">${cell(R[n] ? 'ok' : 'fail', 12, 10)}${T(6, -2, n, { fs: 8, fill: '#666', anchor: 'middle' })}</g>`; });
+    let h = T(0, 9, 'gate assumes R:', { fs: 10, fill: '#555' });
+    names.forEach((n, j) => { h += `<g transform="translate(${84 + j * 18},0)">${cell(R[n] ? 'ok' : 'fail', 12, 10)}${T(6, -2, n, { fs: 8, fill: '#666', anchor: 'middle' })}</g>`; });
     this.Lf.put(K + 'R', LX, hy - 15, h, { tip: 'Representation invariant R at this loop\'s entry (the function\'s @requires R):\n' + names.map(n => `R(${n}) ${R[n] ? 'holds' : 'FALSE'}`).join('\n'), click: () => P.jump(A.start) });
   }
   /* columns: ticks, headers, cells */
@@ -660,7 +662,7 @@ Panel.prototype.renderLap = function ({ lp, an }) {
       const s = r.hdr; const box = s.st === 0 ? `<rect x="0" y="0" width="10" height="10" fill="#fffff0" stroke="#888" stroke-dasharray="2 1.5"/>` : s.st === 1 ? `<rect x="0" y="0" width="10" height="10" fill="${I32}"/>` : `<rect x="0" y="0" width="10" height="10" fill="#fffff0" stroke="#555"/><path d="M0,0L10,10M10,0L0,10" stroke="#555"/>`;
       this.Lf.put(K + 'h' + it.k, cx + 2, hy - 30, `<g transform="translate(5,0)">${box}</g>` + T(1, 9, String(s.slot), { fs: 9, fill: '#555', anchor: 'end' }), { tip: `lap ${it.k} probes slot ${s.slot}: ${['EMPTY', 'FULL', 'TOMB'][s.st]}${s.st ? ` (key ${s.key})` : ''}` });
     } else if (it.k === 0 || it.k === arr.length - 1 || (lapNo(it.k) % 5 === 0) || it.k === firstFail || items[items.indexOf(it) - 1]?.gap) {
-      this.Lf.put(K + 'n' + it.k, cx + COLW / 2, hy - 18, T(0, 0, String(lapNo(it.k)), { fs: 8.5, fill: '#999', anchor: 'middle' }));
+      this.Lf.put(K + 'n' + it.k, cx + COLW / 2, hy - 25, T(0, 0, (replay && it.k > 0) ? "+" + it.k : String(lapNo(it.k)), { fs: 8.5, fill: '#999', anchor: 'middle' }));
     }
     lp.rows.forEach((row, j) => {
       const stat = r.kind === 'entry' ? row.entry : r.kind === 'inject' ? 'assumed' : row.pres;
@@ -749,7 +751,9 @@ Panel.prototype.renderLap = function ({ lp, an }) {
     const g = A.endKind === 'exit' ? T(0, 4, '⇥', { fs: 14, fill: INK }) : A.endKind === 'trap' ? T(0, 4, '💣', { fs: 13 }) : '';
     if (g) this.Lf.put(K + 'end', xEnd + 2, hy - 6, g, { tip: A.endKind === 'exit' ? `loop exited at step ${A.end}` : `trap at step ${A.end}, line ${A.trapLine}` });
   }
-  if (A && A.endKind === 'cut' && cur === this.N) {
+  if (A && A.endKind === 'cut' && replay && cur === this.N) {
+    this.Lf.put(K + 'cut', xEnd + 2, hy - 6, T(0, 4, '↺', { fs: 13, fill: '#777' }), { tip: 'the one-lap replay stops at the back-edge: that arrival is the counterexample to induction' });
+  } else if (A && A.endKind === 'cut' && cur === this.N) {
     const mbad = arr.some(r => !r.mOk);
     this.Lf.put(K + 'cut', xEnd + 2, mTop + 10, T(0, 0, '⋯ ∞', { fs: 13, fill: mbad ? DR : '#888' }) + T(0, 12, 'step budget', { fs: 8.5, fill: mbad ? DR : '#888' }), { tip: `still looping when the run was cut at step ${this.N}: the staircase never reaches the ground` });
   }
@@ -762,7 +766,8 @@ Panel.prototype.renderLap = function ({ lp, an }) {
   /* activation history (multi-activation loops) */
   if (lp.history) {
     let hx = 0, h = T(0, 9, 'activations:', { fs: 9.5, fill: '#777' }); hx = 62;
-    const shown = an.acts.map((a, i) => ({ a, i })).filter(o => o.a.start <= cur);
+    let shown = an.acts.map((a, i) => ({ a, i })).filter(o => o.a.start <= cur);
+    if (shown.length > 5) { h += T(hx, 10, `+${shown.length - 5} earlier ·`, { fs: 9.5, fill: '#999' }); hx += 72; shown = shown.slice(-5); }
     const clicks = [];
     for (const { a, i } of shown) {
       const lab = this.callAt(a.start) || ('#' + (i + 1));
@@ -793,7 +798,7 @@ Panel.prototype.renderSlider = function () {
   }
   let lastX = -99;
   const pills = [];
-  for (const s of this.failSteps) { const x = sx(s); if (x - lastX < 18) continue; lastX = x; pills.push([s, 'spec']); }
+  for (const s of this.failSteps) { const x = sx(s); if (x - lastX < (pills.length ? 70 : 18) || pills.length >= 6) continue; lastX = x; pills.push([s, 'spec']); }
   if (this.trapStep) pills.push([this.trapStep, 'trap']);
   for (const [s, k] of pills) {
     const x = sx(s);
@@ -832,7 +837,7 @@ const A_VARS = [
   { id: 'ok', name: 'proven (calm)', inv: '0 <= i && i < n', rows: [aGE0, aLT] },
   { id: 'est', name: 'entry fails (F4)', inv: '1 <= i && i < n', rows: [C('c1', '1 ≤ i', L => L.i >= 1, 'refuted', 'proven', 'not established: i starts at 0'), aLT], gutter: { 3: '⚖' }, commentary: { 3: { text: '1 ≤ i not established: i starts at 0' } } },
   { id: 'pres', name: 'lap k fails (F5)', inv: '0 <= i && i < n && i % 2 == 0', rows: [aGE0, aLT, C('c3', 'i % 2 = 0', L => L.i % 2 === 0, 'proven', 'refuted', 'holds on entry (i = 0), but the body adds 1')], gutter: { 12: '⚖' }, commentary: { 12: { text: 'i % 2 = 0 not preserved by i := i + 1' } } },
-  { id: 'weak', name: 'invariant too weak (F6)', inv: '0 <= i', rows: [aGE0], exit: 'unknown', missing: { label: 'i < n ?', suggest: '"i < n"' }, gutter: { 4: '✲' }, commentary: { 4: { text: '? exit cannot show v = n', ind: true } } },
+  { id: 'weak', name: 'invariant too weak (F6)', inv: '0 <= i', rows: [aGE0], exit: 'unknown', missing: { label: 'i < n', suggest: '"i < n"' }, gutter: { 4: '✲' }, commentary: { 4: { text: '? exit cannot show v = n', ind: true } } },
   { id: 'unk', name: 'measure unproven', inv: '0 <= i && i < n', dec: 'n*n - i*i', rows: [aGE0, aLT], meas: { label: 'n² − i²', f: L => L.n * L.n - L.i * L.i, entry: 'proven', pres: 'unknown' }, gutter: { 5: '✲' }, commentary: { 5: { text: '? nonlinear: needs a hint', ind: true } } },
   { id: 'vac', name: 'vacuous conjunct', inv: '0 <= i && i < n && u(i) >= 0', rows: [aGE0, aLT, C('c3', 'u(i) ≥ 0', () => true, 'vacuous', 'vacuous', 'u(i) ≥ 0 holds for every i32: it constrains nothing')], gutter: { 4: '○' } },
   { id: 'stuck', name: 'no progress (F8)', inv: '0 <= i && i < n', code: { 7: 'i32.const 0' }, rows: [aGE0, aLT], meas: { label: 'n − i', f: L => L.n - L.i, entry: 'proven', pres: 'refuted' }, gutter: { 12: '⚖' }, commentary: { 12: { text: 'n − i does not descend' } } },
@@ -912,8 +917,8 @@ function gcdCfg(bug) {
 }
 function buildB(id, key, title, cfgFn, yourLabel, witLabels, bugOpts, replayBug) {
   const P = new Panel(id, title), DD = D[key]; let bug = 'none', run = 'your';
-  P.custom.innerHTML = `Seed bug: <select>${bugOpts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select> <span class="desc" style="color:#555"></span>`;
-  const sel = P.custom.querySelector('select'), desc = P.custom.querySelector('.desc');
+  P.custom.innerHTML = `Seed bug: <select>${bugOpts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select>`;
+  const sel = P.custom.querySelector('select'), desc = { set textContent(t) { P.setDesc(t); } };
   sel.onchange = () => { bug = sel.value; run = (bug === 'none' || bug === replayBug) ? 'your' : 'witness'; go(); };
   function go() {
     const meta = bug === 'none' ? null : DD[bug].meta;
@@ -942,7 +947,7 @@ function hashCfg(bug) {
   const find = { fn: 'find', line: 29, end: 64, inv: 30, dec: 32, gateR: true, history: true, hdr, sepLabel: true,
     rows: [jrow, irow('proven'), C('p', '∀d<j: TOMB ∨ FULL≠k', pathFind, 'proven', 'proven', 'line 31: every slot passed so far is a TOMB or holds another key'),
       Object.assign(C('stop', b ? 'stop if st≠FULL ⇒ k∉M' : 'stop if EMPTY ⇒ k∉M', (L, M) => { if (L.i < 0 || L.i > 7) return true; const s = M.slots[L.i][0]; const stops = b ? s !== 1 : s === 0; return !stops || !M.has(L.k); }, b ? 'refuted' : 'proven', b ? 'refuted' : 'proven',
-        'the early-exit test on lines 36–41, evaluated at each lap: if the probe stops at this slot, k must be absent from M.' + (b ? '\nBuggy line 38 (i32.ne) also stops at a TOMB. That is sound only under "(iii)-strong": no TOMB on any key\'s probe path. delete(3) broke that at step 217.' : '\nSound because R(iii) says no EMPTY lies on a key\'s probe path.')), { sep: true })],
+        'the early-exit test on lines 36–41, evaluated at each lap: if the probe stops at this slot, k must be absent from M.' + (b ? '\nBuggy line 38 (i32.ne) also stops at a TOMB. That is sound only under "(iii)-strong": no TOMB on any key\'s probe path. delete(3) broke that at step 217.' : '\nSound because R(iii) says no EMPTY lies on a key\'s probe path.')), { sep: true, test: true })],
     measure: { label: 'CAP − j', f: L => 8 - L.j, entry: 'proven', pres: 'proven' }, body: [],
     exits: [{ line: 41, label: 'L41 −1', value: () => -1, tip: 'return −1 ⇒ k is absent', conj: [{ label: 'k ∉ M', f: (L, M) => !M.has(L.k), stat: b ? 'refuted' : 'proven' }] },
       { line: 54, label: 'L54 i', value: L => L.i, tip: 'return i ⇒ slot i holds k', conj: [{ label: 'key(i) = k', f: (L, M) => M.slots[L.i][0] === 1 && M.slots[L.i][1] === L.k }] }] };
@@ -965,8 +970,8 @@ const HFOLD = { 1: 'memory · global $used · ghost M · R0–R4 · $slot', 67: 
 function buildC() {
   const P = new Panel('pC', 'open-addressing table'), DD = D.hash; let bug = 'none';
   const opts = [['none', 'no bug'], ['Ha', '(a) probe index not wrapped'], ['Hb', '(b) lookup treats TOMB as EMPTY'], ['Hb_prime', '(b′) delete writes EMPTY'], ['Hc', '(c) insert skips the existing-key check'], ['Hd', '(d) load-factor check off by one']];
-  P.custom.innerHTML = `Seed bug: <select>${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select> <span class="desc" style="color:#555"></span>`;
-  const sel = P.custom.querySelector('select'), desc = P.custom.querySelector('.desc');
+  P.custom.innerHTML = `Seed bug: <select>${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select>`;
+  const sel = P.custom.querySelector('select'), desc = { set textContent(t) { P.setDesc(t); } };
   sel.onchange = () => { bug = sel.value; go(); };
   const l3 = P.ctl.querySelector('.l3'); l3.style.display = 'flex'; l3.classList.add('mem');
   const calls0 = [['insert', [3, 30]], ['insert', [11, 110]], ['delete', [3]], ['lookup', [11, -1]], ['lookup', [3, -1]]];
@@ -1006,12 +1011,12 @@ function memStrip(P, el, bug) {
   const b = (P.sc.trace.bounds || []).map(x => x[2]).filter(s => s <= P.cur);
   const bs = b.length ? b[b.length - 1] : 0;
   const R = bs ? Rclauses(P.steps[bs - 1].M) : { o: true, i: true, ii: true, iii: true, iv: true };
-  const rx = mx + 210; let rh = T(rx, 9, bs ? `R after op ending at step ${bs}` : 'R (initial table)', { fs: 9, fill: '#777' });
+  const rx = mx + Math.max(150, textW(`M = {${ms}}`, '14px ' + SERIF) + 24); let rh = T(rx, 9, bs ? `R after op ending at step ${bs}` : 'R (initial table)', { fs: 9, fill: '#777' });
   ['o', 'i', 'ii', 'iii', 'iv'].forEach((n, j) => { rh += `<g transform="translate(${rx + j * 26},14)">${cell(R[n] ? 'ok' : 'fail', 14, 11)}</g>` + T(rx + j * 26 + 7, 35, n, { fs: 8.5, fill: '#666', anchor: 'middle' }); });
   h += rh;
   if (bug === 'Hb') {
-    const s0 = P.steps.findIndex(o => o.M && !Rclauses(o.M).strong) + 1;
-    const ok = Rclauses(M).strong; const sx = rx + 140;
+    let s0 = 0; for (let k = P.steps.length - 1; k >= 0; k--) { if (Rclauses(P.steps[k].M).strong) { s0 = k + 2; break; } }
+    const ok = P.cur < s0; const sx = rx + 140;
     h += `<g data-s="${s0}" style="cursor:pointer" data-tip="(iii)-strong: no non-FULL slot on any key's probe path.\nNot part of R. Buggy line 38 silently relies on it.\nFalse from step ${s0} (delete writes the TOMB on line 100). Click to jump.">` + T(sx, 9, '(iii)-strong, assumed by L38', { fs: 9, fill: ok ? '#777' : DR }) + `<g transform="translate(${sx},14)">${cell(ok ? 'ok' : 'fail', 14, 11)}</g>` + T(sx + 20, 24, ok ? 'holds' : `false since step ${s0}`, { fs: 9.5, fill: ok ? '#777' : DR }) + '</g>';
   }
   el.innerHTML = `<svg width="1330" height="40" style="overflow:visible">${h}</svg>`;
@@ -1042,7 +1047,7 @@ function buildLegend() {
   L.push(it(20, 14, g(2, 1, cell('trap')), '<b>trap</b> (💣) during that lap'));
   L.push(it(60, 16, `<path d="M2,2 L2,13 L58,13 L58,2" fill="url(#fadeup)" stroke="${INDC}" stroke-dasharray="3 2"/>`, '<b>needed but missing</b> fact: an empty fade-up cup under the conjuncts. The invariant is too weak'));
   L.push('<h4>Gutter, labels, slider</h4>');
-  L.push(it(80, 22, `<foreignObject x="0" y="0" width="80" height="22"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;gap:6px;align-items:center">${gutterGlyph('⚖')}${gutterGlyph('h⚖')}${gutterGlyph('✲')}${gutterGlyph('💣')}</div></foreignObject>`, 'gutter: ⚖ spec violated (witness on slider) · hollow ⚖ refuted, not shown by this run · ✲ unknown · 💣 trap'));
+  L.push(it(104, 22, `<foreignObject x="0" y="0" width="104" height="22"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;gap:6px;align-items:center">${gutterGlyph('⚖')}${gutterGlyph('h⚖')}${gutterGlyph('✲')}${gutterGlyph('💣')}</div></foreignObject>`, 'gutter: ⚖ spec violated (witness on slider) · hollow ⚖ refuted, not shown by this run · ✲ unknown · 💣 trap'));
   L.push(it(110, 16, g(0, 2, labelChip('r·r ≤ n', 'R', 100)), 'row label (one conjunct chip per row); its underline and glyph give the row\'s static status'));
   L.push(it(90, 18, `<line x1="4" y1="9" x2="86" y2="9" stroke="#cfc9ad" stroke-width="3"/><rect x="8" y="2" width="26" height="14" rx="7" fill="${DB}"/>${T(21, 12.5, '17', { fs: 10, fill: '#fffff0', anchor: 'middle' })}<rect x="44" y="3" width="16" height="12" rx="6" fill="${DR}"/>${T(52, 13, '⚖', { fs: 9, fill: '#fffff0', anchor: 'middle' })}<rect x="66" y="3" width="16" height="12" rx="2" fill="${DR}"/>${T(74, 13, '💣', { fs: 8, anchor: 'middle' })}`, 'slider: current step (darkblue), ⚖ spec-failure pill, 💣 trap pill (square)'));
   L.push(it(90, 14, `<rect x="1" y="1" width="88" height="11" rx="5" fill="#fffff0" stroke="${DR}" stroke-dasharray="4 3"/>${T(8, 10, '⚖ witness …', { fs: 9, fill: DR })}`, 'ghost track: a witness exists but this run does not show it. Click it to replay the witness'));
