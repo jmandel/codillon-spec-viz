@@ -1,0 +1,78 @@
+# Hand-authored proof-obligation tables and bug metadata (single source for the .md tables and the JSON fixture)
+# status: none | auto | inv | lemma  (lemma = needs a nonlinear / bit-vector / definitional lemma on top of the invariant)
+O = lambda lines, code, stack, ob, status, kind='', why='': dict(lines=lines, code=code, stack=stack, obligation=ob, status=status, kind=kind, why=why)
+
+PARITY_OBL = [
+ O([2,3], 'local.get $x; i32.const 1', '[x, 1]', '-', 'none'),
+ O([4], 'i32.and', '[(i32 | v == x & 1 && 0 <= v <= 1)]', '-', 'none'),
+ O([5], 'i32.eqz', '[(i32 | v == (x & 1 == 0 ? 1 : 0))]', 'post of $is_even: v == (x % 2 == 0 ? 1 : 0)', 'auto', 'post', 'bit-vector fact x & 1 == x % 2 (Euclidean %, also true for negative x)'),
+ O([8,9], 'local.get $x; i32.const 1', '[(i32 | v == x && v % 2 == 0), 1]', '-', 'none', '', 'param refinement is assumed on entry'),
+ O([10], 'i32.shr_s', '[(i32 | v == floor(x / 2))]', 'post of $half: v + v == x', 'auto', 'post', 'arith. shift = floor division; with x even, 2*floor(x/2) == x'),
+ O([13,14], 'local.get $x; call $is_even', '[(i32 | v == (x % 2 == 0 ? 1 : 0))]', 'pre of $is_even: none', 'auto', 'pre'),
+ O([15], 'i32.eqz', '[(i32 | v == (x % 2 == 0 ? 0 : 1))]', '-', 'none'),
+ O([16], 'if (result i32)', 'then: path x % 2 == 1 / else: path x % 2 == 0', '-', 'auto', 'branch', 'the gate: the if refines x differently in each arm'),
+ O([17], 'i32.const -1', '[(i32 | v == -1)]', 'post (then-arm): x % 2 == 1 && v == -1', 'auto', 'post'),
+ O([19], '(@assert x % 2 == 0)', '', 'x % 2 == 0', 'auto', 'assert', 'path condition of the else-arm'),
+ O([20,21], 'local.get $x; call $half', '[(i32 | v + v == x)]', 'pre of $half: x % 2 == 0;  post (else-arm): x % 2 == 0 && v + v == x', 'auto', 'pre', 'precondition discharged by the gate, not by $half'),
+]
+ISQRT_OBL = [
+ O([3,4], 'i32.const 0; local.set $r', 'r == 0', '-', 'none'),
+ O([6], 'loop $grow', '', 'inv on entry: 0 <= 0 && 0*0 <= n;  measure n - 0 >= 0', 'auto', 'inv-entry', 'uses param refinement 0 <= n'),
+ O([9,10,11], 'local.get $r; i32.const 1; i32.add', '[(i32 | v == r + 1)]', 'no signed overflow: r + 1 <= 2^31-1', 'lemma', 'overflow', 'inv r*r <= n <= 2^31-1 gives r <= 46340 (nonlinear)'),
+ O([12,13,14], 'local.get $r; i32.const 1; i32.add', '[r+1, r+1]', 'same as 9-11', 'lemma', 'overflow'),
+ O([15], 'i32.mul', '[(i32 | u(v) == (r+1)*(r+1))]', 'no UNSIGNED overflow: (r+1)^2 < 2^32', 'lemma', 'overflow', 'r <= 46340 => (r+1)^2 <= 2147488281 < 2^32. NB it CAN exceed 2^31-1 (r = 46340), so only an unsigned reading of v is faithful'),
+ O([16,17], 'local.get $n; i32.gt_u', '[(i32 | v == ((r+1)^2 > n ? 1 : 0))]', 'u(n) == n', 'auto', 'type', 'from 0 <= n'),
+ O([18], 'br_if $done', 'taken: n < (r+1)^2 / fallthrough: (r+1)^2 <= n', '-', 'auto', 'branch'),
+ O([19,20,21,22], 'r := r + 1', 'r\' == r + 1', 'no signed overflow (as 9-11)', 'lemma', 'overflow'),
+ O([23], 'br $grow', '', 'inv preserved: 0 <= r\' && r\'*r\' <= n;  measure: 0 <= n - r\'^2 < n - r^2', 'auto', 'inv-preserve', 'r\'^2 <= n is exactly the fallthrough path condition of line 18'),
+ O([26], 'local.get $r  (exit via br_if)', '[(i32 | v == r)]', 'post: 0 <= r && r*r <= n && n < (r+1)^2', 'inv', 'post', 'first two conjuncts from the invariant, the third from the taken branch at 18'),
+]
+GCD_OBL = [
+ O([6,7,8,9], 'x := a; y := b', 'x == a, y == b', '-', 'none'),
+ O([11], 'loop $euclid', '', 'inv on entry: 0 <= a && 0 <= b && gcd(a,b) == gcd(a,b);  measure b >= 0', 'auto', 'inv-entry'),
+ O([14,15,16], 'local.get $y; i32.eqz; br_if $done', 'taken: y == 0 / fallthrough: y != 0', '-', 'auto', 'branch'),
+ O([17,18,19], 'local.get $x; local.get $y; i32.rem_u', '[(i32 | v == x % y && 0 <= v < y)]', 'no trap: y != 0;  u(x) == x and u(y) == y', 'inv', 'trap', 'y != 0 from the guard at 16; non-negativity from the invariant'),
+ O([20,21,22,23,24], 't := x % y; x := y; y := t', "x' == y, y' == x % y", '-', 'none'),
+ O([25], 'br $euclid', '', "inv preserved: gcd(y, x % y) == gcd(x, y) == gcd(a, b);  measure 0 <= x % y < y", 'lemma', 'inv-preserve', 'unfold the definition of gcd once (y != 0)'),
+ O([28], 'local.get $x  (exit)', '[(i32 | v == x)]', 'post: x == gcd(a, b)', 'inv', 'post', 'inv + exit condition y == 0 + gcd(x, 0) == x'),
+]
+POWMOD_OBL = [
+ O([6,7,8,9], 'acc := 1 rem_u m', '[(i32 | v == 1 % m)]', 'no trap: m != 0', 'auto', 'trap', 'm >= 1 from the param refinement; note 1 % 1 == 0'),
+ O([10,11,12,13], 'base := b rem_u m', '[(i32 | v == b % m)]', 'no trap: m != 0;  u(b) == b', 'auto', 'trap'),
+ O([14,15], 'k := e', 'k == e', '-', 'none'),
+ O([17], 'loop $square', '', 'inv on entry: 0 <= acc < m, 0 <= base < m, 0 <= k;  (acc * base^k) % m == b^e % m;  measure k >= 0', 'lemma', 'inv-entry', '(1 % m) * (b % m)^e == b^e (mod m)'),
+ O([21,22,23], 'k == 0 ? br_if $done', 'taken: k == 0 / fallthrough: k > 0', '-', 'auto', 'branch'),
+ O([24,25,26,27], 'k & 1; if', 'then: k odd / else: k even', '-', 'auto', 'branch'),
+ O([28,29,30], 'acc * base', '[(i32 | u(v) == acc * base)]', 'no unsigned overflow: acc * base < 2^32', 'lemma', 'overflow', 'acc, base <= m - 1 <= 65535 so product <= 4294836225 < 2^32'),
+ O([31,32,33], 'rem_u m; acc :=', "acc' == (acc * base) % m, 0 <= acc' < m", 'no trap: m != 0', 'auto', 'trap'),
+ O([35,36,37], 'base * base', '[(i32 | u(v) == base * base)]', 'no unsigned overflow: base^2 < 2^32', 'lemma', 'overflow', 'same bound as 28-30'),
+ O([38,39,40], 'rem_u m; base :=', "base' == base^2 % m", 'no trap: m != 0', 'auto', 'trap'),
+ O([41,42,43,44], 'k := k shr_u 1', "k' == floor(k / 2)", 'u(k) == k', 'auto', 'type'),
+ O([45], 'br $square', '', "inv preserved: acc' * base'^k' == acc * base^k (mod m);  measure 0 <= k' < k", 'lemma', 'inv-preserve', 'odd k: acc*base*(base^2)^((k-1)/2); even k: acc*(base^2)^(k/2)'),
+ O([48], 'local.get $acc  (exit)', '[(i32 | v == acc)]', 'post: 0 <= acc < m && acc == b^e % m', 'inv', 'post', 'k == 0 so acc % m == b^e % m, and acc < m so acc % m == acc'),
+]
+HASH_OBL = [
+ O([14,15,16,17,18], '$slot: i*12 + 65440', '[(i32 | v == BASE + 12*i)]', 'no overflow; post v == BASE + 12*i', 'auto', 'post', 'i in [0,8) from the param refinement'),
+ O([25,26,27,28], 'find: i := k & 7', 'i == h(k), 0 <= i < 8', '-', 'auto', 'type', 'bit-vector: x & 7 is in [0,8) for every i32, negative keys included'),
+ O([29], 'loop $probe', '', 'inv on entry: j == 0 <= used, i == at(k,0), path-so-far vacuous;  measure CAP - 0 >= 0', 'auto', 'inv-entry'),
+ O([33,34,35], 'call $slot; local.tee $p', '[(i32 | v == BASE + 12*i)]', 'pre of $slot: 0 <= i < CAP', 'inv', 'pre', 'i == at(k, j) is masked'),
+ O([36], 'i32.load', '[(i32 | v == st(i))]', 'in bounds: p + 4 <= 65536', 'auto', 'trap', 'p <= BASE + 84 = 65524'),
+ O([37,38,39,40,41], 'st(i) < FULL ? return -1', '[(i32 | v == -1)]', 'post of $find: !(k in M)', 'inv', 'post', 'THE key step. R0 makes st(i) < 1 mean EMPTY. If k were in M at slot s, R3 says no EMPTY lies on path(h(k)..s); slot i = at(k,j) is EMPTY so s would be at distance < j, but the probe invariant says no slot at distance < j holds k. Needs inv + R2 + R3'),
+ O([43,44,45,46,47,48,49,50,51], '(st(i) == FULL) & (key(i) == k)', '[(i32 | v == (st(i) == FULL && key(i) == k ? 1 : 0))]', 'in bounds: p + 8 <= 65536', 'auto', 'trap'),
+ O([52,53,54], 'match ? return i', '[(i32 | v == i)]', 'post of $find: 0 <= i < CAP && st(i) == FULL && key(i) == k', 'auto', 'post', 'path condition'),
+ O([56,57,58,59,60,61], 'i := (i + 1) & 7', "i' == at(k, j + 1)", '-', 'auto', 'type'),
+ O([62,63], 'j := j + 1; br $probe', '', "inv preserved: slot at distance j is TOMB or FULL-with-other-key; j + 1 <= used;  measure CAP - (j+1) < CAP - j, >= 0", 'lemma', 'inv-preserve', 'first part: fallthrough path conditions of 39 and 52. j+1 <= used: the j+1 visited slots are distinct (j < CAP) and all non-EMPTY, so j+1 <= #non-EMPTY == used (R4); pigeonhole/counting lemma'),
+ O([65], 'unreachable', '', 'this point is dead', 'auto', 'dead', 'the loop body always ends in br; falling out is structurally impossible'),
+ O([71,72,73,74,75,76,77,78], 'lookup: i := find(k); i < 0 ? return dflt', '[(i32 | v == dflt)]', 'pre of $find: R;  post: !(k in M) so result == dflt', 'auto', 'post', 'from $find\'s dependent result type'),
+ O([80,81,82], 'lookup: load val(i)', '[(i32 | v == val(i))]', 'post: val(i) == M[k];  R preserved', 'inv', 'post', 'R1: a FULL slot holding k stores M[k]. R preserved because lookup writes nothing (frame)'),
+ O([88,89,90,91,92,93,94,95,96], 'delete: i := find(k); absent ? return 0', '[(i32 | v == 0)]', 'post: k not in old(M), M unchanged, R unchanged', 'auto', 'post'),
+ O([97,98,99,100,101], 'delete: st(i) := TOMB; M := M \\ {k}', '', 'R after: R1 (slot i no longer FULL), R2 (k had exactly one slot), R3 (TOMB is not EMPTY, so no probe path gains an EMPTY), R4 (#FULL - 1 == |M| - 1; used unchanged)', 'inv', 'R', 'R3 is the reason deletion must write TOMB, never EMPTY'),
+ O([110,111,112,113,114,115], 'insert: i := find(k); i >= 0 ?', 'then: st(i) == FULL && key(i) == k / else: !(k in M)', 'pre of $find: R', 'auto', 'pre'),
+ O([116,117,118,119,120], 'insert(update): val(i) := x; M := M[k := x]', '', 'R1 for slot i with the new M; other clauses untouched', 'auto', 'R'),
+ O([124,125,126,127,128,129,130], 'used >= CAP-1 ? return 0', '[(i32 | v == 0)]', 'post: !(k in M) && used == CAP - 1', 'auto', 'post', 'used < CAP from R4 and used >= 7'),
+ O([131,132,133,134,135], 'i := h(k); loop $free', '', 'inv on entry: !(k in M) (from find), j == 0, i == at(k, 0)', 'auto', 'inv-entry'),
+ O([139,140,141,142,143], 'st(i) != EMPTY ?', '', 'pre of $slot: 0 <= i < CAP;  load in bounds', 'inv', 'pre'),
+ O([144,145,146,147,148,149,150,151], "i := (i+1) & 7; j := j + 1; br $free", '', 'inv preserved (path so far non-EMPTY; j + 1 <= used);  measure', 'lemma', 'inv-preserve', 'same counting lemma as find'),
+ O([154,155,156,157,158,159,160,161,162], 'write FULL, k, x into EMPTY slot i', '', 'stores in bounds', 'auto', 'trap'),
+ O([163,164,165,166,167], 'used := used + 1; M := M[k := x]', '', "R after: R1 (new slot maps k to x), R2 (k was absent: inv), R3 (path h(k)..i was non-EMPTY: inv; turning an EMPTY into FULL never breaks another key's path), R4 (#FULL + 1 == |M| + 1; used + 1 == #non-EMPTY because slot i WAS EMPTY; used + 1 < CAP because the check at 124-126 gave used < CAP - 1)", 'inv', 'R', 'R4\'s used < CAP is what keeps every probe loop terminating'),
+]

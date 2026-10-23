@@ -1,0 +1,27 @@
+(func $isqrt (param $n (i32 | 0 <= v)) (result (i32 | 0 <= v && v * v <= n && n < (v + 1) * (v + 1)))
+  (local $r i32)
+  i32.const 0
+  local.set $r
+  block $done
+    loop $grow
+      (@invariant 0 <= r && r * r <= n)
+      (@decreases n - r * r)
+      local.get $r
+      i32.const 1
+      i32.add
+      local.get $r
+      i32.const 1
+      i32.add
+      i32.mul
+      local.get $n
+      i32.gt_u
+      br_if $done
+      local.get $r
+      i32.const 1
+      i32.add
+      local.set $r
+      br $grow
+    end
+  end
+  local.get $r
+)

@@ -1,0 +1,49 @@
+(@define pow(x, e) = (e == 0 ? 1 : x * pow(x, e - 1)))
+(func $pow_mod (param $b (i32 | 0 <= v)) (param $e (i32 | 0 <= v)) (param $m (i32 | 1 <= v && v <= 65536)) (result (i32 | 0 <= v && v < m && v == pow(b, e) % m))
+  (local $acc i32)
+  (local $base i32)
+  (local $k i32)
+  i32.const 1
+  local.get $m
+  i32.rem_u
+  local.set $acc
+  local.get $b
+  local.get $m
+  i32.rem_u
+  local.set $base
+  local.get $e
+  local.set $k
+  block $done
+    loop $square
+      (@invariant 0 <= acc && acc < m && 0 <= base && base < m && 0 <= k)
+      (@invariant (acc * pow(base, k)) % m == pow(b, e) % m)
+      (@decreases k)
+      local.get $k
+      i32.eqz
+      br_if $done
+      local.get $k
+      i32.const 1
+      i32.and
+      if
+        local.get $acc
+        local.get $base
+        i32.mul
+        local.get $m
+        i32.rem_u
+        local.set $acc
+      end
+      local.get $base
+      local.get $base
+      i32.mul
+      local.get $m
+      i32.rem_u
+      local.set $base
+      local.get $k
+      i32.const 1
+      i32.shr_u
+      local.set $k
+      br $square
+    end
+  end
+  local.get $acc
+)
