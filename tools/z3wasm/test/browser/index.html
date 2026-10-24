@@ -1,0 +1,45 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>z3w browser test</title>
+<pre id="log"></pre>
+<script type="module">
+import { tests, statefulTests } from '../tests.mjs';
+const log = (s) => { document.getElementById('log').textContent += s + '\n'; };
+const pageT0 = performance.now();
+const worker = new Worker('../../dist/z3w-worker.js', { type: 'module' });
+let pending = new Map(), nextId = 1;
+const ready = new Promise((res) => {
+  worker.onmessage = (e) => {
+    const d = e.data;
+    if ('ready' in d) { res(d); return; }
+    const p = pending.get(d.id); pending.delete(d.id); p(d);
+  };
+});
+const send = (m) => new Promise((res) => { const id = nextId++; pending.set(id, res); worker.postMessage({ id, ...m }); });
+const results = { pageCrossOriginIsolated: self.crossOriginIsolated, sab: typeof SharedArrayBuffer !== 'undefined', tests: [] };
+try {
+  const r = await ready;
+  results.ready = r;
+  results.readyWallMs = performance.now() - pageT0;
+  log(`ready: ${JSON.stringify(r)} (page wall ${results.readyWallMs.toFixed(1)} ms)`);
+  for (const t of tests) {
+    await send({ reset: true });
+    const d = await send({ smtlib: t.smt });
+    const ok = t.check(d.output);
+    results.tests.push({ id: t.id, ok, ms: +d.ms.toFixed(1), first: d.output.trim().split('\n')[0], output: d.output });
+    log(`[${ok ? 'PASS' : 'FAIL'}] (${t.id}) ${d.ms.toFixed(1)} ms ${d.output.trim().split('\n')[0]}`);
+  }
+  await send({ reset: true });
+  for (const [i, t] of statefulTests.entries()) {
+    const d = await send({ smtlib: t.smt });
+    const ok = t.check(d.output);
+    results.tests.push({ id: 'stateful' + i, ok, ms: +d.ms.toFixed(1), output: d.output });
+    log(`[${ok ? 'PASS' : 'FAIL'}] stateful#${i} ${JSON.stringify(d.output.trim())}`);
+  }
+} catch (err) {
+  results.error = String(err && err.stack || err);
+}
+results.done = true;
+window.__results = results;
+document.title = 'done';
+</script>
