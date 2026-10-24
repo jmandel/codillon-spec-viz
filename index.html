@@ -33,6 +33,10 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
 
 <h2>Version 2: proofs as values</h2>
 <div class="card" style="border-color:indigo;background:#fffff8">
+  <div class="n">Start here (version 2)</div><a class="t" href="artifacts/01-refined-codillon-v2.html">Refined Codillon, version 2: a walkthrough in the real editor</a>
+  <p>The tutorial for v2, built around the real editor embedded live. It covers facts in a lane, proof cups, <code>prove k</code>, block types as invariants, <code>unreachable</code> and False, and the four verdicts. Then come lessons on parity, isqrt and the hash table, and a vericoding lesson with a recorded LLM session stepped turn by turn (including turns the kernel rejects for crossing the ownership boundary) and the adequacy panel. The <a href="artifacts/gcd-as-a-type.html#v2">gcd page</a> now ends with the same Euclid proof in the v2 editor.</p>
+</div>
+<div class="card" style="border-color:indigo;background:#fffff8">
   <div class="n">v2 · current</div><a class="t" href="research/18-annotations-to-proofs-as-values.html">From annotations to proofs as values: why version 1 was replaced</a>
   <p>Version 2 drops the separate annotation language and the solver. Proofs are Wasm values in a <em>fact lane</em>: a comparison followed by <code>if</code> or <code>br_if</code> gives each arm a fact, every proposition an instruction needs is a cup fed by exactly one fact, and a missing proof is an empty cup. Refined block and function types are the only spec syntax (a loop's block type is its invariant), <code>unreachable</code> consumes a proof of False (so a harness ending in <code>unreachable</code> is a functional spec), and <code>prove k</code> discharges arithmetic with a small deterministic decision procedure. A kernel checks the text with no Z3 and no “unknown”: every cup is proven, refuted, runtime‑checked or assumed. A vericoding mode lets an LLM write bodies and proofs against a spec the student owns.</p>
 </div>
@@ -43,7 +47,7 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
   <li><a href="research/16-review-fable.html">16 · Design review</a> and <a href="research/17-kernel-review-fable.html">17 · Kernel review</a> — independent reviews; the soundness holes and the five blocking kernel bugs (B1–B5) they found, all fixed.</li>
   <li><a href="research/v2-examples/">v2 examples</a> — parity, isqrt, gcd, primality and the hash table in v2 syntax, with seeded bugs and a hand-derived verdict for every cup (the kernel's test oracle).</li>
 </ul>
-<p>The v2 kernel runs in the real editor on every keystroke (fork branch <a href="https://github.com/jmandel/codillon/tree/proofs">proofs</a>); its visualization is still being built. Open an example in a new tab:
+<p>The v2 kernel runs in the real editor on every keystroke (fork branch <a href="https://github.com/jmandel/codillon/tree/proofs">proofs</a>); it draws proof cups, fact wires and the four verdicts in Codillon’s margin. Open an example in a new tab:
 <a href="editor/v2/#ex=v2/parity&step=last" target="_blank">parity, fully proven</a> ·
 <a href="editor/v2/#ex=v2/isqrt&step=last" target="_blank">isqrt, invariant as a block type</a> ·
 <a href="editor/v2/#ex=v2/gcd-bug-guard&step=fail" target="_blank">gcd, guard on the wrong variable</a> ·

@@ -1,0 +1,24 @@
+
+<section id="s3" class="sec">
+  <h2>3 · Lesson 1 · parity</h2>
+  <p><code>$half</code> takes only even numbers: <code>(param $x (i32 | $is_even))</code> is a precondition that every caller must prove. <code>$half_or_neg1</code> earns that fact with a <i>gate</i>. Line 43 negates <code>$is_even($x)</code>, so the <code>if</code> on line 44 sends odd numbers to the then-arm. The else-arm starts with the fact <code>¬¬$is_even($x)</code>, which R4 normalizes to <code>$is_even($x)</code>, and the call to <code>$half</code> on line 49 finds it in the lane by exact match. No <code>prove</code> is needed. Each arm then proves the function’s result type <code>$hon_ok</code> with one <code>prove</code> line. The harness <code>$parity_ok</code> ends in <code>unreachable</code>, and its False cup is proven from the call’s result fact and the failed check.</p>
+  <p>Choose a state. The editor below changes in place, and its link follows.</p>
+  <div class="livectl"><span class="ctl-l">state:</span><span class="seg" data-for="e3"></span></div>
+  <p class="statenote" id="e3-note"></p>
+  <div class="emb" data-id="e3"></div>
+  <p>The rule from version 1 survives: <b>blame goes where the fix goes</b>. With the missing proof, the code is correct and only the evidence is gone, so nothing turns darkred. The cup is empty and gray, with a stopwatch: checked when run. With the inverted gate, the code is wrong and a run proves it. The commentary on line 46 shows the countermodel the kernel found (<code>u($x) = 0</code> is even, yet it reached the odd arm), and the run of <code>$main</code> on 3 stops at the check on line 49.</p>
+</section>
+
+<section id="s4" class="sec">
+  <h2>4 · Lesson 2 · integer square root</h2>
+  <p><code>$isqrt</code> counts <code>r</code> up while <code>(r+1)² ≤ n</code>. The spec has two parts, and neither is an annotation. The result type says <code>$is_isqrt(r, n)</code>. That is an ordinary i64 Wasm function computing <code>r² ≤ n &lt; (r+1)²</code>, in i64 so that the check itself cannot overflow. The harness calls <code>$isqrt</code>, runs the same predicate, and skips <code>unreachable</code> when the check passes.</p>
+  <ol>
+    <li><b>The loop invariant is the loop’s type.</b> <code>loop $grow (fact (call $sq_le …))</code> on line 34 holds on entry (line 33, <code>prove 0</code>, from <code>r = 0</code>), and the back-edge must supply it again (line 59).</li>
+    <li><b>A refined local is a second invariant.</b> <code>(local $r (i32 | (i32.le_u v 65535)))</code> keeps every square linear in a monomial atom and inside i64. The cost is the early exit at 65535.</li>
+    <li><b><code>unreachable</code> consumes False.</b> The harness’s <code>prove 2</code> on line 73 takes the call’s result fact and the fall-through fact “the check failed”. Together they contradict each other, so the step derives False and the ⊥ cup on line 74 is proven. That proof is the theorem: for every <code>n</code>, <code>$isqrt(n)</code> is the integer square root.</li>
+  </ol>
+  <div class="livectl"><span class="ctl-l">state:</span><span class="seg" data-for="e4"></span></div>
+  <p class="statenote" id="e4-note"></p>
+  <div class="emb" data-id="e4"></div>
+  <div class="callout warn"><p><b>What the editor cannot show live here.</b> The harness bug is refuted by the example runner at <code>n = 2³²−1</code>, where the i32 check <code>(r+1)·(r+1)</code> wraps to 0. The editor’s own run of <code>$main</code> uses <code>n = 17</code>, which passes. A run at <code>2³²−1</code> takes 65,535 loop iterations, more than the editor’s 100,000-step slider holds, so the run is cut off before it reaches the check. The editor shows the cup as runtime-checked, with the failed <code>prove</code> beside it. The refutation itself is recorded in <code>research/v2-examples/isqrt-harness-bug.expect.json</code>.</p></div>
+</section>

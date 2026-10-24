@@ -1,0 +1,43 @@
+
+<section id="s2" class="sec">
+  <h2>2 · Reading a line</h2>
+  <p>Every instruction already has a fraction just left of its text, with its inputs as cups above a rule and its outputs as shapes below it. Version 2 keeps that layout and adds four things.</p>
+  <ul>
+    <li><b>Proof cups</b> are diamonds in the same fraction, to the right of the value cups. A division has a diamond for <code>b ≠ 0</code>. A load or store has one for its bounds. A call to <code>$half</code> has one for <code>$is_even($x)</code>. A loop’s back-edge has one for each invariant, and <code>unreachable</code> has one for False.</li>
+    <li><b>Facts</b> are born at fixed points: an <code>if</code> or <code>br_if</code> arm, a block’s <code>end</code>, a call’s result, function entry, a <code>prove</code> line or a <code>lemma</code> line. A fact stays in the lane until its block arm ends, like a path condition. Facts are never popped, so ordinary lines keep their stack effect.</li>
+    <li><b>Wires.</b> Every fed cup has a thin purple wire from the fact that feeds it. The wire is always drawn, not only on hover. A cup is fed in exactly one of two ways. Either a <code>prove</code> line directly above feeds it, or the kernel finds the identical fact in the lane (an exact match, not a search).</li>
+    <li><b>Fraying.</b> When <code>local.set $x</code> rebinds a variable that a fact is about, that fact’s ribbon frays. It is still a true fact about the <i>old</i> value, so it cannot feed a cup about the new one.</li>
+  </ul>
+  <figure class="dia"><figcaption><span class="dtag">DIAGRAM</span>The fact lane as an idea. The value stack (gray curves) and the lane (purple) are separate. Here a <code>br_if</code> enters <code>$y ≠ 0</code> on its fall-through, and the <code>rem_u</code> two lines later finds that exact fact. The editor draws the same wire in the gcd loop (the version 2 section of the <a href="gcd-as-a-type.html#v2">gcd page</a>).</figcaption>
+    <svg viewBox="0 0 600 210" width="600" role="img" aria-label="fact lane diagram">
+      <text class="dn" x="10" y="40">122</text><text class="dc" x="230" y="40">br_if $done</text>
+      <text class="dn" x="10" y="80">123</text><text class="dc" x="250" y="80">local.get $x</text>
+      <text class="dn" x="10" y="120">124</text><text class="dc" x="250" y="120">local.get $y</text>
+      <text class="dn" x="10" y="160">125</text><text class="dc" x="230" y="160">i32.rem_u</text>
+      <rect x="160" y="86" width="22" height="9" fill="#6A5ACD"/><rect x="180" y="126" width="22" height="9" fill="#6A5ACD"/>
+      <path d="M171,95 C171,125 141,130 141,150 M191,135 C191,142 163,140 163,150" fill="none" stroke="#ddd" stroke-width="7"/>
+      <rect x="130" y="150" width="22" height="12" fill="#e8e6f4" stroke="#6A5ACD"/><rect x="152" y="150" width="22" height="12" fill="#e8e6f4" stroke="#6A5ACD"/>
+      <text class="dl s" x="100" y="190">value cups: x, y</text>
+      <line x1="205" y1="40" x2="205" y2="185" stroke="#c9c2ee" stroke-width="6"/>
+      <path d="M205,30 L213,38 L205,46 L197,38Z" fill="#6A5ACD"/>
+      <text class="dl" x="335" y="36" fill="#483D8B">fact born on the fall-through: $y ≠ 0</text>
+      <path d="M205,46 C205,120 190,140 190,156" fill="none" stroke="#6A5ACD" stroke-width="2"/>
+      <path d="M190,150 L197,157 L190,164 L183,157Z" fill="#6A5ACD"/>
+      <text class="dl" x="335" y="160" fill="#483D8B">proof cup: b ≠ 0, fed by lookup</text>
+      <text class="dl s" x="196" y="200">lane column</text>
+    </svg></figure>
+  <h3><code>prove k</code></h3>
+  <p>Some cups need a step of arithmetic, not a lookup. <code>prove k</code> takes the <code>k</code> most recent facts in the lane as hypotheses, drawn as <code>k</code> diamond cups on its own fraction with wires back to where those facts were born. It proves the goal of the cup it feeds: the first unfed cup on the next ordinary line. The decision procedure (research 16 §3) is linear integer arithmetic over unsigned readings. It handles wraparound with explicit wrap variables, treats a monomial like <code>r·r</code> as an atom, and has fixed caps of 64 terms, 24 variables, 32 atoms and 256 cases. Nonlinear facts beyond monomials have to be lemmas. When a <code>prove</code> fails, its commentary names the hypotheses it actually took, which is how you catch the wrong <code>k</code>.</p>
+  <p>Here is the isqrt loop in the real editor. The loop’s block type on line 34 is the invariant <code>$sq_le(r, n)</code>. Line 38, <code>prove 2</code>, takes the two most recent lane facts, the invariant and the local’s refinement <code>u($r) ≤ 65535</code>. Because it feeds the taken edge of the <code>br_if</code> below it, it also gets that branch’s own condition, <code>u($r) ≥ 65535</code>. Together these pin <code>r = 65535</code>, and the step proves the exit fact <code>$is_isqrt(r, n)</code> that <code>block $done</code> (line 32) requires of every branch to it. Line 57 (<code>prove 2</code>) proves that <code>r + 1</code> still fits the refined local, using the guard’s fall-through <code>u($r) &lt; 65535</code>. Line 59 (<code>prove 3</code>) proves that the back-edge supplies the invariant.</p>
+  <div class="emb" data-id="e2"></div>
+  <figure class="dia"><figcaption><span class="dtag">DIAGRAM</span>The shape of a rule card. The kernel is 35 such cards (R1–R35 in research 16 §2). Each one says what a line needs, what it adds, how it is drawn and what its error says. Every error appears as commentary at the far right of the line plus an empty cup. There is no other channel.</figcaption>
+    <svg viewBox="0 0 760 170" width="760" role="img" aria-label="rule card R24">
+      <rect x="4" y="4" width="752" height="160" rx="6" fill="#fffff6" stroke="#bbb"/>
+      <text class="dl" x="18" y="26" font-weight="700">R24 · division and remainder by zero</text>
+      <text class="dl" x="18" y="54">PREMISES</text><text class="dc" x="120" y="54" font-size="15">i32.rem_u with divisor #b</text>
+      <text class="dl" x="18" y="82">CUP</text><text class="dc" x="120" y="82" font-size="15">ne(#b, 0)   drawn as a diamond “b ≠ 0” right of the divisor’s cup</text>
+      <text class="dl" x="18" y="110">TYPICAL FEED</text><text class="dc" x="120" y="110" font-size="15">the fall-through of  local.get $y · i32.eqz · br_if  enters ¬eq(#y, 0) — an exact match</text>
+      <text class="dl" x="18" y="138">ERROR</text><text class="dc" x="120" y="138" font-size="15" fill="darkred">needs ⟨b ≠ 0⟩; nothing feeds it</text>
+      <text class="dl s" x="18" y="156">gradual mode: the unfed cup becomes a check before the instruction (R35)</text>
+    </svg></figure>
+</section>

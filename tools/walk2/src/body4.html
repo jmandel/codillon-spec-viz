@@ -1,0 +1,44 @@
+
+<section id="s5" class="sec">
+  <h2>5 · Lesson 3 · a hash table</h2>
+  <p>The table has 8 i32 slots in the last 32 bytes of memory (addresses 65504–65535), with 0 for empty, −1 for a tombstone, and linear probing. Every load and store has a bounds cup, and all of them are proven. Masking the index with <code>and 7</code>, a guard, or <code>$find</code>’s result type supplies the fact. The representation invariant <code>$rep_ok</code> is a recursive Wasm predicate over memory, with a measure. It says no key appears twice and every probe chain is unbroken. It is threaded through <code>$insert</code> and <code>$remove</code> as a fact parameter and a fact result.</p>
+  <p><b>Here v2 is honest about a gap.</b> Version 2 has no memory frame rules. Nothing says “this store does not touch slot j”. After a store, every fact about a memory-reading predicate is gone, because the memory epoch has changed. So the invariant cannot be carried across a store. Of the table’s 29 cups, <b>7 are runtime-checked</b> for exactly this reason: 2 in <code>$insert</code>, 1 in <code>$remove</code> and 4 in the harness. The headers say so with gray badges. The other 22 are proven, 3 of them only relative to those checks (proven*). The alternative is an instructor axiom per store, and the example declines it. Frame rules are open question 2 in research 16 §9.</p>
+  <div class="livectl"><span class="ctl-l">state:</span><span class="seg" data-for="e5"></span></div>
+  <p class="statenote" id="e5-note"></p>
+  <div class="emb" data-id="e5"></div>
+</section>
+
+<section id="s6" class="sec">
+  <h2>6 · Lesson 4 · vericoding</h2>
+  <p>In <i>vericoding</i> mode the student writes the <b>spec</b> and someone else writes the <b>implementation and its proofs</b>. That someone can be the student, an LLM, or a recorded session. The kernel is the only judge. The LLM is never trusted, and the editor works fully without one.</p>
+  <h3>The ownership boundary</h3>
+  <div class="tscroll"><table class="t">
+    <tr><th>locked: the student owns</th><th>open: the implementation side owns</th></tr>
+    <tr><td>every function header (types, refinements, fact parameters and results, exports), except lemma headers</td><td>bodies of ordinary functions</td></tr>
+    <tr><td>bodies of predicates, measures and harnesses</td><td>lemma functions, header and body</td></tr>
+    <tr><td>axioms (<code>axiom:</code> exports) and <code>assume</code> lines</td><td>proof lines: <code>prove</code>, <code>lemma</code>, <code>unfold</code>, fact locals</td></tr>
+    <tr><td>block-type facts marked <code>;; @own</code>, memory and global declarations</td><td>block-type facts and refined locals it adds</td></tr>
+  </table></div>
+  <p>After every round the kernel checks four things. Locked lines are unchanged, compared by a hash taken when the session starts. The open side added no <code>assume</code>, no axiom, no import, and no call to a function that is neither in the module nor one of its own lemmas. Every cup in the code it touched is proven, with no runtime checks and no proven*. Every harness ⊥ cup is proven. A submission is accepted only if every function it touched is strict-clean, and therefore <span class="vchip">VERIFIED</span>. The editor itself stays in gradual mode, so a rejected submission still runs.</p>
+  <h3>A recorded session, turn by turn</h3>
+  <p>The session below is a real replay. Each turn’s edits are applied to the module and the real kernel judges the result, in the editor below. Nothing is precomputed except the model’s edits. Step through the turns and watch two of them get rejected. In turn 2 the model tries to cross the boundary by deleting the result refinement from <code>$isqrt</code>’s header. In turn 4 it tries <code>assume</code>. The verdict line is read live from the editor’s own session panel, which sits below the code inside the frame.</p>
+  <div class="stepper" id="stepper">
+    <div class="row"><span class="ctl-l">session:</span><span class="seg" id="sess-seg"></span></div>
+    <div class="row" style="margin-top:6px"><span class="ctl-l">turn:</span><span class="turns" id="turns"></span><button class="ubtn" id="tnext">▶ next turn</button></div>
+    <div class="tnote" id="tnote"></div>
+    <div class="kv" id="tkv"></div>
+  </div>
+  <div class="emb" data-id="e6"></div>
+  <p>The gcd session has the same shape. Turn 3 tries to add an axiom for Euclid’s step and is rejected (“only the instructor may”). Turn 4 instead unfolds <code>$gcd_ref</code> one step before the rebinding, and is accepted. The parity session’s rejected turn 2 assumes the half instead of proving it.</p>
+  <h3>Adequacy: is the spec worth proving?</h3>
+  <p>A proof only says the code meets the spec. The adequacy panel checks the spec itself, without any LLM. It has two parts.</p>
+  <ul>
+    <li><b>Vacuity.</b> The kernel tries to prove False from a function’s parameter refinements alone. If it succeeds, every claim about that function holds trivially. Separately, the runner looks for at least one test input that satisfies the precondition. <code>gcd-vacuous</code> meant to write <code>a ≥ 0</code> as <code>(i32.gt_s v -1)</code> but wrote <code>gt_u</code>, which means <code>u(a) &gt; 2³²−1</code>. No input satisfies that. The harness is then “proven” without even the axiom, and the kernel alone cannot tell. The panel flags it as <b>VACUOUS</b>: 0 of 64 inputs satisfy the precondition.</li>
+    <li><b>Mutation.</b> The runner mutates the implementation one site at a time with six operators: relational flip, signedness swap, constant off by one, arithmetic swap, operand swap and condition inversion. It then runs every harness. A mutant that survives is either equivalent to the original or a sign that the spec is too weak. For the verified <code>$isqrt</code>, 8 of 24 mutants survive, and 6 of those the kernel <i>still proves</i>. Examples are <code>i32.const 65535 → 65536</code> and <code>ge_u → gt_u</code> on the guard. These are equivalent mutants. The guard is a safety stop, and whenever it fires the <code>(r+1)² &gt; n</code> test would exit at the same <code>r</code>. The values involved (<code>r ≤ 65535</code>, and squares far below 2⁶³) are small enough that signed and unsigned readings agree. The panel lists them and leaves the judgment to the student.</li>
+  </ul>
+  <div class="livectl"><span class="ctl-l">example:</span><span class="seg" data-for="e7"></span></div>
+  <p class="statenote" id="e7-note"></p>
+  <div class="emb" data-id="e7"></div>
+  <h3>The live LLM is optional</h3>
+  <p>The recorded sessions need no network and no key, so a classroom demo works offline. To try a live session, paste your own <a href="https://openrouter.ai/">OpenRouter</a> key into the panel’s “LLM” section. The key stays in your browser’s localStorage and is sent only to openrouter.ai. It never goes into the page, a URL or the console. The default model is <b>Claude Opus 5.5</b>, and <b>DeepSeek V4.1 Flash</b> is offered as the fast option, routed to the fastest provider. You can also give a custom model id. Each round sends the module with its locked ranges, the failing cups with a snapshot of the lane, the line errors and a digest of the rule cards. The model answers with line edits. A live transcript is recorded in the same format as the scripted ones, so any live session can be replayed later.</p>
+</section>
