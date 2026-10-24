@@ -397,7 +397,10 @@
             "origin": "fact result of the first $insert (R13)"
           }
         ]
-      }
+      },
+      "depends_on_checks": [
+        333
+      ]
     },
     {
       "line": 344,
@@ -425,7 +428,10 @@
             "origin": "fact result of the second $insert"
           }
         ]
-      }
+      },
+      "depends_on_checks": [
+        333
+      ]
     },
     {
       "line": 354,
@@ -489,7 +495,10 @@
           }
         ]
       },
-      "why": "proven relative to $remove's runtime-checked postcondition: the contract is the bridge."
+      "why": "proven relative to $remove's runtime-checked postcondition: the contract is the bridge.",
+      "depends_on_checks": [
+        333
+      ]
     }
   ],
   "runs": [

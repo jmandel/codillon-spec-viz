@@ -179,7 +179,7 @@
       },
       "prove_error": {
         "line": 88,
-        "text": "not implied by these 2 facts: the i32 product (r+1)·(r+1) may wrap (its wrap variable q stays in the problem); countermodel r = 65535, n = 4294967295"
+        "text": "not implied by [¬$is_isqrt32(#q,$n) @87, $is_isqrt(ext_u(#q),ext_u($n)) @84]: the i32 product (r+1)·(r+1) may wrap (its wrap variable stays in the problem); countermodel r = 65535, n = 4294967295"
       },
       "hyps_tried": [
         {

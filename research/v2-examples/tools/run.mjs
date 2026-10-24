@@ -38,10 +38,14 @@ function inputs(types, n) {
   return res;
 }
 
-function paramTypes(watText, exportName) {
-  const line = watText.split("\n").find((l) => l.includes(`(export "${exportName}")`));
+// Value params of an export, read from the ERASED header (refinements and fact params already gone),
+// plus whether the v2 header refines any of them (a precondition the runner must respect, §6.3 rule 3).
+function params(srcText, erasedText, exportName) {
+  const find = (t) => t.split("\n").find((l) => l.includes(`(export "${exportName}")`));
+  const line = find(erasedText), src = find(srcText);
   if (!line) throw new Error(`no export ${exportName}`);
-  return [...line.matchAll(/\(param\s+\$\S+\s+\(?(i32|i64)[\s)]/g)].map((m) => m[1]);
+  const ps = [...line.matchAll(/\(param\s+\$(\S+)\s+(i32|i64)\)/g)].map((m) => ({ name: m[1], type: m[2] }));
+  return { names: ps.map((p) => p.name), types: ps.map((p) => p.type), refined: /\(param\s+\$\S+\s+\((i32|i64)\s*\|/.test(src) };
 }
 
 function call(inst, name, args) {
@@ -73,7 +77,11 @@ for (const f of files) {
   const lines = [`${expect.source}: erased ${nIn}→${nOut} lines, parse+validate ok`];
   if (nIn !== nOut) { lines.push("  LINE COUNT MISMATCH"); failures++; }
   for (const r of expect.runs ?? []) {
-    const types = paramTypes(srcText, r.export);
+    const P = params(srcText, readFileSync(erased, "utf8"), r.export);
+    const types = P.types;
+    // precondition: a JS expression over the param names (numbers for i32, BigInt for i64), required if refined
+    const pre = r.pre ? new Function(...P.names, `return (${r.pre});`) : null;
+    if (P.refined && !pre && !r.args) { lines.push(`  FAIL ${r.export}: refined params need a "pre" in the run spec`); failures++; continue; }
     if (r.args) {
       const args = r.args.map((a, i) => (types[i] === "i64" ? BigInt(a) : a | 0));
       const got = call(instance, r.export, args);
@@ -90,6 +98,14 @@ for (const f of files) {
         }));
       }
       let first = null, count = 0;
+      const all = ins.length;
+      if (pre) ins = ins.filter((a) => pre(...a));
+      if (r.expect === "vacuous") {
+        const ok = ins.length === 0;
+        if (!ok) failures++;
+        lines.push(`  ${ok ? "ok  " : "FAIL"} ${r.export}: ${ins.length} of ${all} inputs satisfy the precondition (expected none: vacuous)`);
+        continue;
+      }
       for (const a of ins) {
         const got = call(instance, r.export, a);
         if (got !== "ok") { count++; first ??= [a, got]; }
@@ -97,7 +113,7 @@ for (const f of files) {
       const ok = r.expect === "pass" ? count === 0 : count > 0;
       if (!ok) failures++;
       const firstTxt = first ? `; first: (${first[0].join(", ")}) → ${first[1]}` : "";
-      lines.push(`  ${ok ? "ok  " : "FAIL"} ${r.export} on ${ins.length} inputs: ${count} traps${firstTxt} (expected ${r.expect})`);
+      lines.push(`  ${ok ? "ok  " : "FAIL"} ${r.export} on ${ins.length}${pre ? ` of ${all}` : ""} inputs (erased program): ${count} traps${firstTxt} (expected ${r.expect})`);
     }
   }
   console.log(lines.join("\n"));

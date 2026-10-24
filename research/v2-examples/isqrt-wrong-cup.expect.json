@@ -54,7 +54,10 @@
           }
         ]
       },
-      "why": "intervals pin u(r) = 65535 (§3.3), so r² and (r+1)² = 2³² are constants; ext_u(n) < 2³²; invariant gives r² ≤ n."
+      "why": "intervals pin u(r) = 65535 (§3.3), so r² and (r+1)² = 2³² are constants; ext_u(n) < 2³²; invariant gives r² ≤ n.",
+      "depends_on_checks": [
+        54
+      ]
     },
     {
       "line": 50,
@@ -147,7 +150,10 @@
           }
         ]
       },
-      "why": "both edges bind $r to the loop-head φ, so the join keeps #r; the virtual slot ext_u(#r) is the same id in both atoms."
+      "why": "both edges bind $r to the loop-head φ, so the join keeps #r; the virtual slot ext_u(#r) is the same id in both atoms.",
+      "depends_on_checks": [
+        54
+      ]
     },
     {
       "line": 71,

@@ -31,7 +31,7 @@
       },
       "prove_error": {
         "line": 43,
-        "text": "not implied by these 1 facts: u($x)=0"
+        "text": "not implied by [$is_even($x) @41]: u($x)=0"
       },
       "after_runs": {
         "verdict": "refuted",
@@ -87,7 +87,10 @@
           }
         ]
       },
-      "why": "the hypotheses are contradictory: $is_half(#h, x) says 2·s(#h) = s(x) in i64, impossible for odd x; ex falso. The broken precondition at line 46 is what is runtime-checked, so this proof is sound relative to that check."
+      "why": "the hypotheses are contradictory: $is_half(#h, x) says 2·s(#h) = s(x) in i64, impossible for odd x; ex falso. The broken precondition at line 46 is what is runtime-checked, so this proof is sound relative to that check.",
+      "depends_on_checks": [
+        46
+      ]
     },
     {
       "line": 49,
@@ -104,7 +107,11 @@
           }
         ]
       },
-      "why": "the join enters the declared block result refinement; its arm cups are runtime-checked, so this holds in gradual mode."
+      "why": "the join enters the declared block result refinement; its arm cups are runtime-checked, so this holds in gradual mode.",
+      "depends_on_checks": [
+        44,
+        46
+      ]
     },
     {
       "line": 57,

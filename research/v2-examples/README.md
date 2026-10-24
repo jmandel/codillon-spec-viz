@@ -12,15 +12,15 @@ rule cards R1–R35 and the decision procedure of §3.
 |---|---|---|---|
 | `parity.wat` | evenness gate, `$half` precondition, `$hon_ok` relational result | 6 | 6 proven |
 | `parity-missing-proof.wat` | **missing proof**: `prove 1` deleted in `$half` | 6 | 5 proven, 1 runtime-checked |
-| `parity-bug-gate.wat` | code bug P1: gate inverted | 6 | 4 proven, 2 runtime-checked (both refuted by runs) |
+| `parity-bug-gate.wat` | code bug P1: gate inverted | 6 | 4 proven (2 of them relative to checks), 2 runtime-checked (both refuted by runs) |
 | `isqrt.wat` | loop invariant as block type, refined local, monomial `r²`, harness | 9 | 9 proven |
 | `isqrt-harness-bug.wat` | **spec bug**: harness computes in i32, `(r+1)²` wraps at r = 65535 | 9 | 8 proven, 1 runtime-checked (refuted at n = 2³²−1) |
-| `isqrt-wrong-cup.wat` | **wrong proof**: a `prove` feeds the back-edge instead of `local.set` | 9 | 8 proven, 1 runtime-checked, plus a `prove has nothing to feed` line error |
+| `isqrt-wrong-cup.wat` | **wrong proof**: a `prove` feeds the back-edge instead of `local.set` | 9 | 8 proven (2 relative to the check at line 54), 1 runtime-checked, plus a `prove has nothing to feed` line error |
 | `gcd.wat` | `$gcd_ref` (recursive, measure), `unfold`, bounded `$is_gcd` predicate, 1 instructor axiom | 13 | 12 proven, 1 assumed |
-| `gcd-bug-guard.wat` | code bug G1: guard on the wrong variable (div cup unfed) | 13 | 9 proven, 3 runtime-checked (2 refuted by runs), 1 assumed |
+| `gcd-bug-guard.wat` | code bug G1: guard on the wrong variable (div cup unfed) | 13 | 9 proven (2 relative to checks), 3 runtime-checked (2 refuted by runs), 1 assumed |
 | `gcd-vacuous.wat` | **vacuous spec**: unsatisfiable harness precondition proves False without the axiom | 12 | 12 proven, flagged by the adequacy check |
-| `primality.wat` | `$prime_spec` vs `$prime` (`d > n/d`), 3 measures, induction lemma, 3 instructor axioms | 30 | 18 proven, 12 assumed |
-| `hashtable.wat` | 8-slot open addressing with tombstones; bounds on every load/store; `$rep_ok` over memory | 29 | 22 proven, 7 runtime-checked |
+| `primality.wat` (**capstone**, not intro material) | `$prime_spec` vs `$prime` (`d > n/d`), 3 measures, induction lemma, 3 instructor axioms | 31 | 19 proven, 12 assumed |
+| `hashtable.wat` | 8-slot open addressing with tombstones; bounds on every load/store; `$rep_ok` over memory | 29 | 22 proven (3 relative to the check at line 333), 7 runtime-checked |
 | `hashtable-stale.wat` | **wrong proof (stale fact)**: increment before the store | 29 | 21 proven, 8 runtime-checked (bounds cup refuted: OOB trap) |
 | `hashtable-bug-tombstone.wat` | code bug: `$remove` writes 0, not a tombstone | 29 | 22 proven, 7 runtime-checked (2 refuted by runs) |
 
@@ -43,13 +43,21 @@ Lemmas with proofs: `lemma:from_agrees` (induction via `measure:from_agrees`), `
 - `kind` is `CupKind` from §4.3. `goal` is the proposition rendered with program names; `#x` is a canonical value id,
   `ε` a memory epoch.
 - `verdict` is the kernel's static verdict in the file's `mode`. In strict mode a `runtime-checked` cup is an
-  error; its text is in `strict_error`. `after_runs` gives the verdict after the recorded runs (refuted, with a witness).
+  error; its text is in `strict_error`.
+- `depends_on_checks` (optional): the runtime-checked cup lines a proven/assumed derivation rests on; such a cup is
+  drawn as *proven\* relative to checks* and its function is not VERIFIED (design §4.1).
+- `after_runs` (optional) describes runs of the **instrumented** program (gradual mode, checks inserted): the first
+  failing check refutes its cup, with the witness input.
 - `feed.by` is `lookup` (with the matched fact), `prove` (the `prove` line and its hypotheses, top of lane first),
   `eval`, `dead` (ex falso after a branch), or `none`. Failed proves are in `prove_error`; stale facts in `stale_hint`.
-- `assumptions` lists the axioms an `assumed` cup depends on; `adequacy` records vacuity results (§7.2).
+- Other optional keys: `prove_error` (the failing `prove` line and its text, which lists the hypotheses taken),
+  `stale_hint`, `strict_error`, `hyps_tried`, `assumptions` (axioms an assumed cup rests on), `adequacy` (vacuity
+  results, §7.2), and file-level `axioms`, `lemmas`, `line_errors`.
 - `runs`: `expect: "pass"` sweeps the standard input list and requires no trap at all; `"fails"` requires at least
   one trap; with `args`, the exact outcome (`ok`, `unreachable`, `div-by-zero`, `oob`). `domain: [lo, hi]` maps inputs
-  into a range at run time only (slow spec predicates); the theorem is still for all inputs.
+  into a range at run time only (slow spec predicates); the theorem is still for all inputs. A harness whose params are
+  refined needs `pre`, a JS expression over the param names; sweep inputs that fail it are skipped, and
+  `expect: "vacuous"` requires that none satisfy it. **`runs` execute the erased program** (no checks inserted).
 
 ## Validation
 
@@ -60,7 +68,7 @@ node tools/run.mjs            # all examples; or name expect files
 `tools/run.mjs` erases each file with `tools/erase.py` (same line count, asserted), assembles it with
 `wasm-tools parse`, runs `wasm-tools validate`, instantiates it in Node, and runs every harness on 338–589 inputs
 (edge values, then a deterministic xorshift sample). Erased files go to
-`~/hobby/.agent-scratch/codalon-viz/v2design/erased/`. Last run: all 13 files erase, parse and validate; every correct
+`~/hobby/.agent-scratch/codalon-viz/v2design/erased/`. Last run: all 13 files erase, parse and validate; `gcd-vacuous` has 0 of 589 inputs satisfying its precondition; every correct
 program's harness passes on all inputs; every bug variant fails on its recorded input.
 
 The runs check the erased program (no runtime checks inserted), so a gradual-mode check that would fire first is

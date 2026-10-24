@@ -317,7 +317,7 @@
       },
       "prove_error": {
         "line": 319,
-        "text": "not implied by these 1 facts: u(#i)=7 (so u(#i′)=8, address 32)"
+        "text": "not implied by [u(#i) < 8 @310]: u(#i)=7, so u(#i′)=8 and the address is 32"
       },
       "hyps_tried": [
         {
@@ -400,7 +400,10 @@
             "origin": "fact result of the first $insert (R13)"
           }
         ]
-      }
+      },
+      "depends_on_checks": [
+        333
+      ]
     },
     {
       "line": 344,
@@ -428,7 +431,10 @@
             "origin": "fact result of the second $insert"
           }
         ]
-      }
+      },
+      "depends_on_checks": [
+        333
+      ]
     },
     {
       "line": 354,
@@ -482,7 +488,10 @@
           }
         ]
       },
-      "why": "proven relative to $remove's runtime-checked postcondition: the contract is the bridge."
+      "why": "proven relative to $remove's runtime-checked postcondition: the contract is the bridge.",
+      "depends_on_checks": [
+        333
+      ]
     }
   ],
   "runs": [

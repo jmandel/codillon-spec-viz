@@ -102,7 +102,10 @@
             "origin": "loop invariant"
           }
         ]
-      }
+      },
+      "depends_on_checks": [
+        129
+      ]
     },
     {
       "line": 118,
@@ -159,7 +162,7 @@
       },
       "prove_error": {
         "line": 128,
-        "text": "not implied by these 3 facts: u(#y)=0 (the ite in the unfolding is undecided)"
+        "text": "not implied by [unfold gcd_ref(#x,#y) @123, ne(#x,0) @118, gcd_ref(#x,#y) = gcd_ref($a,$b) @115]: u(#y)=0 leaves the ite undecided"
       }
     },
     {
@@ -201,7 +204,11 @@
           }
         ]
       },
-      "why": "only the br_if edge reaches the join, so the bindings are the loop-head φ's; eq(#y,0) picks the first ite arm. The unfolding's rem_u(#x, 0) is a virtual slot; its range constraint is guarded (§3.2), so it is harmless."
+      "why": "only the br_if edge reaches the join, so the bindings are the loop-head φ's; eq(#y,0) picks the first ite arm. The unfolding's rem_u(#x, 0) is a virtual slot; its range constraint is guarded (§3.2), so it is harmless.",
+      "depends_on_checks": [
+        118,
+        129
+      ]
     },
     {
       "line": 147,

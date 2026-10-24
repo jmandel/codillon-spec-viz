@@ -280,6 +280,23 @@
       ]
     },
     {
+      "line": 134,
+      "operand": 1,
+      "kind": "DivByZero",
+      "goal": "$d ≠ 0 (ghost)",
+      "verdict": "proven",
+      "feed": {
+        "by": "lookup",
+        "facts": [
+          {
+            "line": 123,
+            "fact": "$d ≠ 0",
+            "origin": "prove at 122, entered at 123"
+          }
+        ]
+      }
+    },
+    {
       "line": 139,
       "operand": null,
       "kind": "FactParam",

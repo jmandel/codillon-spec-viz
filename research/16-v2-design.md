@@ -9,8 +9,8 @@ No Z3, no SMT. One deterministic kernel; an LLM is optional and never trusted.
 |---|---|---|
 | 1 | Text syntax | Facts travel in a separate **fact lane** (scoped, persistent), never on the operand stack; propositions are folded Wasm expressions read as "≠ 0"; every v2 construct erases line-for-line (proof lines → `nop`, proof declarations → comment). |
 | 2 | Rule cards | 35 numbered cards (R1–R35); each cup is fed by exactly one fact, found by exact canonical lookup or produced by the `prove k` line just above. |
-| 3 | `prove k` | Linear integer arithmetic over unsigned readings with explicit wrap variables, monomials as atoms, interval pre-pass, Omega-lite elimination; caps: 64 terms, 16 variables, 32 atoms, 256 cases. |
-| 4 | Verdicts | Four per-cup states: proven, refuted, runtime-checked, assumed. An unfed cup is runtime-checked (gradual) or an error (strict); the kernel never answers "unknown". |
+| 3 | `prove k` | Linear integer arithmetic over unsigned readings with explicit wrap variables, monomials as atoms, interval pre-pass, Omega-lite elimination; caps: 64 terms, 24 variables, 32 atoms, 256 cases; failures name the hypotheses actually taken. |
+| 4 | Verdicts | Four per-cup states: proven, refuted, runtime-checked, assumed, plus a *relative to checks at lines …* mark. Gradual mode is the editor default (programs always run); a function is **VERIFIED** only when strict-clean. The kernel never answers "unknown". |
 | 5 | Data structures | Slots with canonical ids, a fact stack with frame marks, `fact_args`, scratch arena, memory epochs; one forward pass per function; re-check per function. |
 | 6 | Theorem | All cups proven ⇒ no trap on any input meeting the entry contract, except call-stack exhaustion; partial correctness only; harnesses compute in i64. |
 | 7 | Vericoding | Student owns headers, predicates, measures, harnesses, axioms; LLM owns bodies, proof lines, lemmas; adequacy = vacuity + 6 mutation operators; scripted sessions by default. |
@@ -100,8 +100,10 @@ proofinstr  ::= "prove" nat                   ;; nat = k, 0 ≤ k ≤ 8
 ```
 
 **Meaning of names inside expressions.** `$x` denotes the *current value* of local or parameter `$x` at the line
-where the expression is interpreted: the header (entry values), a block line (the values on arrival), a `lemma`
-line (current values). `v` denotes the value whose type is being refined. A refinement on parameter `$p` may mention
+where the expression is *instantiated*: the header (entry values); a block line's `(fact …)` clause is a template,
+instantiated with the bindings current **at each edge that carries its cup** (for `block`/`if`: each `br` to the label and
+the fall-through at `end`; for `loop`: the fall-in and each back-edge) and, when it enters the lane, with the bindings
+after the join (`block`/`if`) or at the loop head (`loop`); a `lemma`/`unfold` line (current values). `v` denotes the value whose type is being refined. A refinement on parameter `$p` may mention
 parameters declared before it. A result refinement may mention parameters; it means their **entry** values, even
 if the body later `local.set`s a parameter. Integer literals take the type of the operator they feed.
 
@@ -137,7 +139,8 @@ match between an old fact and a new value.
 - `prove k` takes the `k` most recent lane entries as hypotheses (drawn as `k` cups on its fraction), and produces
   one fact whose proposition is **the goal of the cup it feeds**: the first otherwise-unfed cup of the next ordinary
   instruction line. Proof lines between them are allowed. A run of `n` `prove` lines feeds the first `n` unfed cups
-  in order. The produced fact also enters the lane, so later cups can find it by lookup. Decided by §3.
+  in order. The produced fact also enters the lane, so later cups can find it by lookup (for a taken-edge cup of `br_if`/`br_table`,
+only the edge's snapshot). A failure names the hypotheses it actually took. Decided by §3.
 - `lemma $f e₁ … eₘ` calls a lemma function (pure, erased): the `eᵢ` are its value parameters, its fact parameters
   are cups on this line (fed like any cup), and its fact results enter the lane.
 - `unfold $p e₁ … eₘ` enters the one-step unfolding of a recursive predicate (R30).
@@ -224,7 +227,8 @@ until none applies (all are equivalences, so the order is irrelevant):
 3. `¬lt(a,b) → le(b,a)`, `¬le(a,b) → lt(b,a)`, `¬eq → ne`, `¬ne → eq`;
 4. a non-comparison condition `x` → `ne(x, 0)`; a predicate call `(call $p …)` → `Pred($p, …)`, negated as
    `¬Pred($p, …)` (kept as a flag; no rewrite);
-5. `eq`/`ne` with a constant operand put the constant second.
+5. `eq` and `ne` are symmetric: their operands are put in ascending canonical-id order, constants last, so
+   `eq(v, gcd_ref(a,b))` and `eq(gcd_ref(a,b), v)` have one normal form.
 
 Two atoms **match** iff their normal forms are identical (same relation, signedness, width, head, canonical ids).
 Drawn: comparison fractions are unchanged; the atom appears as a chip only when it becomes a fact (R16–R21).
@@ -260,12 +264,17 @@ fall-through arms, the `end` of a `block` that is the target of a `br`/`br_if`/`
 `$x`: if every incoming edge binds `$x` to the same id, keep it; otherwise allocate a fresh id `#φ` and bind it; if
 `$x` is refined `(T | R)`, enter `R[v := #φ]` (the refinement is the local's own invariant; the cups of R7 and R19/R20
 make it true on every edge). For a `loop`, the set of locals that may differ is found by a syntactic pre-scan of the loop
-body for `local.set`/`local.tee` targets (all of them get a `#φ` at the loop head). Drawn: a small merge dot on the frame
+body for `local.set`/`local.tee` targets (all of them get a `#φ` at the loop head); the same pre-scan collects
+`global.set` targets, and every mutable global if the body contains an impure call, and those globals get a `#φ` at the
+loop head too (their refinements re-entered). **Block and `if` results** merge the same way: a result value that differs
+across incoming edges is a fresh `#φ`, which carries only the frame's declared result refinements. Drawn: a small merge dot on the frame
 bracket where `$x`'s ribbon is renumbered. Error: none.
 
 **R9 — globals.** `global.get $g` returns `curg[$g]`. `global.set $g` binds it, with a cup if `$g` is refined (as R7).
 Any impure call (R13) re-binds every mutable global to a fresh id, and enters its refinement if it has one. Immutable
-globals get constant ids when initialized by a constant. Drawn/Error: as R6/R7.
+globals get constant ids when initialized by a constant. Mutable globals are bound per function pass (a fresh id at
+entry, φ-renamed at loop heads by R8), so no fact about one survives a `global.set` or impure call; and because pure
+functions may not read them (R29), a predicate's value never depends on one. Drawn/Error: as R6/R7.
 
 ### Memory
 
@@ -298,11 +307,13 @@ frame bracket where it changes (only when some chip carries an epoch). Error: no
 **R13 — `call $f`.** Premise: argument ids `#a₁ … #aₙ`. Cups: for each refined parameter `(param $pᵢ (T | Rᵢ))`, the
 atom `Rᵢ[v := #aᵢ, $pⱼ := #aⱼ]`, and for each fact parameter `(param $h (fact P))` the atom `P[$pⱼ := #aⱼ]`, instantiated in the
 caller's current epoch. Conclusion: if `$f` is impure (it stores, calls an import or an impure function,
-grows memory, or sets a global), apply R12 and R9 first. The result id is `table[(call $f, #a…, ε if $f reads memory)]`
+grows memory, sets a global, or **reads a mutable global**), apply R12 and R9 first. The result id is `table[(call $f, #a…, ε if $f reads memory)]`
 for a pure `$f`, fresh otherwise. Enter each result refinement `R[v := #r, $pⱼ := #aⱼ]` and each fact result, both in the epoch after the call. The callee's declared header is
 the whole contract; its body is not consulted (except that a non-recursive predicate unfolds inside §3, R29). Drawn:
 the call's fraction gains one proof cup per refined parameter, beside that parameter's cup; result facts appear as
-chips on the call line. Error: `$f needs ⟨Rᵢ⟩ for $pᵢ; nothing feeds it`.
+chips on the call line. Error: `$f needs ⟨Rᵢ⟩ for $pᵢ; nothing feeds it`. An **imported** function's result refinements and fact results are entered with verdict *assumed* (the host is
+trusted, not checked). Facts entered from a call inherit the verdict and check-dependencies of the cups that fed the
+call's parameter cups (§4.1).
 
 **R14 — function entry.** Each parameter gets a fresh id; parameter refinements and fact parameters are entered in order, origin = the
 header line. Ordinary locals start bound to `const(T, 0)`. A refined local `(local $k (T | R))` has a cup `R[v := 0]` on its
@@ -349,7 +360,8 @@ the rest of the current arm is **dead** (R22).
 
 **R20 — `br_if $l`.** Premise: condition `#c`. Taken edge: an incoming edge for `$l` whose lane has `⟦#c⟧` on top; its
 cups are on the `br_if` line, and a `prove` feeding one of them gets `⟦#c⟧` as an extra hypothesis (drawn as a wire
-from the `br_if`'s own condition cup). Fall-through: enter `¬⟦#c⟧` (origin = the `br_if` line). Drawn: the
+from the `br_if`'s own condition cup), and its output enters only the taken edge's snapshot, never the fall-through
+lane (R32). Fall-through: enter `¬⟦#c⟧` (origin = the `br_if` line). Drawn: the
 fall-through chip on the `br_if` line; taken-edge cups on the same line, to the right of the condition cup.
 
 **R21 — `br_table $l₀ … $lₙ₋₁ $d`.** Premise: index `#i`. Edge to `$lⱼ`: lane plus `(i32.eq #i j)`; edge to `$d`: lane plus
@@ -401,7 +413,8 @@ verdict proven. Zero → verdict **refuted**: `⟨G⟩ is false: $p(2, 7) = 0`. 
 filled with a small `=` mark instead of a wire. Error: as described.
 
 **R29 — predicate functions; automatic unfolding.** A function named in any proposition is a **predicate**. It must
-be: pure (no store, `memory.grow`, `global.set`, imports, or calls to non-predicates), loop-free, `i32`-resulting,
+be: pure (no store, `memory.grow`, `global.set`, **no `global.get` of a mutable global**, no imports, no calls to
+non-predicates), loop-free, `i32`-resulting,
 free of refined or fact parameters (so it is total on every argument; partial domains are handled by guards inside),
 directly self-recursive at most (with a measure, R31), and every cup in its body must be proven or fed by an axiom; a
 runtime-checked cup is not allowed in a predicate (the kernel evaluates predicates, so they must be total). It may
@@ -427,9 +440,11 @@ decrease: needs ⟨μ(a′) < μ(p)⟩`.
 **R32 — `prove k`.** Premises: `k ≤ 8`; hypotheses `H₁ … H_k` = the `k` most recent lane entries at this line (plus the
 edge fact of R20 when it feeds a taken-edge cup); goal `G` = the cup this line feeds (R5). Conclusion: if §3 reports
 **valid** for `H₁ ∧ … ∧ H_k ⇒ G`, the cup is fed and `G` enters the lane (origin = this line, verdict = proven, or
-assumed if some `Hᵢ` is assumed). Drawn: a fraction with `k` proof cups above the rule (wired to the hypotheses' chips)
-and one fact below (wired to the goal cup). Errors (on the `prove` line; the goal cup stays unfed): `not implied:
-counterexample u(i)=8, u(n)=8`; `exceeds the 64-term cap; use a lemma`; `nothing to feed` (no cup below).
+assumed if some `Hᵢ` is assumed, and relative to checks if some `Hᵢ` is, §4). **Edge cups:** when the fed cup is a
+taken-edge cup of `br_if`/`br_table` (R20/R21), `G` enters only that edge's snapshot (the target's join or loop
+summary), never the fall-through lane, where it would not be true. Drawn: a fraction with `k` proof cups above the rule (wired to the hypotheses' chips)
+and one fact below (wired to the goal cup). Errors (on the `prove` line; the goal cup stays unfed) always **list the hypotheses actually taken**, so a
+miscounted `k` is visible: `not implied by [u(i) < 8 @22, $sq_le(r,n) @31]: counterexample u(i)=8, u(n)=8`; `exceeds the 64-term cap; use a lemma`; `nothing to feed` (no cup below).
 A failed `prove` never refutes the goal; it only fails to feed it.
 
 **R33 — lemmas and axioms.** A lemma is exported as `lemma:<name>`; it has value params, fact params
@@ -469,7 +484,16 @@ and unfolded predicates, and propositional float atoms. **Caps** (constants of t
 
 Every id reachable from an atom is translated once (memoized in the scratch area, so shared subterms are one
 variable) to a **linear form** `Σ cᵢ·xᵢ + c₀` over integer variables, together with side constraints. Each variable
-has an interval.
+has an interval. Translation is **bottom-up** (post-order over the term DAG): a term is translated only after its
+inputs, its interval is computed from theirs immediately, and its own wrap variable is resolved at once if the interval
+allows (§3.3); only then does its parent use it. Two rules apply to every row with a wrap variable `q`:
+
+- **Result range.** The term's linear form `T` carries the side constraint `0 ≤ T ≤ 2ʷ − 1`. This is what makes `q` the
+  quotient (`q` is the unique value putting `T` in range); without it `eq(add(x,0), x)` would have the model `q = 1`.
+- **No expansion through an unresolved wrap.** `mul(a,b)` expands `A·B` only if neither `A` nor `B` still contains an
+  unresolved wrap variable; otherwise the product is a monomial over the factors' canonical ids (keyed by the sorted
+  id list). Expansion is retried per case after case-split substitution (§3.4), so i64 `(r+1)·(r+1)` expands to
+  `r² + 2r + 1` as soon as `r+1`'s carry is fixed, and coefficients like `2¹²⁸` never arise.
 
 | term | linear form and side constraints |
 |---|---|
@@ -479,8 +503,9 @@ has an interval.
 | `sub(a,b)` | `A − B + 2ʷ·q`, `q ∈ [0,1]` |
 | `mul(a, c)`, `shl(a, c)` (constant) | `k·A − 2ʷ·q`, `k = c` (mul) or `2^(c mod w)` (shl), `q ∈ [0, k)` |
 | `mul(a,b)` both non-constant | expand `A·B` as a polynomial; each degree-≥2 monomial (`r·r`, `i·j`) becomes a monomial variable, keyed by its sorted factor list; minus `2ʷ·q`, `q ≥ 0` |
-| `div_u(a, c)`, `shr_u(a, k)` (constant) | fresh `d` with `c·d ≤ A ≤ c·d + c − 1` |
-| `rem_u(a, c)`, `and(a, 2ᵏ−1)` (constant) | `A − c·d`, `d` fresh with the same bounds (so result `∈ [0, c)`) |
+| `div_u(a, c)`, `shr_u(a, k)` (constant `c ≥ 1`) | fresh `d` with `c·d ≤ A ≤ c·d + c − 1` |
+| `rem_u(a, c)`, `and(a, 2ᵏ−1)` (constant `c ≥ 1`) | `A − c·d`, `d` fresh with the same bounds (so result `∈ [0, c)`) |
+| `div_u`/`rem_u`/`div_s`/`rem_s` by the **constant 0** | opaque leaf (only reachable in a virtual term; never the unsatisfiable `0·d ≤ A ≤ −1`) |
 | `div_u(a,b)`, `rem_u(a,b)` non-constant | fresh variable `r` with `r ≤ A`; for `rem_u` also `r + 1 ≤ B`, because a real slot's value exists, so `b ≠ 0` (R24). For a **virtual** slot (from an unfolding or an instantiated proposition, which may never be computed) the constraint is guarded: `B = 0 ∨ r + 1 ≤ B` (a case split) |
 | `wrap_i64(a)` | `A − 2³²·q` |
 | `extend_i32_u(a)` | `A` |
@@ -503,12 +528,16 @@ on each atom after unfolding, before any solving, so it depends only on the text
 Intervals start from the table above. Two fixed rounds then tighten them, in hypothesis order, using every
 constraint that has a **single variable** against a constant (`x ≤ c`, `x ≥ c`, `x = c`, including the negated goal
 when it has that shape). After each round, monomial intervals are recomputed from factor intervals, and every wrap
-variable `q` is resolved if possible: if the exact result's interval lies inside `[0, 2ʷ)`, then `q = 0`; inside
-`[2ʷ, 2ʷ⁺¹)`, `q = 1`. **These are the explicit no-overflow side conditions**: a wrap disappears only when the intervals
+variable `q` is resolved if possible: `q` is set to the unique value that puts the exact result's whole interval inside
+`[0, 2ʷ)`, if there is one (for `add`, `[0,2ʷ)` gives `q = 0` and `[2ʷ, 2ʷ⁺¹)` gives `q = 1`; for `sub`, `[0,2ʷ)` gives `q = 0`
+and `[−2ʷ, 0)` gives `q = 1`). Terms whose wraps become resolvable after the hypothesis rounds are re-translated once,
+bottom-up, with the tightened intervals. **These are the explicit no-overflow side conditions**: a wrap disappears only when the intervals
 prove it cannot happen, and the reason is recorded (shown on hover of the `prove` fraction: `i+1 does not wrap: u(i) ≤ 7`).
 A variable whose interval is a single point is substituted by its value (so `r = 65535` turns `r·r` into a constant).
 Remaining wrap and sign variables with range `[0,1]` (`q` of `add`/`sub`, `σ`, `τ`) become **case splits** (3.4), so
-they never reach elimination with their large `2ʷ` coefficients; other `q` and `d` are ordinary bounded variables.
+they never reach elimination with their large `2ʷ` coefficients; in each case the chosen values are substituted, then
+products whose factors became wrap-free are expanded (the per-case retry of §3.2). Other `q` and `d` are ordinary bounded
+variables.
 
 ### 3.4 Step 3 — case splitting
 
@@ -555,7 +584,7 @@ source of nondeterminism: variable numbering is the order of first appearance in
 
 | result | commentary |
 |---|---|
-| `NotImplied(m)` | `not implied by these 2 facts: u($i)=8, u($n)=8` |
+| `NotImplied(m)` | `not implied by [u($i) < 8 @22, $sq_le($r,$n) @31]: u($i)=8, u($n)=8` (every failure lists the hypotheses taken, with their birth lines) |
 | `Inexact(x)` | `could not decide (inexact step on $r·$r); add a lemma` |
 | `Cap(terms)` | `fact expands to 71 terms (cap 64)` |
 | `Cap(cases)`, `Cap(constraints)`, `Cap(coefficients)` | `too many cases (cap 256)` etc. |
@@ -575,12 +604,32 @@ Every cup ends a check in exactly one of four states.
 | **runtime-checked** | nothing feeds the cup; gradual mode compiles it into a check that runs before the instruction | R35 |
 | **assumed** | fed, but the derivation uses an `assume`, an `axiom:` function, or an unproven lemma | R33, R34; the cup records which assumptions |
 
-A cup that is fed and also refuted by a run means an assumption is false; the kernel marks the cup refuted and the
-responsible `assume`/axiom line with `contradicted by run (input …)`.
+**Refuted, precisely.** Static refutation comes only from R28 (an all-constant atom evaluates to 0). Dynamic
+refutation comes from a run of the **instrumented** program in gradual mode (checks inserted by R35): the first check
+that fails on a recorded input refutes its cup, and the run stops there, so cups after it on that path stay
+runtime-checked for that input. A harness `False` cup is also refuted when an instrumented run reaches its
+`unreachable`. Runs of the erased program (the example runner) are tests of behaviour, not of individual cups.
 
-**Modes.** *Gradual* (the default for students) accepts all four states and only marks refuted cups as errors.
-*Strict* additionally reports every runtime-checked cup as an error (`needs ⟨G⟩; nothing feeds it`). *Vericoding*
-(§7) is strict, and also rejects assumed cups whose assumptions are in LLM-owned code.
+A cup that is fed and also refuted by a run means that some premise of its derivation is false on that input: either
+an `assume`/axiom (the kernel marks that line `contradicted by run (input …)`), or a runtime-checked cup upstream whose
+check would have stopped the run first if the run had been instrumented (in gradual mode it always is, so in practice
+this case only arises from erased-program tests).
+
+**Relative to checks.** A derivation can be valid while resting on a fact whose own cup is runtime-checked: a join fact
+whose arm cups are runtime-checked (R16–R18), a refined local re-entered at a φ (R8) when a `local.set` cup was
+runtime-checked, a call result whose parameter cup was runtime-checked (R13). Every `Fact` therefore carries the set of
+runtime-checked cup lines it depends on (§5.1), and every fed cup inherits the union over its feeding facts. A proven
+or assumed cup with a non-empty set is shown as **proven\*/assumed\* — relative to checks at lines …** (§8), and
+reported with `depends_on_checks: [lines]`. Nothing downstream of a runtime check ever shows as plain proven. The set is
+per function: a caller does not inherit a callee's internal checks (it relies on the callee's contract, and the callee's
+own status says whether that contract is verified).
+
+**Modes and VERIFIED.** *Gradual* is the editor default for everyone: programs always run, unfed cups become checks,
+and only refuted cups are errors. *Strict* reports every runtime-checked cup as an error (`needs ⟨G⟩; nothing feeds
+it`). A function is **VERIFIED** (a badge on its header line) only when it is **strict-clean**: no runtime-checked cup,
+no cup relative to checks, no `assume`, and every assumed cup rests only on instructor axioms; and every function it calls
+is VERIFIED. Gradual mode shows the badge too, so a student sees which functions are proven while still running
+everything. *Vericoding* (§7) accepts an LLM submission only if every function it touched is strict-clean.
 
 ### 4.2 Why there is no "unknown"
 
@@ -632,11 +681,13 @@ pub struct CupOut {
     pub verdict: Verdict,
     pub feed: Feed,
     pub assumptions: SmallVec<[Origin; 2]>,   // non-empty iff Assumed
+    pub depends_on_checks: SmallVec<[u32; 2]>, // runtime-checked cup lines this derivation rests on (§4.1)
     pub witness: Option<Witness>,             // Some iff Refuted
     pub diag: Option<String>,                 // commentary text, if any
 }
 
 pub struct FuncOut {
+    pub verified: bool,                       // strict-clean and all callees verified (§4.1)
     pub cups: Vec<CupOut>,
     pub line_errors: Vec<(u32, String)>,      // prove failures, predicate purity, stale-handle errors
     pub chips: Vec<ChipOut>,                  // lane facts to draw: (birth line, atom text, frayed_at: Option<u32>)
@@ -669,7 +720,10 @@ pub struct Fact {
     pub epoch: Option<u32>,          // Some for memory-reading predicates (R12)
     pub origin: Origin,              // { line: u32, kind: OriginKind } (branch, entry, call, prove, lemma, eval, …)
     pub verdict: Verdict,            // Proven or Assumed (propagated to the cups it feeds)
+    pub assumed_by: Range<u32>,      // into prov: assume/axiom origins this fact rests on (for §7.1 rule 3)
+    pub checks: Range<u32>,          // into prov: runtime-checked cup lines this fact rests on (§4.1)
 }
+pub prov: Vec<u32>;                  // provenance arena (origin lines), shared by assumed_by and checks
 pub fact_args: Vec<CanonId>;
 
 pub struct Frame {                   // existing control-frame fields, plus:
@@ -685,11 +739,13 @@ pub struct FuncState {
     slots: Vec<Slot>, facts: Vec<Fact>, fact_args: Vec<CanonId>,
     lane: Vec<FactId>,               // the fact lane: a stack of fact ids in scope
     cur: Vec<CanonId>,               // local index → current value number
+    curg: Vec<CanonId>,              // mutable global index → current value number (saved/restored per frame like cur)
     saved: Vec<CanonId>,             // bindings saved per frame
     frames: Vec<Frame>, edges: Vec<Edge>, edge_facts: Vec<FactId>, edge_bindings: Vec<CanonId>,
-    vn: HashMap<(Opcode, Imm, [CanonId; 3], u32 /*epoch or 0*/), CanonId>,  // cleared per pass
+    vn: HashMap<VnKey, CanonId>,     // cleared per pass
+    // VnKey = (Opcode, Imm, args: SmallVec<[CanonId; 4]> /* any arity: calls, select */, epoch: u32 /* or 0 */)
     eps: u32, next_eps: u32,         // memory epoch (R12)
-    handles: Vec<Option<FactId>>,    // fact locals (§1.5)
+    handles: Vec<Option<FactId>>,    // fact locals and fact params (§1.5); saved/restored per frame
     pending: SmallVec<[PendingProve; 4]>,  // prove lines waiting for their consumer (R32)
     scratch: Scratch,                // §3 workspace, reset per prove
     out: FuncOut,
@@ -821,8 +877,10 @@ Enforcement by the kernel, after every LLM round: (1) the student zone is hashed
 any difference rejects the whole round (`edited a locked line: 7`). (2) An LLM-side line may not contain `assume`,
 define an `axiom:` export, add an import, or call a function that is not in the module at session start or defined by the
 LLM as a lemma. (3) Mode is strict: every cup in LLM-owned code must be **proven** or **assumed only through
-student-zone axioms**; runtime-checked is an error. (4) Every harness `False` cup must be proven. The round is accepted
-iff (1)–(4) hold; otherwise the kernel's diagnostics go back to the LLM.
+student-zone (instructor) axioms**, with an empty `depends_on_checks`; runtime-checked is an error. (4) Every harness
+`False` cup must be proven. In short, the submission is accepted only if every function it touched is **strict-clean**
+and therefore VERIFIED (§4.1); the editor itself stays in gradual mode, so a rejected submission still runs. The round
+is accepted iff (1)–(4) hold; otherwise the kernel's diagnostics go back to the LLM.
 
 ### 7.2 Adequacy: is the spec worth proving?
 
@@ -862,14 +920,16 @@ Request (JSON, sent to the model as one user message with the system prompt belo
 { "module": "<full v2 text with line numbers>",
   "locked": [[1, 12], [40, 58]],
   "task": "make every cup in $isqrt proven and every harness False cup proven",
-  "cups": [ { "line": 23, "goal": "u($r) ≤ 65535", "verdict": "runtime-checked", "diag": "nothing feeds it" } ],
-  "line_errors": [ [21, "not implied by these 2 facts: u($r)=65535"] ],
+  "cups": [ { "line": 23, "goal": "u($r) ≤ 65535", "verdict": "runtime-checked", "diag": "nothing feeds it",
+              "lane": [ { "line": 31, "fact": "$sq_le(ext_u($r), ext_u($n))" }, { "line": 36, "fact": "u($r) < 65535" } ] } ],
+  "line_errors": [ [21, "not implied by [u($r) < 65535 @36, ¬gt_u(…) @50]: u($r)=65535"] ],
   "rules": "<the rule-card digest: card titles and one-line premises, ~2 KB>",
   "round": 2, "max_rounds": 6 }
 ```
 
-Response (JSON only): `{ "edits": [ { "replace_lines": [a, b], "with": ["line", …] } ], "note": "…" }`. Edits may add
-or remove lines only inside LLM-owned ranges; the editor applies them, re-checks, and sends the next round until
+Response (JSON only): `{ "edits": [ { "replace_lines": [a, b], "with": ["line", …] } ], "note": "…" }`. Each failing cup carries
+its **lane snapshot** (the in-scope facts, top first, with birth lines), so the model can count `k` and see stale facts
+instead of guessing. Edits may add or remove lines only inside LLM-owned ranges; the editor applies them, re-checks, and sends the next round until
 accepted or `max_rounds`. The system prompt states the syntax of §1, the ownership table and "you cannot use assume or
 axioms; failed proofs are reported with counterexamples".
 
@@ -916,7 +976,9 @@ proof wires; darkred only for a violation; no green):
 | assumed | purple at 35 % with diagonal hatching | solid | dashed purple | small `A` on hover chip | hatched |
 | runtime-checked | empty, fade-up gradient | dashed gray | none | stopwatch tick | empty, dashed |
 | refuted | empty | **darkred**, double | — | witness in commentary, 💣 if from a run | empty, double outline |
+| proven\* / assumed\* (relative to checks) | as proven / assumed | as proven / assumed | as proven / assumed, plus a dotted tail to each check | small stopwatch superscript; hover lists the check lines | as proven / assumed + superscript |
 
+A **VERIFIED** badge (a small purple seal, not green) sits on the header line of each strict-clean function.
 The four are distinguished by fill pattern (solid / hatched / empty-dashed / empty-double) as well as color, so they
 survive grayscale printing and color-blind viewing.
 
