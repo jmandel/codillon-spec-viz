@@ -382,7 +382,9 @@ separate edges, each checked). The rest of the arm is dead.
 `False` with origin = the line that ended the arm; every cup there is fed by it (ex falso), mirroring Wasm's
 stack-polymorphic typing. Dead code contributes no incoming edges. An `end` reached only by dead code stays dead unless its frame's label has
 incoming edges (a `block`/`if` that was branched to); a `loop`'s `end` after a back-edge is therefore dead. Drawn: dead lines dimmed; their cups show a
-faint wire to the ending line. Error: none.
+faint wire to the ending line. Error: none. An `if` arm, a `br_if` fall-through or taken edge, or a `br_table` edge whose condition folds to a constant that
+rules it out is dead code, like the code after `br`: control never takes it. (A condition false only by reasoning
+is not dead code; it enters a fact that contradicts the lane, and the vericoding judge treats that separately, §7.1.)
 
 **R23 — `select`, `drop`, `nop`.** `select` with `#a #b #c` produces `table[(select, #a, #b, ⟦#c⟧)]`, read by §3 as
 `ite(⟦#c⟧, a, b)`. `drop` and `nop` do nothing to the lane.
@@ -423,7 +425,11 @@ verdict proven. Zero → verdict **refuted**: `⟨G⟩ is false: $p(2, 7) = 0`. 
 `evaluation exceeded 100000 steps` (deterministic: the same text always gives the same outcome). Drawn: the cup is
 filled with a small `=` mark instead of a wire. Error: as described.
 
-**R29 — predicate functions; automatic unfolding.** A function named in any proposition is a **predicate**. It must
+**R29 — predicate functions; automatic unfolding.** A function named in any proposition (a parameter, result, local, block or global refinement, a fact, an `unfold`
+or `assume` line) is a **predicate**, and so is every function a predicate or measure `call`s, transitively. (So a
+predicate makes no calls to non-predicates: its helpers are predicates too and meet every rule below. Totality is
+then inductive. An ordinary function that loops would otherwise hand the predicate its vacuously proven result
+refinement, i.e. False.) It must
 be: pure (no store, `memory.grow`, `global.set`, **no `global.get` of a mutable global**, no imports, no calls to
 non-predicates), loop-free, `i32`-resulting,
 free of refined or fact parameters (so it is total on every argument; partial domains are handled by guards inside),
@@ -433,7 +439,8 @@ read memory (its atoms then carry an epoch, R12). **Inside §3 only**, an atom `
 `$p` is replaced by its body: the body is executed symbolically (straight-line code to terms; `if`/`br_if`/`return` to
 `ite` terms), with nested non-recursive predicates unfolded to depth 4, recursive ones left as atoms. Lookup (R5) never
 unfolds. Error (on the predicate's header): `predicate $p must be pure: line N stores` / `… has a loop` / `… is
-recursive without measure:$p`.
+recursive without measure:$p`. Also an error: `$g's refinement calls $p, which is not a valid predicate` (module error on the global; the refinement
+is ignored).
 
 **R30 — `unfold $p e₁ … eₙ`: one step of a recursive predicate.** Premise: `$p` is a recursive predicate. Conclusion:
 enter the fact `eq((call $p e…), BODY₁)` where `BODY₁` is `$p`'s body executed symbolically once, with each recursive call
@@ -462,7 +469,7 @@ A failed `prove` never refutes the goal; it only fails to feed it.
 `(param $h (fact P))` and only fact results. (Ordinary functions may also have fact params and fact results: they are
 pre- and postconditions not about a single value, e.g. a memory invariant; callers feed them with cups as in R13.) Its body is **ghost code**: checked by every card above (case analysis with `if`, `prove`, `lemma`, recursion
 with a measure = induction), never executed, erased to `nop`s. Ghost code may not contain loops, stores, or impure calls,
-may call (`call`) only predicates (R29 keeps them total), has only fact results, and may recurse only directly through
+may call (`call`) only predicates, which R29 keeps total *including everything they call*, has only fact results, and may recurse only directly through
 `lemma $self` with a measure (R31); recursion through other lemmas is an error. A lemma is never the target of `call`
 (error: `$f is ghost code: write lemma $f …`). These rules make every lemma total, which the erasure argument of §6
 needs: a lemma that could fail to return would "prove" False and erase to `nop`. Ghost code
@@ -482,7 +489,8 @@ as errors instead. A pure call or load recorded in a shadow local is read by a c
 the check (an earlier line whose enclosing block arms are all still open at the check); otherwise the host
 re-evaluates the call. The top parameter of a loop is captured after the `loop` line (on entry and on every back edge).
 Float terms are evaluated host-side exactly as Wasm computes them. (Known gap: a check whose terms cannot be evaluated,
-such as one naming a parameter below the top of a multi-parameter loop or a multi-value join result, currently passes.)
+such as one naming a parameter below the top of a multi-parameter loop or a multi-value join result, currently passes.) A cup the kernel **refutes** (evaluation or a constant fold shows it false) is not compiled into a runtime check:
+the gradual run reaches the trap or `unreachable` the cup guards, rather than stopping at the cup with a failed check.
 
 ## 3. The decision procedure behind `prove k`
 
@@ -899,14 +907,29 @@ LLM as a lemma. (3) Mode is strict: every cup in every LLM-owned function (touch
 **assumed only through student-zone (instructor) axioms**, with an empty `depends_on_checks`; runtime-checked is an
 error. (4) Every harness `False` cup must be proven. (5) **The program must run.** The kernel's theorem is partial
 correctness (§6.1), which a body that never returns (`loop br end`, or a call to itself) satisfies for any spec. So
-`$main`, every harness, and every LLM-owned function whose parameters are all value parameters is run on up to 16
-inputs from its input list (§6.3) that satisfy its precondition and whose every argument is in 0..100; each run must
-finish within 1,000,000 steps and call depth 150. A run that runs out is an error only if it runs out inside an
-LLM-owned function (a costly student predicate is the student's business): `$isqrt(7) does not finish: $isqrt runs
-past 1000000 steps or calls`. A student line made unreachable (dead) by LLM edits is a boundary violation. In short,
+`$main`, every harness and every LLM-owned function are run, each on up to 16 inputs from its input list (§6.3) that
+satisfy its precondition. Fact parameters are part of the precondition and are evaluated on the run's initial memory.
+The inputs are the ones whose every argument is in 0..100 if there are any; otherwise the 16 closest to zero from a
+wider list. Each run must finish within 1,000,000 steps and call depth 150. A run that runs out is an error when **any
+LLM-owned function is on the call stack** at that moment, wherever the counter trips: `$isqrt(7) does not finish:
+$isqrt runs past 1000000 steps or calls`. Only a runaway in student code that no LLM-owned frame is running (a costly
+spec predicate checking a result) is the student's business. An LLM-owned function that no listed input satisfies
+counts as run if a run of `$main` or a harness entered it; otherwise it is an error: `termination of $f is unchecked:
+…; a harness that calls it would let the judge run it`. Rule (5) is checked whenever the text is in bounds and parses,
+and its reasons are listed after the others. (6) **Locked lines must be reached.** A locked line inside an LLM-owned
+body must not become, compared with the session start: **dead code** (R22: after `br`/`return`/`unreachable`, or
+under a constant-false condition: `makes locked line N unreachable`); **reachable only ex falso**, i.e. the kernel
+proves False from the lane there (a branch decided by reasoning, an unfolded helper, two contradictory facts: `makes
+locked line N reachable only ex falso`), so its obligations would be vacuous; or, for a locked block header, a block
+that is left **only on contradictory edges, or never** (e.g. a `return` inside it), so its block facts would never be
+checked. These are boundary violations. Lines in student-owned bodies (harnesses, `$main`, predicates) are exempt: the
+LLM cannot edit them, and a harness's `unreachable` arm is *meant* to become unreachable once the implementation is
+right. A line's context for (1) is the chain of enclosing `block`/`loop`/`if` headers; `else` is not a boundary, so a
+student line moved from the then-arm to the else-arm keeps its context. This is harmless: the LLM could negate the
+condition and swap its own arms to the same effect. In short,
 the submission is accepted only if every LLM-owned function is **strict-clean** and therefore VERIFIED (§4.1), and the
 program runs; the editor itself stays in gradual mode, so a rejected submission still runs. The round is accepted iff
-(1)–(5) hold; otherwise the kernel's diagnostics go back to the LLM.
+(1)–(6) hold; otherwise the kernel's diagnostics go back to the LLM.
 
 ### 7.2 Adequacy: is the spec worth proving?
 
