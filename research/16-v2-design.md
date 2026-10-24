@@ -107,7 +107,7 @@ after the join (`block`/`if`) or at the loop head (`loop`); a `lemma`/`unfold` l
 parameters declared before it. A result refinement may mention parameters; it means their **entry** values, even
 if the body later `local.set`s a parameter. Integer literals take the type of the operator they feed.
 
-**Propositions are folded Wasm.** `(fact E)` asserts "E evaluates to a nonzero i32". There is no other logic
+**Propositions are folded Wasm.** `(fact E)` asserts "E evaluates **without trapping** to a nonzero i32" (decided 2026-10-24 after kernel review B5). So a fact used as a hypothesis also tells the kernel that every divisor inside it is nonzero (and no signed INT_MIN/−1 occurs), and a goal fact containing a division is provable only if its divisors are shown nonzero; a runtime check (R35) of a fact whose evaluation traps reports the fact as failed rather than trapping the program. There is no other logic
 language: `¬E` is `(i32.eqz E)`, `E₁ ∧ E₂` is two `(fact …)` clauses (or `(i32.and E₁ E₂)` for 0/1 operands),
 `False` is `(fact (i32.const 0))`, bounded quantifiers are predicate functions. Refinements are sugar:
 
@@ -505,8 +505,8 @@ allows (§3.3); only then does its parent use it. Two rules apply to every row w
 | `mul(a,b)` both non-constant | expand `A·B` as a polynomial; each degree-≥2 monomial (`r·r`, `i·j`) becomes a monomial variable, keyed by its sorted factor list; minus `2ʷ·q`, `q ≥ 0` |
 | `div_u(a, c)`, `shr_u(a, k)` (constant `c ≥ 1`) | fresh `d` with `c·d ≤ A ≤ c·d + c − 1` |
 | `rem_u(a, c)`, `and(a, 2ᵏ−1)` (constant `c ≥ 1`) | `A − c·d`, `d` fresh with the same bounds (so result `∈ [0, c)`) |
-| `div_u`/`rem_u`/`div_s`/`rem_s` by the **constant 0** | opaque leaf (only reachable in a virtual term; never the unsatisfiable `0·d ≤ A ≤ −1`) |
-| `div_u(a,b)`, `rem_u(a,b)` non-constant | fresh variable `r` with `r ≤ A`; for `rem_u` also `r + 1 ≤ B`, because a real slot's value exists, so `b ≠ 0` (R24). For a **virtual** slot (from an unfolding or an instantiated proposition, which may never be computed) the constraint is guarded: `B = 0 ∨ r + 1 ≤ B` (a case split) |
+| `div_u`/`rem_u`/`div_s`/`rem_s` by the **constant 0** | in a hypothesis the fact is unsatisfiable-free only if never evaluated, so treat the term as an opaque leaf; in a goal the fact is false (it would trap) |
+| `div_u(a,b)`, `rem_u(a,b)` non-constant | fresh variable `r` with `r ≤ A`; for `rem_u` also `r + 1 ≤ B`, because a real slot's value exists, so `b ≠ 0` (R24). For a **virtual** slot (from an unfolding or an instantiated proposition) the trap-free reading of facts applies: in a hypothesis, add `B ≥ 1`; in a goal, the `B = 0` case makes the goal false (it is provable only if `B ≥ 1` follows). The result bound `r ≤ A` and `r + 1 ≤ B` are applied only together with `B ≥ 1` (kernel review B5) |
 | `wrap_i64(a)` | `A − 2³²·q` |
 | `extend_i32_u(a)` | `A` |
 | `extend_i32_s(a)`, signed reading `s(x)` | `A − 2ʷ·σ` (or `A + (2⁶⁴ − 2³²)·σ` for extend), `σ ∈ [0,1]` with `2ʷ⁻¹·σ ≤ A ≤ 2ʷ⁻¹ − 1 + 2ʷ⁻¹·σ` |
