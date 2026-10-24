@@ -7,7 +7,7 @@ The output has exactly as many lines as the input. Rules:
   - refinements (T | ...) -> T ; (fact ...) clauses deleted from headers and block lines
   - (local $h fact) -> comment
   - prove / lemma / unfold / assume, and local.get/set/tee of a fact local -> nop
-  - every body line of a lemma (a function whose results are all facts) -> nop
+  - every body line of a lemma (exported as lemma:<name> or axiom:<name>) -> nop
 """
 import sys
 
@@ -93,17 +93,8 @@ def erase(lines):
         if stripped.startswith("(func"):
             in_func = True
             fact_locals = set()
-            # lemma: has results, all of which are facts
-            results = []
-            j = 0
-            while True:
-                j = code.find("(result", j)
-                if j < 0:
-                    break
-                k = match_paren(code, j)
-                results.append(code[j:k])
-                j = k
-            lemma = bool(results) and all("(fact" in r for r in results)
+            # lemma or axiom: marked by its export name (design 16 §1.7); its body is ghost code
+            lemma = '(export "lemma:' in code or '(export "axiom:' in code
             out.append(tidy(erase_groups(code)) + ((" " + comment) if comment else ""))
             continue
         if in_func and stripped == ")":

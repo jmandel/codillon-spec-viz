@@ -41,7 +41,7 @@ function inputs(types, n) {
 function paramTypes(watText, exportName) {
   const line = watText.split("\n").find((l) => l.includes(`(export "${exportName}")`));
   if (!line) throw new Error(`no export ${exportName}`);
-  return [...line.matchAll(/\(param\s+\$\S+\s+(i32|i64)\)/g)].map((m) => m[1]);
+  return [...line.matchAll(/\(param\s+\$\S+\s+\(?(i32|i64)[\s)]/g)].map((m) => m[1]);
 }
 
 function call(inst, name, args) {
@@ -81,7 +81,14 @@ for (const f of files) {
       if (!ok) failures++;
       lines.push(`  ${ok ? "ok  " : "FAIL"} ${r.export}(${r.args.join(", ")}) → ${got} (expected ${r.expect})`);
     } else {
-      const ins = inputs(types, r.samples ?? 300);
+      let ins = inputs(types, r.samples ?? 300);
+      if (r.domain) {   // run-time domain only (keeps slow spec predicates cheap); the theorem is still for all inputs
+        const [lo, hi] = r.domain, span = BigInt(hi - lo + 1);
+        ins = ins.map((a) => a.map((x, i) => {
+          const v = BigInt(lo) + (BigInt.asUintN(64, BigInt(x)) % span);
+          return types[i] === "i64" ? v : Number(v) | 0;
+        }));
+      }
       let first = null, count = 0;
       for (const a of ins) {
         const got = call(instance, r.export, a);

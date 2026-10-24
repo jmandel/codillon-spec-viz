@@ -68,8 +68,8 @@ instruction** that occupies a line of its own.
 ```
 header      ::= "(func" id export* hparam* hresult*
 export      ::= "(export" string ")"                          ;; special names in §1.7
-hparam      ::= "(param" id vtype ")" | "(param" id prop ")"  ;; proof parameter (lemmas only)
-hresult     ::= "(result" vtype ")"   | "(result" prop ")"    ;; at most one value result
+hparam      ::= "(param" id vtype ")" | "(param" id prop ")"  ;; fact parameter: a precondition not about one value
+hresult     ::= "(result" vtype ")"   | "(result" prop ")"    ;; at most one value result; fact results are postconditions
 local       ::= "(local" id vtype ")" | "(local" id "fact" ")"
 global      ::= "(global" id ( vtype | "(mut" vtype ")" ) "(" const-instr ")" ")"
 
@@ -126,7 +126,7 @@ default edge `(i32.ge_u i n)`.
 
 ### 1.5 Fact locals
 
-`(local $h fact)` declares a handle. `local.set $h` binds `$h` to the lane's most recent entry (the lane is
+`(local $h fact)` declares a handle; a fact parameter `(param $h (fact P))` is a handle bound at entry to its fact. `local.set $h` binds `$h` to the lane's most recent entry (the lane is
 unchanged; nothing is popped). `local.tee $h` is the same. `local.get $h` re-enters the bound fact at the top of the
 lane, if that fact is still in scope; otherwise the line is an error, "`$h` holds a fact that ended at line N". A
 handle never goes stale by assignment of ordinary locals, because facts are about values (R7); what goes stale is the
@@ -152,7 +152,7 @@ match between an old fact and a new value.
 | `measure:<f>` | measure for the recursive predicate or lemma `<f>`; same params as `<f>`, `i32`/`i64` result read unsigned | pure, non-recursive (R31) |
 | `axiom:<name>` | lemma without a proof (empty body); trusted, verdict *assumed* | student/instructor zone only |
 | `harness:<name>` | functional-spec harness; params are the quantified inputs | ordinary function; its `unreachable` needs False (R26) |
-| — | **lemma**: a function whose results are all `(fact …)` | body is ghost: checked, erased (R33) |
+| `lemma:<name>` | **lemma**: value params, fact params, only fact results | body is ghost: checked, never run, erased (R33) |
 
 ### 1.8 Erasure
 
@@ -166,7 +166,7 @@ Codillon diagnostics agree between the v2 text and the erased Wasm.
 | `(local $h fact)` | `;;~ (local $h fact)` (comment) |
 | block/loop/if line | `(fact …)` clauses deleted; refinements in block params/results → plain types |
 | `prove`, `lemma`, `unfold`, `assume`, fact-local get/set/tee | `nop ;;~ <original text>` |
-| every body line of a lemma function | `nop ;;~ <original text>` (header kept: value params remain, fact results deleted) |
+| every body line of a lemma or axiom (exported `lemma:`/`axiom:`) | `nop ;;~ <original text>` (header kept: value params remain, fact params/results deleted) |
 | anything else | unchanged |
 
 An erased lemma is a function with value parameters, no results and a body of `nop`s, which is valid Wasm.
@@ -230,10 +230,13 @@ Two atoms **match** iff their normal forms are identical (same relation, signedn
 Drawn: comparison fractions are unchanged; the atom appears as a chip only when it becomes a fact (R16–R21).
 Error: none.
 
-**R5 — feeding a cup.** Premise: a cup with atom `G` on line `L`. If `prove` lines directly above `L` have pending
-outputs, the first pending output feeds the first cup that lookup cannot feed (R32). Otherwise lookup: scan the lane
+**R5 — feeding a cup.** Premise: a cup with atom `G` on line `L`. Cups of a line are taken in order (value-operand
+cups in pop order, then fact-parameter cups in parameter order, then edge cups, then the measure cup). If `prove` lines
+directly above `L` have pending outputs, the first pending output feeds the first cup that neither lookup nor
+evaluation can feed (R32). Otherwise lookup: scan the lane
 from the top for a fact matching `G` (R4); the first match feeds the cup. Also: if every canonical id in `G` is a
-constant, the cup may be fed by evaluation (R28). Conclusion: the cup is fed; its verdict is the feeding fact's verdict
+constant, the cup may be fed by evaluation (R28). Conclusion: the cup is fed (a lookup-fed atom is not entered again, so it does not disturb `prove k`'s top-`k`); its
+verdict is the feeding fact's verdict
 (proven, or assumed if the fact's derivation depends on an `assume`/axiom; §4). Drawn: an always-on wire from the
 feeding fact's chip (at its birth line) to the cup. Error (no feed): strict mode — `needs ⟨G⟩; nothing feeds it`, plus,
 if the lane holds a fact that matches `G` except for one canonical id that is an older value of the same local,
@@ -284,21 +287,24 @@ chips that carry epoch `ε` fray at this line. Error: as R10.
 **R12 — memory epochs.** The epoch `ε` is a counter in the function pass, starting at 0 on entry. It increments at
 every store, `memory.fill`, `memory.copy`, and impure call. A predicate call that reads memory (contains a load in its
 body or callees) is keyed and stored with the epoch it was evaluated in: its atom is `Pred($p, args)@ε`. At a join
-whose incoming edges carry different epochs, and at a loop head whose body may bump the epoch (pre-scan), the join gets
-a fresh epoch. `memory.size` is a fresh value with the fact `(i32.ge_u #size min)` entered. Drawn: an epoch tick on the
+whose incoming edges carry different epochs, and at a loop head whose body may bump the epoch (pre-scan, syntactic and
+conservative: a store followed by `return` still counts), the join gets a fresh epoch. To carry a memory predicate into
+a loop, state it as a loop fact (`loop (fact (call $rep_ok))`): its entry cup is in the entry epoch, its back-edge cups in
+the head epoch (hashtable.wat, `$insert`). `memory.size` is a fresh value with the fact `(i32.ge_u #size min)` entered. Drawn: an epoch tick on the
 frame bracket where it changes (only when some chip carries an epoch). Error: none.
 
 ### Calls and function boundaries
 
 **R13 — `call $f`.** Premise: argument ids `#a₁ … #aₙ`. Cups: for each refined parameter `(param $pᵢ (T | Rᵢ))`, the
-atom `Rᵢ[v := #aᵢ, $pⱼ := #aⱼ]`. Conclusion: if `$f` is impure (it stores, calls an import or an impure function,
+atom `Rᵢ[v := #aᵢ, $pⱼ := #aⱼ]`, and for each fact parameter `(param $h (fact P))` the atom `P[$pⱼ := #aⱼ]`, instantiated in the
+caller's current epoch. Conclusion: if `$f` is impure (it stores, calls an import or an impure function,
 grows memory, or sets a global), apply R12 and R9 first. The result id is `table[(call $f, #a…, ε if $f reads memory)]`
-for a pure `$f`, fresh otherwise. Enter each result refinement `R[v := #r, $pⱼ := #aⱼ]`. The callee's declared header is
+for a pure `$f`, fresh otherwise. Enter each result refinement `R[v := #r, $pⱼ := #aⱼ]` and each fact result, both in the epoch after the call. The callee's declared header is
 the whole contract; its body is not consulted (except that a non-recursive predicate unfolds inside §3, R29). Drawn:
 the call's fraction gains one proof cup per refined parameter, beside that parameter's cup; result facts appear as
 chips on the call line. Error: `$f needs ⟨Rᵢ⟩ for $pᵢ; nothing feeds it`.
 
-**R14 — function entry.** Each parameter gets a fresh id; parameter refinements are entered in order, origin = the
+**R14 — function entry.** Each parameter gets a fresh id; parameter refinements and fact parameters are entered in order, origin = the
 header line. Ordinary locals start bound to `const(T, 0)`. A refined local `(local $k (T | R))` has a cup `R[v := 0]` on its
 declaration line (normally fed by evaluation, R28). `ε := 0`. Drawn: header chips. Error: on the local's line,
 `$k starts at 0, which must satisfy ⟨R⟩`.
@@ -353,7 +359,8 @@ separate edges, each checked). The rest of the arm is dead.
 **R22 — `return`, and dead code.** `return` checks R15 at this point, then the rest of the arm is dead. In dead code
 (after `br`, `br_table`, `return`, `unreachable`, until the arm's `else`/`end`) the lane holds the single extra fact
 `False` with origin = the line that ended the arm; every cup there is fed by it (ex falso), mirroring Wasm's
-stack-polymorphic typing. Dead code contributes no incoming edges. Drawn: dead lines dimmed; their cups show a
+stack-polymorphic typing. Dead code contributes no incoming edges. An `end` reached only by dead code stays dead unless its frame's label has
+incoming edges (a `block`/`if` that was branched to); a `loop`'s `end` after a back-edge is therefore dead. Drawn: dead lines dimmed; their cups show a
 faint wire to the ending line. Error: none.
 
 **R23 — `select`, `drop`, `nop`.** `select` with `#a #b #c` produces `table[(select, #a, #b, ⟦#c⟧)]`, read by §3 as
@@ -395,6 +402,7 @@ filled with a small `=` mark instead of a wire. Error: as described.
 
 **R29 — predicate functions; automatic unfolding.** A function named in any proposition is a **predicate**. It must
 be: pure (no store, `memory.grow`, `global.set`, imports, or calls to non-predicates), loop-free, `i32`-resulting,
+free of refined or fact parameters (so it is total on every argument; partial domains are handled by guards inside),
 directly self-recursive at most (with a measure, R31), and every cup in its body must be proven or fed by an axiom; a
 runtime-checked cup is not allowed in a predicate (the kernel evaluates predicates, so they must be total). It may
 read memory (its atoms then carry an epoch, R12). **Inside §3 only**, an atom `Pred($p, args)` for a non-recursive
@@ -424,12 +432,14 @@ and one fact below (wired to the goal cup). Errors (on the `prove` line; the goa
 counterexample u(i)=8, u(n)=8`; `exceeds the 64-term cap; use a lemma`; `nothing to feed` (no cup below).
 A failed `prove` never refutes the goal; it only fails to feed it.
 
-**R33 — lemmas and axioms.** A lemma function has value params, fact params `(param $h (fact P))` and only fact
-results. Its body is **ghost code**: checked by every card above (case analysis with `if`, `prove`, `lemma`, recursion
+**R33 — lemmas and axioms.** A lemma is exported as `lemma:<name>`; it has value params, fact params
+`(param $h (fact P))` and only fact results. (Ordinary functions may also have fact params and fact results: they are
+pre- and postconditions not about a single value, e.g. a memory invariant; callers feed them with cups as in R13.) Its body is **ghost code**: checked by every card above (case analysis with `if`, `prove`, `lemma`, recursion
 with a measure = induction), never executed, erased to `nop`s. Ghost code may not contain loops, stores, or impure calls,
 and has no gradual mode: an unfed cup there is an error. The line `lemma $f e₁ … eₙ` has one cup per fact param,
-`P[$params := e]`, and enters each fact result `Q[$params := e]` (origin = this line). An **axiom** is a lemma exported
-as `axiom:<name>` with an empty body; its results enter with verdict **assumed**. A lemma with an error in its body
+`P[$params := e]` (plus the measure cup of R31 if `$f` is the enclosing lemma), and enters, in this order, the atoms
+of its prove-fed cups and then each fact result `Q[$params := e]` (origin = this line). An **axiom** is exported
+as `axiom:<name>` and has an empty body; its results enter with verdict **assumed**. A lemma with an error in its body
 also produces assumed facts (reason: `lemma $f is unproven`). Error on the lemma line: `$f needs ⟨P⟩`.
 
 **R34 — `assume (fact E)`.** Enters `E[cur]` with verdict assumed. Forbidden in LLM-owned code (§7) and in predicates.
@@ -471,7 +481,7 @@ has an interval.
 | `mul(a,b)` both non-constant | expand `A·B` as a polynomial; each degree-≥2 monomial (`r·r`, `i·j`) becomes a monomial variable, keyed by its sorted factor list; minus `2ʷ·q`, `q ≥ 0` |
 | `div_u(a, c)`, `shr_u(a, k)` (constant) | fresh `d` with `c·d ≤ A ≤ c·d + c − 1` |
 | `rem_u(a, c)`, `and(a, 2ᵏ−1)` (constant) | `A − c·d`, `d` fresh with the same bounds (so result `∈ [0, c)`) |
-| `div_u(a,b)`, `rem_u(a,b)` non-constant | fresh variable `r` with `r ≤ A`; for `rem_u` also `r + 1 ≤ B` (the value exists, so `b ≠ 0`, R24) |
+| `div_u(a,b)`, `rem_u(a,b)` non-constant | fresh variable `r` with `r ≤ A`; for `rem_u` also `r + 1 ≤ B`, because a real slot's value exists, so `b ≠ 0` (R24). For a **virtual** slot (from an unfolding or an instantiated proposition, which may never be computed) the constraint is guarded: `B = 0 ∨ r + 1 ≤ B` (a case split) |
 | `wrap_i64(a)` | `A − 2³²·q` |
 | `extend_i32_u(a)` | `A` |
 | `extend_i32_s(a)`, signed reading `s(x)` | `A − 2ʷ·σ` (or `A + (2⁶⁴ − 2³²)·σ` for extend), `σ ∈ [0,1]` with `2ʷ⁻¹·σ ≤ A ≤ 2ʷ⁻¹ − 1 + 2ʷ⁻¹·σ` |
@@ -760,18 +770,15 @@ functional spec is therefore an ordinary exported function `harness:<name>` that
 check, and reaches `unreachable` iff the check fails:
 
 ```wat
-(func $isqrt_ok (export "harness:isqrt") (param $n i32)
-  (local $r i64)
+(func $isqrt_harness (export "harness:isqrt") (param $n i32)
   local.get $n
-  call $isqrt
+  call $isqrt               ;; result fact: $is_isqrt(ext_u(#r), ext_u($n))
   i64.extend_i32_u
-  local.set $r
-  local.get $r
   local.get $n
   i64.extend_i32_u
-  call $is_isqrt            ;; the check, a predicate
-  br_if 0                   ;; check passed: leave the function body
-  prove 2                   ;; hypotheses: the call's result fact and ¬check
+  call $is_isqrt            ;; the check, the same predicate
+  br_if 0                   ;; check passed: leave the function
+  prove 2                   ;; hypotheses: ¬check (fall-through) and the call's result fact
   unreachable               ;; cup: False
 )
 ```
@@ -928,7 +935,9 @@ survive grayscale printing and color-blind viewing.
 
 **Open questions.**
 1. *Re-citing.* Is `local.set $h` / `local.get $h` to reorder hypotheses tolerable for students, or should `prove`
-   accept explicit chip references (e.g. `prove @14 @22`, line numbers) at the cost of edit-fragile text?
+   accept explicit chip references (e.g. `prove @14 @22`, line numbers) at the cost of edit-fragile text? The examples
+   say it is fine for intro code (parity, isqrt, gcd use `prove 0`–`prove 3`) and clumsy for lemma bodies
+   (primality's `$from_agrees` needs `prove 7` and three re-cited handles).
 2. *Frame rules for memory.* A `stable` export convention (a predicate that reads only a declared address range,
    unaffected by stores outside it) would let the hash-table invariant survive stores. Worth the complexity?
 3. *Ghost integers.* An unbounded ghost type would make harness overflow impossible; v2 uses `i64` instead. Is the
@@ -942,3 +951,6 @@ survive grayscale printing and color-blind viewing.
    bridge itself is not specified here.
 7. *Mutation budget.* With 6 operators the hash table yields ~150 mutants; is running all harnesses on each per edit fast
    enough in the browser, or should mutation run on demand only? (v2: on demand.)
+8. *Congruence.* Opaque terms are keyed by canonical arguments, so `$p(#g)` and `$p(#h)` are unrelated even under a
+   hypothesis `#g = #h`. The examples route around it by naming values in locals (gcd harness); a small congruence step
+   in §3 would remove the workaround.
