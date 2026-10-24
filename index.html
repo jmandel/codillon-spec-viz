@@ -37,6 +37,12 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
   <p>One page, written as if the design were decided: a type is a set, a refinement is a region inside the shape, the fraction is a sequent, a failed obligation is an inserted hole line, a counterexample is a run on the slider, and density lives in lenses. Walks through parity, integer square root and the hash table with every seeded bug, live.</p>
 </div>
 
+<h2>Worked example: gcd as a type</h2>
+<div class="card" style="background:#fffff8">
+  <div class="n">Euclid</div><a class="t" href="artifacts/gcd-as-a-type.html">The type of the answer never changes</a>
+  <p>Euclid's algorithm with its output typed as <em>a number whose divisors are exactly the common divisors of a and b</em>. The type, the one lemma (a rectangle-tiling picture), the loop's type as a shaded set of states, two seeded mistakes, and the machine-checked Lean proof (<a href="proofs/EuclidGcd.lean">proofs/EuclidGcd.lean</a>, Lean 4.35.0, core only) cross-linked line by line to the pictures.</p>
+</div>
+
 <h2>The real editor</h2>
 <p>Refined Codillon is now running in the actual editor (a fork of Codillon): specifications are parsed, erased from the binary, and checked at run time, drawn in Codillon's own idiom. Open an example in a new tab:
 <a href="editor/#ex=parity-p1&step=fail" target="_blank">parity, gate inverted</a> ·
