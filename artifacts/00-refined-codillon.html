@@ -402,6 +402,7 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
 .small-p { font-size: 15.5px; }
 @media (max-width: 900px) { .preview { padding: 6px 6px 10px; } .openlink { min-height: 32px; line-height: 30px; } }
 .livefile { padding: 10px 12px; font-family: var(--sans); font-size: 13.5px; color: #555; }
+.wip { border-left: 3px solid #483D8B; padding: 6px 10px; background: #f4f2fb; margin: 6px 0 14px; }
 
 </style></head>
 <body>
@@ -412,14 +413,14 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
 </header>
 
 <section id="s0" class="sec">
-  <p class="lede">Codillon is Keith Winstein’s structured editor for WebAssembly, written for Stanford’s CS 10N. You type one instruction per line. On every keystroke Codillon re-validates and re-runs your module, and it draws what it knows in the margin. Each value’s type is a shape, the operand stack is a set of curves from producer to consumer, anything wrong is darkred, and a slider lets you travel through the run. <b>Refined Codillon adds one idea: a type is a set of values, and a refinement is a smaller set drawn inside the type’s shape.</b> With that idea the editor checks more than types. It checks that your module does what its spec says, and when it doesn’t, it shows you where and why in the same margin, with the same shapes. This page composes the strongest devices from ten competing prototypes into one design. The prototypes, the research and the synthesis are in <a href="../index.html">the study</a>.</p>
+  <p class="lede">Codillon is Keith Winstein’s structured editor for WebAssembly, written for Stanford’s CS 10N. You type one instruction per line. On every keystroke Codillon re-validates and re-runs your module, and it draws what it knows in the margin. Each value’s type is a shape, the operand stack is a set of curves from producer to consumer, anything wrong is darkred, and a slider lets you travel through the run. <b>Refined Codillon adds one idea: a type is a set of values, and a refinement is a smaller set drawn inside the type’s shape.</b> With that idea the editor checks more than types. It checks that your module does what its spec says, and when it doesn’t, it shows you where and why in the same margin, with the same shapes. This page composes the strongest devices from ten competing prototypes into one design. The prototypes, the research and the synthesis are in <a href="../index.html">the study</a>. How the design runs, and is proven, in the real editor is in <a href="real-editor.html">Refined Codillon in the real editor</a>.</p>
   <p>How to read this page: every picture is live. Drag a slider or press ← / → to step through a run. Hover a shape to magnify it, and click to pin the magnifier (on a touch screen, tap a shape to magnify it and tap again to pin). Click a loop line or a function header to open a lens. When the editor suggests a fix, click it, and the code changes. Undo puts it back.</p>
   <div class="beforeafter">
     <div class="bacap">Codillon today: <code>$half</code> with a plain <code>i32</code> parameter, running in the real editor</div>
     <div id="ba0live"></div>
     <div class="bacap">the same function with one refinement, also in the real editor</div>
     <div id="ba1live"></div>
-    <div class="banote">Only one thing changes. The parameter now says <code>(i32 | $x % 2 == 0)</code>, so the shape of <code>$x</code> on the header and on <code>local.get $x</code> grows from 30 to 84 px and becomes a number line with a comb: one tooth for each even value near 0, and stripes out to the walls. The dot is the value at this step. Everything else is Codillon as it is today: the fraction, the cups, the curves, the gray line numbers. Both pictures are the real editor, a fork of Codillon that parses refinements, erases them from the binary and checks them at run time. Drag its slider, or open it in a new tab and edit the code.</div>
+    <div class="banote">Only one thing changes. The parameter now says <code>(i32 | $x % 2 == 0)</code>, so the shape of <code>$x</code> on the header and on <code>local.get $x</code> grows from 30 to 84 px and becomes a number line with a comb: one tooth for each even value near 0, and stripes out to the walls. The dot is the value at this step. Everything else is Codillon as it is today: the fraction, the cups, the curves, the gray line numbers. Both pictures are the real editor, a fork of Codillon that parses refinements, erases them from the binary, checks them at run time and proves them with Z3. Drag its slider, or open it in a new tab and edit the code.</div>
   </div>
 </section>
 
@@ -454,7 +455,7 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
   <p><b>Seed P1</b> deletes the negation. Now the else-arm is reached by odd numbers. The comb arriving at line 21 has its teeth on the odd values, and those teeth spill over the rim. The editor inserts a hole after the call that holds the witness <code>x = 3</code>, and it marks ⚖ twice: on line 21, where the obligation fails, and on line 15, the line you must change. Replay the witness, then accept the code chip. The hole closes. <b>Seed P2</b> swaps <code>i32.shr_s</code> for <code>i32.shr_u</code>, which is right for every even x ≥ 0 and wrong for every negative one. <b>Seed P3</b> is a spec bug: “half is smaller” is false for 0 and for every negative even number. Nothing in the body spills. The hole attaches to the header’s second conjunct, and its only chip is a spec chip. The rule is <b>blame goes where the fix goes</b>.</p>
   <div class="lessonctl"><span class="ctl-l">seed:</span><span class="seg" id="pseed"></span><button id="pundo" class="ubtn">↶ undo</button></div>
   <div id="plive"></div>
-  <div class="preview"><div class="prevhead"><span class="prevtag">DESIGN PREVIEW · not yet in the editor</span> <span id="pprevnote">The live editor above runs the program and checks every spec line at run time. This preview adds what needs a static checker: the hole after the obligation with its suggestion chips, the witness on a ghost track, and spills drawn from the proof. It uses the fixture’s line numbers, which have no <code>$main</code>.</span></div>
+  <div class="preview"><div class="prevhead"><span class="prevtag">DESIGN PREVIEW · holes, suggestion chips and lenses</span> <span id="pprevnote">The live editor above is real. It runs the program, checks every spec line on the run, and proves or refutes each obligation with Z3. Proven lines are silent. A refuted line gets ⚖ and the solver’s counterexample, which you can replay from the dashed track. An undecided line gets an indigo ?. This preview adds only what the editor does not do yet: the hole line after the obligation, with suggestion chips you can accept, undo or fork, and the lenses. It uses the fixture’s line numbers, which have no <code>$main</code>.</span></div>
   <div class="lessonbar" id="pbar"></div>
   <div class="lgrid"><div id="plist"></div><div id="pdock"></div></div></div>
 </section>
@@ -464,35 +465,35 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
   <p><code>$isqrt</code> searches upward for the largest <code>r</code> with <code>r·r ≤ n</code>. A student usually gets there in four steps. Each tab below is one step of the same listing, and accepting a hole’s first chip moves you to the next tab.</p>
   <ol class="steps">
     <li><b>How a loop is checked.</b> The verifier cuts the program at <code>loop $grow</code>. It treats any state that satisfies the <code>(@invariant)</code> as a possible arrival at the loop head, whatever the code before the loop did, and it checks one iteration from there. So a counterexample can be a <i>loop-head state</i> that your run never reaches. With no invariant every state qualifies, even r = 5 when line 3 sets r = 0.</li>
-    <li><b>No invariant yet.</b> At the top of the loop the checker knows nothing about <code>$r</code>. It finds a <i>loop-head state</i>, n = 3 with r = 5, that leaves through the exit with a wrong answer. The loop line shows ∞? because nothing says the loop ends. The chip moves the invariant into lines 7–8.</li>
+    <li><b>No invariant yet.</b> At the top of the loop the checker knows nothing about <code>$r</code>. It finds a <i>loop-head state</i> that leaves through the exit with a wrong answer: n = 3 with r = 5 in the preview, and n = 0 with r = −5 from Z3 in the live editor. The loop line shows ∞? because nothing says the loop ends. The chip moves the invariant into lines 7–8.</li>
     <li><b>Signed attempt.</b> The invariant holds, but the comparison on line 17 is <code>i32.gt_s</code>. With r = 46340 the product on line 15 is 46341² = 2147488281. That number is past INT_MAX, so the product’s shape grows a <i>nub</i> beyond the wall, and a dotted arc shows where the machine wraps it to −2147479015. The cup on line 17 reads the product signed, and the nub spills. A real run would first fail at step ≈695 000, so the counterexample is a <i>one-iteration replay</i> from that state. Replay it, then click the product shape on line 15 to open the <b>ring</b>.</li>
-    <li><b>No lemma hint.</b> With <code>i32.gt_u</code> the remaining question is nonlinear: does <code>r·r ≤ n</code> give <code>r ≤ 46340</code>? The checker can’t tell. The hole is indigo and <i>unknown</i>, never darkred, and it counts how often the run-time check held (∘ 4). It offers an <i>apply?</i> list. The wrong instance shakes; <code>(@use sq_lt_sq $r 46341)</code> closes the hole. You can also admit the fact instead, and then everything the admission supports is ghosted.</li>
-    <li><b>All proven.</b> The listing is calm. Click the <code>loop</code> line for the <b>lap chart</b>: every lap is ivory and the exit cell is proven. Click the header for the <b>relation plot</b>. Then seed S2, the spec bug, and every perfect square lights up.</li>
+    <li><b>No lemma hint.</b> With <code>i32.gt_u</code> the remaining question is nonlinear: does <code>r·r ≤ n</code> give <code>r ≤ 46340</code>? The design assumes a checker that can’t tell. (Z3 in the live editor proves it outright, so there the line is simply silent.) In the preview the hole is indigo and <i>unknown</i>, never darkred, and it counts how often the run-time check held (∘ 4). It offers an <i>apply?</i> list. The wrong instance shakes; <code>(@use sq_lt_sq $r 46341)</code> closes the hole. You can also admit the fact instead, and then everything the admission supports is ghosted.</li>
+    <li><b>All proven.</b> In the live editor this is a real proof. Every obligation goes to Z3 and every line is silent. In the preview below the listing is calm too. Click the <code>loop</code> line for the <b>lap chart</b>: every lap is ivory and the exit cell is proven. Click the header for the <b>relation plot</b>. Then seed S2, the spec bug, and every perfect square lights up.</li>
   </ol>
   <div class="lessonctl"><span class="ctl-l">step:</span><span class="seg" id="qtabs"></span><span class="ctl-l">or seed a bug:</span><select id="qbug"><option value="">—</option><option value="S1">S1 · signed compare</option><option value="S2">S2 · &lt; / ≤ swapped (spec)</option><option value="S3">S3 · start at 1</option></select><span class="ctl-l">your run:</span><select id="qin"><option>10</option><option>16</option><option>4</option><option>0</option><option>40</option></select><button id="qundo" class="ubtn">↶ undo</button></div>
   <div id="qlive"></div>
-  <div class="preview"><div class="prevhead"><span class="prevtag">DESIGN PREVIEW · not yet in the editor</span> <span>The live editor above checks the invariant, the measure and the ensures on every run, and counts how often each held (∘N). That is “held on this run”, never “proven”. It cannot show S1’s failure, because the failing input needs about 695 000 steps. This preview adds the static side: the one-iteration counterexample on a ghost track, the hole with its fixes, the unknown lemma, the ring and lap lenses, and “proven”.</span></div>
+  <div class="preview"><div class="prevhead"><span class="prevtag">DESIGN PREVIEW · holes, suggestion chips and lenses</span> <span>The live editor above proves this listing with Z3. Where the proof fails it gives ⚖ and the counterexample. In S1 that is the loop-head state n = 2147395600, r = 46340: the run passes, and the proof refutes it. The clean <code>gt_u</code> version is proven for real. This preview adds the hole lines with their suggestion chips (the invariant, the unsigned compare, the lemma, the admit), and the ring and lap lenses.</span></div>
   <div class="lessonbar" id="qbar"></div>
   <div class="lgrid"><div id="qlist"></div><div id="qdock"></div></div></div>
 </section>
 
 <section id="s5" class="sec lesson">
   <h2>5 · Lesson 3 · a hash table</h2>
-  <p class="wip" style="border-left:3px solid #483D8B;padding:6px 10px;background:#f4f2fb;margin:6px 0 14px"><b>Now live in the editor.</b> The real editor executes the ghost map <code>$M</code> and checks the representation invariant <code>R</code> on every run: pick a seed and the live embed at the end of this section shows the real failing run, matching the fixture step for step. Still preview: the proof holes and their suggestion chips, the memory-mirror and lap-chart lenses, and the counterexample search for bugs that need a <em>sequence</em> of calls (the editor’s search tries single calls only).</p>
+  <p class="wip"><b>Now live in the editor.</b> The real editor executes the ghost map <code>$M</code> and checks the representation invariant <code>R</code> on every run. It also proves the table with Z3, one operation at a time from any state that satisfies <code>R</code>, so no call sequence is needed. The clean table is proven, all 54 obligations, which takes about 30 s in the browser. Pick a seed and the live embed at the end of this section shows the real failing run, matching the fixture step for step. Each seeded bug also comes with the solver’s counterexample, drawn as an 8-slot card with <code>$M</code>. Still preview: the hole lines and their suggestion chips, and the memory-mirror and lap-chart lenses.</p>
   <p>Eight slots in linear memory at address 65440, each 12 bytes holding a state (EMPTY, FULL, TOMB), a key and a value. Collisions use linear probing, and deleting a key leaves a tombstone. The spec talks about a <code>(@ghost global $M)</code>, an abstract map from keys to values. It exists only for the checker and is erased from the binary. The definitions <code>st(s)</code>, <code>key(s)</code> and <code>val(s)</code> read memory as a typed array of slots. The representation invariant <code>R</code> ties memory to <code>$M</code>, and its five clauses sit as chips on the module line. Every exported function requires and ensures <code>R</code>. Mid-operation <code>R</code> may be false: <code>insert</code> writes the state, key and value one store at a time. The mirror lens draws that as gray “R open”, never as darkred.</p>
   <p><b>Seed (b)</b> makes <code>$find</code> stop at a TOMB as if it were EMPTY. <code>R</code> stays true the whole time. The hole sits at <code>$find</code>’s early return, and its strip shows key 11 one slot past the TOMB. The suggestions <b>fork</b>. You can fix the exit test, which says your code is wrong. Or you can strengthen (iii) to what line 38 assumes, which says your spec is short. Take the second: the hole moves to <code>delete</code>’s store and is false there, because no delete can keep the stronger (iii). <b>Seed (d)</b> lets the eighth insert through. Line 11 already holds the corrected clause (iv), with <code>used &lt; CAP</code> as its last conjunct, so the hole sits after line 166 and says that conjunct breaks. Replay it: the run stops at step 488, where the eighth insert returns with the ring closed. The run then never terminates. Drag the slider to the end, unfold <code>$find</code>, and click <code>loop $probe</code>: the lap chart’s measure staircase drops below zero. If you take the hole’s spec chip, which drops <code>used &lt; CAP</code>, you get the other view of the same bug. The hole moves into <code>$find</code>’s back-edge as a termination failure, and its chip offers the corrected clause (iv) back. <b>Seed (a)</b> drops the mask on the probe index. The first probe of <code>insert(15,150)</code> computes i = 8, so the back-edge invariant fails at step 143 (⚖ on 151). The next <code>call $slot</code> fails its requires at step 145 (⚖ and a spill on 140). The load on 142 then traps at step 153 with address 65536. Replay lands on the trap, and 💣 takes line 142’s gutter, because a bomb outranks a scale on the same line.</p>
   <div class="lessonctl"><span class="ctl-l">seed:</span><select id="hseed"><option value="clean">clean</option><option value="b">(b) lookup treats TOMB as EMPTY</option><option value="d">(d) load-factor check off by one</option><option value="a">(a) probe index not wrapped</option><option value="bp">(b′) delete writes EMPTY</option><option value="c">(c) insert skips the existing-key check</option></select><button id="hmirror" class="ubtn on">◎ memory mirror</button><button id="hundo" class="ubtn">↶ undo</button></div>
-  <div class="preview"><div class="prevhead"><span class="prevtag">DESIGN PREVIEW · not yet in the editor</span> <span>Simulated below: holes, chips, the mirror and lap lenses. The live editor at the end of the section runs the same program and the same seeded bug with real checks.</span></div>
+  <div class="preview"><div class="prevhead"><span class="prevtag">DESIGN PREVIEW · holes, suggestion chips and lenses</span> <span>The verdicts and counterexamples are real in the live editor at the end of this section. Simulated below: the hole lines and their suggestion chips (including the fork between fixing the code and fixing the spec), the memory mirror, and the lap chart.</span></div>
   <div class="lessonbar" id="hbar"></div>
   <div class="lgrid"><div id="hlist"></div><div id="hdock"></div></div></div>
   <h3>The same table in the real editor</h3>
-  <p class="small-p">The hash table as it runs today. Spec lines parse, and the slot checks run. Ghost-state checks (anything that mentions <code>$M</code>) arrive in the editor’s next phase.</p>
+  <p class="small-p">The hash table in the real editor, following the seed chosen above. The ghost map runs, <code>R</code> is checked on every run, and every obligation goes to Z3. Clean, it is proven (54/54, about 30 s). Seeded, it shows the failing run and the solver’s counterexample card.</p>
   <div id="hlive"></div>
 </section>
 
 <section id="s6" class="sec">
   <h2>6 · What the checker hands the editor</h2>
-  <p>The checker never stops at the first error. It returns a <i>residue</i>, which is a list of obligations, and each picture above is drawn from one. Here is the record behind the signed-attempt hole in Lesson 2. The meaning is Lean’s: each surface construct maps to a Lean notion, so a hole is literally a goal Lean would ask you to close.</p>
+  <p>The checker never stops at the first error. It returns a <i>residue</i>, which is a list of obligations, and each picture above is drawn from one. In the real editor that residue is real. Each <code>Obligation</code> in <a href="https://github.com/jmandel/codillon/blob/refined/src/vc.rs">src/vc.rs</a> carries its site, kind and goal, and gets a <code>Verdict</code>: proven, refuted with a model, or undecided. The verdict for every obligation in every example is checked in at <a href="https://github.com/jmandel/codillon/blob/refined/src/testdata/proof_verdicts.txt">src/testdata/proof_verdicts.txt</a>. Below is the same kind of record for the signed-attempt hole in Lesson 2, written out with the extra fields the design adds (edit site and suggestions). The meaning is Lean’s: each surface construct maps to a Lean notion, so a hole is literally a goal Lean would ask you to close.</p>
   <div class="s6grid"><pre class="residue" id="residue"></pre>
   <table class="lean"><tr><th>you write</th><th>it means, in Lean 4</th></tr>
     <tr><td><code>(i32 | P)</code></td><td>a subtype <code>{v : Int32 // P v}</code>; the stack is a Σ-telescope of them</td></tr>
@@ -511,7 +512,14 @@ section.sec, header.top { scroll-margin-top: calc(var(--toc) + 6px); }
   </div>
   <h3>Limits</h3>
   <ul class="limits" id="limits">
-    <li><b>What is real.</b> Run-time checking is real. The editor embedded in §0, §3, §4 and §5 is a fork of Codillon (github.com/jmandel/codillon, branch <code>refined</code>). It parses the spec syntax, erases it from the binary, and checks every refinement, <code>@requires</code>, <code>@ensures</code>, <code>@invariant</code>, <code>@decreases</code> and <code>@assert</code> at its checkpoint on the actual run. Failures are drawn in Codillon’s idiom, and passes are counted as “held on this run” (∘N). The static side is still a design preview, written out by hand from the fixture: proof holes and their suggestion chips, the solver’s witnesses on a ghost track, the lenses, and “proven”. No solver runs here. The preview listings are driven by a small line interpreter, which reproduces the fixture’s key frames (see the footer). The live embeds need the page to be served next to <code>editor/</code>; opened from a file, they stay blank.</li>
+    <li><b>What is real.</b> The editor embedded in §0, §3, §4 and §5 is a fork of Codillon (github.com/jmandel/codillon, branch <code>refined</code>). These parts are real:
+      <ul>
+        <li>It parses the spec syntax, erases it from the binary, and checks every refinement, <code>@requires</code>, <code>@ensures</code>, <code>@invariant</code>, <code>@decreases</code>, <code>@assert</code> and the hash table’s ghost map and <code>R</code> on the actual run.</li>
+        <li>It sends every obligation to Z3, a single-threaded WebAssembly build that runs in a worker. Proven lines are silent. Refuted lines get ⚖ and the solver’s counterexample state. A function-entry counterexample replays on the slider from a dashed track, and a hash-table state is drawn as an 8-slot card with <code>$M</code>. Undecided lines get an indigo ?. Across the examples that is 419 obligations: 398 proven, 20 refuted, 1 undecided.</li>
+        <li>Deep links (<code>#ex=</code>, <code>#src=</code>, <code>step=</code>) open the exact states embedded here.</li>
+      </ul>
+      Still design preview: the hole lines with their suggestion chips (accept, undo, fork), and the ring, lap, mirror and relation lenses. The preview listings are driven by a small line interpreter that reproduces the fixture’s key frames (see the footer).
+      Known costs: the hash table takes about 30 s to prove in the browser; the main thread pauses briefly while it generates obligations; and <code>cubes</code> stays undecided, because the encoding treats large products as beyond 64 bits. The live embeds need the page to be served next to <code>editor/</code>; opened from a file, they link to the deployed editor instead.</li>
     <li><b>Sizes chosen, not tested.</b> 84 × 14 px for a refined i32 (the spec said 72 × 12, but the run-time values inside were unreadable at that size), the 60% linear middle, 14 px chips and the hole layout were picked by eye at 1400 px wide. None of them has been tried with students.</li>
     <li><b>Left out:</b> fact ribbons as an always-on layer (04). They cost too much ink. What survives of them is the causal trail: hover or focus a hole and dashed lanes, drawn to the right of the code, run back to the lines its hypotheses came from, in darkred for the line to blame. The envelope strips (09) are out because the ring and the lap chart already tell the overflow story. The sampler grids for the hash table (08) are out because the mirror carries Lesson 3. Proof wires (unsat cores drawn as curves) are left out entirely.</li>
     <li><b>Mixed syntax.</b> Lessons 1 and 2 use the 01 syntax (<code>$x</code> binders, named results). Lesson 3 shows the fixture’s hash-table text verbatim, which binds the result as <code>v</code>.</li>
@@ -2690,10 +2698,21 @@ function hoverZoom() {
 
   // ---------------- live editor embeds (the real Codillon fork, in embed mode) ----------------
   const FRAMES = [];
+  // size each frame to the editor's content. The editor reports max(content, viewport); when same-origin we
+  // measure the content directly (the frame cannot ratchet taller), re-measuring as the editor lays out or rescales.
+  function measure(fr, reported) {
+    let h = reported;
+    try {
+      const d = fr.f.contentDocument;
+      if (d && d.body) { let b = 0; for (const c of d.body.children) { if (getComputedStyle(c).position === 'fixed') continue; b = Math.max(b, c.getBoundingClientRect().bottom + (d.defaultView.scrollY || 0)); } if (b > 40) h = Math.ceil(b) + 8; }
+    } catch (err) { if (h >= fr.f.clientHeight - 2) return; }
+    if (h && Math.abs(fr.f.clientHeight - h) > 2) fr.f.style.height = Math.max(120, Math.min(fr.max, h)) + 'px';
+  }
   addEventListener('message', e => {
     const m = e.data; if (!m || m.type !== 'codillon-height') return;
-    const fr = FRAMES.find(x => x.f.contentWindow === e.source); if (fr) fr.f.style.height = Math.max(120, Math.min(fr.max, Math.ceil(m.height) + 4)) + 'px';
+    const fr = FRAMES.find(x => x.f.contentWindow === e.source); if (fr) measure(fr, Math.ceil(m.height));
   });
+  setInterval(() => FRAMES.forEach(fr => { if (fr.f.getAttribute('src')) measure(fr, 0); }), 1200);
   function liveEmbed(el, o = {}) {
     el.classList.add('live');
     el.innerHTML = `<div class="livehead"><span class="livetag">LIVE · the real editor</span> <span class="livecap"></span><a class="openlink" target="_blank" rel="noopener">open in editor ↗</a></div><iframe loading="lazy" title="Refined Codillon editor" style="height:${o.h || 560}px"></iframe>`;
@@ -2712,7 +2731,7 @@ function hoverZoom() {
     };
   }
   const ba0 = liveEmbed($('#ba0live'), { h: 470 }); ba0.set('src=' + LIVE_SRC.half_plain + '&step=last', '<code>$half(6)</code>: Codillon’s own idiom, unchanged');
-  const ba1 = liveEmbed($('#ba1live'), { h: 470 }); ba1.set('src=' + LIVE_SRC.half_refined + '&step=last', 'the parameter refined to <code>(i32 | $x % 2 == 0)</code>; the check held once (∘1)');
+  const ba1 = liveEmbed($('#ba1live'), { h: 470 }); ba1.set('src=' + LIVE_SRC.half_refined + '&step=last', 'the parameter refined to <code>(i32 | $x % 2 == 0)</code>; the call passes 6, and Z3 proves the precondition, so the line stays silent');
 
   // ---------------- §1 a type is a set ----------------
   (() => {
@@ -2896,7 +2915,7 @@ function hoverZoom() {
     if (f.p1) plive.set('ex=parity-p1&step=fail', '<b>P1</b> · with x = 7 the <code>@assert</code> and <code>$half</code>’s precondition fail on the run (⚖, darkred commentary)');
     else if (f.p2) plive.set('ex=parity-p2&step=fail', '<b>P2</b> · <code>$half</code>’s ensures fails: shr_u gives 2147483646 for −4');
     else if (f.p3) plive.set('ex=parity-p3&step=fail', '<b>P3</b> · spec bug: <code>$h &lt; $x</code> fails at 0');
-    else plive.set('ex=parity&step=last', '<b>clean</b> · every check holds on this run (∘N), which is not the same as proven'); };
+    else plive.set('ex=parity&step=last', '<b>clean</b> · every check holds on the run, and Z3 proves every obligation: silence'); };
   L1.m.listeners.push(syncPL); syncPL();
   const syncP = () => { const js = JSON.stringify(L1.m.flags); $$('button', pseg).forEach(b => b.classList.toggle('on', JSON.stringify(PROGS.parity.presets[b.dataset.k]) === js)); };
   $$('button', pseg).forEach(b => b.onclick = () => L1.m.set({ ...PROGS.parity.presets[b.dataset.k] }, { edit: true }));
@@ -2919,11 +2938,12 @@ function hoverZoom() {
   L2.m.listeners.push(syncQ);
   const qlive = liveEmbed($('#qlive'), { h: 1550 });
   const syncQL = () => { const f = L2.m.flags;
-    if (!f.inv) qlive.set('src=' + LIVE_SRC.isqrt_noinv + '&step=last', '<b>no invariant yet</b> · this run (n = 10) passes; only a static checker can see what is missing');
+    if (!f.inv) qlive.set('src=' + LIVE_SRC.isqrt_noinv + '&step=last', '<b>no invariant yet</b> · this run (n = 10) passes, and the proof refutes the ensures: at the loop head nothing rules out n = 0, r = −5 (a mid-run state, so it is not replayable)');
     else if (f.post === 'S2') qlive.set('ex=isqrt-s2&step=fail', '<b>S2</b> · spec bug: the ensures fails at n = 4');
     else if (f.init === 1) qlive.set('ex=isqrt-s3&step=fail', '<b>S3</b> · the invariant and the measure fail on loop entry at n = 0');
-    else if (f.cmp === 's') qlive.set('ex=isqrt-s1&step=last', '<b>signed compare (S1)</b> · passes on this run: the failing input needs about 695 000 steps, beyond the step budget');
-    else qlive.set('ex=isqrt&step=last', '<b>gt_u</b> · every check holds on this run (∘N); “proven” needs the static checker, so it is shown only in the preview below'); };
+    else if (f.cmp === 's') qlive.set('ex=isqrt-s1&step=fail', '<b>signed compare (S1)</b> · this run passes, and the proof refutes it at the loop head: Z3’s counterexample is n = 2147395600, r = 46340');
+    else if (f.lemma === 'use' || f.lemma === 'assume') qlive.set('ex=isqrt&step=last', '<b>all proven</b> · every obligation proven by Z3: the listing is silent');
+    else qlive.set('ex=isqrt&step=last', '<b>gt_u</b> · in the editor Z3 proves this version outright; the nonlinear lemma that the preview asks for is not needed there'); };
   L2.m.listeners.push(syncQL); syncQL();
 
   const L3 = lesson(PROGS.hash, { bar: '#hbar', list: '#hlist', dock: '#hdock', undo: '#hundo' }, {
@@ -2939,12 +2959,12 @@ function hoverZoom() {
   $('#hseed').onchange = e => L3.m.set({ ...PROGS.hash.presets[e.target.value] }, { edit: true });
   L3.m.listeners.push(syncH); syncH();
   const hlive = liveEmbed($('#hlive'), { h: 900, max: 1100 });
-  const HLIVE = { clean: ['hashtable', 'last', 'the fixture sequence: insert(3,30) · insert(11,110) · delete(3) · lookup(11,−1); every check holds, including R and the ghost map'],
-    b: ['hashtable-b', 'fail', '(b) lookup treats TOMB as EMPTY: $find’s result check fails at the lookup of 11'],
-    d: ['hashtable-d', 'fail', '(d) load factor off by one: the eighth insert breaks R; the lookup then probes until the 100,000-step budget'],
-    a: ['hashtable-a', 'fail', '(a) probe index not wrapped: the probe invariant fails before the out-of-bounds load'],
-    bp: ['hashtable-b2', 'fail', '(b′) delete writes EMPTY: R breaks at the delete'],
-    c: ['hashtable-c', 'fail', '(c) insert skips the existing-key check: the probe invariant k ∉ M fails'] };
+  const HLIVE = { clean: ['hashtable', 'last', 'the fixture sequence: insert(3,30) · insert(11,110) · delete(3) · lookup(11,−1); every check holds, and all 54 obligations are proven (≈30 s)'],
+    b: ['hashtable-b', 'fail', '(b) lookup treats TOMB as EMPTY: $find’s result check fails at the lookup of 11; the solver’s counterexample card shows the state'],
+    d: ['hashtable-d', 'fail', '(d) load factor off by one: the eighth insert breaks R, and the solver refutes R4; the lookup then probes until the 100,000-step budget'],
+    a: ['hashtable-a', 'fail', '(a) probe index not wrapped: the probe invariant fails before the out-of-bounds load; refuted with a model'],
+    bp: ['hashtable-b2', 'fail', '(b′) delete writes EMPTY: R breaks at the delete; refuted with a model'],
+    c: ['hashtable-c', 'fail', '(c) insert skips the existing-key check: the probe invariant k ∉ M fails; refuted with a model'] };
   let hliveKey = null;
   const syncHLive = () => { const v = $('#hseed').value; const e = HLIVE[v] || HLIVE.clean; if (hliveKey === v) return; hliveKey = v; hlive.set('ex=' + e[0] + '&step=' + e[1], e[2]); };
   L3.m.listeners.push(syncHLive); syncHLive();
