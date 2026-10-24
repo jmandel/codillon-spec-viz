@@ -28,6 +28,7 @@ and fixture, and the ten prototypes. Codillon itself lives at https://github.com
 - `artifacts/00-refined-codillon.html` — the tutorial walkthrough of the composed design (start here).
 - `artifacts/gcd-as-a-type.html` — worked example: Euclid typed by Gcd(a, b), with the Lean proof in `proofs/`.
 - `artifacts/gcd-foundations.html` — the same example in a five-rule calculus (types as finite sets of states) with an in-page proof checker; standalone checker in `proofs/minimal/`.
+- `artifacts/real-editor.html` — write-up of the real editor: six live demos (deep links), verdicts, how the proofs work.
 - `editor/` — live build of the Refined Codillon fork (github.com/jmandel/codillon, branch `refined`).
 - `artifacts/01-…html` to `10-…html` — the ten competing prototypes. Open any from `file://`.
 - `tools/` — the Python interpreter / spec checker / fixture generator used to produce the traces.

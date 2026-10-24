@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refined Codillon in the real editor</title>
+<style>
+  body { background:#fffff0; color:#222; font-family:"Latin Modern Roman","CMU Serif",Georgia,"Times New Roman",serif; max-width:1000px; margin:2rem auto; padding:0 1.1rem; line-height:1.5; font-size:18px; }
+  h1 { font-weight:normal; font-size:2.1rem; margin:.2rem 0 .3rem }
+  h2 { font-weight:normal; border-bottom:1px solid #c9c9b0; padding-bottom:.2rem; margin-top:2.4rem }
+  h3 { font-weight:normal; font-size:1.3rem; margin:1.8rem 0 .4rem }
+  .sub { color:#555; font-style:italic; margin-top:0 }
+  a { color:indigo }
+  code { font-family:"DejaVu Sans Mono",Menlo,monospace; font-size:.85em; background:#f4f2e4; padding:0 .2em; border-radius:2px }
+  .open { display:inline-block; font-family:"Latin Modern Sans","Fira Sans Condensed","Arial Narrow",sans-serif; font-size:.9rem; color:#fff; background:#00008b; border-radius:999px; padding:.25rem .8rem; text-decoration:none; margin:.2rem .4rem .4rem 0 }
+  .open:hover { background:indigo }
+  .time { font-family:"Latin Modern Sans","Fira Sans Condensed","Arial Narrow",sans-serif; font-size:.85rem; color:#555 }
+  figure { margin:.6rem 0 1rem; border:1px solid #d8d6c0; background:#fffff8; overflow-x:auto }
+  figure img { display:block; max-width:100%; height:auto }
+  figcaption { font-family:"Latin Modern Sans","Fira Sans Condensed","Arial Narrow",sans-serif; font-size:.85rem; color:#555; padding:.35rem .6rem; border-top:1px solid #e6e4d2 }
+  ul.look li { margin:.25rem 0 }
+  table { border-collapse:collapse; margin:.6rem 0; font-size:.95rem }
+  th, td { border-bottom:1px solid #e0decb; padding:.3rem .7rem; text-align:left }
+  th { font-weight:600; font-family:"Latin Modern Sans","Fira Sans Condensed","Arial Narrow",sans-serif; font-size:.85rem; color:#444 }
+  td.n { text-align:right; font-variant-numeric:tabular-nums }
+  .key { display:grid; grid-template-columns: 7.5rem 1fr; gap:.3rem 1rem; margin:.6rem 0 }
+  .key div:nth-child(odd) { font-family:"Latin Modern Sans","Fira Sans Condensed","Arial Narrow",sans-serif; font-size:.95rem }
+  .red { color:#8b0000 } .ind { color:indigo } .gray { color:#777 }
+  .note { border-left:3px solid #483D8B; background:#f4f2fb; padding:.5rem .8rem; margin:1rem 0 }
+  @media (max-width:640px){ body{font-size:16px} .key{grid-template-columns:5.5rem 1fr} }
+</style>
+</head>
+<body>
+<p class="time"><a href="../index.html">Refined Codillon study</a> · <a href="00-refined-codillon.html">walkthrough</a> · <a href="../editor/EXAMPLES.html">all examples</a></p>
+<h1>Refined Codillon in the real editor</h1>
+<p class="sub">Specifications parsed, erased, checked at run time, and proved with Z3, in a fork of Codillon that runs in your browser.</p>
+
+<p><a href="https://github.com/codillon/codillon">Codillon</a> is Keith Winstein's structured WebAssembly editor. This study proposed giving its types predicates, like <code>(i32 | 0 &lt;= $n)</code>, loop invariants and function contracts, and drawing whether a program meets them in Codillon's own visual language. That design now runs in a <a href="https://github.com/jmandel/codillon/tree/refined">fork of the real editor</a>. Every link below opens the editor on a live program in a new tab. Nothing on this page is simulated.</p>
+
+<div class="note">The proofs run in your browser, in Z3 5.3.1 compiled single-threaded to WebAssembly. It is a 3.6 MB download on first use, runs in a worker, and needs no special server setup. Small programs settle in under 2 seconds. The hash table takes about 30 seconds.</div>
+
+<h2>How to read the editor</h2>
+<p>Everything Codillon already draws stays the same: type shapes left of each instruction, pale dataflow ribbons, brackets for blocks (pink for loops), and a step slider over the live run. What the refinements add:</p>
+<div class="key">
+  <div class="gray">12 (gray)</div><div><b>Proven.</b> The line number stays gray and nothing else appears. Silence means the solver proved every obligation on that line.</div>
+  <div class="red">⚖</div><div><b>Refuted.</b> The solver found a state the spec allows in which the obligation fails. The darkred note on the right gives that state's values.</div>
+  <div class="ind">?</div><div><b>Undecided.</b> The solver neither proved nor refuted it within its budget. It is never drawn darkred and never treated as proven.</div>
+  <div class="gray">∘4</div><div><b>Held on this run.</b> A runtime check that passed 4 times. It appears only on lines that are not proven. A run is evidence, not proof.</div>
+  <div>dashed track</div><div><b>Counterexample, not yet replayed.</b> The dashed darkred line above the slider. Click it to load that input or state as the run. Click again to go back to your run.</div>
+  <div>number line</div><div><b>A refined value.</b> An i32 with a refinement is drawn as a number line with its allowed region shaded. A value outside the region spills darkred over the rim.</div>
+</div>
+
+<h2>Six demos</h2>
+
+<h3>1 · A bug no run reaches, found by proof</h3>
+<a class="open" href="../editor/#ex=isqrt-s1" target="_blank">open isqrt-s1 ↗</a> <span class="time">proves in about 4 s</span>
+<p>Integer square root with one subtle bug: the loop's exit test compares <code>(r+1)²</code> with <code>i32.gt_s</code> instead of <code>i32.gt_u</code>. The run, isqrt(10), passes every runtime check. Testing would not find this either: the failing inputs are all near 2³¹, and the first check that fails comes about 695,000 steps in, far past Codillon's 100,000-step budget.</p>
+<figure><img src="../research/img/real-editor/isqrt-s1.png" alt="isqrt-s1 in the editor: the loop invariant and measure lines carry darkred scales with the loop-head state n = 2147395600, r = 46340"><figcaption>The invariant and the measure on the loop are refuted at a loop-head state the spec allows.</figcaption></figure>
+<ul class="look">
+  <li><b>The invariant line</b> gets ⚖ with the state <code>$n = 2147395600, $r = 46340</code>. One more iteration breaks the invariant there, because <code>46341²</code> wraps past 2³¹ and <code>gt_s</code> reads it as negative.</li>
+  <li><b>The same lines also show ∘4.</b> The invariant held four times on your run, and it is still refuted. That is the difference between evidence and proof, on one line.</li>
+  <li><b>The dashed track</b> shows what the runtime input search found, <code>$isqrt(2147483646)</code>, and says plainly that it is beyond the step budget. The proof does not need the run.</li>
+  <li><b>The loop-head counterexample cannot be replayed.</b> It is a state at the top of the loop, not an input. It means the code is wrong or the invariant too weak, whether or not your run ever gets there.</li>
+</ul>
+
+<h3>2 · The code is right, the spec is wrong</h3>
+<a class="open" href="../editor/#ex=parity-p3&amp;step=last" target="_blank">open parity-p3 ↗</a> <span class="time">under 1 s</span>
+<p><code>$half</code> promises <code>$h + $h == $x &amp;&amp; $h &lt; $x</code>: half, and smaller. The second part is false for 0 and for negative even numbers. Your run (6 and 7) passes.</p>
+<figure><img src="../research/img/real-editor/parity-p3.png" alt="parity-p3: the postcondition of $half carries a darkred scale; the dashed track says input $half(0) fails"><figcaption>Only the spec line and the return it constrains are marked. Every other obligation in the program is proven and silent.</figcaption></figure>
+<ul class="look">
+  <li><b>The dashed track at the top</b> reads <code>⚖ input $half(0) fails · not replayed — click to replay</code>. Click it to run <code>$half(0)</code> on the slider.</li>
+  <li><b>The note on the ensures line</b> names the return where it fails and says "allowed by the spec". Blame lands on the spec, not the code.</li>
+  <li><b><code>$is_even</code>, <code>$half_or_neg1</code> and the <code>@assert</code></b> are proven, so they show only gray line numbers.</li>
+</ul>
+
+<h3>3 · A hash table bug, refuted one operation at a time</h3>
+<a class="open" href="../editor/#ex=hashtable-b2" target="_blank">open hashtable-b2 ↗</a> <span class="time">about 30 s; the card appears when the proofs finish</span>
+<p>An 8-slot open-addressing hash table in linear memory, specified against a ghost map <code>$M</code> with a representation invariant <code>R</code>. In this variant <code>delete</code> writes EMPTY instead of TOMB, which can cut another key off from its probe path. No sequence of calls is searched. Each function is proved from any state satisfying <code>R</code>, and the solver returns the state where <code>delete</code> breaks it:</p>
+<figure><img src="../research/img/real-editor/hashtable-b2-card.png" alt="the counterexample card: eight slots with states, keys and values, and the ghost map"><figcaption>The solver's counterexample, drawn as the eight slots and the ghost map: <code>$delete(2)</code> from this state makes the postcondition fail.</figcaption></figure>
+<ul class="look">
+  <li><b>Click the dashed track</b> to replay <code>$delete(2)</code> from exactly this memory, ghost map and <code>$used</code>. The postcondition then fails at run time on the slider.</li>
+  <li><b>Further down, <code>$main</code>'s own run</b> also fails, at the later lookup of key 11:</li>
+</ul>
+<figure><img src="../research/img/real-editor/hashtable-b2-delete.png" alt="lookup lines with darkred scales and commentary about R3"><figcaption>The run's failures: the lookup's precondition R no longer holds after the delete (clause R3 at slot 4).</figcaption></figure>
+
+<h3>4 · The correct hash table: 54 of 54 proven</h3>
+<a class="open" href="../editor/#ex=hashtable&amp;step=last" target="_blank">open hashtable ↗</a> <span class="time">about 30 s</span>
+<figure><img src="../research/img/real-editor/hashtable-proven.png" alt="the hash table listing with the track reading all 54 obligations proven"><figcaption>When the proofs finish, the track reads "all 54 obligations proven" and the listing goes quiet.</figcaption></figure>
+<p>Insert, lookup and delete are each proved to preserve <code>R</code> and to agree with the ghost map. Each probe loop is proved by its invariant and its measure. Every load and store is proved in bounds. The other variants, <a href="../editor/#ex=hashtable-a" target="_blank">a</a>, <a href="../editor/#ex=hashtable-b" target="_blank">b</a>, <a href="../editor/#ex=hashtable-c" target="_blank">c</a> and <a href="../editor/#ex=hashtable-d" target="_blank">d</a>, are each refuted with a solver counterexample (the verdict table below lists them).</p>
+
+<h3>5 · A proven program is calm</h3>
+<a class="open" href="../editor/#ex=isqrt&amp;step=last" target="_blank">open isqrt ↗</a> <span class="time">about 1 s</span>
+<figure><img src="../research/img/real-editor/isqrt-proven.png" alt="the correct isqrt listing: gray line numbers, no marks"><figcaption>Correct isqrt: the invariant, the measure and both halves of the postcondition are proven, including the nonlinear step, so nothing is marked.</figcaption></figure>
+
+<h3>6 · Honest about what it cannot decide</h3>
+<a class="open" href="../editor/#ex=cubes&amp;step=last" target="_blank">open cubes ↗</a> <span class="time">about 2 s</span>
+<figure><img src="../research/img/real-editor/cubes.png" alt="cubes: an indigo question mark on an assertion that sums of cubes are not cubes"><figcaption>The assertion is Fermat's last theorem for cubes below 1000. It is true, but beyond the encoding, so it gets an indigo ? and keeps its runtime count (∘1). It is not proven, and not darkred.</figcaption></figure>
+
+<h2>Results</h2>
+<table>
+  <tr><th>example</th><th>proven</th><th>refuted</th><th>undecided</th><th>time in the browser</th></tr>
+  <tr><td>parity · isqrt · gcd · triangle (correct)</td><td class="n">6 · 7 · 8 · 8</td><td class="n">0</td><td class="n">0</td><td>0.15 s · 1.2 s · 0.6 s · 0.7 s</td></tr>
+  <tr><td>hashtable (correct)</td><td class="n">54</td><td class="n">0</td><td class="n">0</td><td>≈ 31 s</td></tr>
+  <tr><td>parity p1 · p2 · p3</td><td class="n">4 · 5 · 5</td><td class="n">2 · 1 · 1</td><td class="n">0</td><td></td></tr>
+  <tr><td>isqrt s1 · s2 · s3</td><td class="n">5 · 6 · 5</td><td class="n">2 · 1 · 2</td><td class="n">0</td><td>s1 ≈ 3.8 s</td></tr>
+  <tr><td>gcd g1 · g3, triangle-bug, isqrt-args</td><td class="n">6 · 7, 7, 6</td><td class="n">2 · 1, 1, 1</td><td class="n">0</td><td></td></tr>
+  <tr><td>hashtable a · b · b′ · c · d</td><td class="n">50 · 52 · 52 · 45 · 57</td><td class="n">1 · 1 · 1 · 2 · 1</td><td class="n">0</td><td>26–34 s</td></tr>
+  <tr><td>cubes (undecided on purpose)</td><td class="n">3</td><td class="n">0</td><td class="n">1</td><td>≈ 1.6 s</td></tr>
+  <tr><th>total</th><th class="n">398</th><th class="n">20</th><th class="n">1</th><th>419 obligations</th></tr>
+</table>
+<p>The same obligations are run through native Z3 in the fork's test suite, and the expected verdict of every one is recorded in <a href="https://github.com/jmandel/codillon/blob/refined/src/testdata/proof_verdicts.txt">proof_verdicts.txt</a>.</p>
+
+<h2>How it works</h2>
+<ul class="look">
+  <li><b>Spec language</b> (<a href="https://github.com/jmandel/codillon/blob/refined/src/spec.rs">spec.rs</a>). Refinements and annotation lines like <code>(@invariant …)</code> are parsed, then erased before compiling: the binary is byte-for-byte what you would get without them. A malformed predicate is a malformed line (𝄞); an unknown name is an invalid line (✗).</li>
+  <li><b>Runtime checks</b> (<a href="https://github.com/jmandel/codillon/blob/refined/src/checker.rs">checker.rs</a>). The run log is replayed with a shadow call stack, ghost state and shadow memory, and every checkpoint is evaluated: entry, exit, loop head, assert, writes to refined locals.</li>
+  <li><b>Verification conditions</b> (<a href="https://github.com/jmandel/codillon/blob/refined/src/vc.rs">vc.rs</a>). Each function is executed symbolically from its contract. Loops are cut at their invariants, and calls go through the callee's contract. Every obligation becomes one SMT-LIB query: preconditions at calls, postconditions, invariant on entry and preserved, measure, asserts, refined locals, and no trap. Machine values are bitvectors with exact Wasm semantics, and memory is an array of words.</li>
+  <li><b>Nonlinear facts</b> (<a href="https://github.com/jmandel/codillon/blob/refined/src/vc_int.rs">vc_int.rs</a>). A second, exact translation into integer arithmetic, for goals like <code>r·r ≤ n</code> that bitvectors decide poorly.</li>
+  <li><b>The solver</b> (<a href="https://github.com/jmandel/codillon/blob/refined/src/prover.rs">prover.rs</a>). Queries go to Z3 in a Web Worker, with deterministic resource limits and a cache, so an edit only re-proves what it changed. Counterexamples are decoded into states and drawn; function-entry states replay in a fresh instance. The single-threaded Z3 build recipe is in <a href="https://github.com/jmandel/codillon-spec-viz/tree/main/tools/z3wasm">tools/z3wasm</a>.</li>
+</ul>
+<p>Everything new relative to upstream Codillon is in one diff: <a href="https://github.com/jmandel/codillon/compare/005a19f...refined">005a19f…refined</a>.</p>
+
+<h2>Not done yet</h2>
+<ul class="look">
+  <li><b>Proof holes with suggestion chips</b> and the ring, lap-chart, memory-mirror and relation lenses exist only as design previews in the <a href="00-refined-codillon.html">walkthrough</a>.</li>
+  <li><b>The hash table takes about 30 s to prove in the browser</b>, most of it three "insert keeps R" postconditions. The editor also pauses for 130–230 ms while it generates the hash table's obligations.</li>
+  <li><b>Large products are treated as beyond 64 bits</b> even when a refinement bounds them, which is why <code>cubes</code> stays undecided.</li>
+  <li><b>When the runtime input search finds a witness first,</b> it takes the dashed track, and the solver's card is not shown.</li>
+  <li><b>Replays set only the memory words the spec reads</b>, so a replayed counterexample may not reproduce the failure.</li>
+  <li><b>On a phone, embedded editors scale to fit</b> and the widest programs become small.</li>
+</ul>
+<p class="time">Built 2026-10-24 from fork commit <a href="https://github.com/jmandel/codillon/commit/5fcc880">5fcc880</a>. Screenshots are from the deployed editor.</p>
+</body>
+</html>
