@@ -3,13 +3,22 @@
 Status: phase A design (2026-10-24). Input: 15-input-proofs-as-values.md. Examples and test oracle: `v2-examples/`.
 No Z3, no SMT. One deterministic kernel; an LLM is optional and never trusted.
 
+> **Change (2026-10-24): automatic subsumption.** Refinements live in the types, and the kernel finds the arithmetic
+> itself: a cup that exact lookup cannot feed is fed **automatically** when §3 proves its goal from the relevant
+> in-scope facts (new card **R5a**). `prove k` (R32) stays as an optional override that chooses the facts. Lemmas,
+> loop facts, block types and refinements are unchanged: they are how a student *states* what is true. **Design
+> principle: automation removes the typing of proofs, not their visibility.** A proof the kernel found is drawn
+> exactly like one the student wrote: its proposition in readable infix on the line, a wire from each fact it used,
+> and its reason one keystroke away (§8). Edited places are marked **[R5a]**. Rationale, costs and the soundness
+> argument: `24-automatic-subsumption.md`.
+
 ## 0. Outline and decisions
 
 | § | topic | one-line decision |
 |---|---|---|
 | 1 | Text syntax | Facts travel in a separate **fact lane** (scoped, persistent), never on the operand stack; propositions are folded Wasm expressions read as "≠ 0"; every v2 construct erases line-for-line (proof lines → `nop`, proof declarations → comment). |
-| 2 | Rule cards | 35 numbered cards (R1–R35); each cup is fed by exactly one fact, found by exact canonical lookup or produced by the `prove k` line just above. |
-| 3 | `prove k` | Linear integer arithmetic over unsigned readings with explicit wrap variables, monomials as atoms, interval pre-pass, Omega-lite elimination; caps: 64 terms, 24 variables, 32 atoms, 256 cases; failures name the hypotheses actually taken. |
+| 2 | Rule cards | 35 numbered cards (R1–R35) plus R5a; each cup is fed by exact canonical lookup, by evaluation, by the `prove k` line just above, or **[R5a]** automatically by §3 from the relevant in-scope facts. |
+| 3 | Decision procedure | Linear integer arithmetic over unsigned readings with explicit wrap variables, monomials as atoms, interval pre-pass, Omega-lite elimination; caps: 64 terms, 24 variables, 32 atoms, 256 cases; failures name the hypotheses actually taken. |
 | 4 | Verdicts | Four per-cup states: proven, refuted, runtime-checked, assumed, plus a *relative to checks at lines …* mark. Gradual mode is the editor default (programs always run); a function is **VERIFIED** only when strict-clean. The kernel never answers "unknown". |
 | 5 | Data structures | Slots with canonical ids, a fact stack with frame marks, `fact_args`, scratch arena, memory epochs; one forward pass per function; re-check per function. |
 | 6 | Theorem | All cups proven ⇒ no trap on any input meeting the entry contract, except call-stack exhaustion; partial correctness only; harnesses compute in i64. |
@@ -141,6 +150,9 @@ match between an old fact and a new value.
   instruction line. Proof lines between them are allowed. A run of `n` `prove` lines feeds the first `n` unfed cups
   in order. The produced fact also enters the lane, so later cups can find it by lookup (for a taken-edge cup of `br_if`/`br_table`,
 only the edge's snapshot). A failure names the hypotheses it actually took. Decided by §3.
+  **[R5a]** `prove k` is now an *override*, never required where automatic feeding (R5a) succeeds: it pins the
+  hypotheses to the top `k` entries, which helps when the relevant set is too large for §3's caps or when an author
+  wants a particular derivation drawn. Its semantics are unchanged.
 - `lemma $f e₁ … eₘ` calls a lemma function (pure, erased): the `eᵢ` are its value parameters, its fact parameters
   are cups on this line (fed like any cup), and its fact results enter the lane.
 - `unfold $p e₁ … eₘ` enters the one-step unfolding of a recursive predicate (R30).
@@ -245,6 +257,33 @@ verdict is the feeding fact's verdict
 feeding fact's chip (at its birth line) to the cup. Error (no feed): strict mode — `needs ⟨G⟩; nothing feeds it`, plus,
 if the lane holds a fact that matches `G` except for one canonical id that is an older value of the same local,
 `… ⟨G'⟩ is about the old $i (set at line N)` (the stale-fact hint, R7). Gradual mode — the cup becomes a runtime check (§4).
+**[R5a]** The order is now: lookup, evaluation, a pending `prove` (R32), then automatic feeding (R5a); only a cup
+that all four leave unfed gets the error above.
+
+**R5a — automatic feeding (subsumption). [R5a]** Premise: a cup with goal `G` on line `L` that lookup, evaluation
+and a pending `prove` (R5, R32) leave unfed, on a line that is not dead.
+
+1. **Candidates.** The in-scope lane at `L`, in lane order (oldest first), plus the taken-edge fact for a
+   `br_if`/`br_table` edge cup (as R32 adds it). This is exactly the set `prove k` could reach with the largest `k`:
+   fact parameters, refinements already entered, branch facts, join and loop facts, call results, lemma results and
+   facts produced by earlier cups.
+2. **Relevance.** Let `ids(A)` be the non-constant canonical ids reachable from atom `A` through its terms (subterms
+   included, predicate arguments included). Start from `S = ids(G)`; repeatedly add every candidate `H` with
+   `ids(H) ∩ S ≠ ∅`, and add `ids(H)` to `S`, until nothing changes. The relevant set `Hs` keeps lane order. (If `G`
+   is `False` — the cup of `unreachable` — every candidate is relevant.)
+3. **Decide.** Run §3 on `Hs ⇒ G`, with §3's caps unchanged. If the result is `Cap` and `|Hs| > 8`, run it once more on
+   the 8 most recent relevant facts (what `prove 8` would see if they were on top).
+4. **Minimize.** On `Valid`, drop facts one at a time in lane order (oldest first), keeping a drop whenever §3 still
+   returns `Valid`. The result `Us` is the cup's **feed**: the cup is fed, `G` enters the lane exactly as for R32
+   (origin = `L`, kind *auto*; a taken-edge cup's `G` enters only that edge's snapshot), and the verdict, assumptions
+   and check-dependencies are those of `Us` (§4.1), exactly as a `prove` taking `Us` would give.
+5. **Failure.** Otherwise the cup stays unfed (R5's error in strict mode and ghost code, a runtime check in gradual
+   mode). If the failure was a cap, the commentary says so and suggests the override:
+   `needs ⟨G⟩; the 14 relevant facts exceed the solver's limits (too many cases); choose facts with prove k`.
+
+R5a adds no reasoning power: the hypotheses are lane facts, the procedure is §3, and nothing crosses a memory epoch,
+a call boundary or an unfolding that §3 does not already cross. It applies in ghost code and predicates too. Drawn:
+as R32's wires, from each fact in `Us` straight to the cup (§8). Error: as R5.
 
 ### Locals and globals
 
@@ -256,7 +295,10 @@ defining slot. Error: none.
 Conclusion: `cur[$x] := #n`. Facts are untouched: facts mentioning the previous id `#m` of `$x` stay in the lane and
 stay true (they are about the value `#m`), but cups that mention the new value of `$x` no longer match them. If the
 cup is fed, enter `R[v := #n]` (so later reads need not re-prove it). Drawn: every lane chip that mentions `#m` and was
-reachable through `$x` frays at this line (its ribbon unravels past this line, §8). Error: the refinement cup unfed →
+reachable through `$x` frays at this line (its ribbon unravels past this line, §8). **[R5a]** Fraying is a drawing,
+not a retraction: a frayed fact is still true of the old value `#m`. R5a's relevance filter uses it only when the goal's
+terms reach `#m` (after `local.set $i (i32.add $i 1)` the new `$i` is `add(#m, 1)`, so a back-edge cup needs the old
+guard on `#m`); a goal about an unrelated new value never sees it, and fails with the stale-fact hint. Error: the refinement cup unfed →
 `$x needs ⟨R⟩`. A local's refinement may name other locals; it is the local's invariant, so a
 `local.set`/`local.tee` of any local `$n` that the refinement of `$r` names also owes the cup
 `R_r[v := cur($r), $n := new]` (drawn on the set line, kind Refinement of `$r`). A local's refinement may not call a
@@ -455,7 +497,9 @@ decrease: needs ⟨μ(a′) < μ(p)⟩`.
 
 ### Proof lines
 
-**R32 — `prove k`.** Premises: `k ≤ 8`; hypotheses `H₁ … H_k` = the `k` most recent lane entries at this line (plus the
+**R32 — `prove k`.** **[R5a]** Optional: an override of R5a that chooses the hypotheses; never required where R5a
+succeeds. A pending `prove` is consumed before R5a is tried, so an explicit `prove` keeps exactly this card's meaning.
+Premises: `k ≤ 8`; hypotheses `H₁ … H_k` = the `k` most recent lane entries at this line (plus the
 edge fact of R20 when it feeds a taken-edge cup); goal `G` = the cup this line feeds (R5). Conclusion: if §3 reports
 **valid** for `H₁ ∧ … ∧ H_k ⇒ G`, the cup is fed and `G` enters the lane (origin = this line, verdict = proven, or
 assumed if some `Hᵢ` is assumed, and relative to checks if some `Hᵢ` is, §4). **Edge cups:** when the fed cup is a
@@ -492,7 +536,7 @@ Float terms are evaluated host-side exactly as Wasm computes them. (Known gap: a
 such as one naming a parameter below the top of a multi-parameter loop or a multi-value join result, currently passes.) A cup the kernel **refutes** (evaluation or a constant fold shows it false) is not compiled into a runtime check:
 the gradual run reaches the trap or `unreachable` the cup guards, rather than stopping at the cup with a failed check.
 
-## 3. The decision procedure behind `prove k`
+## 3. The decision procedure behind `prove k` and automatic feeding (R5a)
 
 ### 3.1 Contract
 
@@ -500,6 +544,14 @@ Input: hypotheses `H₁…H_k` (atoms, R4 normal form), a goal `G` (an atom, `Fa
 access to the function's slot graph (the term behind every canonical id). Output, deterministically:
 `Valid`, or `NotImplied(countermodel)`, or `Cap(which)`, or `Inexact(var)`. Only `Valid` feeds the cup. The procedure
 never consults the lane; everything it may use is drawn as one of the `k` wires or is the meaning of an instruction.
+**[R5a]** Under R5a the hypotheses are the relevant in-scope facts (R5a steps 1–2) instead of the top `k`; the
+procedure itself is unchanged and still never consults the lane. Everything a successful R5a derivation uses is drawn as
+one wire per fact in its minimized feed `Us`.
+
+**[R5a] Determinism and cost of the search.** R5a is not a search over proofs: it is at most one §3 call on the
+relevant set, one on its 8 most recent members after a cap, and `|Hs|` calls to minimize, each on a fixed, ordered
+hypothesis list. Relevance, candidate order and the drop order are functions of the text, so the feed is too. The
+editor measures the cost per function (research/24 §5); the caps bound every call.
 
 **Fragment.** Quantifier-free linear integer arithmetic over the unsigned readings of `i32`/`i64` values, with Wasm
 wraparound made explicit, plus: nonlinear monomials treated as atoms, opaque leaves with ranges, `ite` from `select`
@@ -617,6 +669,8 @@ source of nondeterminism: variable numbering is the order of first appearance in
 | `Cap(cases)`, `Cap(constraints)`, `Cap(coefficients)` | `too many cases (cap 256)` etc. |
 | no consumer | `prove has nothing to feed` |
 | `k` too large | `only 3 facts in scope` |
+| **[R5a]** automatic feeding fails, not a cap | the cup's ordinary R5 error, `needs ⟨G⟩; nothing feeds it`, with the countermodel against the relevant facts on hover |
+| **[R5a]** automatic feeding hits a cap twice | `needs ⟨G⟩; the 14 relevant facts exceed the solver's limits (too many cases); choose facts with prove k` |
 
 ## 4. The verdict model
 
@@ -626,7 +680,7 @@ Every cup ends a check in exactly one of four states.
 
 | state | meaning | how it arises |
 |---|---|---|
-| **proven** | a derivation in the text feeds the cup, and none of its facts depends on an assumption | R5 lookup, R28 evaluation, R32 `prove`, R22 dead code |
+| **proven** | a derivation in the text feeds the cup, and none of its facts depends on an assumption | R5 lookup, R28 evaluation, R32 `prove`, **[R5a]** automatic feeding, R22 dead code |
 | **refuted** | the cup's proposition is false for a concrete witness | R28 evaluation to 0 on constants, or a runtime check (R35) that failed on a recorded input, or a harness run that reached the cup's `unreachable` |
 | **runtime-checked** | nothing feeds the cup; gradual mode compiles it into a check that runs before the instruction | R35 |
 | **assumed** | fed, but the derivation uses an `assume`, an `axiom:` function, or an unproven lemma | R33, R34; the cup records which assumptions |
@@ -651,6 +705,12 @@ reported with `depends_on_checks: [lines]`. Nothing downstream of a runtime chec
 per function: a caller does not inherit a callee's internal checks (it relies on the callee's contract, and the callee's
 own status says whether that contract is verified).
 
+**[R5a] Verdicts of automatically fed cups.** An R5a cup's verdict is computed from its minimized feed `Us` by the
+rules above, exactly as for a `prove` whose hypotheses are `Us`: proven, proven\* relative to the checks those facts rest
+on, or assumed with their assumptions. Minimization can only shrink the dependency set, so it never makes a verdict
+worse than the unminimized derivation. Adding R5a never changes a cup that lookup, evaluation or a `prove` fed; it only
+turns some unfed cups into fed ones, so every verdict is the same or strictly better than before the change.
+
 **Modes and VERIFIED.** *Gradual* is the editor default for everyone: programs always run, unfed cups become checks,
 and only refuted cups are errors. *Strict* reports every runtime-checked cup as an error (`needs ⟨G⟩; nothing feeds
 it`). A function is **VERIFIED** (a badge on its header line) only when it is **strict-clean**: no runtime-checked cup,
@@ -662,7 +722,7 @@ everything. *Vericoding* (§7) accepts an LLM submission only if every function 
 
 The kernel never answers the question "is this proposition true?". It answers "does the text contain a derivation of
 it?", which is decided by a terminating, deterministic check: lookup is equality, evaluation has a fixed step budget,
-and §3 always returns one of its four outcomes within its caps. When there is no derivation, the cup is *unfed*, a
+and §3 always returns one of its four outcomes within its caps (**[R5a]** automatic feeding is a bounded, ordered sequence of such calls, §3.1). When there is no derivation, the cup is *unfed*, a
 fact about the text that the student can fix by adding a line, and gradual mode turns it into a runtime check, so the
 program still runs and still tells the truth on every input it is given. "Refuted" is only ever claimed with a
 concrete witness. A `prove` that fails is not "unknown" either: it is a line that failed, with a countermodel or a named
@@ -922,7 +982,10 @@ under a constant-false condition: `makes locked line N unreachable`); **reachabl
 proves False from the lane there (a branch decided by reasoning, an unfolded helper, two contradictory facts: `makes
 locked line N reachable only ex falso`), so its obligations would be vacuous; or, for a locked block header, a block
 that is left **only on contradictory edges, or never** (e.g. a `return` inside it), so its block facts would never be
-checked. These are boundary violations. Lines in student-owned bodies (harnesses, `$main`, predicates) are exempt: the
+checked. **[R5a]** Automatic feeding does not weaken (6): the probe asks whether the lane proves False independently
+of how cups are fed, and in addition, on a locked line, a cup that R5a or a `prove` feeds from facts that contradict
+each other marks the line reachable only ex falso (so a contradiction that only a small relevant subset exposes,
+under the caps, is still caught). These are boundary violations. Lines in student-owned bodies (harnesses, `$main`, predicates) are exempt: the
 LLM cannot edit them, and a harness's `unreachable` arm is *meant* to become unreachable once the implementation is
 right. A line's context for (1) is the chain of enclosing `block`/`loop`/`if` headers; `else` is not a boundary, so a
 student line moved from the then-arm to the else-arm keeps its context. This is harmless: the LLM could negate the
@@ -985,7 +1048,9 @@ Response (JSON only): `{ "edits": [ { "replace_lines": [a, b], "with": ["line", 
 its **lane snapshot** (the in-scope facts, top first, with birth lines), so the model can count `k` and see stale facts
 instead of guessing. Edits may add or remove lines only inside LLM-owned ranges; the editor applies them, re-checks, and sends the next round until
 accepted or `max_rounds`. The system prompt states the syntax of §1, the ownership table and "you cannot use assume or
-axioms; failed proofs are reported with counterexamples".
+axioms; failed proofs are reported with counterexamples". **[R5a]** It also says that arithmetic proofs are
+automatic: the model writes invariants (block and loop types, refined locals), guards and lemma calls, and uses
+`prove k` only to steer a proof whose relevant facts exceed the caps.
 
 **Sessions.** The default is an **offline scripted session**: a recorded transcript (`session.json`: the sequence of
 requests and responses) replayed deterministically, so a classroom demo needs no network and no key. A live session is
@@ -1018,6 +1083,27 @@ gutter glyphs, far-right darkred commentary. v2 adds:
 - **`prove k` fractions**: `k` diamond cups above the rule (wired to the hypotheses' chips), a diamond output below
   wired to the goal cup on the next instruction; hovering shows the removed wraps (`i+1 does not wrap: u(i) ≤ 7`) or the
   countermodel.
+- **[R5a] Propositions are always visible.** Every proof cup writes its goal in readable infix (below) next to its
+  line, without hovering: `x ≠ 0`, `u(r) ≤ 65534`, `(x·2)&1 ≠ 0`. Lines without proof cups are unchanged. Every fact
+  chip shows its proposition text too; where it came from (`br_if line 8 not taken`, `param $n`, `loop fact`) is on the
+  chip's hover.
+- **[R5a] Automatically fed cups** draw one always-on wire from each fact of their feed `Us` into the cup, in the same
+  2 px purple style as lookup and `prove` wires (dashed when assumed, §8 table). A proof the kernel found is drawn
+  exactly like one the student wrote; there is no "auto" badge beyond a small `auto` word in the account.
+- **[R5a] The account** (what the cup needs, the facts it used, and a 1–3 line reason) is shown in the gap below the
+  line, at normal note size and wrapping, for the focused or cursor line. A **show all proofs** toggle in the editor
+  shows every line's account at once. Reasons are written for a first-year student: plain words and infix
+  (`r+1 does not wrap because r ≤ 65534`, `the two facts x&1 = 0 and x&1 ≠ 0 cannot both hold`). Solver vocabulary
+  (Fourier–Motzkin, wrap variables) appears only when nothing plainer applies, and then with a gloss
+  (`combining the bounds (Fourier–Motzkin: adding inequalities to cancel a variable)`). Explicit `prove k` lines keep
+  their own account under the `prove` line.
+- **[R5a] Ex falso and never-run, in words.** A cup fed by contradictory facts says so on its line
+  (`proved because the facts on lines 8 and 3 contradict each other: this line never runs`), and a never-run region keeps
+  its grey wash plus the note on its first line (`never runs: br_if on line 8 always branches`).
+- **[R5a] Infix rendering.** Propositions everywhere (cups, chips, accounts, panel errors) use one printer: `+ − ·` and
+  `& | ^ << >>`, comparisons `< ≤ = ≠`, `¬`, `∨`; unsigned readings as `u(x)` where the signed/unsigned distinction
+  matters, as now; parameters and locals by name without `$` when unambiguous; constants `2ⁿ` and `2ⁿ−1` from 2⁸ up;
+  predicate calls as `name(args)`; memory reads as `mem32[a]`; parentheses only where precedence needs them.
 - **Gradual checks**: an unfed cup is drawn empty with Codillon's fade-up gradient, plus a small stopwatch tick to say
   "checked when run". If a run fails the check, the line gets 💣, as for any trap.
 
