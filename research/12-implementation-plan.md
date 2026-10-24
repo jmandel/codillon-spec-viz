@@ -64,9 +64,10 @@ where the solver can decide them. Numeric witness search stays as a cheap first 
   traps as obligations: division by zero, out-of-bounds memory). Spec terms are mathematical integers, linked by the signed
   or `u()` reading. Memory is an SMT array; loads and stores of the program's widths. Bounded quantifiers with constant
   bounds ≤ 64 are expanded; others are quantifiers with triggers. Ghost maps are a pair of arrays (domain, values).
-- *Solver.* Z3 compiled to WebAssembly (the `z3-solver` package), run in a Web Worker, per-obligation timeout (≈2 s),
-  results cached by a hash of the obligation. Z3 needs SharedArrayBuffer, so the editor must be cross-origin isolated;
-  on GitHub Pages use a COOP/COEP service-worker shim, and give pages that embed the editor the same shim.
+- *Solver.* Z3 compiled to WebAssembly **single-threaded** (decided 2026-10-24), built by us with emscripten so it needs
+  no SharedArrayBuffer and therefore no COOP/COEP headers or service worker on GitHub Pages; embedding pages need nothing.
+  Interface: SMT-LIB2 text in, Z3's text out, in a Web Worker; budgets via `(set-option :rlimit N)` (deterministic, no
+  timer thread); results cached by a hash of the obligation. Build script and patches: see the z3wasm README once it lands.
 - *Verdicts and drawing.*
   - **proven** — silence (gray line number); runtime `∘N` counts are dropped for proven obligations.
   - **refuted** — the model is decoded into a concrete pre-state (params, locals at the loop head, memory slots, ghost map)
