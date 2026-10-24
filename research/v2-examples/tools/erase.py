@@ -9,6 +9,7 @@ The output has exactly as many lines as the input. Rules:
   - prove / lemma / unfold / assume, and local.get/set/tee of a fact local -> nop
   - every body line of a lemma (exported as lemma:<name> or axiom:<name>) -> nop
 """
+import re
 import sys
 
 VALTYPES = ("i32", "i64", "f32", "f64")
@@ -16,8 +17,17 @@ PROOF_OPS = ("prove", "lemma", "unfold", "assume")
 
 
 def split_comment(line):
-    i = line.find(";;")
-    return (line, "") if i < 0 else (line[:i], line[i:])
+    """Split at the first ';;' that is not inside a string literal."""
+    in_str = False
+    i = 0
+    while i < len(line):
+        c = line[i]
+        if c == '"' and (i == 0 or line[i - 1] != "\\"):
+            in_str = not in_str
+        elif not in_str and line.startswith(";;", i):
+            return line[:i], line[i:]
+        i += 1
+    return line, ""
 
 
 def match_paren(s, i):
@@ -63,7 +73,7 @@ def erase_groups(code):
             if rest.startswith("(fact"):
                 i = end
                 continue
-        if len(toks) >= 2 and toks[0] in VALTYPES and toks[1].startswith("|"):
+        if len(toks) >= 2 and toks[0] in VALTYPES and (toks[1].startswith("|") or toks[0].endswith("|")):
             out.append(toks[0])
             i = end
             continue
@@ -95,6 +105,9 @@ def erase(lines):
             fact_locals = set()
             # lemma or axiom: marked by its export name (design 16 §1.7); its body is ghost code
             lemma = '(export "lemma:' in code or '(export "axiom:' in code
+            # fact parameters are handles too (design 16 §1.5)
+            for m in re.finditer(r"\(param\s+(\$[^\s()]+)\s+\(fact\b", code):
+                fact_locals.add(m.group(1))
             out.append(tidy(erase_groups(code)) + ((" " + comment) if comment else ""))
             continue
         if in_func and stripped == ")":

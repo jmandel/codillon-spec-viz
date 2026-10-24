@@ -452,16 +452,7 @@
       "feed": {
         "by": "none"
       },
-      "after_runs": {
-        "verdict": "refuted",
-        "witness": {
-          "export": "harness:table",
-          "args": [
-            1,
-            9
-          ]
-        }
-      }
+      "note": "The instrumented run (1, 9) stops at the first failing check, line 302; the erased program reaches this line (see runs)."
     },
     {
       "line": 371,

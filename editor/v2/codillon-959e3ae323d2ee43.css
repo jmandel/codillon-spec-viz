@@ -1,0 +1,446 @@
+@font-face {
+   font-family: 'MLMRoman12-Regular';
+   src: url('fonts/mlmr12.woff2') format('woff2');
+   font-weight: normal;
+   font-style: normal;
+}
+
+@font-face {
+   font-family: 'MLMSansDemiCond10-Regular';
+   src: url('fonts/mlmssdc10.woff2') format('woff2');
+   font-weight: normal;
+   font-style: normal;
+}
+
+body {
+    font-family: 'MLMRoman12-Regular';
+    font-size: 24pt;
+    background-color: #fffff0;
+}
+
+.slot-value {
+    font-family: 'MLMSansDemiCond10-Regular';
+    font-size: 8pt;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+div.textentry {
+    position: relative;
+    top: 0;
+    right: 0; 
+    bottom: 0;
+    left: 0;
+    user-select: none;
+    margin-left: 20pt;
+    white-space: pre;
+    counter-reset: codelines;
+    display: grid;
+    grid-auto-rows: var(--codillon-line-spacing);
+}
+
+div.textentry:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.line {
+    color: gray;
+}
+
+.meta-line {
+    color: indigo;
+    counter-increment: codelines;
+}
+
+.instr-line {
+    color: black;
+    counter-increment: codelines;
+}
+
+.invalid-line {
+    counter-increment: codelines;
+}
+
+.runtime-error-line {
+    color: darkred;
+    counter-increment: codelines;
+}
+
+.line::before {
+    font-size: 20pt;
+    color: darkred;
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+    content: " ";
+}
+
+.malformed-line::before {
+    content: "\1d11e        ";
+}
+
+.invalid-line::before {
+    content: "\2717        ";
+}
+
+.runtime-error-line::before {
+    content: "\1f4a3        ";
+}
+
+.numbered-line::before {
+    color: gray;
+    content: counter(codelines) "        ";
+}
+
+.line:has(span.instr[data-synthetic-before])::before {
+    color: darkred;
+    content: "\1d160        ";
+}
+
+span.comment {
+    color: darkblue;
+    font-family: 'MLMSansDemiCond10-Regular';
+    font-size: 18pt;
+    margin-left: 1px;
+}
+
+span.instr[data-synthetic-before]::before {
+    border: 1px dashed darkred;
+    color: darkred;
+    position: absolute;
+    left: 22px;
+    padding: 3px;
+    font-family: 'MLMSansDemiCond10-Regular';
+    font-size: 12pt;
+    transform: translateY(10px);
+    content: attr(data-synthetic-before);
+    width: auto;
+}
+
+span.instr[data-debug]::before {
+    font-family: 'MLMSansDemiCond10-Regular';
+    font-size: 10pt;
+    content: attr(data-debug);
+    color: white;
+    background-color: darkred;
+
+    border-radius: 10px;
+    padding: 4px;
+    margin-right: 10px;
+}
+
+span.comment[data-commentary]::after {
+    font-style: normal;
+    font-family: 'MLMRoman10-Regular';
+    font-size: 12pt;
+    color: darkred;
+    float: right;
+    border: 1px solid darkred;
+    padding: 4px;
+    margin-top: 10px;
+
+    content: attr(data-commentary);
+}
+
+span.debug[data-debug]::after {
+    font-family: 'MLMSansDemiCond10-Regular';
+    font-size: 10pt;
+    margin-left: 10px;
+    content: attr(data-debug);
+    color: white;
+    background-color: darkblue;
+
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.shake-a {
+    animation: shake-a 0.25s;
+}
+
+.shake-b {
+    animation: shake-b 0.25s;
+}
+
+@keyframes shake-a {
+ 0% { transform: translateX(0) }
+ 25% { transform: translateX(5px) }
+ 50% { transform: translateX(-5px) }
+ 75% { transform: translateX(5px) }
+ 100% { transform: translateX(0) }
+}
+
+@keyframes shake-b {
+ 0% { transform: translateX(0) }
+ 25% { transform: translateX(5px) }
+ 50% { transform: translateX(-5px) }
+ 75% { transform: translateX(5px) }
+ 100% { transform: translateX(0) }
+}
+
+.reveal-a {
+    animation: reveal-a 0.25s;
+}
+
+.reveal-b {
+    animation: reveal-b 0.25s;
+}
+
+@keyframes reveal-a {
+    0% { transform: scaleY(0%) }
+    100% { transform: scaleY(100%) }
+}
+
+@keyframes reveal-b {
+    0% { transform: scaleY(0%) }
+    100% { transform: scaleY(100%) }
+}
+
+.flyend-a .instr::before {
+    display: inline-block;
+    content: "end";
+    animation: flyend-a 0.25s;
+    transform: translateY(20px) scaleY(0%);
+    width: 0px;
+}
+
+.flyend-b .instr::before {
+    display: inline-block;
+    content: "end";
+    animation: flyend-b 0.25s;
+    transform: translateY(20px) scaleY(0%);
+    width: 0px;
+}
+
+@keyframes flyend-a {
+    0% { transform: translateY(var(--codillon-line-spacing)) scaleY(100%) }
+    100% { transform: translateY(calc(0.5 * var(--codillon-line-spacing))) scaleY(0%) }
+}
+
+@keyframes flyend-b {
+    0% { transform: translateY(var(--codillon-line-spacing)) scaleY(100%) }
+    100% { transform: translateY(calc(0.5 * var(--codillon-line-spacing))) scaleY(0%) }
+}
+
+.annotations {
+    position: absolute;
+    overflow: visible;
+}
+
+canvas {
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    pointer-events: none;
+}
+
+.graph-canvas {
+    border: 0.25px solid black;
+}
+
+.step-slider {
+    width: 100%;
+    margin: 0;
+    accent-color: darkblue;
+}
+
+.slider-ticks {
+    position: relative;
+    height: 30px;
+    margin: 0 8px;
+}
+
+@supports(-moz-appearance: none) {
+    .slider-ticks{
+        margin: 0 10px;
+    }
+}
+
+.slider-tick {
+    position: absolute;
+    transform: translateX(-50%);
+    color: darkblue;
+    font-size: 11pt;
+
+    background-color: #fffff0;
+}
+
+.bad-slider-tick {
+    color: white;
+    background-color: darkred;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.current-slider-tick {
+    color: white;
+    background-color: darkblue;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.slider-container {
+    padding-top: 10px;
+    margin: -10px 20px 0px 20px;
+    display: flex;
+    flex-direction: column;
+
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #fffff0;
+}
+
+.slider-hidden {
+    visibility: hidden;
+}
+
+.autocomplete-hint-bar {
+    background-color: #fffff0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    border-top: 2px solid burlywood;
+    border-right: 2px solid burlywood;
+    display: flex;
+    overflow-x: scroll;
+    max-width: 100%;
+}
+
+.autocomplete-item {
+    padding: 0 15px;
+    border-left: 1px solid burlywood;
+    font-family: 'MLMSansDemiCond10-Regular';
+    font-size: 12pt;
+    color: darkred;
+    cursor: pointer;
+    height: 100%;
+    align-items: center;
+    display: flex;
+}
+
+.autocomplete-item:hover {
+    background: linen;
+}
+
+.autocomplete-item:first-child {
+    border-left: none;
+}
+
+.save-status{
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    visibility: hidden;
+}
+
+.save-status.dirty {
+    color: darkred;
+    visibility: visible;
+}
+
+.arrow-target {
+    scroll-margin-top: 100px;
+    scroll-margin-bottom: 100px;
+}
+
+.share-button {
+    position: fixed;
+    left: 3px;
+    top: 3px;
+    z-index: 1001;
+    font-family: 'MLMSansDemiCond10-Regular';
+    font-size: 9pt;
+    color: darkblue;
+    background-color: #fffff0;
+    border: 1px solid #b8b8d8;
+    border-radius: 8px;
+    padding: 0px 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.share-button:hover {
+    border-color: darkblue;
+}
+
+.share-button.flashed {
+    color: white;
+    background-color: darkblue;
+    border-color: darkblue;
+}
+
+/* embed mode (#embed=1): the editor lives in an iframe that is sized to its content */
+html.embed {
+    overflow-y: hidden; /* the parent sizes the frame to fit */
+}
+
+html.embed body {
+    margin: 0;
+    padding-bottom: 20px; /* room for a horizontal scrollbar */
+}
+
+html.embed .save-status {
+    display: none;
+}
+
+html.embed .share-button {
+    font-size: 11pt;
+}
+
+.bad-slider-tick.check-fail-slider-tick, .check-fail-slider-tick {
+    color: darkred;
+    background-color: #fffff0;
+    border: 1.5px solid darkred;
+    border-radius: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
+    line-height: 1.15;
+}
+
+.current-slider-tick.check-fail-current {
+    box-shadow: 0 0 0 1.5px darkred;
+}
+
+/* A line is a row: gutter, code, then the rest. Commentary floats right in the rest
+   and is cut short (full text on hover) rather than wrapping onto the next row. */
+.line {
+    display: flex;
+    align-items: baseline;
+}
+
+.line::before {
+    flex: none;
+}
+
+.line > span.instr {
+    flex: none;
+}
+
+.line > span.comment {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* commentary takes the room left on its row and never widens the page */
+.line > span.comment[data-commentary] {
+    contain: inline-size;
+}
+
+span.comment[data-commentary]::after {
+    max-width: calc(100% - 12px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+}

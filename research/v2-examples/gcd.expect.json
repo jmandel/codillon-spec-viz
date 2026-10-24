@@ -173,13 +173,25 @@
       "line": 131,
       "operand": null,
       "kind": "BlockFact",
-      "goal": "both exit facts at the block's fall-through",
+      "goal": "gcd_ref(#x,#y) = gcd_ref($a,$b)",
       "verdict": "proven",
       "feed": {
         "by": "dead",
         "line": 129
       },
-      "why": "R22: dead after br $euclid."
+      "why": "R16/R22: one cup per declared block fact; dead after br $euclid."
+    },
+    {
+      "line": 131,
+      "operand": null,
+      "kind": "BlockFact",
+      "goal": "#y = 0",
+      "verdict": "proven",
+      "feed": {
+        "by": "dead",
+        "line": 129
+      },
+      "why": "R16/R22: one cup per declared block fact; dead after br $euclid."
     },
     {
       "line": 135,
