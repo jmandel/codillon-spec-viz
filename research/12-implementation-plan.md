@@ -15,7 +15,7 @@ checkpoints, with failures drawn in Codillon's own idiom. That gives four of the
 | held on this run only | yes: every check that passed, with a count |
 | assumed / vacuous | yes: `(@assume …)` lines; a refinement that is syntactically `true` |
 | unknown | only as "never reached on any run" (no checker ran) |
-| proven | **not in phases 1–4.** Needs a static checker (phase 5: interval + congruence abstract interpretation; an SMT solver is out of scope) |
+| proven | phase 5: verification conditions discharged by Z3 in the browser |
 
 The editor must never draw "held on this run" like "proven".
 
@@ -51,9 +51,37 @@ The editor must never draw "held on this run" like "proven".
 - Witness search: for a function with refined params, run it (in a worker or synchronously with a step budget) on edge inputs admitted by `requires` (0, 1, −1, 2, small squares, powers of two, INT_MAX, INT_MIN, values near the region's fences) and report the first failing input. Show it as a dashed ghost track above the slider (`⚖ input n = 0 · not replayed`); clicking loads it as the run (`refuted, replayed`).
 - Ghost state: `(@ghost global $M (map i32 i32))` and `(@set $M := $M[$k -> $v])` executed host-side, enough for the hash table.
 
-**Phase 5 (stretch) — "proven" for simple facts.** Interval + congruence abstract interpretation over the stack machine,
-enough to prove parity and bounds facts in the parity lesson and the masked probe index. Anything it cannot prove stays
-"held on this run" or "unknown".
+**Phase 5 — Proofs with Z3 (decided 2026-10-24: Z3 in the browser).** Replace "held on this run" with real verdicts
+where the solver can decide them. Numeric witness search stays as a cheap first signal, but proofs are the answer.
+- *Verification conditions, modularly.* For every function, symbolically execute the stack machine from its contract:
+  params and memory arbitrary subject to `requires` (and param refinements, and the module invariant for exported
+  functions), ghost state as SMT values. Loops are cut at `@invariant`: entry obligation, then an arbitrary state
+  satisfying the invariant (havoc what the body writes), body, back-edge obligation, `decreases` obligation. Calls use the
+  callee's contract (prove its requires, assume its ensures); `@define`s are unfolded; `@assert` is an obligation and then
+  a fact; `@assume` is a fact. No histories of calls are ever needed: the hash table is proved one operation at a time from
+  any state satisfying R.
+- *Encoding.* Machine values are 32-bit bitvectors with exact Wasm semantics (wraparound, signed/unsigned compares,
+  traps as obligations: division by zero, out-of-bounds memory). Spec terms are mathematical integers, linked by the signed
+  or `u()` reading. Memory is an SMT array; loads and stores of the program's widths. Bounded quantifiers with constant
+  bounds ≤ 64 are expanded; others are quantifiers with triggers. Ghost maps are a pair of arrays (domain, values).
+- *Solver.* Z3 compiled to WebAssembly (the `z3-solver` package), run in a Web Worker, per-obligation timeout (≈2 s),
+  results cached by a hash of the obligation. Z3 needs SharedArrayBuffer, so the editor must be cross-origin isolated;
+  on GitHub Pages use a COOP/COEP service-worker shim, and give pages that embed the editor the same shim.
+- *Verdicts and drawing.*
+  - **proven** — silence (gray line number); runtime `∘N` counts are dropped for proven obligations.
+  - **refuted** — the model is decoded into a concrete pre-state (params, locals at the loop head, memory slots, ghost map)
+    and drawn as a witness of kind *contract state* ("allowed by the spec; may be unreachable: either the code is wrong or the
+    spec is too weak"). If it is a function-entry state, it is replayable: run the function in a fresh instance with memory
+    and globals set from the model, on the slider. Loop-head states are shown as a state card (one-iteration replay if feasible).
+  - **unknown** (timeout, nonlinear, quantifiers) — indigo `?`, never darkred; runtime checks still run and show `∘N`.
+  - the commentary names the obligation kind (precondition at call, postcondition, invariant on entry, invariant preserved,
+    measure, no trap) and substitutes the model's values.
+- *Targets.* parity: all proven; P1–P3 refuted with models. isqrt: proven with a `(@use …)` hint or by Z3's nonlinear
+  arithmetic; S1 refuted at the loop head (`n = 2³¹−1, r = 46340`); S2, S3 refuted. triangle and triangle-bug. hash table:
+  clean version proven (one operation at a time from R); (a), (b), (b′), (c), (d) refuted with contract-state models
+  drawn as the 8 slots and the ghost map. gcd: proven if the solver can (with a lemma hint), otherwise honestly unknown.
+- *Tests.* Natively, run the same VCs through Z3 (the `z3` crate or the z3 binary) in `cargo test`, so verdicts are
+  regression-tested outside the browser.
 
 **Phase 6 — Walkthrough integration.** Example files for every walkthrough state in `editor/examples/`, the built editor
 deployed at `editor/`, and the walkthrough's lessons switched to live `<iframe>`s (embed mode) with "open in editor ↗" links
