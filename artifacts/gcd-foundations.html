@@ -45,7 +45,10 @@ html.noprose h2::after { content: ' (prose off)'; font-family: var(--sans); font
 .flow { display: flex; flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
 .pan { width: 168px; flex: none; position: relative; }
 .pan.mini { width: 118px; }
-.pan .lab { font-family: var(--sans); font-size: 11.5px; color: var(--ink2); min-height: 30px; line-height: 1.25; text-align: center; padding: 0 2px; }
+.pan .lab { font-family: var(--sans); font-size: 11.5px; color: var(--ink2); height: 36px; line-height: 1.25; text-align: center; padding: 0 2px; display: flex; flex-direction: column; justify-content: flex-end; }
+.pan.strip .lab { margin-top: 60px; }
+.pan.mini.strip .lab { margin-top: 40px; }
+.spec .pan.strip .lab { margin-top: 0; height: 0; }
 .pan .lab b { font-family: var(--serif); font-weight: normal; font-size: 13.5px; color: var(--ink); }
 .pan .lab .nm { color: var(--i32); font-weight: 600; letter-spacing: .04em; }
 .pan .sub { font-family: var(--sans); font-size: 10.5px; color: var(--ink3); text-align: center; min-height: 14px; }
@@ -70,14 +73,15 @@ svg .mk.trap circle { stroke: var(--dr); stroke-width: 2.2; }
 .dock .rib::after { content: ''; position: absolute; right: -2px; top: -3px; border-left: 8px solid #cfcbe6; border-top: 7.5px solid transparent; border-bottom: 7.5px solid transparent; }
 .dock.bad .rib { background: #e7c9c4; }
 .dock.bad .rib::after { border-left-color: var(--dr); }
+.dock.mini .rib { margin-top: 58px; }
 .dock .tag { font-family: var(--sans); font-size: 10.5px; color: var(--ink2); text-align: center; margin-top: 4px; line-height: 1.2; }
 .dock .tag .rn { display: block; font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink3); }
 .dock .tag .op { font-family: var(--serif); font-size: 12.5px; color: var(--ink); }
 .dock.bad .tag .rn, .dock.bad .tag .op { color: var(--dr); }
 .tag .ev, .ev { font-family: var(--sans); font-size: 9px; letter-spacing: .1em; color: var(--ink3); border: 1px dotted #aaa; border-radius: 3px; padding: 0 3px; vertical-align: middle; }
 .tag .ev.bad, .ev.bad { color: var(--dr); border-color: var(--dr); }
-.loopbox { border-left: 2px solid #e3b7c0; border-bottom: 2px solid #e3b7c0; border-radius: 0 0 0 14px; padding: 8px 0 6px 10px; margin: 6px 0 0 6px; position: relative; }
-.loopbox > .loophead { font-family: var(--sans); font-size: 10.5px; color: var(--ink2); position: absolute; top: -6px; left: 12px; background: var(--ivory); padding: 0 4px; }
+.loopbox { border-left: 2px solid #e3b7c0; border-bottom: 2px solid #e3b7c0; border-radius: 0 0 0 14px; padding: 4px 0 40px 10px; margin: 6px 0 0 6px; position: relative; }
+.loopbox > .loophead { font-family: var(--sans); font-size: 10.5px; color: var(--ink2); position: absolute; bottom: -8px; right: 16px; background: var(--ivory); padding: 0 6px; }
 .fig { position: relative; margin: 14px 0; }
 .fig svg.wires { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
 .fig svg.wires path { fill: none; stroke: var(--rib); stroke-width: 9; stroke-linecap: round; }
@@ -96,20 +100,23 @@ pre.deriv .k { color: var(--i32); }
 .listing .ln { display: flex; gap: 14px; align-items: baseline; padding: 1px 6px; border-radius: 4px; }
 .listing .ln.cur { background: #ececf8; }
 .listing .ln .no { font-size: 13px; color: var(--ink3); width: 20px; text-align: right; font-family: var(--sans); }
-.listing .ln .ty { font-family: var(--sans); font-size: 12px; color: var(--ink2); margin-left: auto; white-space: nowrap; }
+.listing .ln .code { min-width: 540px; }
+.listing .ln .ty { font-family: var(--sans); font-size: 12px; color: var(--ink2); margin-left: 16px; white-space: nowrap; }
 .listing .ln .ty b { font-weight: 600; color: var(--i32); letter-spacing: .06em; }
 .listing .ind1 { padding-left: 30px; } .listing .ind2 { padding-left: 60px; }
-.grammar { font-family: var(--serif); font-size: 17px; line-height: 1.6; columns: 2; column-gap: 40px; max-width: 1000px; }
+.grammar { font-family: var(--serif); font-size: 17px; line-height: 1.6; max-width: 1000px; }
 .grammar div { break-inside: avoid; }
 .grammar i { color: var(--ink2); }
 .rulepic { margin: 10px 0 22px; }
 .rulepic h4 { font: 19px var(--serif); margin: 0 0 2px; }
+.rulepic .cap { font-family: var(--sans); font-size: 12px; color: var(--ink2); margin: 4px 0 0 4px; }
 .rulepic .say { font-family: var(--sans); font-size: 12.5px; color: var(--ink2); max-width: 760px; margin: 0 0 6px; }
 #tip { position: fixed; display: none; z-index: 1000; max-width: 340px; background: #fffff8; border: 1px solid #aaa; padding: 6px 9px; font-family: var(--sans); font-size: 12px; line-height: 1.4; color: var(--ink); box-shadow: 0 2px 6px rgba(0,0,0,.12); pointer-events: none; }
 #tip .rn { letter-spacing: .12em; text-transform: uppercase; font-size: 10px; color: var(--ink3); }
 #tip .bad { color: var(--dr); }
 .specimens { display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: flex-start; }
 .spec { width: 150px; }
+.spec.vals { width: 300px; }
 .spec.wide { width: 320px; }
 .spec .cap { font-family: var(--sans); font-size: 11.5px; color: var(--ink2); line-height: 1.3; min-height: 32px; }
 .spec .cap b { font-family: var(--serif); font-weight: normal; color: var(--ink); font-size: 13.5px; }
@@ -133,7 +140,8 @@ pre.deriv .k { color: var(--i32); }
   .dock .tag { text-align: left; }
   .loopbox { margin-left: 0; padding-left: 8px; }
   .grammar { columns: 1; }
-  .listing { font-size: 16px; } .listing .ln { flex-wrap: wrap; } .listing .ln .ty { margin-left: 36px; white-space: normal; }
+  .listing { font-size: 16px; } .listing .ln { display: block; } .listing .ln .no { display: inline-block; margin-right: 8px; } .listing .ln .code { min-width: 0; white-space: normal; } .listing .ln .ty { display: block; margin-left: 34px; white-space: normal; }
+  .divrows { overflow-x: auto; } .divrows svg { min-width: 760px; } .listing .ln { flex-wrap: wrap; } .listing .ln .ty { margin-left: 36px; white-space: normal; }
   #bar .slider { flex-basis: 100%; }
 }
 
@@ -438,8 +446,8 @@ const Calc = (() => {
       if (steps.length > limit) return;
       switch (n.rule) {
         case 'FUN': steps.push({ at: n, slot: 'in', s: { ...s } }); go(n.body); if (!steps.trapped) steps.push({ at: n, slot: 'out', s: { ...s }, r: D.ev(n.ret, s) }); break;
-        case 'SEQ': go(n.first); go(n.second); break;
-        case 'SUB': go(n.inner); steps.push({ at: n, slot: 'sub', s: { ...s } }); break;
+        case 'SEQ': go(n.first); if (!steps.trapped) go(n.second); break;
+        case 'SUB': go(n.inner); if (!steps.trapped) steps.push({ at: n, slot: 'sub', s: { ...s } }); break;
         case 'ASSIGN': { const vals = n.exprs.map(e => D.ev(e, s)); if (vals.some(v => v === undefined)) { steps.push({ at: n, slot: 'trap', s: { ...s } }); steps.trapped = true; return; }
           n.targets.forEach((t, k) => s[t] = vals[k]); steps.push({ at: n, slot: 'out', s: { ...s } }); break; }
         case 'WHILE': {
@@ -558,7 +566,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
       for (const L of u.labels || []) { const t = sv('text', { class: 'dl' + (L.cls ? ' ' + L.cls : ''), x: cx(L.x) + (L.dx || 0), y: cy(L.y) + (L.dy || 0), 'text-anchor': L.anchor || 'start' }, gT); t.textContent = L.text; }
       P.u = u;
     };
-    P.setLabel = (html, subhtml) => { lab.innerHTML = html; sub.innerHTML = subhtml || ''; };
+    P.setLabel = (html, subhtml) => { lab.innerHTML = '<div>' + html + '</div>'; sub.innerHTML = subhtml || ''; };
     P.setInfo = (f, cf) => { info = f; cellInfo = cf; };
     P.marks = ms => {   // ms: [{x,y,cls,text}]
       const kids = Array.from(gM.children);
@@ -574,7 +582,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
 
   // ---------- a 1-D panel: a set of values ----------
   function mkStrip(Dom, o) {
-    o = o || {}; const W = Dom.W, c = o.cell || 6, ml = 12, mt = 3, mb = 12, w = ml + W * c + 3, h = mt + c + mb;
+    o = o || {}; const W = Dom.W, c = o.cell || 6, ml = 12, mt = 13, mb = 12, w = ml + W * c + 3, h = mt + c + mb;
     const root = el('div', 'pan'), lab = el('div', 'lab'), sub = el('div', 'sub'); root.style.width = o.width || '100%';
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}` }); root.append(lab, svg, sub);
     const cells = []; for (let v = 0; v <= Dom.N; v++) cells.push(sv('rect', { class: 'c', x: ml + v * c + 0.6, y: mt + 0.6, width: c - 1.2, height: c - 1.2, 'data-v': v }, svg));
@@ -582,9 +590,9 @@ if (typeof module !== 'undefined') module.exports = Calc;
     sv('text', { class: 'ax', x: ml, y: h - 2 }, svg).textContent = '0';
     sv('text', { class: 'ax', x: ml + W * c, y: h - 2, 'text-anchor': 'end' }, svg).textContent = (o.axis || 'r') + ' → ' + Dom.N;
     const P = { root, svg, lab, sub, cx: v => ml + v * c + c / 2, cy: mt + c / 2, c };
-    P.update = u => { const bad = new Set(u.bad || []); for (let v = 0; v <= Dom.N; v++) { let cl = 'c'; if (bad.has(v)) cl += ' bad'; else if (u.set && u.set[v]) cl += ' in'; else if (u.outer && u.outer[v]) cl += ' outer'; cells[v].setAttribute('class', cl); }
+    P.update = u => { P.u = u; const bad = new Set(u.bad || []); for (let v = 0; v <= Dom.N; v++) { let cl = 'c'; if (bad.has(v)) cl += ' bad'; else if (u.set && u.set[v]) cl += ' in'; else if (u.outer && u.outer[v]) cl += ' outer'; cells[v].setAttribute('class', cl); }
       gT.textContent = ''; for (const L of u.labels || []) { const t = sv('text', { class: 'dl' + (L.cls ? ' ' + L.cls : ''), x: P.cx(L.v), y: mt - 2 + (L.dy || 0), 'text-anchor': 'middle' }, gT); t.textContent = L.text; } };
-    P.setLabel = (a, b) => { lab.innerHTML = a; sub.innerHTML = b || ''; };
+    P.setLabel = (a, b) => { lab.innerHTML = '<div>' + a + '</div>'; sub.innerHTML = b || ''; };
     P.marks = ms => { gM.textContent = ''; for (const m of ms) { const g = sv('g', { class: 'mk' + (m.cls ? ' ' + m.cls : '') }, gM); g.style.transform = `translate(${P.cx(m.v)}px, ${P.cy}px)`; sv('circle', { r: m.cls === 'old' ? c * .28 : c * .7 }, g); } };
     let info = null; P.setInfo = f => info = f;
     root.addEventListener('mouseenter', ev => { if (info) showTip(info(), ev); }); root.addEventListener('mousemove', ev => { if (info) { showTip(info(), ev); const t = ev.target; if (t.dataset && t.dataset.v !== undefined && o.cellInfo) tip.innerHTML += '<hr style="border:0;border-top:1px solid #ddd;margin:4px 0">' + o.cellInfo(+t.dataset.v); } }); root.addEventListener('mouseleave', hideTip);
@@ -596,7 +604,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
     container.textContent = '';
     const c = 18, ml = 118, rows = [['Div(a)', 'divisors of a = ' + a, D.divmask[a]], ['Div(b)', 'divisors of b = ' + b, D.divmask[b]], ['CD(a, b)', 'common divisors = Div(a) ∩ Div(b)', D.divmask[a] & D.divmask[b]]];
     if (r !== undefined) rows.push(['Div(r)', 'divisors of the answer r = ' + r, D.divmask[r]]);
-    const w = ml + N * c + 6, h = 16 + rows.length * (c + 8) + 4;
+    const w = ml + N * c + 230, h = 16 + rows.length * (c + 8) + (r !== undefined ? 14 : 4);
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}` }); container.appendChild(svg);
     for (let d = 1; d <= N; d++) { const t = sv('text', { class: 'ax', x: ml + (d - 1) * c + c / 2, y: 10, 'text-anchor': 'middle' }, svg); t.textContent = d; }
     sv('text', { class: 'ax', x: ml - 4, y: 10, 'text-anchor': 'end' }, svg).textContent = 'd =';
@@ -606,13 +614,13 @@ if (typeof module !== 'undefined') module.exports = Calc;
       for (let d = 1; d <= N; d++) { const inset = (row[2] & (1 << (d - 1))) !== 0; sv('rect', { class: 'c' + (inset ? ' in' : ''), x: ml + (d - 1) * c + 1, y: y + 1, width: c - 2, height: c - 2 }, svg); }
       const cap = sv('text', { class: 'ax', x: ml + N * c + 4, y: y + c * 0.72 }, svg); cap.textContent = row[1];
     });
-    if (r !== undefined) { const y0 = 16 + 2 * (c + 8), y1 = 16 + 3 * (c + 8); const eq = (D.divmask[a] & D.divmask[b]) === D.divmask[r]; const t = sv('text', { x: ml - 6, y: (y0 + y1) / 2 + c * 0.9 + 6, 'text-anchor': 'end', style: 'font: 11px var(--sans); fill:' + (eq ? 'var(--ink3)' : 'var(--dr)') }, svg); t.textContent = eq ? 'these two rows are equal: that is the type' : 'rows differ: not in the type'; }
+    if (r !== undefined) { const y0 = 16 + 2 * (c + 8), y1 = 16 + 3 * (c + 8); const eq = (D.divmask[a] & D.divmask[b]) === D.divmask[r]; const t = sv('text', { x: ml, y: y1 + c + 12, style: 'font: 11px var(--sans); fill:' + (eq ? 'var(--ink3)' : 'var(--dr)') }, svg); t.textContent = eq ? 'these two rows are equal: that is the type' : 'rows differ: not in the type'; }
     return svg;
   }
 
   // ---------- a dock: one rule application ----------
   function mkDock(rule, op, o) {
-    o = o || {}; const d = el('div', 'dock' + (o.bad ? ' bad' : ''));
+    o = o || {}; const d = el('div', 'dock' + (o.bad ? ' bad' : '') + (o.mini ? ' mini' : ''));
     d.innerHTML = `<div class="rib"></div><div class="tag"><span class="rn">${rule}</span><span class="op">${op}</span>${o.ev ? ' <span class="ev' + (o.bad ? ' bad' : '') + '">eval</span>' : ''}</div>`;
     if (o.ribAt !== undefined) d.style.setProperty('--ribat', o.ribAt + 'px');
     if (o.info) tipOn(d, o.info);
@@ -631,6 +639,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
   function pick(res) {
     const root = res.root, seq = root.children[0], sub1 = seq.children[0], asg1 = sub1.children[0], sub3 = seq.children[1], wh = sub3.children[0], sub2 = wh.children[0], asg2 = sub2.children[0];
     for (const r of res.recs) r.Dom = res.Dom;
+    [asg1, sub1, wh, asg2, sub2, sub3, root, seq].forEach((r, k) => r.order = k);
     sub2.lemma = 'CD(y, x mod y) = CD(x, y) for y ≠ 0'; sub3.lemma = 'CD(x, 0) = Div(x)'; wh.lemma = 'x mod y < y for y ≠ 0';
     return { root, seq, sub1, asg1, sub3, wh, sub2, asg2 };
   }
@@ -645,102 +654,97 @@ if (typeof module !== 'undefined') module.exports = Calc;
   }
   function buildDeriv(container, Dom, res, o) {
     o = o || {}; container.textContent = '';
-    const T = pick(res), cell = o.cell, mini = !!o.mini, a = res.a, b = res.b, g = T.root.strip.indexOf(1);
+    const cell = o.cell, mini = !!o.mini;
     const wires = sv('svg', { class: 'wires' }); container.appendChild(wires);
-    const F = { panels: {}, docks: {}, Dom, res, T };
+    const F = { panels: {}, docks: {}, Dom };
     const mk = (id, opt) => { const P = mkGrid(Dom, Object.assign({ cell, mini }, opt || {})); F.panels[id] = P; return P; };
-    const cinfo = stateInfo(Dom, res);
-    const bads = rec => rec.premises.flatMap(p => p.kind === 'measure' ? [] : p.bad);
-    const firstBadLabel = (rec, Dm2) => { const bl = bads(rec); return bl.length ? [{ x: Dm2.xy(bl[0])[0], y: Dm2.xy(bl[0])[1], text: fmtState(...Dm2.xy(bl[0])), cls: 'bad', dx: 5, dy: -4 }] : []; };
-
+    const dk = (id, rule, op, which) => { const d = mkDock(rule, op, { ev: rule !== 'while' || op === 'measure', mini, info: () => premHtml(F.T[which[0]], which[1]) }); F.docks[id] = { d, which }; return d; };
     // ---- row A: entering the loop
     const rowA = el('div', 'row'); rowA.appendChild(el('div', 'rowlab', 'enter'));
     const flowA = el('div', 'flow'); rowA.appendChild(flowA);
-    const pU = mk('U'); pU.update({ set: T.root.in }); pU.setLabel('<span class="nm">U</span> &nbsp;<b>every state</b>', 'parameters a = ' + a + ', b = ' + b + ' fixed'); pU.setInfo(() => premHtml(T.root, p => p.text.startsWith('the body starts')), cinfo);
-    flowA.appendChild(pU.root);
-    flowA.appendChild(mkDock('assign', pe(T.asg1.node.exprs[0]) === 'a' ? 'x, y := a, b' : '', { ev: true, bad: !T.asg1.ok, info: () => premHtml(T.asg1) }));
-    const pInit = mk('init'); pInit.update({ set: T.asg1.out, bad: bads(T.asg1), labels: [{ x: a, y: b, text: '(a, b)', dx: 5, dy: -4 }] }); pInit.setLabel('<b>{x = a ∧ y = b}</b>', 'the exact image: one state'); pInit.setInfo(() => premHtml(T.asg1), cinfo);
-    flowA.appendChild(pInit.root);
-    flowA.appendChild(mkDock('sub', '⊆ I', { ev: true, bad: !T.sub1.premises[0].ok, info: () => premHtml(T.sub1) }));
-    const pSub1 = mk('sub1'); pSub1.update({ set: T.sub1.have, outer: T.sub1.out, bad: bads(T.sub1), labels: firstBadLabel(T.sub1, Dom) }); pSub1.setLabel('have <b>{x = a ∧ y = b}</b> ⊆ claim ' + nmI, T.sub1.ok ? 'solid inside pale: fits' : '<span class="bad">a state we have, outside the claim</span>'); pSub1.setInfo(() => premHtml(T.sub1), cinfo);
-    if (!T.sub1.ok) pSub1.root.classList.add('failing');
-    flowA.appendChild(pSub1.root);
+    const pU = mk('U'), pInit = mk('init'), pSub1 = mk('sub1');
+    flowA.append(pU.root, dk('a1', 'assign', 'x, y := a, b', ['asg1']), pInit.root, dk('s1', 'sub', '⊆ I', ['sub1']), pSub1.root);
     container.appendChild(rowA);
-
     // ---- row B: the loop
     const rowB = el('div', 'row'); rowB.appendChild(el('div', 'rowlab', 'loop'));
-    const box = el('div', 'loopbox'); box.appendChild(el('div', 'loophead', 'while ' + pf(T.wh.node.guard) + ' &nbsp;·&nbsp; invariant I = {' + pf(T.wh.node.in) + '} &nbsp;·&nbsp; measure ' + pe(T.wh.node.measure)));
+    const box = el('div', 'loopbox'); const loophead = el('div', 'loophead'); box.appendChild(loophead);
     const flowB = el('div', 'flow'); box.appendChild(flowB); rowB.appendChild(box);
-    const pHead = mk('head'); pHead.update({ set: T.wh.in }); pHead.setLabel(nmI + ' = <b>{' + pf(T.wh.node.in) + '}</b>', 'the loop head: ' + Dom.count(T.wh.in) + ' states'); pHead.setInfo(() => premHtml(T.wh, p => p.kind === 'dock'), cinfo);
-    flowB.appendChild(pHead.root);
-    flowB.appendChild(mkDock('while', pf(T.wh.node.guard), { bad: !T.wh.premises[0].ok, info: () => premHtml(T.wh, p => p.kind === 'dock') }));
-    const pCont = mk('cont'); pCont.update({ set: T.wh.cont, bad: bads(T.asg2), labels: firstBadLabel(T.asg2, Dom) }); pCont.setLabel(nmI + ' ∧ <b>' + pf(T.wh.node.guard) + '</b>', T.asg2.ok ? 'the states that continue' : '<span class="bad">x mod y undefined here</span>'); pCont.setInfo(() => premHtml(T.asg2), cinfo);
-    if (!T.asg2.ok) pCont.root.classList.add('failing');
-    flowB.appendChild(pCont.root);
-    flowB.appendChild(mkDock('assign', 'x, y := y, x mod y', { ev: true, bad: !T.asg2.ok, info: () => premHtml(T.asg2) }));
-    const pBody = mk('body'); pBody.update({ set: T.asg2.out }); pBody.setLabel('<b>image</b> of I ∧ ' + pf(T.wh.node.guard), 'after one step: ' + Dom.count(T.asg2.out) + ' states'); pBody.setInfo(() => premHtml(T.asg2), cinfo);
-    flowB.appendChild(pBody.root);
-    flowB.appendChild(mkDock('sub', '⊆ I', { ev: true, bad: !T.sub2.ok, info: () => premHtml(T.sub2) }));
-    const pSub2 = mk('sub2'); pSub2.update({ set: T.sub2.have, outer: T.sub2.out, bad: bads(T.sub2), labels: firstBadLabel(T.sub2, Dom) }); pSub2.setLabel('have <b>image</b> ⊆ claim ' + nmI, T.sub2.ok ? 'back to the loop head' : '<span class="bad">a state we have, outside the claim</span>'); pSub2.setInfo(() => premHtml(T.sub2), cinfo);
-    if (!T.sub2.ok) pSub2.root.classList.add('failing');
-    flowB.appendChild(pSub2.root);
-    // measure
-    const mp = T.wh.premises.find(p => p.kind === 'measure');
-    const pM = mk('meas', { diag: true, axis: { x: 'y before', y: 'y after' } });
-    const mset = new Uint8Array(Dom.M), mbad = []; for (const [k, k2] of T.wh.measurePairs) { const i = Dom.idx(k, k2); if (k2 < k) mset[i] = 1; else mbad.push(i); }
-    pM.update({ set: mset, bad: mbad, labels: mbad.length ? [{ x: Dom.xy(mbad[0])[0], y: Dom.xy(mbad[0])[1], text: 'not below', cls: 'bad', dx: 6, dy: -3 }] : [] });
-    pM.setLabel('<b>measure y</b>: row k → image', mp.ok ? 'every dot strictly below the diagonal' : '<span class="bad">a dot on or above the diagonal</span>');
-    pM.setInfo(() => premHtml(T.wh, p => p.kind === 'measure'), (k, k2, cls) => `<b>y before = ${k}, y after = ${k2}</b> &nbsp; ` + (cls.includes('bad') ? '<span class="bad">does not decrease</span>' : cls.includes(' in') ? 'decreases' : 'no state does this'));
-    if (!mp.ok) pM.root.classList.add('failing');
-    const mdock = mkDock('while', 'measure', { ev: true, bad: !mp.ok, info: () => premHtml(T.wh, p => p.kind === 'measure') }); mdock.style.marginLeft = '18px';
-    flowB.appendChild(mdock); flowB.appendChild(pM.root);
+    const pHead = mk('head'), pCont = mk('cont'), pBody = mk('body'), pSub2 = mk('sub2'), pM = mk('meas', { diag: true, axis: { x: 'y before', y: 'y after' } });
+    const guardDock = dk('g', 'while', '', ['wh', p => p.kind === 'dock']);
+    const mdock = dk('m', 'while', 'measure', ['wh', p => p.kind === 'measure']); mdock.style.marginLeft = '18px';
+    flowB.append(pHead.root, guardDock, pCont.root, dk('a2', 'assign', 'x, y := y, x mod y', ['asg2']), pBody.root, dk('s2', 'sub', '⊆ I', ['sub2']), pSub2.root, mdock, pM.root);
     container.appendChild(rowB);
-
     // ---- row C: leaving
     const rowC = el('div', 'row'); rowC.appendChild(el('div', 'rowlab', 'exit'));
     const flowC = el('div', 'flow'); rowC.appendChild(flowC);
-    const pExit = mk('exit'); const gx = Dom.xy(T.wh.out.indexOf(1));
-    pExit.update({ set: T.wh.out, labels: T.wh.out.indexOf(1) >= 0 && Dom.count(T.wh.out) <= 3 ? [{ x: gx[0], y: gx[1], text: fmtState(gx[0], gx[1]), dx: 5, dy: -4 }] : [] });
-    pExit.setLabel(nmI + ' ∧ <b>¬(' + pf(T.wh.node.guard) + ')</b>', 'the states that leave the loop: ' + Dom.count(T.wh.out)); pExit.setInfo(() => premHtml(T.wh, p => p.kind === 'dock'), cinfo);
-    flowC.appendChild(pExit.root);
-    flowC.appendChild(mkDock('sub', '⊆ {' + pf(T.sub3.node.out) + '}', { ev: true, bad: !T.sub3.ok, info: () => premHtml(T.sub3) }));
-    const pSub3 = mk('sub3'); pSub3.update({ set: T.sub3.have, outer: T.sub3.out, bad: bads(T.sub3), labels: firstBadLabel(T.sub3, Dom) });
-    pSub3.setLabel('have ' + nmI + ' ∧ ¬guard ⊆ claim <b>{' + pf(T.sub3.node.out) + '}</b>', T.sub3.ok ? 'the result, read as a set of states' : '<span class="bad">a state we have, outside the claim</span>'); pSub3.setInfo(() => premHtml(T.sub3), cinfo);
-    if (!T.sub3.ok) pSub3.root.classList.add('failing');
-    flowC.appendChild(pSub3.root);
-    flowC.appendChild(mkDock('fun', 'return ' + pe(T.root.node.ret), { ev: true, bad: !T.root.premises[1].ok, info: () => premHtml(T.root) }));
+    const pExit = mk('exit'), pSub3 = mk('sub3');
+    const exitDock = dk('s3', 'sub', '', ['sub3']), funDock = dk('f', 'fun', '', ['root']);
     const pS = mkStrip(Dom, { cell: Dom.N > 8 ? 6 : 14, width: mini ? '118px' : '168px', cellInfo: v => `<b>r = ${v}</b>: Div(r) = ${maskText(Dom.divmask[v])}` });
-    pS.update({ set: T.root.strip, labels: g >= 0 ? [{ v: g, text: 'r = ' + g }] : [] });
-    pS.setLabel('<b>{r | ' + pf(T.root.node.result.q) + '}</b>', 'the result type: ' + Dom.count(T.root.strip) + ' value' + (Dom.count(T.root.strip) === 1 ? '' : 's'));
-    pS.setInfo(() => premHtml(T.root)); F.panels.strip = pS;
-    flowC.appendChild(pS.root);
+    pS.root.classList.add('strip'); if (mini) pS.root.classList.add('mini'); F.panels.strip = pS;
+    flowC.append(pExit.root, exitDock, pSub3.root, funDock, pS.root);
     container.appendChild(rowC);
+
+    const bads = rec => rec.premises.flatMap(p => p.kind === 'measure' ? [] : p.bad);
+    const firstBadLabel = rec => { const bl = bads(rec); return bl.length ? [{ x: Dom.xy(bl[0])[0], y: Dom.xy(bl[0])[1], text: fmtState(...Dom.xy(bl[0])), cls: 'bad', dx: 5, dy: -4 }] : []; };
+    const setBad = (dock, bad) => { dock.classList.toggle('bad', bad); const e = dock.querySelector('.ev'); if (e) e.classList.toggle('bad', bad); };
+    const setOp = (dock, op) => { dock.querySelector('.op').textContent = op; };
+
+    // ---- fill every panel and dock from a check result; may be called again (cells tween in place)
+    F.fill = res => {
+      const T = pick(res); F.T = T; F.res = res; const a = res.a, b = res.b, g = T.root.strip.indexOf(1), cinfo = stateInfo(Dom, res);
+      const guard = pf(T.wh.node.guard);
+      pU.update({ set: T.root.in }); pU.setLabel('<span class="nm">U</span> &nbsp;<b>every state</b>', 'parameters a = ' + a + ', b = ' + b + ' fixed'); pU.setInfo(() => premHtml(T.root, p => p.text.startsWith('the body starts')), cinfo);
+      setBad(F.docks.a1.d, !T.asg1.ok);
+      pInit.update({ set: T.asg1.out, bad: bads(T.asg1), labels: [{ x: a, y: b, text: '(a, b)', dx: 5, dy: -4 }] }); pInit.setLabel('<b>{x = a ∧ y = b}</b>', 'the exact image: one state'); pInit.setInfo(() => premHtml(T.asg1), cinfo);
+      setBad(F.docks.s1.d, !T.sub1.ok);
+      pSub1.update({ set: T.sub1.have, outer: T.sub1.out, bad: bads(T.sub1), labels: firstBadLabel(T.sub1) }); pSub1.setLabel('have <b>{x = a ∧ y = b}</b> ⊆ claim ' + nmI, T.sub1.ok ? 'solid inside pale: fits' : '<span class="bad">a state we have, outside the claim</span>'); pSub1.setInfo(() => premHtml(T.sub1), cinfo); pSub1.root.classList.toggle('failing', !T.sub1.ok);
+      loophead.innerHTML = 'while ' + guard + ' &nbsp;·&nbsp; invariant I = {' + pf(T.wh.node.in) + '} &nbsp;·&nbsp; measure ' + pe(T.wh.node.measure);
+      pHead.update({ set: T.wh.in }); pHead.setLabel(nmI + ' = <b>{' + pf(T.wh.node.in) + '}</b>', 'the loop head: ' + Dom.count(T.wh.in) + ' states'); pHead.setInfo(() => premHtml(T.wh, p => p.kind === 'dock'), cinfo);
+      setOp(guardDock, guard); setBad(guardDock, !T.wh.premises[0].ok);
+      pCont.update({ set: T.wh.cont, bad: bads(T.asg2), labels: firstBadLabel(T.asg2) }); pCont.setLabel(nmI + ' ∧ <b>' + guard + '</b>', T.asg2.ok ? 'the states that continue' : '<span class="bad">x mod y undefined here</span>'); pCont.setInfo(() => premHtml(T.asg2), cinfo); pCont.root.classList.toggle('failing', !T.asg2.ok);
+      setBad(F.docks.a2.d, !T.asg2.ok);
+      pBody.update({ set: T.asg2.out }); pBody.setLabel('<b>image</b> of I ∧ ' + guard, 'after one step: ' + Dom.count(T.asg2.out) + ' states'); pBody.setInfo(() => premHtml(T.asg2), cinfo);
+      setBad(F.docks.s2.d, !T.sub2.ok);
+      pSub2.update({ set: T.sub2.have, outer: T.sub2.out, bad: bads(T.sub2), labels: firstBadLabel(T.sub2) }); pSub2.setLabel('have <b>image</b> ⊆ claim ' + nmI, T.sub2.ok ? 'back to the loop head' : '<span class="bad">a state we have, outside the claim</span>'); pSub2.setInfo(() => premHtml(T.sub2), cinfo); pSub2.root.classList.toggle('failing', !T.sub2.ok);
+      const mp = T.wh.premises.find(p => p.kind === 'measure');
+      const mset = new Uint8Array(Dom.M), mbad = []; for (const [k, k2] of T.wh.measurePairs) { const i = Dom.idx(k, k2); if (k2 < k) mset[i] = 1; else mbad.push(i); }
+      pM.update({ set: mset, bad: mbad, labels: mbad.length ? [{ x: Dom.xy(mbad[0])[0], y: Dom.xy(mbad[0])[1], text: 'not below', cls: 'bad', dx: 6, dy: -3 }] : [] });
+      pM.setLabel('<b>measure y</b>: row k → image', mp.ok ? 'every dot strictly below the diagonal' : '<span class="bad">a dot on or above the diagonal</span>');
+      pM.setInfo(() => premHtml(T.wh, p => p.kind === 'measure'), (k, k2, cls) => `<b>y before = ${k}, y after = ${k2}</b> &nbsp; ` + (cls.includes('bad') ? '<span class="bad">does not decrease</span>' : cls.includes(' in') ? 'decreases' : 'no state does this'));
+      pM.root.classList.toggle('failing', !mp.ok); setBad(mdock, !mp.ok);
+      const gi = T.wh.out.indexOf(1), gx = gi >= 0 ? Dom.xy(gi) : null;
+      pExit.update({ set: T.wh.out, labels: gx && Dom.count(T.wh.out) <= 3 ? [{ x: gx[0], y: gx[1], text: fmtState(gx[0], gx[1]), dx: 5, dy: -4 }] : [] });
+      pExit.setLabel(nmI + ' ∧ <b>¬(' + guard + ')</b>', 'the states that leave the loop: ' + Dom.count(T.wh.out)); pExit.setInfo(() => premHtml(T.wh, p => p.kind === 'dock'), cinfo);
+      setOp(exitDock, '⊆ {' + pf(T.sub3.node.out) + '}'); setBad(exitDock, !T.sub3.ok);
+      pSub3.update({ set: T.sub3.have, outer: T.sub3.out, bad: bads(T.sub3), labels: firstBadLabel(T.sub3) });
+      pSub3.setLabel('have ' + nmI + ' ∧ ¬guard ⊆ claim <b>{' + pf(T.sub3.node.out) + '}</b>', T.sub3.ok ? 'the result, read as a set of states' : '<span class="bad">a state we have, outside the claim</span>'); pSub3.setInfo(() => premHtml(T.sub3), cinfo); pSub3.root.classList.toggle('failing', !T.sub3.ok);
+      setOp(funDock, 'return ' + pe(T.root.node.ret)); setBad(funDock, !T.root.premises[1].ok);
+      pS.update({ set: T.root.strip, labels: g >= 0 ? [{ v: g, text: 'r = ' + g }] : [] });
+      pS.setLabel('<b>{r | ' + pf(T.root.node.result.q) + '}</b>', 'the result type: ' + Dom.count(T.root.strip) + ' value' + (Dom.count(T.root.strip) === 1 ? '' : 's')); pS.setInfo(() => premHtml(T.root));
+      requestAnimationFrame(F.drawWires);
+    };
 
     // ---- wires between rows: the same set, drawn twice, is joined by a ribbon
     F.drawWires = () => {
-      wires.textContent = ''; const cb = container.getBoundingClientRect(); wires.setAttribute('width', cb.width); wires.setAttribute('height', cb.height);
-      const R = P => { const r = P.svg.getBoundingClientRect(); return { l: r.left - cb.left, t: r.top - cb.top, r: r.right - cb.left, b: r.bottom - cb.top, w: r.width, h: r.height }; };
-      const s1 = R(pSub1), hd = R(pHead), s2 = R(pSub2), ex = R(pExit);
-      const vertical = innerWidth <= 760;
+      const T = F.T; wires.textContent = ''; const cb = container.getBoundingClientRect(); wires.setAttribute('width', cb.width); wires.setAttribute('height', cb.height);
+      const R = P => { const r = P.svg.getBoundingClientRect(); return { l: r.left - cb.left, t: r.top - cb.top, r: r.right - cb.left, b: r.bottom - cb.top, w: r.width, h: r.height, cx: r.left - cb.left + r.width / 2, cy: r.top - cb.top + r.height / 2 }; };
+      const s1 = R(pSub1), hd = R(pHead), s2 = R(pSub2), ex = R(pExit), pm = R(pM);
+      const vertical = matchMedia('(max-width: 760px)').matches;
       const path = (d, bad) => sv('path', { d, class: bad ? 'bad' : '' }, wires);
+      const rr = 14;
+      const elbow = (x1, y1, x2, y2, yb) => { const sx = x2 > x1 ? 1 : -1, s2y = y2 > yb ? 1 : -1; return `M${x1},${y1} L${x1},${yb - rr} Q${x1},${yb} ${x1 + sx * rr},${yb} L${x2 - sx * rr},${yb} Q${x2},${yb} ${x2},${yb + s2y * rr} L${x2},${y2}`; };
+      const side = (x1, y1, x2, y2, xo) => { const sx = xo > x1 ? 1 : -1, sy = y2 > y1 ? 1 : -1; return `M${x1},${y1} L${xo - sx * rr},${y1} Q${xo},${y1} ${xo},${y1 + sy * rr} L${xo},${y2 - sy * rr} Q${xo},${y2} ${xo - sx * rr},${y2} L${x2},${y2}`; };
       if (vertical) {
-        path(`M${s1.l + s1.w / 2},${s1.b} L${hd.l + hd.w / 2},${hd.t}`);
-        const xo = Math.min(s2.l, hd.l) - 22;
-        path(`M${s2.l},${s2.t + s2.h * .5} C${xo},${s2.t + s2.h * .5} ${xo},${hd.b - hd.h * .5} ${hd.l},${hd.b - hd.h * .5}`, !T.sub2.ok);
-        path(`M${hd.l + hd.w / 2},${hd.b} L${ex.l + ex.w / 2},${ex.t}`);
+        if (s1.w && hd.w) path(`M${s1.cx},${s1.b} L${hd.cx},${hd.t}`, !T.sub1.ok);
+        if (s2.w && hd.w) path(side(s2.l, s2.cy, hd.l, hd.cy, Math.min(s2.l, hd.l) - 14), !T.sub2.ok);
+        if (ex.w && hd.w) path(side(hd.r, hd.cy + hd.h * .25, ex.r, ex.cy, Math.max(hd.r, ex.r, pm.r || 0) + 14));
       } else {
-        // entry: from the first overlay down and across to the loop head
-        const ym = (s1.b + hd.t) / 2;
-        path(`M${s1.l + s1.w / 2},${s1.b} C${s1.l + s1.w / 2},${ym} ${hd.l + hd.w / 2},${ym} ${hd.l + hd.w / 2},${hd.t}`, !T.sub1.ok);
-        // back edge: from the back overlay under the row to the head
-        const yb = Math.max(s2.b, hd.b) + 16;
-        path(`M${s2.l + s2.w / 2},${s2.b} C${s2.l + s2.w / 2},${yb} ${s2.l + s2.w / 2},${yb} ${s2.l + s2.w / 2 - 40},${yb} L${hd.l + hd.w / 2 + 40},${yb} C${hd.l + hd.w / 2},${yb} ${hd.l + hd.w / 2},${yb} ${hd.l + hd.w / 2},${hd.b}`, !T.sub2.ok);
-        // exit: from the head down to the exit panel
-        const ye = (hd.b + ex.t) / 2;
-        path(`M${hd.l + hd.w * .25},${hd.b} C${hd.l + hd.w * .25},${ye} ${ex.l + ex.w / 2},${ye} ${ex.l + ex.w / 2},${ex.t}`);
+        if (s1.w && hd.w) path(elbow(s1.cx, s1.b, hd.cx, hd.t, (s1.b + hd.t) / 2), !T.sub1.ok);
+        if (s2.w && hd.w) path(elbow(s2.cx, s2.b, hd.cx, hd.b, Math.max(s2.b, hd.b) + 30), !T.sub2.ok);
+        if (ex.w && hd.w) path(elbow(hd.l + hd.w * .22, hd.b, ex.cx, ex.t, (hd.b + ex.t) / 2 + 14));
       }
     };
-    requestAnimationFrame(F.drawWires);
+    F.fill(res);
     return F;
   }
   // ---- marks for one run, up to step i
@@ -753,7 +757,8 @@ if (typeof module !== 'undefined') module.exports = Calc;
       else if (id === 'meas') per.meas.push({ x: st.k, y: st.k2, cls: cur ? '' : 'old', text: cur ? st.k + '→' + st.k2 : '' });
       else per[id].push({ x: st.s.x, y: st.s.y, cls: st.slot === 'trap' ? 'trap' : cur ? '' : 'old', text: cur ? (st.slot === 'trap' ? 'trap: y = 0' : fmtState(st.s.x, st.s.y)) : '' });
     }
-    for (const id in per) F.panels[id].marks(per[id]);
+    // a ring outside the panel's set is dark red: the run contradicts the type (only a wrong derivation can show this)
+    for (const id in per) { const P = F.panels[id], u = P.u || {}; for (const m of per[id]) { if (m.cls === 'trap') continue; const inside = id === 'strip' ? (u.set && u.set[m.v]) : ((u.outer || u.set) && (u.outer || u.set)[F.Dom.idx(m.x, m.y)]); if (!inside) { m.cls = 'trap'; if (m.text) m.text += ' outside'; } } P.marks(per[id]); }
     return i > 0 ? slot(steps[i - 1]) : null;
   }
 
@@ -762,10 +767,10 @@ if (typeof module !== 'undefined') module.exports = Calc;
     const box = $('#specimens'); box.textContent = '';
     const resOk = Calc.check(D, Calc.seeds.ok.build(), a, b), T = pick(resOk);
     const resWeak = Calc.check(D, Calc.seeds.weak.build(), a, b), Tw = pick(resWeak);
-    const add = (P, cap, wide) => { const s = el('div', 'spec' + (wide ? ' wide' : '')); s.appendChild(el('div', 'cap', cap)); P.root.classList.add('mini'); P.root.style.width = '100%'; s.appendChild(P.root); box.appendChild(s); };
+    const add = (P, cap, wide) => { const s = el('div', 'spec' + (wide ? ' ' + wide : '')); s.appendChild(el('div', 'cap', cap)); P.root.classList.add('mini'); P.root.style.width = '100%'; s.appendChild(P.root); box.appendChild(s); };
     // 1 set of values
     const st = mkStrip(D, { cell: 6, axis: 'd', width: '100%' }); const cd = D.divmask[a] & D.divmask[b]; const set1 = new Uint8Array(D.W); for (let d = 1; d <= N; d++) if (cd & (1 << (d - 1))) set1[d] = 1;
-    st.update({ set: set1 }); st.setLabel('', ''); add(st, '<b>a set of values</b>: filled cells on a line · CD(' + a + ', ' + b + ') = ' + maskText(cd));
+    st.update({ set: set1, labels: maskList(cd).slice(0, 4).map(d => ({ v: d, text: String(d) })) }); st.setLabel('', ''); st.root.classList.add('strip'); add(st, '<b>a set of values</b>: filled cells on a line · CD(' + a + ', ' + b + ') = ' + maskText(cd), 'vals');
     // 2 set of states
     const p2 = mkGrid(D, { mini: true }); p2.update({ set: T.wh.in }); p2.setLabel('', ''); add(p2, '<b>a set of states</b>: filled cells on the (x, y) grid · I = {CD(x, y) = CD(a, b)}');
     // 3 membership
@@ -787,14 +792,14 @@ if (typeof module !== 'undefined') module.exports = Calc;
     const box = $('#rules'); box.textContent = '';
     const x = V('x'), y = V('y');
     const A = AND(CMP('≥', x, K(2)), CMP('≤', x, K(7)), CMP('≥', y, K(1)), CMP('≤', y, K(4)));
-    const rule = (name, say, build) => { const r = el('div', 'rulepic'); r.appendChild(el('h4', '', name)); r.appendChild(el('div', 'say', say)); const f = el('div', 'flow'); r.appendChild(f); build(f); box.appendChild(r); };
+    const rule = (name, say, build) => { const r = el('div', 'rulepic'); r.appendChild(el('h4', '', name)); r.appendChild(el('div', 'say prose', say)); const f = el('div', 'flow'); r.appendChild(f); build(f); box.appendChild(r); };
     const grid = (set, lab, sub, o) => { const P = mkGrid(Dm, Object.assign({ mini: true }, o || {})); P.update(Object.assign({ set }, o || {})); P.setLabel(lab, sub); return P; };
     const sinfo = (x, y, cls) => `<b>x = ${x}, y = ${y}</b> ` + (cls.includes(' in') ? 'in' : cls.includes('outer') ? 'claimed only' : cls.includes('bad') ? '<span class="bad">breaks the premise</span>' : 'out');
     // ASSIGN
     rule('ASSIGN &nbsp; <span class="code">x̄ := ē : A ⇒ ē(A)</span>', 'The output type is the exact image of the input type under the assignment. The only premise: every expression is defined on every state of A. Here y := x mod y folds the block down.', f => {
       const n = { rule: 'ASSIGN', in: A, targets: ['y'], exprs: [MOD(x, y)] }, res = Calc.check(Dm, n, 0, 0), r = res.root; r.Dom = Dm;
       const p1 = grid(r.in, '<b>A</b>', 'the input type'); p1.setInfo(() => premHtml(r), sinfo); f.appendChild(p1.root);
-      f.appendChild(mkDock('assign', 'y := x mod y', { ev: true, info: () => premHtml(r) }));
+      f.appendChild(mkDock('assign'+'', 'y := x mod y', { ev: true, mini: true, info: () => premHtml(r) }));
       const p2 = grid(r.out, '<b>ē(A)</b>', 'its exact image'); p2.setInfo(() => premHtml(r), sinfo); f.appendChild(p2.root);
     });
     // SEQ
@@ -802,17 +807,17 @@ if (typeof module !== 'undefined') module.exports = Calc;
       const B = AND(CMP('≥', y, K(2)), CMP('≤', y, K(7)), CMP('≥', x, K(1)), CMP('≤', x, K(4)));
       const n = { rule: 'SEQ', first: { rule: 'ASSIGN', in: A, targets: ['x', 'y'], exprs: [y, x] }, second: { rule: 'ASSIGN', in: B, targets: ['y'], exprs: [MOD(x, y)] } };
       const res = Calc.check(Dm, n, 0, 0), r = res.root, c1 = r.children[0], c2 = r.children[1]; res.recs.forEach(q => q.Dom = Dm);
-      const p1 = grid(c1.in, '<b>A</b>', ''); f.appendChild(p1.root); f.appendChild(mkDock('assign', 'x, y := y, x', { ev: true, info: () => premHtml(c1) }));
-      const p2 = grid(c1.out, '<b>B</b>', 'output of c₁ = input of c₂'); p2.setInfo(() => premHtml(r), sinfo); f.appendChild(p2.root); f.appendChild(mkDock('assign', 'y := x mod y', { ev: true, info: () => premHtml(c2) }));
+      const p1 = grid(c1.in, '<b>A</b>', ''); f.appendChild(p1.root); f.appendChild(mkDock('assign'+'', 'x, y := y, x', { ev: true, mini: true, info: () => premHtml(c1) }));
+      const p2 = grid(c1.out, '<b>B</b>', 'output of c₁ = input of c₂'); p2.setInfo(() => premHtml(r), sinfo); f.appendChild(p2.root); f.appendChild(mkDock('assign'+'', 'y := x mod y', { ev: true, mini: true, info: () => premHtml(c2) }));
       const p3 = grid(c2.out, '<b>C</b>', ''); f.appendChild(p3.root);
-      const d = mkDock('seq', 'c₁ ; c₂', { ev: true, info: () => premHtml(r) }); d.style.marginLeft = '18px'; d.style.paddingTop = '0'; f.appendChild(d);
+      const cap = el('div', 'cap', '<span class="ev">eval</span> SEQ premise: the output of c₁ and the declared input of c₂ are the same ' + Dm.count(c1.out) + ' cells — so <b>B</b> is drawn once'); tipOn(cap, () => premHtml(r)); f.parentNode.appendChild(cap);
     });
     // SUB
     rule('SUB &nbsp; <span class="code">c : A ⇒ B′ &nbsp; B′ ⊆ B &nbsp;⊢&nbsp; c : A ⇒ B</span>', 'A fragment that lands in a small set also lands in any larger set. The premise is containment, drawn as the small set (solid) over the large one (pale). Any solid cell outside the pale set would be dark red.', f => {
       const n = { rule: 'SUB', out: AND(CMP('≤', x, K(3)), CMP('≤', y, K(5))), inner: { rule: 'ASSIGN', in: A, targets: ['x'], exprs: [MOD(x, K(3))] } };
       const res = Calc.check(Dm, n, 0, 0), r = res.root, c = r.children[0]; res.recs.forEach(q => q.Dom = Dm);
-      const p1 = grid(c.in, '<b>A</b>', ''); f.appendChild(p1.root); f.appendChild(mkDock('assign', 'x := x mod 3', { ev: true, info: () => premHtml(c) }));
-      const p2 = grid(c.out, '<b>B′</b>', 'what we have'); f.appendChild(p2.root); f.appendChild(mkDock('sub', '⊆ B', { ev: true, info: () => premHtml(r) }));
+      const p1 = grid(c.in, '<b>A</b>', ''); f.appendChild(p1.root); f.appendChild(mkDock('assign'+'', 'x := x mod 3', { ev: true, mini: true, info: () => premHtml(c) }));
+      const p2 = grid(c.out, '<b>B′</b>', 'what we have'); f.appendChild(p2.root); f.appendChild(mkDock('sub', '⊆ B', { ev: true, mini: true, info: () => premHtml(r) }));
       const p3 = grid(c.out, 'have <b>B′</b> ⊆ claim <b>B</b>', 'B = {x ≤ 3 ∧ y ≤ 5}', { outer: r.out }); p3.setInfo(() => premHtml(r), sinfo); f.appendChild(p3.root);
     });
     // WHILE and FUN: the miniature Euclid on 0..8 with a = 6, b = 4
@@ -824,10 +829,10 @@ if (typeof module !== 'undefined') module.exports = Calc;
     rule('FUN &nbsp; <span class="code">c : U ⇒ {s | P[e/r]} &nbsp;⊢&nbsp; fun f(ā) : {r | P} = c ; return e</span>', 'A contract is the body\'s type read through the return expression: the body must start from every state (only the parameters are known) and end in the set of states whose e satisfies P, which projects onto the result type, a set of values. Shown for a = 6, b = 4 on 0..8.', f => {
       const T = pick(mres);
       const p0 = grid(T.root.in, '<span class="nm">U</span> <b>every state</b>', 'start: parameters only'); f.appendChild(p0.root);
-      const d = mkDock('…', 'the body\'s picture', {}); f.appendChild(d);
+      const d = mkDock('…', 'the body\'s picture', { mini: true }); f.appendChild(d);
       const p1 = grid(T.sub3.out, '<b>{Div(x) = CD(a, b)}</b>', 'P[x/r]: the column x = 2'); p1.setInfo(() => premHtml(T.root), sinfo); f.appendChild(p1.root);
-      f.appendChild(mkDock('fun', 'return x', { ev: true, info: () => premHtml(T.root) }));
-      const s = mkStrip(Dm, { cell: 14, width: '118px' }); s.update({ set: T.root.strip, labels: [{ v: 2, text: 'r = 2' }] }); s.setLabel('<b>{r | Div(r) = CD(a, b)}</b>', 'the result type'); s.root.classList.add('mini'); f.appendChild(s.root);
+      f.appendChild(mkDock('fun', 'return x', { ev: true, mini: true, info: () => premHtml(T.root) }));
+      const s = mkStrip(Dm, { cell: 14, width: '118px' }); s.update({ set: T.root.strip, labels: [{ v: 2, text: 'r = 2' }] }); s.setLabel('<b>{r | Div(r) = CD(a, b)}</b>', 'the result type'); s.root.classList.add('mini'); s.root.classList.add('strip'); f.appendChild(s.root);
     });
     // composition demo
     const cb = $('#compose'); cb.textContent = '';
@@ -836,11 +841,11 @@ if (typeof module !== 'undefined') module.exports = Calc;
     const r1 = Calc.check(Dm, n1, 0, 0).root, r2 = Calc.check(Dm, n2, 0, 0).root; r1.Dom = r2.Dom = Dm;
     const top = el('div', 'flow'); top.style.flexWrap = 'wrap'; top.style.gap = '0 40px';
     const f1 = el('div', 'flow'), f2 = el('div', 'flow');
-    f1.append(grid(r1.in, '<b>A</b>', 'picture of c₁').root, mkDock('assign', 'x, y := y, x', { ev: true }), grid(r1.out, '<b>B</b>', '').root);
-    f2.append(grid(r2.in, '<b>B</b>', 'picture of c₂').root, mkDock('assign', 'y := x mod y', { ev: true }), grid(r2.out, '<b>C</b>', '').root);
+    f1.append(grid(r1.in, '<b>A</b>', 'picture of c₁').root, mkDock('assign'+'', 'x, y := y, x', { ev: true, mini: true }), grid(r1.out, '<b>B</b>', '').root);
+    f2.append(grid(r2.in, '<b>B</b>', 'picture of c₂').root, mkDock('assign'+'', 'y := x mod y', { ev: true, mini: true }), grid(r2.out, '<b>C</b>', '').root);
     top.append(f1, f2); cb.appendChild(top);
     const br = el('div', 'small', '⇣ &nbsp; plug the output panel of c₁ onto the input panel of c₂: they are the same set, so one panel'); br.style.margin = '6px 0 2px 60px'; cb.appendChild(br);
-    const bot = el('div', 'flow'); bot.append(grid(r1.in, '<b>A</b>', 'picture of c₁ ; c₂').root, mkDock('assign', 'x, y := y, x', { ev: true }), grid(r1.out, '<b>B</b>', 'shared').root, mkDock('assign', 'y := x mod y', { ev: true }), grid(r2.out, '<b>C</b>', '').root); cb.appendChild(bot);
+    const bot = el('div', 'flow'); bot.append(grid(r1.in, '<b>A</b>', 'picture of c₁ ; c₂').root, mkDock('assign'+'', 'x, y := y, x', { ev: true, mini: true }), grid(r1.out, '<b>B</b>', 'shared').root, mkDock('assign'+'', 'y := x mod y', { ev: true, mini: true }), grid(r2.out, '<b>C</b>', '').root); cb.appendChild(bot);
   }
 
   // ---------- section 3: listing ----------
@@ -860,7 +865,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
 
   // ---------- verdict ----------
   function renderVerdict(res, seed) {
-    const v = $('#verdict'); const fails = res.recs.flatMap(r => r.premises.filter(p => !p.ok).map(p => [r, p]));
+    const v = $('#verdict'); const fails = res.recs.slice().sort((p, q) => p.order - q.order).flatMap(r => r.premises.filter(p => !p.ok).map(p => [r, p]));
     const nrules = res.recs.length, nleaves = res.recs.reduce((c, r) => c + r.premises.length, 0);
     if (!fails.length) { v.className = 'verdict'; v.innerHTML = `Checked for a = ${res.a}, b = ${res.b}: <b>${nrules} rule applications</b>, <b>${nleaves} leaf facts</b> settled by evaluation over ${D.M} states. Every premise holds; the derivation composes.` + (seed.kind !== 'none' ? ` <span class="bad">This is the seeded ${seed.kind} "${seed.title}" (${seed.what}); it happens to pass for these inputs. Try other inputs, or run the check over all slices.</span>` : ''); }
     else { v.className = 'verdict fail'; v.innerHTML = `<b>Refused</b> for a = ${res.a}, b = ${res.b} (${seed.kind}: ${seed.what}). ` + fails.map(([r, p]) => `<br><b>${r.rule}</b> — ${p.text}: fails at ${p.bad.length} state${p.bad.length > 1 ? 's' : ''}, first ${Array.isArray(p.bad[0]) ? 'row ' + p.bad[0][0] + ' → ' + p.bad[0][1] : fmtState(...D.xy(p.bad[0]))}.`).join('') + `<br><span style="color:var(--ink2)">${nrules - 0} rule applications, ${nleaves - fails.length} of ${nleaves} leaf facts hold.</span>`; }
@@ -886,7 +891,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
       const card = el('div', 'card'); card.style.width = '250px';
       card.appendChild(el('h4', '', `${seed.title} <span class="small">· ${seed.kind}</span>`));
       card.appendChild(el('div', 'small', seed.what)).style.minHeight = '48px';
-      const fail = res.recs.flatMap(r => r.premises.filter(p => !p.ok).map(p => [r, p]))[0];
+      const fail = res.recs.slice().sort((p, q) => p.order - q.order).flatMap(r => r.premises.filter(p => !p.ok).map(p => [r, p]))[0];
       let P;
       if (!fail) { P = mkGrid(D, { mini: true }); P.update({ set: T.sub1.have, outer: T.sub1.out }); P.setLabel('have {x = a ∧ y = b} ⊆ ' + nmI, 'fits for these a, b'); }
       else { const [r, p] = fail;
@@ -917,7 +922,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
     renderSpecimens(a, b);
     renderDivRows($('#divrows'), a, b, res.root.strip.indexOf(1) >= 0 ? res.root.strip.indexOf(1) : undefined);
     renderListing(a, b, seedKey, res);
-    F = buildDeriv($('#deriv'), D, res, { cell: 6 });
+    if (F) F.fill(res); else F = buildDeriv($('#deriv'), D, res, { cell: 6 });
     renderVerdict(res, seed); $('#derivtext').innerHTML = derivText(node);
     renderSeedMulti(a, b); renderCheckAll();
     steps = Calc.trace(D, node, a, b);

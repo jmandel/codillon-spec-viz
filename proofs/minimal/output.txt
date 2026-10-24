@@ -1,0 +1,42 @@
+domain: every variable in 0..32; 1089 states per slice (a, b); 1089 slices
+
+trusted base: the evaluator (mod, comparisons, Div as a bitmask over d = 1..N, simultaneous assignment) and enumeration of the domain.
+
+== correct (none): Euclid as written
+   | FUN gcd(a, b) : {r | Div(r) = CD(a, b)}  return x
+   |   SEQ
+   |     SUB out: {CD(x, y) = CD(a, b)}
+   |       ASSIGN in: {true}  x, y := a, b
+   |     SUB out: {Div(x) = CD(a, b)}
+   |       WHILE inv: {CD(x, y) = CD(a, b)}  guard: y ≠ 0  measure: y
+   |         SUB out: {CD(x, y) = CD(a, b)}
+   |           ASSIGN in: {CD(x, y) = CD(a, b) ∧ y ≠ 0}  x, y := y, x mod y
+   rule applications: 8; leaf facts per slice: 11; slices refused: 0 of 1089  [1298 ms]
+   slice (12, 8): PASS
+   run gcd(12, 8): returns 4 in 17 steps  (evidence, not proof)
+
+== return y (code bug): the function returns y (always 0 at exit) instead of x
+   rule applications: 8; leaf facts per slice: 11; slices refused: 1088 of 1089; first refused (a, b) = (0,1)  [1203 ms]
+   slice (12, 8): REFUSED
+      ✗ SUB: what we have ⊆ what we claim: Div(y) = CD(a, b); first counterexample (x, y) = (4,0)
+   run gcd(12, 8): returns 0 in 17 steps  (evidence, not proof)
+
+== weak invariant (spec bug): invariant keeps only one direction, CD(a,b) ⊆ CD(x,y): true at every lap, but it does not pin the exit down
+   rule applications: 8; leaf facts per slice: 11; slices refused: 1088 of 1089; first refused (a, b) = (0,1)  [1345 ms]
+   slice (12, 8): REFUSED
+      ✗ SUB: what we have ⊆ what we claim: Div(x) = CD(a, b); first counterexample (x, y) = (0,0)
+   run gcd(12, 8): returns 4 in 17 steps  (evidence, not proof)
+
+== guard on x (code bug): the loop tests x ≠ 0 instead of y ≠ 0, so x mod y can be asked with y = 0
+   rule applications: 8; leaf facts per slice: 11; slices refused: 1088 of 1089; first refused (a, b) = (0,1)  [1246 ms]
+   slice (12, 8): REFUSED
+      ✗ SUB: what we have ⊆ what we claim: Div(x) = CD(a, b); first counterexample (x, y) = (0,4)
+      ✗ ASSIGN: x, y := y, x mod y is defined on every state of CD(x, y) = CD(a, b) ∧ x ≠ 0; first counterexample (x, y) = (4,0)
+   run gcd(12, 8): TRAP (x mod 0) in 16 steps  (evidence, not proof)
+
+== strong invariant (spec bug): invariant adds y ≤ x: preserved by the body, but false on entry whenever a < b
+   rule applications: 8; leaf facts per slice: 11; slices refused: 528 of 1089; first refused (a, b) = (0,1)  [1193 ms]
+   slice (12, 8): PASS
+   run gcd(12, 8): returns 4 in 17 steps  (evidence, not proof)
+
+SUMMARY: correct derivation accepted on every slice; every seeded mistake refused on at least one slice.

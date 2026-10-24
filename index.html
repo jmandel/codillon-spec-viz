@@ -37,10 +37,14 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
   <p>One page, written as if the design were decided: a type is a set, a refinement is a region inside the shape, the fraction is a sequent, a failed obligation is an inserted hole line, a counterexample is a run on the slider, and density lives in lenses. Walks through parity and integer square root live in the real editor; the hash-table lesson is a work in progress (simulated until the editor executes ghost state).</p>
 </div>
 
-<h2>Worked example: gcd as a type</h2>
+<h2>Worked example: gcd as a type (two independent takes)</h2>
 <div class="card" style="background:#fffff8">
   <div class="n">Euclid</div><a class="t" href="artifacts/gcd-as-a-type.html">The type of the answer never changes</a>
   <p>Euclid's algorithm with its output typed as <em>a number whose divisors are exactly the common divisors of a and b</em>. The type, the one lemma (a rectangle-tiling picture), the loop's type as a shaded set of states, two seeded mistakes, and the machine-checked Lean proof (<a href="proofs/EuclidGcd.lean">proofs/EuclidGcd.lean</a>, Lean 4.35.0, core only) cross-linked line by line to the pictures.</p>
+</div>
+<div class="card" style="background:#fffff8;margin-top:1rem">
+  <div class="n">Euclid · minimal calculus</div><a class="t" href="artifacts/gcd-foundations.html">Five rules, one composed picture</a>
+  <p>An independent attempt at the same proof in a far smaller theory than Lean: types are finite sets of states, and five rules (assign, sequence, subsumption, while with invariant and measure, function). Each rule has one picture, and the proof is those pictures docked together. An in-page checker verifies the derivation and refuses four seeded mistakes, each drawn as the one dock that fails. Standalone checker: <a href="proofs/minimal/">proofs/minimal</a>; design note: <a href="research/14-minimal-calculus.html">research 14</a>.</p>
 </div>
 
 <h2>The real editor</h2>
