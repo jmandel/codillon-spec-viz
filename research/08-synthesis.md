@@ -3,6 +3,22 @@
 Coordinator write-up, 2026-10-23 (all ten prototypes reviewed). Inputs: the seven research documents, the ten prototypes in `artifacts/`,
 the builders' self-scores and my review notes (07). Section numbers refer to files in this directory.
 
+## Update: version 2 (2026-10-24)
+
+This synthesis describes **version 1**, the first iteration: annotations checked at run time and proved with Z3. Its
+logic has since been replaced. Version 2 makes proofs Wasm values in a fact lane, uses refined block and function
+types as the only spec syntax, has `unreachable` consume False, discharges arithmetic with `prove k` and a small
+deterministic decision procedure, and checks everything with a kernel that has no Z3 and no "unknown". See:
+
+- [15 · Input: proofs as Wasm values](15-input-proofs-as-values.md) — why;
+- [16 · v2 design](16-v2-design.md) — what (rule cards, decision procedure, verdicts, vericoding mode);
+- [18 · From annotations to proofs as values](18-annotations-to-proofs-as-values.md) — what v1 did well, what it
+  bent, what v2 changes and costs, and what is not done yet;
+- the live v2 editor at [`editor/v2/`](../editor/v2/) (fork branch `proofs`).
+
+The rest of this document is unchanged. The v1 composition below (the three layers, the six states, the
+prototype verdicts) remains the record of the first iteration, and its drawing decisions carry into v2.
+
 ## 1. The vision, in one paragraph
 
 Codillon already treats *validity* as something you see rather than read: types are shapes, dataflow is

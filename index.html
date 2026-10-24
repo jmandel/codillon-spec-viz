@@ -31,20 +31,40 @@ runtime is a slider. This study asks what a next version would look like if type
 (<code>(i32 | even v)</code>, loop invariants, function contracts, a hash table's representation invariant) and the editor had to make
 a <em>specification‑adherence</em> bug as visually obvious as a type error is today.</p>
 
-<h2>Start here: the walkthrough</h2>
+<h2>Version 2: proofs as values</h2>
+<div class="card" style="border-color:indigo;background:#fffff8">
+  <div class="n">v2 · current</div><a class="t" href="research/18-annotations-to-proofs-as-values.html">From annotations to proofs as values: why version 1 was replaced</a>
+  <p>Version 2 drops the separate annotation language and the solver. Proofs are Wasm values in a <em>fact lane</em>: a comparison followed by <code>if</code> or <code>br_if</code> gives each arm a fact, every proposition an instruction needs is a cup fed by exactly one fact, and a missing proof is an empty cup. Refined block and function types are the only spec syntax (a loop's block type is its invariant), <code>unreachable</code> consumes a proof of False (so a harness ending in <code>unreachable</code> is a functional spec), and <code>prove k</code> discharges arithmetic with a small deterministic decision procedure. A kernel checks the text with no Z3 and no “unknown”: every cup is proven, refuted, runtime‑checked or assumed. A vericoding mode lets an LLM write bodies and proofs against a spec the student owns.</p>
+</div>
+<ul class="docs">
+  <li><a href="research/15-input-proofs-as-values.html">15 · Input: proofs as Wasm values</a> — why: the design conversation that started v2.</li>
+  <li><a href="research/16-v2-design.html">16 · v2 design</a> — what: fact lane, rule cards R1–R35, the decision procedure behind <code>prove k</code>, the four verdicts, vericoding mode, limits.</li>
+  <li><a href="research/18-annotations-to-proofs-as-values.html">18 · From annotations to proofs as values</a> — what v1 did well, what it bent, what v2 changes and costs, and what is not done yet.</li>
+  <li><a href="research/16-review-fable.html">16 · Design review</a> and <a href="research/17-kernel-review-fable.html">17 · Kernel review</a> — independent reviews; the soundness holes and the five blocking kernel bugs (B1–B5) they found, all fixed.</li>
+  <li><a href="research/v2-examples/">v2 examples</a> — parity, isqrt, gcd, primality and the hash table in v2 syntax, with seeded bugs and a hand-derived verdict for every cup (the kernel's test oracle).</li>
+</ul>
+<p>The v2 kernel runs in the real editor on every keystroke (fork branch <a href="https://github.com/jmandel/codillon/tree/proofs">proofs</a>); its visualization is still being built. Open an example in a new tab:
+<a href="editor/v2/#ex=v2/parity&step=last" target="_blank">parity, fully proven</a> ·
+<a href="editor/v2/#ex=v2/isqrt&step=last" target="_blank">isqrt, invariant as a block type</a> ·
+<a href="editor/v2/#ex=v2/gcd-bug-guard&step=fail" target="_blank">gcd, guard on the wrong variable</a> ·
+<a href="editor/v2/#ex=v2/parity-missing-proof&step=last" target="_blank">parity, a missing proof</a> ·
+<a href="editor/v2/#ex=v2/hashtable&step=last" target="_blank">hash table</a>.</p>
+
+<h2>Version 1 (first iteration): the walkthrough</h2>
+<p class="status">Everything below is the first iteration: specifications written as annotations (<code>(@requires …)</code>, <code>(@invariant …)</code>), checked at run time and proved with Z3. It is kept as the record of v1; its drawing decisions carry into v2.</p>
 <div class="card" style="border-color:#8b0000;background:#fffff8">
   <div class="n">00</div><a class="t" href="artifacts/00-refined-codillon.html">Refined Codillon — a tutorial walkthrough of the composed design</a>
   <p>One page, written as if the design were decided: a type is a set, a refinement is a region inside the shape, the fraction is a sequent, a failed obligation is an inserted hole line, a counterexample is a run on the slider, and density lives in lenses. Walks through parity, integer square root and the hash table, each with the real editor embedded and every seeded bug live; proof holes and lenses are design previews.</p>
 </div>
 
-<h2>Worked example: gcd as a type</h2>
+<h2>Version 1 (first iteration): gcd as a type</h2>
 <div class="card" style="background:#fffff8">
   <div class="n">Euclid</div><a class="t" href="artifacts/gcd-as-a-type.html">The type of the answer never changes</a>
   <p>Euclid's algorithm with its output typed as <em>a number whose divisors are exactly the common divisors of a and b</em>. The type, the one lemma (a rectangle-tiling picture), the loop's type as a shaded set of states, two seeded mistakes, and the machine-checked Lean proof (<a href="proofs/EuclidGcd.lean">proofs/EuclidGcd.lean</a>, Lean 4.35.0, core only) cross-linked line by line to the pictures.</p>
 </div>
 <div class="card" style="background:#fffff8;margin-top:1rem">
   <div class="n">Euclid · minimal calculus</div><a class="t" href="artifacts/gcd-foundations.html">Five rules, one composed picture</a>
-  <p>An independent attempt at the same proof in a far smaller theory than Lean: types are finite sets of states, and five rules (assign, sequence, subsumption, while with invariant and measure, function). Each rule has one picture, and the proof is those pictures docked together. An in-page checker verifies the derivation and refuses four seeded mistakes, each drawn as the one dock that fails. Standalone checker: <a href="proofs/minimal/">proofs/minimal</a>; design note: <a href="research/14-minimal-calculus.html">research 14</a>.</p>
+  <p>An independent attempt at the same proof in a far smaller theory than Lean: types are finite sets of states, and five rules (assign, sequence, subsumption, while with invariant and measure, function). Each rule has one picture, and the proof is those pictures docked together. An in-page checker verifies the derivation and refuses four seeded mistakes, each drawn as the one dock that fails. Standalone checker: <a href="https://github.com/jmandel/codillon-spec-viz/tree/main/proofs/minimal">proofs/minimal</a>; design note: <a href="research/14-minimal-calculus.html">research 14</a>.</p>
 </div>
 
 <div class="card" style="background:#fffff8;margin-top:1rem">
@@ -52,7 +72,7 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
   <p>Ten independent visual explorations of Gcd(a, b) as a refinement type (lattice, divisor strips, exponent boxes, nested predicates, Bézout ideal, type family, rectangle tiling, state space, typing derivation, Codillon's editor idiom), each audited number by number, with a comparison table and a recommendation for teaching, debugging and the editor. Sources: <a href="research/gcd-gallery/">research/gcd-gallery</a>.</p>
 </div>
 
-<h2>The real editor</h2>
+<h2>Version 1 (first iteration): the real editor</h2>
 <p><b><a href="artifacts/real-editor.html">Refined Codillon in the real editor</a></b>: six live demos with deep links and screenshots, the verdict table, and how the proofs work.</p>
 <p>Refined Codillon is now running in the actual editor (a fork of Codillon): specifications are parsed, erased from the binary, checked at run time, and <b>proved with Z3</b> (compiled single-threaded to WebAssembly, running in your browser). Proven lines are silent; refuted lines show the solver's counterexample state, replayable on the slider. Open an example in a new tab:
 <a href="editor/#ex=parity-p1&step=fail" target="_blank">parity, gate inverted</a> ·
@@ -65,7 +85,7 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
 <a href="editor/EXAMPLES.html">all examples, each a deep link</a>.
 Source: <a href="https://github.com/jmandel/codillon/tree/refined">github.com/jmandel/codillon, branch refined</a>; plan: <a href="research/12-implementation-plan.html">research 12</a>.</p>
 
-<h2>Ten prototypes</h2>
+<h2>Version 1 (first iteration): ten prototypes</h2>
 <p class="status">Each page follows the same contract: legend → primitive in isolation → integer square root (or gcd) with a step slider and a “seed bug” control → an 8‑slot open‑addressing hash table with the same → self‑critique. Everything is a single self‑contained HTML file.</p>
 <div class="gallery" id="gallery">
   <div class="card"><div class="n">01</div><a class="t" href="artifacts/01-containment-spill.html">Shape as value space</a><p>The i32 rectangle <em>is</em> the number line; a refinement is a region inside it; a failed subtyping check spills over the cup's rim.</p></div>
@@ -80,7 +100,7 @@ Source: <a href="https://github.com/jmandel/codillon/tree/refined">github.com/jm
   <div class="card"><div class="n">10</div><a class="t" href="artifacts/10-proof-holes.html">Synthetic proof holes</a><p>An undischarged obligation materializes as an inserted hole line, like a synthetic <code>end</code>, with suggestion chips.</p></div>
 </div>
 
-<h2>Findings</h2>
+<h2>Version 1 (first iteration): findings</h2>
 <p>The ten are not alternatives; they sort into three layers. <strong>Always-on in the margin:</strong> the sequent fraction (03) carrying value‑space regions inside the shapes (01), with a spill glyph for a failed fit and an empty cup for a missing fact. <strong>On failure:</strong> a synthetic proof hole inserted after the offending line (10) and the counterexample replayed onto the slider as a witness pill (07). <strong>On selection:</strong> lenses for integers (02), time (09), loops (05), memory (06) and coverage (08). Six epistemic states, all readable in grayscale, are shared by every prototype; the critical one is keeping “held on this run” from ever looking like “proven”.</p>
 <ul class="docs">
   <li><a href="research/08-synthesis.html">08 · Synthesis</a> — the vision in one paragraph, verdicts on all ten, the recommended composition, open questions.</li>
@@ -89,7 +109,7 @@ Source: <a href="https://github.com/jmandel/codillon/tree/refined">github.com/jm
   <li><a href="research/11-real-codillon-comparison.html">11 · Real Codillon vs. our renderings</a> — upstream Codillon built and screenshotted locally; what the prototypes got right and wrong.</li>
 </ul>
 
-<h2>Research</h2>
+<h2>Version 1 (first iteration): research</h2>
 <ul class="docs">
   <li><a href="research/00-codillon-today.html">00 · Codillon today</a> — the current visual vocabulary this study builds on.</li>
   <li><a href="research/01-language-design.html">01 · Language design</a> — refinement types on a Wasm stack machine, obligations per instruction, Lean grounding.</li>
