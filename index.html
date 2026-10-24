@@ -48,7 +48,7 @@ a <em>specification‑adherence</em> bug as visually obvious as a type error is 
 </div>
 
 <h2>The real editor</h2>
-<p>Refined Codillon is now running in the actual editor (a fork of Codillon): specifications are parsed, erased from the binary, and checked at run time, drawn in Codillon's own idiom. Open an example in a new tab:
+<p>Refined Codillon is now running in the actual editor (a fork of Codillon): specifications are parsed, erased from the binary, checked at run time, and <b>proved with Z3</b> (compiled single-threaded to WebAssembly, running in your browser). Proven lines are silent; refuted lines show the solver's counterexample state, replayable on the slider. Open an example in a new tab:
 <a href="editor/#ex=parity-p1&step=fail" target="_blank">parity, gate inverted</a> ·
 <a href="editor/#ex=isqrt-s3&step=fail" target="_blank">isqrt starting at 1</a> ·
 <a href="editor/#ex=isqrt-s2&step=fail" target="_blank">isqrt spec bug</a> ·

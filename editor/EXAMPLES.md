@@ -2,6 +2,8 @@
 
 Live build of https://github.com/jmandel/codillon/tree/refined (a fork of codillon/codillon, LGPL-2.1).
 Each name opens the editor on that program. Correct programs open at the last step; bugs open at the first failed check.
+
+**Proofs.** Every obligation is also sent to Z3 (single-threaded WebAssembly, loaded on first use, runs in a worker). Proven lines are silent; refuted lines get ⚖ with the solver's counterexample state (replayable when it is a function-entry state); undecided lines get an indigo `?`. Across these examples: 419 obligations, 398 proven, 20 refuted, 1 undecided (`cubes`, on purpose). The hash tables take about 30 s to prove in the browser; small programs take under 2 s.
 Deep-link format: `editor/#ex=<name>`, plus `&step=<n|last|fail>`, `&args=1,2` for `$main`'s arguments, `&embed=1` for iframes (`&fit=1` scales to the frame).
 
 | example | kind | what it shows |
@@ -22,7 +24,7 @@ Deep-link format: `editor/#ex=<name>`, plus `&step=<n|last|fail>`, `&args=1,2` f
 | [gcd-g3](./#ex=gcd-g3&step=fail) | spec bug | invariant y <= x is never established on entry |
 | [triangle-bug](./#ex=triangle-bug&step=fail) | bug | loop guard off by one: a refined local is set outside its type and spills |
 | [spec-errors](./#ex=spec-errors&step=fail) | spec syntax | a malformed predicate (𝄞) and an unknown name (✗) |
-| [hashtable](./#ex=hashtable&step=last) | correct | the fixture sequence insert(3,30), insert(11,110), delete(3), lookup(11,−1); ghost map $M and the representation invariant R checked on every operation |
+| [hashtable](./#ex=hashtable&step=last) | correct, proven | the fixture sequence insert(3,30), insert(11,110), delete(3), lookup(11,−1); all 54 obligations proven one operation at a time from any state satisfying R (≈30 s) |
 | [hashtable-a](./#ex=hashtable-a&step=fail) | bug | probe index not wrapped: probe invariant fails, then out-of-bounds trap |
 | [hashtable-b](./#ex=hashtable-b&step=fail) | bug | lookup treats TOMB as EMPTY: $find's result check fails at step 241 (fixture numbering) |
 | [hashtable-b2](./#ex=hashtable-b2&step=fail) | bug | delete writes EMPTY: R breaks at the delete |
