@@ -21,6 +21,6 @@ Deep-link format: `editor/#ex=<name>`, plus `&step=<n|last|fail>`, plus `&embed=
 | [gcd-g3](./#ex=gcd-g3&step=fail) | spec bug | invariant y <= x is never established on entry |
 | [triangle-bug](./#ex=triangle-bug&step=fail) | bug | loop guard off by one: a refined local is set outside its type and spills |
 | [spec-errors](./#ex=spec-errors&step=fail) | spec syntax | a malformed predicate (𝄞) and an unknown name (✗) |
-| [hashtable](./#ex=hashtable&step=fail) | partial | all spec lines parse; ghost-map checks show "? not checked" until phase 4 |
+| [hashtable](./#ex=hashtable&step=last) | **work in progress** | spec lines parse and the program runs, but ghost state ($M) is not executed yet, so the representation-invariant checks show "? not checked". Bug variants (b), (c), (d) are coming. |
 
 Back to the study: [codillon-spec-viz](../)
