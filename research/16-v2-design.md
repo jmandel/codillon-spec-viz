@@ -257,7 +257,10 @@ Conclusion: `cur[$x] := #n`. Facts are untouched: facts mentioning the previous 
 stay true (they are about the value `#m`), but cups that mention the new value of `$x` no longer match them. If the
 cup is fed, enter `R[v := #n]` (so later reads need not re-prove it). Drawn: every lane chip that mentions `#m` and was
 reachable through `$x` frays at this line (its ribbon unravels past this line, §8). Error: the refinement cup unfed →
-`$x needs ⟨R⟩`.
+`$x needs ⟨R⟩`. A local's refinement may name other locals; it is the local's invariant, so a
+`local.set`/`local.tee` of any local `$n` that the refinement of `$r` names also owes the cup
+`R_r[v := cur($r), $n := new]` (drawn on the set line, kind Refinement of `$r`). A local's refinement may not call a
+memory-reading predicate (a store would falsify it unseen); error on the local's line.
 
 **R8 — joins (merging local bindings).** At a point where control merges (the `end` of an `if` with two
 fall-through arms, the `end` of a `block` that is the target of a `br`/`br_if`/`br_table`, a `loop` head), for each local
@@ -274,7 +277,13 @@ bracket where `$x`'s ribbon is renumbered. Error: none.
 Any impure call (R13) re-binds every mutable global to a fresh id, and enters its refinement if it has one. Immutable
 globals get constant ids when initialized by a constant. Mutable globals are bound per function pass (a fresh id at
 entry, φ-renamed at loop heads by R8), so no fact about one survives a `global.set` or impure call; and because pure
-functions may not read them (R29), a predicate's value never depends on one. Drawn/Error: as R6/R7.
+functions may not read them (R29), a predicate's value never depends on one. Drawn/Error: as R6/R7. A global's refinement may name only `v` (and call
+pure, memory-free predicates); naming a local or parameter, or reading memory, is a module error and the refinement is
+ignored. The initializer must satisfy it (checked by evaluation, R28); otherwise a module error, and every function's
+copy of the refinement is an assumption. Every `global.set $g` cup anywhere in the module that is not proven (unfed,
+runtime-checked, or resting on checks or assumes) is a dependency of `$g`'s refinement in *every* function: facts
+derived from it are proven relative to those check lines (`*`) or assumed. (A caller still does not inherit a callee's
+internal checks; a global's invariant is module-wide state, not a callee contract.)
 
 ### Memory
 
@@ -397,8 +406,10 @@ code (R22). Conclusion: the rest of the arm is dead. This card is how functional
 check in `unreachable`, so proving every `unreachable` cup proves the spec (§6). Drawn: a distinctive **False cup**
 (an inverted, hatched cup, §8). Error: `reachable: needs False; nothing feeds it`.
 
-**R27 — conversions and other traps.** `iNN.trunc_fMM_s/u` has two cups, `(fMM.gt #f LO)` and `(fMM.lt #f HI)`, with the
-exact exclusive bounds of the target range (e.g. `LO = −2147483649.0`, `HI = 2147483648.0` for `i32.trunc_f64_s`); they also
+**R27 — conversions and other traps.** `iNN.trunc_fMM_s/u` has two cups, `(fMM.gt #f LO)` and `(fMM.lt #f HI)`, where LO and HI are
+the nearest values of the source float type just outside the target range: for f64 sources −2^31−1 / 2^31 (i32_s) and
+−2^63−2048 / 2^63 (i64_s); for f32 sources −2^31−256 / 2^31 (i32_s) and −2^63−2^40 / 2^63 (i64_s); unsigned −1 / 2^32
+or 2^64. The cups also
 exclude NaN, since every comparison with NaN is 0. Floats are opaque to §3: these cups are fed only by exact lookup of a
 float comparison fact, or by evaluation on constants. `trunc_sat` forms have no cup and are recommended. `call_indirect` has
 the cup `CallIndirectOk`, which no rule produces: it is always runtime-checked (gradual) or an error (strict): "outside v2".
@@ -451,7 +462,11 @@ A failed `prove` never refutes the goal; it only fails to feed it.
 `(param $h (fact P))` and only fact results. (Ordinary functions may also have fact params and fact results: they are
 pre- and postconditions not about a single value, e.g. a memory invariant; callers feed them with cups as in R13.) Its body is **ghost code**: checked by every card above (case analysis with `if`, `prove`, `lemma`, recursion
 with a measure = induction), never executed, erased to `nop`s. Ghost code may not contain loops, stores, or impure calls,
-and has no gradual mode: an unfed cup there is an error. The line `lemma $f e₁ … eₙ` has one cup per fact param,
+may call (`call`) only predicates (R29 keeps them total), has only fact results, and may recurse only directly through
+`lemma $self` with a measure (R31); recursion through other lemmas is an error. A lemma is never the target of `call`
+(error: `$f is ghost code: write lemma $f …`). These rules make every lemma total, which the erasure argument of §6
+needs: a lemma that could fail to return would "prove" False and erase to `nop`. Ghost code
+has no gradual mode: an unfed cup there is an error. The line `lemma $f e₁ … eₙ` has one cup per fact param,
 `P[$params := e]` (plus the measure cup of R31 if `$f` is the enclosing lemma), and enters, in this order, the atoms
 of its prove-fed cups and then each fact result `Q[$params := e]` (origin = this line). An **axiom** is exported
 as `axiom:<name>` and has an empty body; its results enter with verdict **assumed**. A lemma with an error in its body
@@ -463,7 +478,11 @@ also produces assumed facts (reason: `lemma $f is unproven`). Error on the lemma
 predicate) becomes a **runtime check**: before the instruction runs, the instrumented program evaluates the atom on
 the concrete values (calling predicates). If it is false, Codillon stops with 💣 and `check failed: ⟨G⟩` on that line;
 the cup's verdict becomes **refuted** for that recorded input. Strict mode (and vericoding mode, §7) reports unfed cups
-as errors instead.
+as errors instead. A pure call or load recorded in a shadow local is read by a check only if a capture of it dominates
+the check (an earlier line whose enclosing block arms are all still open at the check); otherwise the host
+re-evaluates the call. The top parameter of a loop is captured after the `loop` line (on entry and on every back edge).
+Float terms are evaluated host-side exactly as Wasm computes them. (Known gap: a check whose terms cannot be evaluated,
+such as one naming a parameter below the top of a multi-parameter loop or a multi-value join result, currently passes.)
 
 ## 3. The decision procedure behind `prove k`
 
@@ -876,11 +895,18 @@ fully without one.
 Enforcement by the kernel, after every LLM round: (1) the student zone is hashed line by line when the session starts;
 any difference rejects the whole round (`edited a locked line: 7`). (2) An LLM-side line may not contain `assume`,
 define an `axiom:` export, add an import, or call a function that is not in the module at session start or defined by the
-LLM as a lemma. (3) Mode is strict: every cup in LLM-owned code must be **proven** or **assumed only through
-student-zone (instructor) axioms**, with an empty `depends_on_checks`; runtime-checked is an error. (4) Every harness
-`False` cup must be proven. In short, the submission is accepted only if every function it touched is **strict-clean**
-and therefore VERIFIED (§4.1); the editor itself stays in gradual mode, so a rejected submission still runs. The round
-is accepted iff (1)–(4) hold; otherwise the kernel's diagnostics go back to the LLM.
+LLM as a lemma. (3) Mode is strict: every cup in every LLM-owned function (touched by the round or not) must be **proven** or
+**assumed only through student-zone (instructor) axioms**, with an empty `depends_on_checks`; runtime-checked is an
+error. (4) Every harness `False` cup must be proven. (5) **The program must run.** The kernel's theorem is partial
+correctness (§6.1), which a body that never returns (`loop br end`, or a call to itself) satisfies for any spec. So
+`$main`, every harness, and every LLM-owned function whose parameters are all value parameters is run on up to 16
+inputs from its input list (§6.3) that satisfy its precondition and whose every argument is in 0..100; each run must
+finish within 1,000,000 steps and call depth 150. A run that runs out is an error only if it runs out inside an
+LLM-owned function (a costly student predicate is the student's business): `$isqrt(7) does not finish: $isqrt runs
+past 1000000 steps or calls`. A student line made unreachable (dead) by LLM edits is a boundary violation. In short,
+the submission is accepted only if every LLM-owned function is **strict-clean** and therefore VERIFIED (§4.1), and the
+program runs; the editor itself stays in gradual mode, so a rejected submission still runs. The round is accepted iff
+(1)–(5) hold; otherwise the kernel's diagnostics go back to the LLM.
 
 ### 7.2 Adequacy: is the spec worth proving?
 
@@ -893,10 +919,15 @@ A proof only says the code meets the spec. The adequacy panel checks the spec it
 - **Vacuity of postconditions.** A result refinement is **unconstraining** if its cup can be proven at a fresh
   value: the kernel re-checks the function with the returned id replaced by a fresh leaf (havoc) and keeps the
   result-refinement cups' verdicts. Proven at a havoc value ⇒ the postcondition says nothing about the result.
+- **Fact parameters and results.** Fact parameters are preconditions: witnesses must satisfy them too (evaluated on
+  the run's initial memory). A fact result the kernel proves with no hypotheses at all is **unconstraining** (a
+  tautology). A fact result merely implied by the preconditions (an invariant the function preserves) is not flagged.
 - **Mutation testing.** The runner applies each operator below, one site at a time, to LLM-owned bodies only, keeping the
   line count and validity, and runs every harness on its input list. A mutant is **killed** if some harness reaches
   `unreachable` (or the mutant traps); otherwise it **survives**. Surviving mutants are listed by line; each survivor is
-  either an equivalent mutant (the student marks it) or evidence that the spec is too weak.
+  either an equivalent mutant (the student marks it) or evidence that the spec is too weak. If the original program itself does not finish on a harness input (the step
+  budget runs out), the panel says so in red: a body that never returns satisfies any spec vacuously, and no mutant
+  can be told apart on that input.
 
 | op | mutation | example |
 |---|---|---|
