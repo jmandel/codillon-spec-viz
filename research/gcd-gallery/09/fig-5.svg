@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" width="900" height="620">
+  <defs>
+    
+            <marker id="arrow-ink" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#222222"/>
+            </marker>
+
+            <marker id="arrow-purple" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#6A5ACD"/>
+            </marker>
+
+            <marker id="arrow-navy" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#00008b"/>
+            </marker>
+
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#8b0000"/>
+            </marker>
+
+            <marker id="arrow-gray" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#888888"/>
+            </marker>
+
+            <marker id="arrow-indigo" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#4b0082"/>
+            </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="620" fill="#fffff0"/>
+  <text x="24.0" y="30.0" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#222222" text-anchor="start" font-weight="bold">Type error: a buggy program or wrong candidate breaks a composition dock</text>
+  <text x="24.0" y="49.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#555555" text-anchor="start">Each bug localizes to one dark-red dock (⊈) with an explicit counterexample witness for (a = 12, b = 8)</text>
+  <line x1="24.0" y1="57.0" x2="876.0" y2="57.0" stroke="#dedede" stroke-width="1"/>
+  <rect x="24.0" y="70.0" width="852.0" height="170.0" fill="#ffffff" stroke="#8b0000" stroke-width="1.8" rx="6" ry="6"/>
+  <rect x="24.0" y="70.0" width="852.0" height="24.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.2" rx="6" ry="6"/>
+  <rect x="25.0" y="88.0" width="850.0" height="6.0" fill="#f9e2e2" stroke="none" stroke-width="1"/>
+  <line x1="24.0" y1="94.0" x2="876.0" y2="94.0" stroke="#8b0000" stroke-width="1.2"/>
+  <text x="34.0" y="86.5" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#8b0000" text-anchor="start" font-weight="bold">Bug 1 (Wrong Candidate g = 8):   Premature Loop Exit   while (y &gt; 4)   →   Returns x = 8 on (12, 8)</text>
+  <text x="868.0" y="86.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="end" font-weight="bold">TYPE ERROR AT DOCK 2 (EXIT ⊈ TARGET)</text>
+  <rect x="38.0" y="104.0" width="175.0" height="124.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="48.0" y="122.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Tile 1: Entry [OK]</text>
+  <text x="48.0" y="140.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="start">(x, y) = (12, 8) ∈ Inv</text>
+  <text x="48.0" y="160.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">Div(12)∩Div(8) = {1,2,4}</text>
+  <text x="48.0" y="182.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">Entry dock holds ✓</text>
+  <line x1="217.0" y1="166.0" x2="250.0" y2="166.0" stroke="#6A5ACD" stroke-width="2.2" marker-end="url(#arrow-purple)"/>
+  <circle cx="213.0" cy="166.0" r="4.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="255.0" cy="166.0" r="4.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="222.0" y="157.0" width="24.0" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="234.0" y="170.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">⊆</text>
+  <rect x="255.0" y="104.0" width="245.0" height="124.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="265.0" y="122.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">Tile 2: Loop  while (y &gt; 4)</text>
+  <text x="265.0" y="140.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">Run: (12, 8) → (8, 4) → STOPS!</text>
+  <text x="265.0" y="158.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Exit state set is Inv ∧ (y ≤ 4)</text>
+  <text x="265.0" y="176.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Contains witness (x = 8, y = 4)</text>
+  <text x="265.0" y="194.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">where y ≠ 0 so Div(x) ≠ Div(x)∩Div(y)</text>
+  <line x1="504.0" y1="166.0" x2="551.0" y2="166.0" stroke="#8b0000" stroke-width="2.6" stroke-dasharray="4,3" marker-end="url(#arrow-red)"/>
+  <circle cx="500.0" cy="166.0" r="4.0" fill="#8b0000" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="556.0" cy="166.0" r="4.0" fill="#fffff0" stroke="#8b0000" stroke-width="1.8"/>
+  <rect x="514.0" y="157.0" width="28.0" height="18.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="528.0" y="170.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold">⊈</text>
+  <text x="528.0" y="142.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">BROKEN!</text>
+  <rect x="556.0" y="104.0" width="306.0" height="124.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.6" rx="4" ry="4"/>
+  <text x="568.0" y="122.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Target Port:  x ∈ Gcd(12, 8) = {4}</text>
+  <text x="568.0" y="142.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Counterexample witness:  x = 8</text>
+  <rect x="568.0" y="150.0" width="282.0" height="46.0" fill="#ffffff" stroke="#8b0000" stroke-width="1.2" rx="3" ry="3"/>
+  <text x="578.0" y="168.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Div(8) = {1, 2, 4, 8}  ≠  {1, 2, 4}</text>
+  <text x="578.0" y="186.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Offending divisor: 8 ∣ 8  but  8 ∤ 12 !</text>
+  <text x="568.0" y="214.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Set leak: {x | Inv(x,y) ∧ y≤4} = {0, 4, 8, 12} ⊈ {4}</text>
+  <rect x="24.0" y="254.0" width="852.0" height="170.0" fill="#ffffff" stroke="#8b0000" stroke-width="1.8" rx="6" ry="6"/>
+  <rect x="24.0" y="254.0" width="852.0" height="24.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.2" rx="6" ry="6"/>
+  <rect x="25.0" y="272.0" width="850.0" height="6.0" fill="#f9e2e2" stroke="none" stroke-width="1"/>
+  <line x1="24.0" y1="278.0" x2="876.0" y2="278.0" stroke="#8b0000" stroke-width="1.2"/>
+  <text x="34.0" y="270.5" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#8b0000" text-anchor="start" font-weight="bold">Bug 2 (Wrong Candidate g = 2):   Corrupt Body   (x, y) ← (y div 2, x mod y)   →   Returns x = 2 on (12, 8)</text>
+  <text x="868.0" y="270.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="end" font-weight="bold">TYPE ERROR AT BODY DOCK (BODY POST ⊈ INV)</text>
+  <rect x="38.0" y="288.0" width="212.0" height="124.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="48.0" y="306.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Body Pre-Port: Inv ∧ (y ≠ 0)</text>
+  <text x="48.0" y="326.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">Input state: (x = 8, y = 4) ∈ Inv</text>
+  <text x="48.0" y="346.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">Common divisors before step:</text>
+  <text x="48.0" y="364.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Div(8) ∩ Div(4) = {1, 2, 4} ✓</text>
+  <text x="48.0" y="388.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Buggy step maps (8, 4) ↦ (2, 0)</text>
+  <line x1="254.0" y1="350.0" x2="301.0" y2="350.0" stroke="#8b0000" stroke-width="2.6" stroke-dasharray="4,3" marker-end="url(#arrow-red)"/>
+  <circle cx="250.0" cy="350.0" r="4.0" fill="#8b0000" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="306.0" cy="350.0" r="4.0" fill="#fffff0" stroke="#8b0000" stroke-width="1.8"/>
+  <rect x="264.0" y="341.0" width="28.0" height="18.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="278.0" y="354.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold">⊈</text>
+  <text x="278.0" y="326.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">BROKEN!</text>
+  <rect x="306.0" y="288.0" width="250.0" height="124.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.6" rx="4" ry="4"/>
+  <text x="316.0" y="306.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Body Post-Port Leaks Out of Inv!</text>
+  <rect x="316.0" y="314.0" width="130.0" height="90.0" fill="#ffffff" stroke="#888888" stroke-width="1" rx="3" ry="3"/>
+  <circle cx="328.0" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="359.0" r="4.3" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="328.0" cy="359.0" r="1.7" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="328.0" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="336.8" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="354.5" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="394.0" r="4.3" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="363.3" cy="394.0" r="1.7" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="359.0" r="4.3" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="363.3" cy="359.0" r="1.7" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.3" cy="324.0" r="4.3" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="363.3" cy="324.0" r="1.7" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.2" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.0" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.8" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="359.0" r="4.3" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="398.7" cy="359.0" r="1.7" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.7" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="407.5" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="359.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="425.2" cy="324.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="394.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="385.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="376.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="367.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="359.0" r="4.3" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="434.0" cy="359.0" r="1.7" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="350.2" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="341.5" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="332.8" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="434.0" cy="324.0" r="4.3" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="434.0" cy="324.0" r="1.7" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="345.7" cy="394.0" r="5.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.6"/>
+  <circle cx="345.7" cy="394.0" r="2.0" fill="#8b0000" stroke="none" stroke-width="1"/>
+  <line x1="434.0" y1="324.0" x2="398.7" y2="359.0" stroke="#00008b" stroke-width="1.6" marker-end="url(#arrow-navy)"/>
+  <line x1="398.7" y1="359.0" x2="345.7" y2="394.0" stroke="#8b0000" stroke-width="1.6" marker-end="url(#arrow-red)"/>
+  <circle cx="434.0" cy="324.0" r="3.7" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <circle cx="398.7" cy="359.0" r="3.7" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <text x="454.0" y="334.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Witness:</text>
+  <text x="454.0" y="352.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">(2, 0) ∉ Inv</text>
+  <text x="454.0" y="372.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#222222" text-anchor="start">Div(2)∩Div(0)</text>
+  <text x="454.0" y="388.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">= {1, 2} ≠ {1,2,4}</text>
+  <rect x="570.0" y="288.0" width="292.0" height="124.0" fill="#ffffff" stroke="#8b0000" stroke-width="1.4" rx="4" ry="4"/>
+  <text x="582.0" y="306.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Why g = 2 Fails Gcd(12, 8):</text>
+  <text x="582.0" y="326.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="start">2 divides 12 and 2 divides 8, BUT:</text>
+  <rect x="582.0" y="334.0" width="268.0" height="46.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.0" rx="3" ry="3"/>
+  <text x="592.0" y="352.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Div(2) = {1, 2}  ⊊  Div(12) ∩ Div(8) = {1, 2, 4}</text>
+  <text x="592.0" y="370.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Missing common divisor:  4 ∣ 12 ∧ 4 ∣ 8,  4 ∤ 2</text>
+  <text x="582.0" y="398.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">2 is a common divisor, NOT greatest!</text>
+  <rect x="24.0" y="438.0" width="852.0" height="170.0" fill="#ffffff" stroke="#8b0000" stroke-width="1.8" rx="6" ry="6"/>
+  <rect x="24.0" y="438.0" width="852.0" height="24.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.2" rx="6" ry="6"/>
+  <rect x="25.0" y="456.0" width="850.0" height="6.0" fill="#f9e2e2" stroke="none" stroke-width="1"/>
+  <line x1="24.0" y1="462.0" x2="876.0" y2="462.0" stroke="#8b0000" stroke-width="1.2"/>
+  <text x="34.0" y="454.5" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#8b0000" text-anchor="start" font-weight="bold">Bug 3 (Wrong Return Variable):   return y   instead of   return x   →   Returns 0 on (12, 8)</text>
+  <text x="868.0" y="454.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="end" font-weight="bold">TYPE ERROR AT DOCK 3 (RETURN PROJECTION ⊈ TARGET)</text>
+  <rect x="38.0" y="472.0" width="240.0" height="124.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="48.0" y="490.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Tile 3: Loop Exit Slice [OK]</text>
+  <text x="48.0" y="510.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">State at loop exit: (x = 4, y = 0)</text>
+  <text x="48.0" y="530.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">Inv(4, 0) ∧ (y = 0) holds ✓</text>
+  <text x="48.0" y="552.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start">x-coordinate has Div(4) = {1,2,4}</text>
+  <text x="48.0" y="570.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">y-coordinate is 0 (Div(0) = ℕ)</text>
+  <rect x="294.0" y="472.0" width="200.0" height="124.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.4" rx="4" ry="4"/>
+  <text x="304.0" y="490.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Buggy Return:  return y</text>
+  <text x="304.0" y="512.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start">Projects 2nd coordinate y:</text>
+  <text x="304.0" y="534.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">{ y | (x,y) ∈ {(4,0)} } = { 0 }</text>
+  <text x="304.0" y="558.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Candidate output: g = 0</text>
+  <line x1="498.0" y1="534.0" x2="545.0" y2="534.0" stroke="#8b0000" stroke-width="2.6" stroke-dasharray="4,3" marker-end="url(#arrow-red)"/>
+  <circle cx="494.0" cy="534.0" r="4.0" fill="#8b0000" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="550.0" cy="534.0" r="4.0" fill="#fffff0" stroke="#8b0000" stroke-width="1.8"/>
+  <rect x="508.0" y="525.0" width="28.0" height="18.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="522.0" y="538.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold">⊈</text>
+  <text x="522.0" y="510.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">BROKEN!</text>
+  <rect x="550.0" y="472.0" width="312.0" height="124.0" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.6" rx="4" ry="4"/>
+  <text x="562.0" y="490.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Target Port:  Gcd(12, 8) = {4}</text>
+  <text x="562.0" y="510.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Counterexample witness:  g = 0</text>
+  <rect x="562.0" y="518.0" width="288.0" height="46.0" fill="#ffffff" stroke="#8b0000" stroke-width="1.2" rx="3" ry="3"/>
+  <text x="572.0" y="536.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Div(0) = ℕ = {1, 2, 3, 4, 5, …}  ≠  {1, 2, 4}</text>
+  <text x="572.0" y="554.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">0 ∤ 12 and 0 ∤ 8 :  { 0 } ⊈ Gcd(12, 8) = { 4 }</text>
+  <text x="562.0" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="start" font-weight="bold">Dock check catches swapped register instantly!</text>
+</svg>

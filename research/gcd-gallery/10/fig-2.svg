@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 740" width="900" height="740">
+  <defs>
+    <pattern id="err-hatch" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#f5d6d6" fill-opacity="0.72"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#8b0000" stroke-width="2.2"/>
+    </pattern>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#222222"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#6A5ACD"/>
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#4b0082"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#00008b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#8b0000"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="740" fill="#fffff0"/>
+  <text x="28" y="34" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#222222">Euclid in Codillon's Editor: Stack Fractions Preserve Div(x) ∩ Div(y) to Seat 4</text>
+  <text x="28" y="54" font-family="'Arial Narrow', Arial, sans-serif" font-size="13" fill="#555555">Left gutter: 1:1 refined stack fractions (84×14 px) with pale-lavender dataflow ribbons. Right panel: step-by-step trace for (a=12, b=8).</text>
+  <line x1="28" y1="64" x2="872" y2="64" stroke="#d8d8d0" stroke-width="1"/>
+
+  <rect x="24" y="76" width="535" height="642" rx="6" fill="#fffff0" stroke="#d8d8d0" stroke-width="1.2"/>
+  <rect x="24" y="76" width="535" height="28" rx="6" fill="#f2f2e6" stroke="#d8d8d0" stroke-width="1.0"/>
+  <text x="125" y="95" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#222222">STACK FRACTION (84×14)</text>
+  <text x="295" y="95" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#222222">WAT INSTRUCTION</text>
+  <text x="468" y="95" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#6A5ACD">REFINEMENT / INVARIANT</text>
+  <text x="94" y="117" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#222222">param $a = 12</text>
+  <rect x="52.0" y="122.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="94.0" y="122.0" width="42.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="94.0" y1="122.0" x2="94.0" y2="136.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="136.0" y1="122.0" x2="136.0" y2="136.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="68.8" y1="122.0" x2="68.8" y2="136.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="119.2" y1="122.0" x2="119.2" y2="136.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="94.0" y1="122.0" x2="94.0" y2="136.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="96.0" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="99.1" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="102.2" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="105.4" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="111.7" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="118.4" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="119.6" y1="122.0" x2="119.6" y2="136.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="119.6" cy="129.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="52.0" y="122.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="186" y="117" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#222222">param $b = 8</text>
+  <rect x="144.0" y="122.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="186.0" y="122.0" width="42.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="186.0" y1="122.0" x2="186.0" y2="136.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="228.0" y1="122.0" x2="228.0" y2="136.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="160.8" y1="122.0" x2="160.8" y2="136.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="211.2" y1="122.0" x2="211.2" y2="136.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="186.0" y1="122.0" x2="186.0" y2="136.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="188.0" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="191.1" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="197.4" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="210.0" y="123.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="211.2" y1="122.0" x2="211.2" y2="136.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="211.2" cy="129.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="144.0" y="122.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="126" font-family="'Courier New', Courier, monospace" font-size="11" font-weight="bold" fill="#222222">(func $gcd (param $a $b)</text>
+  <text x="236" y="140" font-family="'Courier New', Courier, monospace" font-size="11" fill="#555555">  (result Gcd(a,b))</text>
+  <text x="412" y="133" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Div(12)∩Div(8) = {1, 2, 4}</text>
+  <path d="M 85.0 239.0 C 85.0 249.0, 85.0 249.0, 85.0 259.0 L 169.0 259.0 C 169.0 249.0, 169.0 249.0, 169.0 239.0 Z" fill="#d9d5f2" fill-opacity="0.55" stroke="#6A5ACD" stroke-width="0.9" stroke-opacity="0.7"/>
+  <path d="M 85.0 293.0 C 85.0 303.0, 85.0 303.0, 85.0 313.0 L 169.0 313.0 C 169.0 303.0, 169.0 303.0, 169.0 293.0 Z" fill="#d9d5f2" fill-opacity="0.55" stroke="#6A5ACD" stroke-width="0.9" stroke-opacity="0.7"/>
+  <path d="M 48.0 393.0 C 48.0 484.0, 48.0 484.0, 48.0 575.0 L 132.0 575.0 C 132.0 484.0, 132.0 484.0, 132.0 393.0 Z" fill="#d9d5f2" fill-opacity="0.32" stroke="#6A5ACD" stroke-width="0.9" stroke-opacity="0.7"/>
+  <path d="M 140.0 443.0 C 140.0 480.0, 48.0 480.0, 48.0 517.0 L 132.0 517.0 C 132.0 480.0, 224.0 480.0, 224.0 443.0 Z" fill="#d9d5f2" fill-opacity="0.45" stroke="#6A5ACD" stroke-width="0.9" stroke-opacity="0.7"/>
+  <path d="M 140.0 493.0 C 140.0 505.0, 140.0 505.0, 140.0 517.0 L 224.0 517.0 C 224.0 505.0, 224.0 505.0, 224.0 493.0 Z" fill="#d9d5f2" fill-opacity="0.55" stroke="#6A5ACD" stroke-width="0.9" stroke-opacity="0.7"/>
+  <path d="M 94.0 551.0 C 94.0 563.0, 140.0 563.0, 140.0 575.0 L 224.0 575.0 C 224.0 563.0, 178.0 563.0, 178.0 551.0 Z" fill="#d9d5f2" fill-opacity="0.55" stroke="#6A5ACD" stroke-width="0.9" stroke-opacity="0.7"/>
+  <path d="M 94.0 663.0 C 94.0 672.0, 94.0 672.0, 94.0 681.0 L 178.0 681.0 C 178.0 672.0, 178.0 672.0, 178.0 663.0 Z" fill="#d9d5f2" fill-opacity="0.65" stroke="#6A5ACD" stroke-width="0.9" stroke-opacity="0.7"/>
+  <path d="M 119.6 136.0 L 119.6 146 L 31 146 L 31 670 L 145.6 670 L 145.6 679.0" fill="none" stroke="#4b0082" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-indigo)"/>
+  <path d="M 211.2 136.0 L 211.2 152 L 38 152 L 38 664 L 151.6 664 L 151.6 679.0" fill="none" stroke="#4b0082" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-indigo)"/>
+  <text x="236" y="180" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">(loop $step</text>
+  <text x="380" y="180" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">Inv: Div(x)∩Div(y) = Div(a)∩Div(b)</text>
+  <rect x="230" y="200" width="324" height="44" fill="#f2f2e6" fill-opacity="0.6"/>
+  <line x1="81" y1="222" x2="173" y2="222" stroke="#222222" stroke-width="1.8"/>
+  <rect x="85.0" y="225.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="127.0" y="225.0" width="42.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="127.0" y1="225.0" x2="127.0" y2="239.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="169.0" y1="225.0" x2="169.0" y2="239.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="101.8" y1="225.0" x2="101.8" y2="239.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="152.2" y1="225.0" x2="152.2" y2="239.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="127.0" y1="225.0" x2="127.0" y2="239.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="129.0" y="226.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="132.1" y="226.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="138.4" y="226.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="152.2" y1="225.0" x2="152.2" y2="239.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="152.2" cy="232.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="85.0" y="225.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="226" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  local.get $y</text>
+  <text x="380" y="226" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">{v = y} (iter 1: 8; exit: 0)</text>
+  <line x1="81" y1="276" x2="173" y2="276" stroke="#222222" stroke-width="1.8"/>
+  <rect x="85.0" y="259.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="127.0" y="259.0" width="42.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="127.0" y1="259.0" x2="127.0" y2="273.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="169.0" y1="259.0" x2="169.0" y2="273.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="101.8" y1="259.0" x2="101.8" y2="273.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="152.2" y1="259.0" x2="152.2" y2="273.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="127.0" y1="259.0" x2="127.0" y2="273.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="129.0" y="260.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="132.1" y="260.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="138.4" y="260.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="152.2" y1="259.0" x2="152.2" y2="273.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="152.2" cy="266.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 85.0 257.0 L 85.0 273.0 L 169.0 273.0 L 169.0 257.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="85.0" y="279.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="127.0" y="279.0" width="3.2" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="127.0" y1="279.0" x2="127.0" y2="293.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="130.2" y1="279.0" x2="130.2" y2="293.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="101.8" y1="279.0" x2="101.8" y2="293.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="152.2" y1="279.0" x2="152.2" y2="293.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="127.0" y1="279.0" x2="127.0" y2="293.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="125.8" y="280.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="127.0" y1="279.0" x2="127.0" y2="293.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="127.0" cy="286.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="85.0" y="279.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="280" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  i32.eqz</text>
+  <text x="380" y="280" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">y=0 ⟹ Div(x)=Div(a)∩Div(b)</text>
+  <rect x="230" y="308" width="324" height="44" fill="#f2f2e6" fill-opacity="0.6"/>
+  <line x1="81" y1="330" x2="173" y2="330" stroke="#222222" stroke-width="1.8"/>
+  <rect x="85.0" y="313.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="127.0" y="313.0" width="3.2" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="127.0" y1="313.0" x2="127.0" y2="327.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="130.2" y1="313.0" x2="130.2" y2="327.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="101.8" y1="313.0" x2="101.8" y2="327.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="152.2" y1="313.0" x2="152.2" y2="327.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="127.0" y1="313.0" x2="127.0" y2="327.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="125.8" y="314.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="127.0" y1="313.0" x2="127.0" y2="327.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="127.0" cy="320.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 85.0 311.0 L 85.0 327.0 L 169.0 327.0 L 169.0 311.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="334" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  br_if $exit</text>
+  <text x="380" y="334" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">if 1 (y=0), jump to return</text>
+  <line x1="44" y1="376" x2="136" y2="376" stroke="#222222" stroke-width="1.8"/>
+  <rect x="48.0" y="379.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="93.2" y="379.0" width="38.8" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="93.2" y1="379.0" x2="93.2" y2="393.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="132.0" y1="379.0" x2="132.0" y2="393.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="64.8" y1="379.0" x2="64.8" y2="393.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="115.2" y1="379.0" x2="115.2" y2="393.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="90.0" y1="379.0" x2="90.0" y2="393.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="92.0" y="380.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="95.1" y="380.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="101.4" y="380.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="115.2" y1="379.0" x2="115.2" y2="393.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="115.2" cy="386.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="48.0" y="379.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="380" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  local.get $y</text>
+  <text x="380" y="380" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">save old y = 8 (becomes x')</text>
+  <rect x="230" y="404" width="324" height="44" fill="#f2f2e6" fill-opacity="0.6"/>
+  <line x1="136" y1="426" x2="228" y2="426" stroke="#222222" stroke-width="1.8"/>
+  <rect x="140.0" y="429.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="182.0" y="429.0" width="42.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="182.0" y1="429.0" x2="182.0" y2="443.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="224.0" y1="429.0" x2="224.0" y2="443.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="156.8" y1="429.0" x2="156.8" y2="443.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="207.2" y1="429.0" x2="207.2" y2="443.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="182.0" y1="429.0" x2="182.0" y2="443.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="184.0" y="430.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="187.1" y="430.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="193.4" y="430.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="207.6" y1="429.0" x2="207.6" y2="443.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="207.6" cy="436.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="140.0" y="429.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="430" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  local.get $x</text>
+  <text x="380" y="430" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">push x = 12</text>
+  <line x1="136" y1="476" x2="228" y2="476" stroke="#222222" stroke-width="1.8"/>
+  <rect x="140.0" y="479.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="185.2" y="479.0" width="38.8" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="185.2" y1="479.0" x2="185.2" y2="493.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="224.0" y1="479.0" x2="224.0" y2="493.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="156.8" y1="479.0" x2="156.8" y2="493.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="207.2" y1="479.0" x2="207.2" y2="493.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="182.0" y1="479.0" x2="182.0" y2="493.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="184.0" y="480.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="187.1" y="480.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="193.4" y="480.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="207.2" y1="479.0" x2="207.2" y2="493.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="207.2" cy="486.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="140.0" y="479.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="480" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  local.get $y</text>
+  <text x="380" y="480" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">push y = 8 ∈ [1, INT_MAX]</text>
+  <rect x="230" y="512" width="324" height="44" fill="#f2f2e6" fill-opacity="0.6"/>
+  <line x1="44" y1="534" x2="228" y2="534" stroke="#222222" stroke-width="1.8"/>
+  <rect x="48.0" y="517.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="90.0" y="517.0" width="42.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="90.0" y1="517.0" x2="90.0" y2="531.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="132.0" y1="517.0" x2="132.0" y2="531.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="64.8" y1="517.0" x2="64.8" y2="531.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="115.2" y1="517.0" x2="115.2" y2="531.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="90.0" y1="517.0" x2="90.0" y2="531.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="92.0" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="95.1" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="101.4" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="115.6" y1="517.0" x2="115.6" y2="531.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="115.6" cy="524.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 48.0 515.0 L 48.0 531.0 L 132.0 531.0 L 132.0 515.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="140.0" y="517.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="185.2" y="517.0" width="38.8" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="185.2" y1="517.0" x2="185.2" y2="531.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="224.0" y1="517.0" x2="224.0" y2="531.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="156.8" y1="517.0" x2="156.8" y2="531.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="207.2" y1="517.0" x2="207.2" y2="531.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="182.0" y1="517.0" x2="182.0" y2="531.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="184.0" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="187.1" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="193.4" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="207.2" y1="517.0" x2="207.2" y2="531.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="207.2" cy="524.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 140.0 515.0 L 140.0 531.0 L 224.0 531.0 L 224.0 515.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="94.0" y="537.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="136.0" y="537.0" width="22.1" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="136.0" y1="537.0" x2="136.0" y2="551.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="158.1" y1="537.0" x2="158.1" y2="551.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="110.8" y1="537.0" x2="110.8" y2="551.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="161.2" y1="537.0" x2="161.2" y2="551.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="136.0" y1="537.0" x2="136.0" y2="551.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="138.0" y="538.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="141.1" y="538.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="147.4" y="538.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="148.6" y1="537.0" x2="148.6" y2="551.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="148.6" cy="544.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="94.0" y="537.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="538" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  i32.rem_u</text>
+  <text x="380" y="538" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">{r &lt; y | Div(y)∩Div(r)=Div(x)∩Div(y)}</text>
+  <line x1="44" y1="592" x2="228" y2="592" stroke="#222222" stroke-width="1.8"/>
+  <rect x="48.0" y="575.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="93.2" y="575.0" width="38.8" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="93.2" y1="575.0" x2="93.2" y2="589.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="132.0" y1="575.0" x2="132.0" y2="589.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="64.8" y1="575.0" x2="64.8" y2="589.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="115.2" y1="575.0" x2="115.2" y2="589.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="90.0" y1="575.0" x2="90.0" y2="589.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="92.0" y="576.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="95.1" y="576.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="101.4" y="576.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="115.2" y1="575.0" x2="115.2" y2="589.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="115.2" cy="582.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 48.0 573.0 L 48.0 589.0 L 132.0 589.0 L 132.0 573.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="140.0" y="575.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="182.0" y="575.0" width="22.1" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="182.0" y1="575.0" x2="182.0" y2="589.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="204.1" y1="575.0" x2="204.1" y2="589.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="156.8" y1="575.0" x2="156.8" y2="589.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="207.2" y1="575.0" x2="207.2" y2="589.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="182.0" y1="575.0" x2="182.0" y2="589.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="184.0" y="576.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="187.1" y="576.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="193.4" y="576.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="194.6" y1="575.0" x2="194.6" y2="589.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="194.6" cy="582.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 140.0 573.0 L 140.0 589.0 L 224.0 589.0 L 224.0 573.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="596" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">  local.set $y $x</text>
+  <text x="380" y="596" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">(x', y') ← (8, 4); br $step</text>
+  <rect x="230" y="624" width="324" height="44" fill="#f2f2e6" fill-opacity="0.6"/>
+  <line x1="90" y1="646" x2="182" y2="646" stroke="#222222" stroke-width="1.8"/>
+  <rect x="94.0" y="649.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="110.8" y1="649.0" x2="110.8" y2="663.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="161.2" y1="649.0" x2="161.2" y2="663.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="136.0" y1="649.0" x2="136.0" y2="663.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="138.0" y="650.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="141.1" y="650.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="146.1" y="649.0" width="5.0" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <line x1="148.6" y1="649.0" x2="148.6" y2="663.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="148.6" cy="656.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="94.0" y="649.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="650" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">local.get $x</text>
+  <text x="380" y="650" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">at exit y=0, so x = 4</text>
+  <line x1="90" y1="698" x2="182" y2="698" stroke="#222222" stroke-width="1.8"/>
+  <rect x="94.0" y="681.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="110.8" y1="681.0" x2="110.8" y2="695.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="161.2" y1="681.0" x2="161.2" y2="695.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="136.0" y1="681.0" x2="136.0" y2="695.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="138.0" y="682.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="141.1" y="682.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="146.1" y="681.0" width="5.0" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 144.1 679.0 L 146.1 681.0 L 146.1 695.0 L 151.1 695.0 L 151.1 681.0 L 153.1 679.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <line x1="148.6" y1="681.0" x2="148.6" y2="695.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="148.6" cy="688.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 94.0 679.0 L 94.0 695.0 L 178.0 695.0 L 178.0 679.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="236" y="702" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold" fill="#222222">return)</text>
+  <text x="380" y="702" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">4 seats in Gcd(12,8) = {4}</text>
+  <rect x="572" y="76" width="304" height="642" rx="6" fill="#fffff0" stroke="#d8d8d0" stroke-width="1.2"/>
+  <text x="588" y="100" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Loop Invariant Across All Steps</text>
+  <text x="588" y="118" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Every step replaces (x, y) with (y, x mod y) while</text>
+  <text x="588" y="133" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">keeping Div(x) ∩ Div(y) = {1, 2, 4} invariant:</text>
+  <rect x="586" y="152" width="276" height="128" rx="5" fill="#f2f2e6" stroke="#d8d8d0" stroke-width="1.0"/>
+  <text x="596" y="170" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">Entry (Step 0): (x=12, y=8)</text>
+  <text x="596" y="192" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">x = 12</text>
+  <rect x="646.0" y="181.0" width="96.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="694.0" y="181.0" width="48.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="694.0" y1="181.0" x2="694.0" y2="195.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="742.0" y1="181.0" x2="742.0" y2="195.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="665.2" y1="181.0" x2="665.2" y2="195.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="722.8" y1="181.0" x2="722.8" y2="195.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="694.0" y1="181.0" x2="694.0" y2="195.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="696.4" y="182.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="700.0" y="182.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="703.6" y="182.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="707.2" y="182.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="714.4" y="182.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="722.0" y="182.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="723.2" y1="181.0" x2="723.2" y2="195.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="723.2" cy="188.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="646.0" y="181.0" width="96.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="748" y="192" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Div(12)={1,2,3,4,6,12}</text>
+  <text x="596" y="218" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">y = 8</text>
+  <rect x="646.0" y="207.0" width="96.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="694.0" y="207.0" width="48.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="694.0" y1="207.0" x2="694.0" y2="221.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="742.0" y1="207.0" x2="742.0" y2="221.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="665.2" y1="207.0" x2="665.2" y2="221.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="722.8" y1="207.0" x2="722.8" y2="221.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="694.0" y1="207.0" x2="694.0" y2="221.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="696.4" y="208.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="700.0" y="208.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="707.2" y="208.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="721.6" y="208.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="722.8" y1="207.0" x2="722.8" y2="221.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="722.8" cy="214.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="646.0" y="207.0" width="96.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="748" y="218" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Div(8)={1,2,4,8}</text>
+  <text x="596" y="244" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Common Div:</text>
+  <rect x="664.0" y="233.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="680.8" y1="233.0" x2="680.8" y2="247.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="731.2" y1="233.0" x2="731.2" y2="247.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="706.0" y1="233.0" x2="706.0" y2="247.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="707.9" y="234.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="711.1" y="234.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="716.1" y="233.0" width="5.0" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="664.0" y="233.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="754" y="244" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">= {1, 2, 4}</text>
+  <text x="596" y="268" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#4b0082">Div(12)∩Div(8) = {1, 2, 4} ⟹ socket = 4</text>
+  <rect x="586" y="294" width="276" height="128" rx="5" fill="#f2f2e6" stroke="#d8d8d0" stroke-width="1.0"/>
+  <text x="596" y="312" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">After 12 mod 8 = 4: (x=8, y=4)</text>
+  <text x="596" y="334" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">x = 8</text>
+  <rect x="646.0" y="323.0" width="96.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="694.0" y="323.0" width="48.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="694.0" y1="323.0" x2="694.0" y2="337.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="742.0" y1="323.0" x2="742.0" y2="337.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="665.2" y1="323.0" x2="665.2" y2="337.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="722.8" y1="323.0" x2="722.8" y2="337.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="694.0" y1="323.0" x2="694.0" y2="337.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="696.4" y="324.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="700.0" y="324.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="707.2" y="324.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="721.6" y="324.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="722.8" y1="323.0" x2="722.8" y2="337.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="722.8" cy="330.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="646.0" y="323.0" width="96.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="748" y="334" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Div(8)={1,2,4,8}</text>
+  <text x="596" y="360" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">y = 4</text>
+  <rect x="646.0" y="349.0" width="96.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="694.0" y="349.0" width="48.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="694.0" y1="349.0" x2="694.0" y2="363.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="742.0" y1="349.0" x2="742.0" y2="363.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="665.2" y1="349.0" x2="665.2" y2="363.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="722.8" y1="349.0" x2="722.8" y2="363.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="694.0" y1="349.0" x2="694.0" y2="363.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="696.4" y="350.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="700.0" y="350.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="707.2" y="350.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="708.4" y1="349.0" x2="708.4" y2="363.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="708.4" cy="356.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="646.0" y="349.0" width="96.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="748" y="360" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Div(4)={1,2,4}</text>
+  <text x="596" y="386" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Common Div:</text>
+  <rect x="664.0" y="375.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="680.8" y1="375.0" x2="680.8" y2="389.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="731.2" y1="375.0" x2="731.2" y2="389.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="706.0" y1="375.0" x2="706.0" y2="389.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="707.9" y="376.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="711.1" y="376.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="716.1" y="375.0" width="5.0" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="664.0" y="375.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="754" y="386" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">= {1, 2, 4}</text>
+  <text x="596" y="410" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#4b0082">Div(8)∩Div(4) = {1, 2, 4} ⟹ socket = 4</text>
+  <rect x="586" y="436" width="276" height="128" rx="5" fill="#f2f2e6" stroke="#d8d8d0" stroke-width="1.0"/>
+  <text x="596" y="454" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">After 8 mod 4 = 0 (Exit): (x=4, y=0)</text>
+  <text x="596" y="476" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">x = 4</text>
+  <rect x="646.0" y="465.0" width="96.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="694.0" y="465.0" width="48.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="694.0" y1="465.0" x2="694.0" y2="479.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="742.0" y1="465.0" x2="742.0" y2="479.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="665.2" y1="465.0" x2="665.2" y2="479.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="722.8" y1="465.0" x2="722.8" y2="479.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="694.0" y1="465.0" x2="694.0" y2="479.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="696.4" y="466.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="700.0" y="466.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="707.2" y="466.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="708.4" y1="465.0" x2="708.4" y2="479.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="708.4" cy="472.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="646.0" y="465.0" width="96.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="748" y="476" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Div(4)={1,2,4}</text>
+  <text x="596" y="502" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">y = 0</text>
+  <rect x="646.0" y="491.0" width="96.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="646.0" y="491.0" width="96.0" height="14.0" fill="#d9d5f2" fill-opacity="0.75"/>
+  <line x1="665.2" y1="491.0" x2="665.2" y2="505.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="722.8" y1="491.0" x2="722.8" y2="505.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="694.0" y1="491.0" x2="694.0" y2="505.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="696.4" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="700.0" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="703.6" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="707.2" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="710.8" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="714.4" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="718.0" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="721.6" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="721.7" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="721.8" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="721.9" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="722.0" y="492.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="694.0" y1="491.0" x2="694.0" y2="505.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="694.0" cy="498.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="646.0" y="491.0" width="96.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="748" y="502" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Div(0)=ℕ (all naturals)</text>
+  <text x="596" y="528" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Common Div:</text>
+  <rect x="664.0" y="517.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="680.8" y1="517.0" x2="680.8" y2="531.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="731.2" y1="517.0" x2="731.2" y2="531.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="706.0" y1="517.0" x2="706.0" y2="531.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="707.9" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="711.1" y="518.0" width="2.4" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="716.1" y="517.0" width="5.0" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="664.0" y="517.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="754" y="528" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">= {1, 2, 4}</text>
+  <text x="596" y="552" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#4b0082">Div(4)∩ℕ = Div(4) = {1, 2, 4} ⟹ socket = 4</text>
+  <rect x="586" y="582" width="276" height="122" rx="5" fill="#d9d5f2" fill-opacity="0.35" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="598" y="604" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">Why y = 0 Unlocks the Return Cup:</text>
+  <text x="598" y="624" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">• Every d ∈ ℕ divides 0 (0 = 0 · d), so Div(0) = ℕ.</text>
+  <text x="598" y="642" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">• At br_if $exit: Div(x) = Div(x) ∩ ℕ = Div(a) ∩ Div(b).</text>
+  <text x="598" y="660" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">• Thus x = 4 satisfies Div(x) = Div(12) ∩ Div(8),</text>
+  <text x="598" y="678" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">  and seats cleanly in the Gcd(12, 8) socket!</text>
+</svg>

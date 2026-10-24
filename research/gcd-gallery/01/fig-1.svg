@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="625" viewBox="0 0 900 625">
+  <defs>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#555555"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#6A5ACD"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#00008b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#8b0000"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="625" fill="#fffff0"/>
+  <!-- Title Banner -->
+  <text x="26" y="32" font-family="Georgia, 'Times New Roman', serif" font-size="18.5" font-weight="bold" fill="#222222">Gcd(12, 8) is the unique top of the down-set intersection Div(12) ∩ Div(8)</text>
+  <text x="26" y="53" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#555555">In the divisibility lattice of lcm(12, 8) = 24, each divisor set Div(n) is a downward cone; their intersection has top element 4.</text>
+  <rect x="639.5" y="15" width="234.5" height="22" rx="11" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.0"/>
+  <text x="756.8" y="30" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">FIG 1 · CANONICAL LATTICE (12, 8)</text>
+  <line x1="26" y1="64" x2="874" y2="64" stroke="#d8d6c8" stroke-width="1.2"/>
+  <!-- Down-set cones -->
+  <path d="M 147.1 342.5 Q 135.0 326.6 149.9 313.3 L 288.6 188.9 Q 303.5 175.5 315.7 191.4 L 488.9 417.5 Q 501.0 433.4 486.1 446.7 L 347.4 571.1 Q 332.5 584.5 320.3 568.6 Z" fill="#e2e6f7" fill-opacity="0.45" stroke="#00008b" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <path d="M 90.0 260.0 L 306.0 548.0 A 40.0 40.0 0 0 0 370.0 500.0 L 154.0 212.0 A 40.0 40.0 0 0 0 90.0 260.0 Z" fill="#f3f1e4" fill-opacity="0.60" stroke="#555555" stroke-width="1.8" stroke-dasharray="3,3"/>
+  <path d="M 170.0 350.0 L 314.0 542.0 A 30.0 30.0 0 0 0 362.0 506.0 L 218.0 314.0 A 30.0 30.0 0 0 0 170.0 350.0 Z" fill="#d9d5f2" fill-opacity="0.75" stroke="#6A5ACD" stroke-width="2.5"/>
+  <text x="352.0" y="194.0" font-family="Georgia, 'Times New Roman', serif" font-size="14.5" font-weight="bold" fill="#00008b">Down-set Div(12)</text>
+  <text x="352.0" y="212.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#00008b">{d ∈ ℕ | d ∣ 12} = {1, 2, 3, 4, 6, 12}</text>
+  <text x="352.0" y="228.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">All divisors reachable below 12</text>
+  <text x="26" y="170.0" font-family="Georgia, 'Times New Roman', serif" font-size="14.5" font-weight="bold" fill="#222222">Down-set Div(8)</text>
+  <text x="26" y="188.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555">{d ∈ ℕ | d ∣ 8} = {1, 2, 4, 8}</text>
+  <line x1="78" y1="194.0" x2="96.0" y2="216.0" stroke="#555555" stroke-width="1.2" stroke-dasharray="2,2"/>
+  <text x="26" y="438.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#6A5ACD">Intersection Div(12) ∩ Div(8)</text>
+  <text x="26" y="456.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#6A5ACD">= {1, 2, 4} = Div(4)</text>
+  <text x="26" y="472.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">Common divisors form a down-set</text>
+  <line x1="168" y1="450.0" x2="232.0" y2="436.0" stroke="#6A5ACD" stroke-width="1.4"/>
+  <text x="258.0" y="136.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-style="italic" fill="#555555">24 = lcm(12, 8) = 12 ∨ 8 (join)</text>
+  <text x="258.0" y="153.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#888888">ambient Hasse diagram: Div(24)</text>
+  <!-- Hasse cover edges (u | v with v/u prime) -->
+  <line x1="324.2" y1="505.6" x2="279.8" y2="446.4" stroke="#6A5ACD" stroke-width="2.8"  marker-end="url(#arrow-purple)"/>
+  <text x="288.0" y="480.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">×2</text>
+  <line x1="354.9" y1="508.4" x2="425.1" y2="443.6" stroke="#555555" stroke-width="1.8"  marker-end="url(#arrow-ink)"/>
+  <text x="404.0" y="480.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×3</text>
+  <line x1="252.2" y1="409.6" x2="210.2" y2="353.6" stroke="#6A5ACD" stroke-width="2.8"  marker-end="url(#arrow-purple)"/>
+  <text x="217.2" y="385.6" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">×2</text>
+  <line x1="282.9" y1="412.4" x2="353.1" y2="347.6" stroke="#555555" stroke-width="1.8"  marker-end="url(#arrow-ink)"/>
+  <text x="332.0" y="384.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×3</text>
+  <line x1="428.2" y1="409.6" x2="383.8" y2="350.4" stroke="#555555" stroke-width="1.8"  marker-end="url(#arrow-ink)"/>
+  <text x="392.0" y="384.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×2</text>
+  <line x1="180.2" y1="313.6" x2="135.8" y2="254.4" stroke="#555555" stroke-width="1.8"  marker-end="url(#arrow-ink)"/>
+  <text x="144.0" y="288.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×2</text>
+  <line x1="210.9" y1="316.4" x2="281.1" y2="251.6" stroke="#555555" stroke-width="1.8"  marker-end="url(#arrow-ink)"/>
+  <text x="260.0" y="288.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×3</text>
+  <line x1="356.2" y1="313.6" x2="311.8" y2="254.4" stroke="#555555" stroke-width="1.8"  marker-end="url(#arrow-ink)"/>
+  <text x="320.0" y="288.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×2</text>
+  <line x1="138.9" y1="220.4" x2="209.1" y2="155.6" stroke="#888888" stroke-width="1.3" stroke-dasharray="4,3" />
+  <text x="188.0" y="192.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×3</text>
+  <line x1="284.2" y1="217.6" x2="239.8" y2="158.4" stroke="#888888" stroke-width="1.3" stroke-dasharray="4,3" />
+  <text x="248.0" y="192.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888">×2</text>
+  <!-- Lattice nodes -->
+  <circle cx="338.0" cy="524.0" r="20" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="338.0" y="525.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">1</text>
+  <text x="338.0" y="537.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" fill="#555555">1</text>
+  <circle cx="266.0" cy="428.0" r="20" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="266.0" y="429.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">2</text>
+  <text x="266.0" y="441.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" fill="#555555">2</text>
+  <circle cx="442.0" cy="428.0" r="20" fill="#ffffff" stroke="#00008b" stroke-width="1.6"/>
+  <text x="442.0" y="429.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222">3</text>
+  <text x="442.0" y="441.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" fill="#555555">3</text>
+  <circle cx="194.0" cy="332.0" r="27" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="3.2"/>
+  <circle cx="194.0" cy="332.0" r="21" fill="#ffffff" stroke="#6A5ACD" stroke-width="2.0"/>
+  <text x="194.0" y="333.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="bold" fill="#6A5ACD">4</text>
+  <text x="194.0" y="346.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" fill="#6A5ACD">2²</text>
+  <circle cx="370.0" cy="332.0" r="20" fill="#ffffff" stroke="#00008b" stroke-width="1.6"/>
+  <text x="370.0" y="333.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222">6</text>
+  <text x="370.0" y="345.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" fill="#555555">2·3</text>
+  <circle cx="122.0" cy="236.0" r="22" fill="#ffffff" stroke="#222222" stroke-width="2.6"/>
+  <text x="122.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#222222">8</text>
+  <text x="122.0" y="249.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" fill="#555555">2³</text>
+  <rect x="98.0" y="197.0" width="48" height="16" rx="4" fill="#222222"/>
+  <text x="122.0" y="209.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">b = 8</text>
+  <circle cx="298.0" cy="236.0" r="22" fill="#ffffff" stroke="#00008b" stroke-width="2.6"/>
+  <text x="298.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#00008b">12</text>
+  <text x="298.0" y="249.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" fill="#555555">2²·3</text>
+  <rect x="274.0" y="197.0" width="48" height="16" rx="4" fill="#00008b"/>
+  <text x="298.0" y="209.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">a = 12</text>
+  <circle cx="226.0" cy="140.0" r="20" fill="#fffff0" stroke="#888888" stroke-width="1.4" stroke-dasharray="3,2"/>
+  <text x="226.0" y="141.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#555555">24</text>
+  <text x="226.0" y="153.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" fill="#888888">2³·3</text>
+  <rect x="60.0" y="321.0" width="102" height="20" rx="4" fill="#6A5ACD"/>
+  <text x="111.0" y="335.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">TOP = 12 ∧ 8 = 4</text>
+  <!-- Right Panel: Refinement Type Definition & Order Guide -->
+  <rect x="556.0" y="86.0" width="318.0" height="494.0" rx="8" fill="#f3f1e4" stroke="#d8d6c8" stroke-width="1.5"/>
+  <text x="570.0" y="111.0" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#6A5ACD">The Refinement Type Gcd(12, 8)</text>
+  <rect x="568.0" y="121.0" width="294.0" height="68" rx="6" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="715.0" y="143.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" font-weight="bold" fill="#222222">Gcd(a, b) = { g ∈ ℕ | Div(g) = Div(a) ∩ Div(b) }</text>
+  <text x="715.0" y="164.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#6A5ACD">For (12, 8):  Div(g) = {1, 2, 4}  ⟺  g = 4</text>
+  <text x="715.0" y="181.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">Singleton set {4} — exactly one inhabitant</text>
+  <text x="570.0" y="212.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" font-weight="bold" fill="#222222">Why Down-Set Equality = Lattice Meet</text>
+  <text x="570.0" y="232.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">1. Every number n generates a down-set Div(n):</text>
+  <text x="582.0" y="248.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">all nodes reachable by stepping down (÷2, ÷3).</text>
+  <text x="570.0" y="268.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">2. Intersecting two down-sets gives a down-set:</text>
+  <text x="582.0" y="284.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#6A5ACD">Div(12) ∩ Div(8) = {1, 2, 4}.</text>
+  <text x="570.0" y="304.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">3. By antisymmetry of divisibility, at most one</text>
+  <text x="582.0" y="320.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">generator g has Div(g) = {1, 2, 4}: its</text>
+  <text x="582.0" y="336.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#6A5ACD">unique top element g = 4 (meet 12 ∧ 8).</text>
+  <rect x="568.0" y="356.0" width="294.0" height="112" rx="6" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.2"/>
+  <text x="576.0" y="376.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">Three Equivalent Views of g = 4:</text>
+  <text x="574.0" y="396.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">• Common divisor: 4 ∣ 12 and 4 ∣ 8 (4 ∈ Div(12)∩Div(8))</text>
+  <text x="576.0" y="415.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.2" fill="#222222">• Greatest (top): ∀d ∈ {1, 2, 4}, d ∣ 4 (all purple</text>
+  <text x="586.0" y="430.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.2" fill="#222222">arrows inside the intersection climb to 4)</text>
+  <text x="576.0" y="451.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.2" font-weight="bold" fill="#6A5ACD">• Exponent min: 2^min(2,3) · 3^min(1,0) = 2²·3⁰ = 4</text>
+  <text x="570.0" y="490.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">Hasse Diagram Axes (Prime Factors):</text>
+  <line x1="616.0" y1="548.0" x2="586.0" y2="512.0" stroke="#222222" stroke-width="1.8" marker-end="url(#arrow-ink)"/>
+  <line x1="616.0" y1="548.0" x2="658.0" y2="512.0" stroke="#222222" stroke-width="1.8" marker-end="url(#arrow-ink)"/>
+  <circle cx="616.0" cy="548.0" r="3.5" fill="#222222"/>
+  <text x="582.0" y="507.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">×2</text>
+  <text x="664.0" y="507.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">×3</text>
+  <text x="682.0" y="514.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">Up-left step multiplies by 2</text>
+  <text x="682.0" y="532.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">Up-right step multiplies by 3</text>
+  <text x="682.0" y="550.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">u ∣ v iff a path climbs u →* v</text>
+  <text x="26" y="604" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555">Refinement view: Base type ℕ = all lattice nodes; Predicate P(g) ≔ (Div(g) = Div(12) ∩ Div(8)) selects the single node whose down-cone matches the purple cone.</text>
+</svg>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="620" viewBox="0 0 900 620">
+  <rect x="0" y="0" width="900" height="620" fill="#fffff0" />
+  <text x="450" y="32" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="bold" fill="#222222">Stronger Refinement Means Smaller Region: Subtyping as Set Containment</text>
+  <rect x="24" y="44" width="852" height="34" rx="6" fill="#efedf9" stroke="#6A5ACD" stroke-width="1.2" />
+  <text x="450" y="66" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14.5" fill="#222222"><tspan font-weight="bold" fill="#00008b">Gcd(12, 8) = {4}</tspan>   &#x2282; / &lt;:   <tspan font-weight="bold" fill="#43368a">CommonDiv(12, 8) = {1, 2, 4}</tspan>   &#x2282; / &lt;:   <tspan font-weight="bold" fill="#6A5ACD">Div(12) = {1, 2, 3, 4, 6, 12}</tspan>   &#x2282; / &lt;:   <tspan font-weight="bold" fill="#444444">&#x2115;</tspan></text>
+  <rect x="24" y="90" width="510" height="506" rx="8" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.5" />
+  <text x="40" y="114" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#222222">Nested Euler Diagram: Each Added Conjunct Shrinks the Set</text>
+  <text x="40" y="131" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#444444">Logical implication P &#x21D2; Q corresponds to geometric containment {g | P} &#x2286; {g | Q}</text>
+  <rect x="40" y="144" width="478" height="436" rx="14" fill="#f5f5eb" stroke="#6e6e6e" stroke-width="2.0" />
+  <text x="56" y="167" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" font-weight="bold" fill="#444444">T&#x2080; = &#x2115; = { g &#x2208; &#x2115; | true }</text>
+  <text x="498" y="167" text-anchor="end" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6e6e6e">Dropped before P&#x2081; (g &#x2224; 12):</text>
+<g><circle cx="68.0" cy="195.0" r="13.0" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.4" /><text x="68.0" y="199.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="normal" fill="#444444">0</text></g>
+<g><circle cx="104.0" cy="195.0" r="13.0" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.4" /><text x="104.0" y="199.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="normal" fill="#444444">5</text></g>
+<g><circle cx="140.0" cy="195.0" r="13.0" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.4" /><text x="140.0" y="199.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="normal" fill="#444444">7</text></g>
+<g><circle cx="176.0" cy="195.0" r="13.0" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.4" /><text x="176.0" y="199.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="normal" fill="#444444">8</text></g>
+<g><circle cx="384.0" cy="195.0" r="13.0" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.4" /><text x="384.0" y="199.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="normal" fill="#444444">9</text></g>
+<g><circle cx="420.0" cy="195.0" r="13.0" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.4" /><text x="420.0" y="199.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="normal" fill="#444444">10</text></g>
+<g><circle cx="456.0" cy="195.0" r="13.0" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.4" /><text x="456.0" y="199.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="normal" fill="#444444">11</text></g>
+<g><rect x="409.6" y="539.5" width="76.8" height="25.0" rx="12.5" fill="#ffffff" stroke="#bbbbbb" stroke-width="1.4" /><text x="448.0" y="556.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#6e6e6e">13, 14, …</text></g>
+  <ellipse cx="279" cy="382" rx="218" ry="178" fill="#efedf9" stroke="#6A5ACD" stroke-width="2.2" />
+  <text x="279" y="232" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" font-weight="bold" fill="#43368a">T&#x2081; = Div(12) = { g &#x2208; &#x2115; | g &#x2223; 12 }</text>
+  <text x="279" y="248" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#43368a">+ Conjunct P&#x2081;(g): keeps 6 divisors of 12</text>
+<g><circle cx="106.0" cy="360.0" r="14.0" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.4" /><text x="106.0" y="364.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">3</text></g>
+<g><circle cx="106.0" cy="404.0" r="14.0" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.4" /><text x="106.0" y="408.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">6</text></g>
+<g><circle cx="452.0" cy="382.0" r="14.0" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.4" /><text x="452.0" y="386.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">12</text></g>
+  <text x="106" y="434" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">3 &#x2224; 8, 6 &#x2224; 8</text>
+  <text x="452" y="412" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">12 &#x2224; 8</text>
+  <ellipse cx="279" cy="404" rx="146" ry="132" fill="#c3bceb" fill-opacity="0.65" stroke="#43368a" stroke-width="2.4" stroke-dasharray="6,3" />
+  <text x="279" y="302" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" font-weight="bold" fill="#43368a">T&#x2082; = CommonDiv(12, 8)</text>
+  <text x="279" y="318" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#43368a">+ Conjunct P&#x2082;(g): g &#x2223; 8 (keeps {1, 2, 4})</text>
+<g><circle cx="184.0" cy="415.0" r="14.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="184.0" y="419.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">1</text></g>
+<g><circle cx="374.0" cy="415.0" r="14.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="374.0" y="419.6" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">2</text></g>
+  <text x="184" y="444" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">4 &#x2224; 1</text>
+  <text x="374" y="444" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">4 &#x2224; 2</text>
+  <ellipse cx="279" cy="436" rx="68" ry="68" fill="#d9d5f2" stroke="#00008b" stroke-width="3.2" />
+  <text x="279" y="392" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#00008b">T&#x2083; = Gcd(12, 8)</text>
+  <text x="279" y="407" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b">+ Conjunct P&#x2083;(g)</text>
+<g><circle cx="279.0" cy="442.0" r="19.0" fill="#e6eaf5" stroke="#00008b" stroke-width="2.8" /><text x="279.0" y="447.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="17" font-weight="bold" fill="#00008b">4</text></g>
+  <text x="279" y="480" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">unique inhabitant</text>
+  <rect x="550" y="90" width="326" height="506" rx="8" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.5" />
+  <text x="566" y="114" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#222222">Why Adding a Conjunct Creates a Subtype</text>
+  <text x="566" y="131" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#444444">Upcasting drops a conjunct; every inner value is valid outside</text>
+  <rect x="564" y="148" width="298" height="82" rx="6" fill="#e6eaf5" stroke="#00008b" stroke-width="1.5" />
+  <text x="574" y="166" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">T₃ = Gcd(12, 8)</text>
+  <text x="574" y="183" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#43368a">{ g ∈ ℕ | g ∣ 12 ∧ g ∣ 8 ∧ ∀d∈Common. d ∣ g }</text>
+  <text x="574" y="200" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">Inhabitants: { 4 }   (cardinality = 1)</text>
+  <text x="574" y="217" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">Evidence carried: (4 ∣ 12,  4 ∣ 8,  ∀d∈{1,2,4}. d ∣ 4)</text>
+  <line x1="600" y1="230" x2="600" y2="254" stroke="#43368a" stroke-width="1.8" />
+  <polygon points="600,256 595,248 605,248" fill="#43368a" />
+  <text x="612" y="247" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#43368a">subtype (&lt;:) / subset (&#x2282;) &#x2014; drop 1 conjunct</text>
+  <rect x="564" y="258" width="298" height="82" rx="6" fill="#d9d5f2" stroke="#43368a" stroke-width="1.5" />
+  <text x="574" y="276" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">T₂ = CommonDiv(12, 8)</text>
+  <text x="574" y="293" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#43368a">{ g ∈ ℕ | g ∣ 12 ∧ g ∣ 8 }</text>
+  <text x="574" y="310" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">Inhabitants: { 1, 2, 4 }   (cardinality = 3)</text>
+  <text x="574" y="327" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">Forgets P₃ (‘greatest’); admits non-maximal divisors 1, 2</text>
+  <line x1="600" y1="340" x2="600" y2="364" stroke="#43368a" stroke-width="1.8" />
+  <polygon points="600,366 595,358 605,358" fill="#43368a" />
+  <text x="612" y="357" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#43368a">subtype (&lt;:) / subset (&#x2282;) &#x2014; drop 1 conjunct</text>
+  <rect x="564" y="368" width="298" height="82" rx="6" fill="#efedf9" stroke="#6A5ACD" stroke-width="1.5" />
+  <text x="574" y="386" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">T₁ = Div(12)</text>
+  <text x="574" y="403" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#43368a">{ g ∈ ℕ | g ∣ 12 }</text>
+  <text x="574" y="420" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">Inhabitants: { 1, 2, 3, 4, 6, 12 }   (cardinality = 6)</text>
+  <text x="574" y="437" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">Forgets P₂ (g ∣ 8); admits 3, 6, 12</text>
+  <line x1="600" y1="450" x2="600" y2="474" stroke="#43368a" stroke-width="1.8" />
+  <polygon points="600,476 595,468 605,468" fill="#43368a" />
+  <text x="612" y="467" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#43368a">subtype (&lt;:) / subset (&#x2282;) &#x2014; drop 1 conjunct</text>
+  <rect x="564" y="478" width="298" height="82" rx="6" fill="#f5f5eb" stroke="#6e6e6e" stroke-width="1.5" />
+  <text x="574" y="496" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">T₀ = ℕ (Unrefined Base Type)</text>
+  <text x="574" y="513" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#43368a">{ g ∈ ℕ | true }</text>
+  <text x="574" y="530" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">Inhabitants: { 0, 1, 2, 3, 4, 5, … }   (infinite)</text>
+  <text x="574" y="547" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#444444">Forgets P₁ (g ∣ 12); admits every natural number</text>
+</svg>

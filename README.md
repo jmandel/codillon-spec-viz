@@ -27,6 +27,7 @@ and fixture, and the ten prototypes. Codillon itself lives at https://github.com
   - `10-gemini-review.md`, `11-real-codillon-comparison.md`, `12-implementation-plan.md`, `13-gcd-as-a-type.md`, `14-minimal-calculus.md`.
 - `artifacts/00-refined-codillon.html` — the tutorial walkthrough of the composed design (start here).
 - `artifacts/gcd-as-a-type.html` — worked example: Euclid typed by Gcd(a, b), with the Lean proof in `proofs/`.
+- `artifacts/gcd-type-gallery.html` — ten audited visual angles on Gcd(a, b) as a type, consolidated; sources in `research/gcd-gallery/`.
 - `artifacts/gcd-foundations.html` — the same example in a five-rule calculus (types as finite sets of states) with an in-page proof checker; standalone checker in `proofs/minimal/`.
 - `artifacts/real-editor.html` — write-up of the real editor: six live demos (deep links), verdicts, how the proofs work.
 - `editor/` — live build of the Refined Codillon fork (github.com/jmandel/codillon, branch `refined`).

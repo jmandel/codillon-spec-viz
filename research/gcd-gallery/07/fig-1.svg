@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 900 600" width="900" height="600">
+<defs>
+        <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#00008b"/>
+        </marker>
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#6A5ACD"/>
+        </marker>
+        <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#222222"/>
+        </marker>
+        <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#888888"/>
+        </marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#8b0000"/>
+        </marker>
+        </defs>
+<rect x="0" y="0" width="900" height="600" fill="#fffff0"/>
+<rect x="25.0" y="16.0" width="850.0" height="58.0" fill="#eeecfa" stroke="#6A5ACD" stroke-width="1.2" rx="6" ry="6"/>
+<text x="42.0" y="41.0" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#222222" text-anchor="start" font-weight="bold">Linear combinations 12x + 8y form 4ℤ; gcd(12, 8) = 4 is its generator</text>
+<text x="42.0" y="62.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#555555" text-anchor="start">Ideal characterization: <tspan font-style="italic">Gcd</tspan>(12, 8) = { <tspan font-style="italic">g</tspan> ∈ ℕ | <tspan font-style="italic">g</tspan> &gt; 0 ∧ 12ℤ + 8ℤ = <tspan font-style="italic">g</tspan>ℤ } = { 4 }</text>
+<rect x="685.0" y="23.0" width="178.0" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.8" rx="4" ry="4"/>
+<text x="774.0" y="38.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">FIG 1 · IDEAL (12, 8)</text>
+<text x="35.0" y="104.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="bold">1. Input generator strides on ℤ</text>
+<text x="268.0" y="104.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#555555" text-anchor="start">Each input alone generates a coarse lattice of multiples:</text>
+<text x="35.0" y="140.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#00008b" text-anchor="start" font-weight="bold">12ℤ = {12x}</text>
+<text x="35.0" y="155.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">stride a = 12</text>
+<line x1="107.0" y1="142.0" x2="853.0" y2="142.0" stroke="#cccccc" stroke-width="1.5"/>
+<line x1="115.0" y1="139.0" x2="115.0" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="133.2" y1="139.0" x2="133.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="151.5" y1="139.0" x2="151.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="169.8" y1="139.0" x2="169.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="188.0" cy="142.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="188.0" y="160.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">-12</text>
+<text x="188.0" y="132.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">12·(-1)</text>
+<line x1="206.2" y1="139.0" x2="206.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="224.5" y1="139.0" x2="224.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="242.8" y1="139.0" x2="242.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="261.0" y1="139.0" x2="261.0" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="279.2" y1="139.0" x2="279.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="297.5" y1="139.0" x2="297.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="315.8" y1="139.0" x2="315.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="334.0" y1="139.0" x2="334.0" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="352.2" y1="139.0" x2="352.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="370.5" y1="139.0" x2="370.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="388.8" y1="139.0" x2="388.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="407.0" cy="142.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="407.0" y="160.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">0</text>
+<text x="407.0" y="132.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">12·(0)</text>
+<line x1="425.2" y1="139.0" x2="425.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="443.5" y1="139.0" x2="443.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="461.8" y1="139.0" x2="461.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="480.0" y1="139.0" x2="480.0" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="498.2" y1="139.0" x2="498.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="516.5" y1="139.0" x2="516.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="534.8" y1="139.0" x2="534.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="553.0" y1="139.0" x2="553.0" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="571.2" y1="139.0" x2="571.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="589.5" y1="139.0" x2="589.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="607.8" y1="139.0" x2="607.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="626.0" cy="142.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="626.0" y="160.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">12</text>
+<text x="626.0" y="132.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">12·(1)</text>
+<line x1="644.2" y1="139.0" x2="644.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="662.5" y1="139.0" x2="662.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="680.8" y1="139.0" x2="680.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="699.0" y1="139.0" x2="699.0" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="717.2" y1="139.0" x2="717.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="735.5" y1="139.0" x2="735.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="753.8" y1="139.0" x2="753.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="772.0" y1="139.0" x2="772.0" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="790.2" y1="139.0" x2="790.2" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="808.5" y1="139.0" x2="808.5" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="826.8" y1="139.0" x2="826.8" y2="145.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="845.0" cy="142.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="845.0" y="160.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">24</text>
+<text x="845.0" y="132.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">12·(2)</text>
+<path d="M 413.0 136.0 Q 516.5 112.0 620.0 136.0" fill="none" stroke="#00008b" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-navy)"/>
+<text x="516.5" y="122.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">stride a = +12</text>
+<text x="35.0" y="203.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#00008b" text-anchor="start" font-weight="bold">8ℤ = {8y}</text>
+<text x="35.0" y="218.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">stride b = 8</text>
+<line x1="107.0" y1="205.0" x2="853.0" y2="205.0" stroke="#cccccc" stroke-width="1.5"/>
+<circle cx="115.0" cy="205.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="115.0" y="223.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">-16</text>
+<text x="115.0" y="195.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">8·(-2)</text>
+<line x1="133.2" y1="202.0" x2="133.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="151.5" y1="202.0" x2="151.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="169.8" y1="202.0" x2="169.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="188.0" y1="202.0" x2="188.0" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="206.2" y1="202.0" x2="206.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="224.5" y1="202.0" x2="224.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="242.8" y1="202.0" x2="242.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="261.0" cy="205.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="261.0" y="223.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">-8</text>
+<text x="261.0" y="195.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">8·(-1)</text>
+<line x1="279.2" y1="202.0" x2="279.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="297.5" y1="202.0" x2="297.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="315.8" y1="202.0" x2="315.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="334.0" y1="202.0" x2="334.0" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="352.2" y1="202.0" x2="352.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="370.5" y1="202.0" x2="370.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="388.8" y1="202.0" x2="388.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="407.0" cy="205.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="407.0" y="223.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">0</text>
+<text x="407.0" y="195.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">8·(0)</text>
+<line x1="425.2" y1="202.0" x2="425.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="443.5" y1="202.0" x2="443.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="461.8" y1="202.0" x2="461.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="480.0" y1="202.0" x2="480.0" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="498.2" y1="202.0" x2="498.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="516.5" y1="202.0" x2="516.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="534.8" y1="202.0" x2="534.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="553.0" cy="205.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="553.0" y="223.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">8</text>
+<text x="553.0" y="195.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">8·(1)</text>
+<line x1="571.2" y1="202.0" x2="571.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="589.5" y1="202.0" x2="589.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="607.8" y1="202.0" x2="607.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="626.0" y1="202.0" x2="626.0" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="644.2" y1="202.0" x2="644.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="662.5" y1="202.0" x2="662.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="680.8" y1="202.0" x2="680.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="699.0" cy="205.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="699.0" y="223.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">16</text>
+<text x="699.0" y="195.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">8·(2)</text>
+<line x1="717.2" y1="202.0" x2="717.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="735.5" y1="202.0" x2="735.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="753.8" y1="202.0" x2="753.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="772.0" y1="202.0" x2="772.0" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="790.2" y1="202.0" x2="790.2" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="808.5" y1="202.0" x2="808.5" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="826.8" y1="202.0" x2="826.8" y2="208.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="845.0" cy="205.0" r="5.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="845.0" y="223.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">24</text>
+<text x="845.0" y="195.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">8·(3)</text>
+<path d="M 413.0 199.0 Q 480.0 177.0 547.0 199.0" fill="none" stroke="#00008b" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-navy)"/>
+<text x="480.0" y="186.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">stride b = +8</text>
+<rect x="25.0" y="248.0" width="850.0" height="212.0" fill="#eeecfa" stroke="#6A5ACD" stroke-width="1.4" rx="8" ry="8" opacity="0.55"/>
+<text x="40.0" y="271.0" font-family="Georgia, 'Times New Roman', serif" font-size="14.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">2. The Ideal  12ℤ + 8ℤ = { 12x + 8y | x, y ∈ ℤ } = 4ℤ</text>
+<text x="435.0" y="271.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#222222" text-anchor="start">Interfering strides +12 and −8 carve out a finer regular lattice of step g = 4:</text>
+<rect x="407.0" y="340.0" width="73.0" height="36.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2" stroke-dasharray="3,2"/>
+<rect x="292.0" y="312.0" width="128.0" height="20.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1" rx="4" ry="4"/>
+<line x1="420.0" y1="332.0" x2="439.5" y2="340.0" stroke="#6A5ACD" stroke-width="1.2"/>
+<text x="356.0" y="326.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">empty gap: no 12x+8y</text>
+<path d="M 410.0 350.0 C 452.0 286.0, 581.0 286.0, 624.0 349.0" fill="none" stroke="#00008b" stroke-width="2.2" marker-end="url(#arrow-navy)"/>
+<rect x="452.5" y="284.0" width="128.0" height="19.0" fill="#fffff0" stroke="#00008b" stroke-width="1.2" rx="4" ry="4"/>
+<text x="516.5" y="298.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">hop 1: +1·(12) = +12</text>
+<path d="M 622.0 350.0 C 606.0 314.0, 500.0 314.0, 486.0 348.0" fill="none" stroke="#00008b" stroke-width="2.2" marker-end="url(#arrow-navy)"/>
+<rect x="495.0" y="310.0" width="116.0" height="18.0" fill="#fffff0" stroke="#00008b" stroke-width="1.2" rx="4" ry="4"/>
+<text x="553.0" y="323.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">hop 2: −1·(8) = −8</text>
+<text x="35.0" y="356.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#6A5ACD" text-anchor="start" font-weight="bold">12ℤ + 8ℤ</text>
+<text x="35.0" y="371.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#6A5ACD" text-anchor="start" font-weight="bold">= 4ℤ</text>
+<line x1="105.0" y1="358.0" x2="855.0" y2="358.0" stroke="#222222" stroke-width="2"/>
+<circle cx="115.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="115.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">-16</text>
+<text x="115.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">−2(8)</text>
+<circle cx="133.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="151.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="169.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="188.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="188.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">-12</text>
+<text x="188.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">−1(12)</text>
+<circle cx="206.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="224.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="242.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="261.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="261.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">-8</text>
+<text x="261.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">−1(8)</text>
+<circle cx="279.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="297.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="315.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="334.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="334.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">-4</text>
+<text x="334.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">−1(12)+1(8)</text>
+<circle cx="352.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="370.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="388.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="407.0" cy="358.0" r="6.5" fill="#222222" stroke="#fffff0" stroke-width="1.5"/>
+<text x="407.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">0</text>
+<text x="407.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">0(12)+0(8)</text>
+<circle cx="425.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="443.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="461.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="480.0" cy="358.0" r="10.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.5"/>
+<circle cx="480.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="480.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<text x="480.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">1(12)−1(8)</text>
+<circle cx="498.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="516.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="534.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="553.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="553.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">8</text>
+<text x="553.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">1(8)</text>
+<circle cx="571.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="589.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="607.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="626.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="626.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">12</text>
+<text x="626.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">1(12)</text>
+<circle cx="644.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="662.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="680.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="699.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="699.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">16</text>
+<text x="699.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">2(8)</text>
+<circle cx="717.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="735.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="753.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="772.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="772.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">20</text>
+<text x="772.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">1(12)+1(8)</text>
+<circle cx="790.2" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="808.5" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="826.8" cy="358.0" r="2.0" fill="#888888" stroke="none" stroke-width="1"/>
+<circle cx="845.0" cy="358.0" r="5.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<text x="845.0" y="380.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">24</text>
+<text x="845.0" y="395.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">2(12)</text>
+<path d="M 117.0 402.0 L 117.0 409.0 L 186.0 409.0 L 186.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="151.5" y1="409.0" x2="151.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<text x="151.5" y="425.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#888888" text-anchor="middle" font-weight="bold">+4</text>
+<path d="M 190.0 402.0 L 190.0 409.0 L 259.0 409.0 L 259.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="224.5" y1="409.0" x2="224.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<text x="224.5" y="425.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#888888" text-anchor="middle" font-weight="bold">+4</text>
+<path d="M 263.0 402.0 L 263.0 409.0 L 332.0 409.0 L 332.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="297.5" y1="409.0" x2="297.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<text x="297.5" y="425.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#888888" text-anchor="middle" font-weight="bold">+4</text>
+<path d="M 336.0 402.0 L 336.0 409.0 L 405.0 409.0 L 405.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="370.5" y1="409.0" x2="370.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<text x="370.5" y="425.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#888888" text-anchor="middle" font-weight="bold">+4</text>
+<path d="M 409.0 402.0 L 409.0 409.0 L 478.0 409.0 L 478.0 402.0" fill="none" stroke="#6A5ACD" stroke-width="1.6"/>
+<line x1="443.5" y1="409.0" x2="443.5" y2="413.0" stroke="#6A5ACD" stroke-width="1.4"/>
+<text x="443.5" y="425.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">step g = 4</text>
+<path d="M 482.0 402.0 L 482.0 409.0 L 551.0 409.0 L 551.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="516.5" y1="409.0" x2="516.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<path d="M 555.0 402.0 L 555.0 409.0 L 624.0 409.0 L 624.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="589.5" y1="409.0" x2="589.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<path d="M 628.0 402.0 L 628.0 409.0 L 697.0 409.0 L 697.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="662.5" y1="409.0" x2="662.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<path d="M 701.0 402.0 L 701.0 409.0 L 770.0 409.0 L 770.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="735.5" y1="409.0" x2="735.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<path d="M 774.0 402.0 L 774.0 409.0 L 843.0 409.0 L 843.0 402.0" fill="none" stroke="#888888" stroke-width="1.6"/>
+<line x1="808.5" y1="409.0" x2="808.5" y2="413.0" stroke="#888888" stroke-width="1.4"/>
+<text x="808.5" y="425.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#888888" text-anchor="middle" font-weight="bold">+4</text>
+<rect x="508.0" y="418.0" width="260.0" height="26.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8" rx="5" ry="5"/>
+<path d="M 480.0 370.0 L 480.0 431.0 L 508.0 431.0" fill="none" stroke="#6A5ACD" stroke-width="1.8" stroke-dasharray="2,2"/>
+<text x="638.0" y="435.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">g = 4 : smallest positive element (generator)</text>
+<rect x="25.0" y="474.0" width="850.0" height="108.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8" rx="8" ry="8"/>
+<rect x="25.0" y="474.0" width="250.0" height="108.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8" rx="8" ry="8"/>
+<text x="150.0" y="502.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#222222" text-anchor="middle" font-weight="bold">Refinement Type as Ideal Generator</text>
+<text x="150.0" y="526.0" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#6A5ACD" text-anchor="middle" font-weight="bold">Gcd(12, 8) =</text>
+<text x="150.0" y="547.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#222222" text-anchor="middle">{ g ∈ ℕ | g &gt; 0 ∧ 12ℤ + 8ℤ = gℤ }</text>
+<text x="150.0" y="568.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#00008b" text-anchor="middle" font-weight="bold">Singleton inhabitant: { 4 }</text>
+<text x="292.0" y="500.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#00008b" text-anchor="start" font-weight="bold">(1) Closure / Reachability  (gℤ ⊆ 12ℤ + 8ℤ):</text>
+<text x="302.0" y="520.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#222222" text-anchor="start">Bézout witness (x, y) = (1, −1) proves:</text>
+<text x="302.0" y="540.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#00008b" text-anchor="start" font-weight="bold">12·(1) + 8·(−1) = 4  ∈  12ℤ + 8ℤ</text>
+<text x="302.0" y="560.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" text-anchor="start">Every multiple 4k = 12(k) + 8(−k) is reachable.</text>
+<line x1="568.0" y1="486.0" x2="568.0" y2="570.0" stroke="#cccccc" stroke-width="1.2"/>
+<text x="582.0" y="500.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#6A5ACD" text-anchor="start" font-weight="bold">(2) Minimality / Divisibility  (12ℤ + 8ℤ ⊆ gℤ):</text>
+<text x="592.0" y="520.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#222222" text-anchor="start">4 divides both generators: 12 = 4·3 and 8 = 4·2.</text>
+<text x="592.0" y="540.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">⇒ 12x + 8y = 4·(3x + 2y) ∈ 4ℤ  for all x, y.</text>
+<text x="592.0" y="560.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" text-anchor="start">No combination can land inside the gap (0, 4).</text>
+</svg>

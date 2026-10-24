@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="620" viewBox="0 0 900 620">
+  <defs>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#483d8b"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#00008b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#8b0000"/>
+    </marker>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#222222"/>
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#888888"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="620" fill="#fffff0"/>
+  <!-- Title banner -->
+  <text x="32" y="34" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="bold" fill="#222222">A type error is a return value landing outside its fiber</text>
+  <text x="32" y="54" font-family="'Arial Narrow', Arial, sans-serif" font-size="13" fill="#555555">For (a=12, b=8), the target type is the fiber Gcd(12, 8) = {4}; returning g = 2 or g = 8 misses the fiber</text>
+  <line x1="32" y1="64" x2="868" y2="64" stroke="#cccccc" stroke-width="1"/>
+  <!-- LEFT: Bundle over (a, 8) with target fiber at a = 12 -->
+  <text x="36" y="92" font-family="Georgia, 'Times New Roman', serif" font-size="15.5" font-weight="bold" fill="#222222">1. Fiber Space Over b = 8 (Focus at Input a = 12)</text>
+  <text x="36" y="110" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555">Well-typed output must land in the purple ring at a = 12</text>
+  <rect x="340.0" y="140" width="28" height="387" rx="6" fill="#eceaf9" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="354.0" y="134" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#483d8b">Fiber Gcd(12, 8)</text>
+  <line x1="84" y1="515.0" x2="444" y2="515.0" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="519.0" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#555555">g = 0</text>
+  <line x1="84" y1="484.8" x2="444" y2="484.8" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="488.8" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#555555">g = 1</text>
+  <line x1="84" y1="454.5" x2="444" y2="454.5" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="458.5" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#8b0000">g = 2</text>
+  <line x1="84" y1="424.2" x2="444" y2="424.2" stroke="#e6e6dc" stroke-width="1"/>
+  <line x1="84" y1="394.0" x2="444" y2="394.0" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="398.0" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#00008b">g = 4</text>
+  <line x1="84" y1="363.8" x2="444" y2="363.8" stroke="#e6e6dc" stroke-width="1"/>
+  <line x1="84" y1="333.5" x2="444" y2="333.5" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="337.5" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#555555">g = 6</text>
+  <line x1="84" y1="303.2" x2="444" y2="303.2" stroke="#e6e6dc" stroke-width="1"/>
+  <line x1="84" y1="273.0" x2="444" y2="273.0" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="277.0" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#8b0000">g = 8</text>
+  <line x1="84" y1="242.8" x2="444" y2="242.8" stroke="#e6e6dc" stroke-width="1"/>
+  <line x1="84" y1="212.5" x2="444" y2="212.5" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="216.5" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#555555">g = 10</text>
+  <line x1="84" y1="182.2" x2="444" y2="182.2" stroke="#e6e6dc" stroke-width="1"/>
+  <line x1="84" y1="152.0" x2="444" y2="152.0" stroke="#e6e6dc" stroke-width="1"/>
+  <text x="72" y="156.0" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#8b0000">g = 12</text>
+  <line x1="84.0" y1="152" x2="84.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="84.0" cy="273.0" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="84.0" cy="273.0" r="2.2" fill="#483d8b"/>
+  <text x="84.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">0</text>
+  <line x1="106.5" y1="152" x2="106.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="106.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="106.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <line x1="129.0" y1="152" x2="129.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="129.0" cy="454.5" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="129.0" cy="454.5" r="2.2" fill="#483d8b"/>
+  <text x="129.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">2</text>
+  <line x1="151.5" y1="152" x2="151.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="151.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="151.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <line x1="174.0" y1="152" x2="174.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="174.0" cy="394.0" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="174.0" cy="394.0" r="2.2" fill="#483d8b"/>
+  <text x="174.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">4</text>
+  <line x1="196.5" y1="152" x2="196.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="196.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="196.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <line x1="219.0" y1="152" x2="219.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="219.0" cy="454.5" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="219.0" cy="454.5" r="2.2" fill="#483d8b"/>
+  <text x="219.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">6</text>
+  <line x1="241.5" y1="152" x2="241.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="241.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="241.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <line x1="264.0" y1="152" x2="264.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="264.0" cy="273.0" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="264.0" cy="273.0" r="2.2" fill="#483d8b"/>
+  <text x="264.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">8</text>
+  <line x1="286.5" y1="152" x2="286.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="286.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="286.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <line x1="309.0" y1="152" x2="309.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="309.0" cy="454.5" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="309.0" cy="454.5" r="2.2" fill="#483d8b"/>
+  <text x="309.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">10</text>
+  <line x1="331.5" y1="152" x2="331.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="331.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="331.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <text x="354.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#00008b">12</text>
+  <line x1="376.5" y1="152" x2="376.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="376.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="376.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <line x1="399.0" y1="152" x2="399.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="399.0" cy="454.5" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="399.0" cy="454.5" r="2.2" fill="#483d8b"/>
+  <text x="399.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">14</text>
+  <line x1="421.5" y1="152" x2="421.5" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="421.5" cy="484.8" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="421.5" cy="484.8" r="2.2" fill="#483d8b"/>
+  <line x1="444.0" y1="152" x2="444.0" y2="515" stroke="#cccccc" stroke-width="0.9"/>
+  <circle cx="444.0" cy="273.0" r="5.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+  <circle cx="444.0" cy="273.0" r="2.2" fill="#483d8b"/>
+  <text x="444.0" y="537" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="normal" fill="#222222">16</text>
+  <text x="264.0" y="557" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-style="italic" fill="#222222">input a (with b = 8) →</text>
+  <line x1="84" y1="273.0" x2="344.0" y2="273.0" stroke="#8b0000" stroke-width="1.8" stroke-dasharray="5,3"/>
+  <text x="90" y="266.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">buggy program: return b (= 8)</text>
+  <circle cx="264.0" cy="273.0" r="7" fill="none" stroke="#483d8b" stroke-width="2"/>
+  <path d="M 272.0 267.0 Q 309.0 247.0 344.0 269.0" fill="none" stroke="#8b0000" stroke-width="1.6" marker-end="url(#arrow-red)"/>
+  <text x="309.0" y="254.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#8b0000">lands in Gcd(8,8), wrong fiber for a=12!</text>
+  <circle cx="354.0" cy="394.0" r="10" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.5"/>
+  <circle cx="354.0" cy="394.0" r="4.5" fill="#00008b"/>
+  <circle cx="354.0" cy="152.0" r="8.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2"/>
+  <line x1="349.5" y1="147.5" x2="358.5" y2="156.5" stroke="#8b0000" stroke-width="2.2"/>
+  <line x1="349.5" y1="156.5" x2="358.5" y2="147.5" stroke="#8b0000" stroke-width="2.2"/>
+  <circle cx="354.0" cy="273.0" r="8.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2"/>
+  <line x1="349.5" y1="268.5" x2="358.5" y2="277.5" stroke="#8b0000" stroke-width="2.2"/>
+  <line x1="349.5" y1="277.5" x2="358.5" y2="268.5" stroke="#8b0000" stroke-width="2.2"/>
+  <circle cx="354.0" cy="454.5" r="8.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2"/>
+  <line x1="349.5" y1="450.0" x2="358.5" y2="459.0" stroke="#8b0000" stroke-width="2.2"/>
+  <line x1="349.5" y1="459.0" x2="358.5" y2="450.0" stroke="#8b0000" stroke-width="2.2"/>
+  <!-- RIGHT: Divisor-Set Proof Obligations at (a=12, b=8) -->
+  <text x="488" y="92" font-family="Georgia, 'Times New Roman', serif" font-size="15.5" font-weight="bold" fill="#222222">2. Why Wrong Candidates Fail the Predicate</text>
+  <text x="488" y="110" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555">Required type predicate:  Div(g) = Div(12) ∩ Div(8) = {1, 2, 4}</text>
+  <path d="M 366.0 152.0 C 399.0 152.0, 453.0 181.0, 484.0 181.0" fill="none" stroke="#8b0000" stroke-width="1.8" marker-end="url(#arrow-red)"/>
+  <rect x="488" y="132" width="380" height="98" rx="6" fill="#fdf3f3" stroke="#8b0000" stroke-width="1.8"/>
+  <text x="500" y="152" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">TYPE ERROR: Candidate g = 12  (returns input a)</text>
+  <text x="500" y="169" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Inhabits Gcd(12, 0) or Gcd(12, 12), NOT Gcd(12, 8)</text>
+  <text x="500" y="186" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">12 ∤ 8  (Div(12) contains {3, 6, 12} outside Div(8))</text>
+  <text x="500" y="212" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222">Div(12):</text>
+  <rect x="556" y="197" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="574" y="212" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">1</text>
+  <rect x="598" y="197" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="616" y="212" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">2</text>
+  <rect x="640" y="197" width="36" height="22" rx="4" fill="#8b0000" stroke="#8b0000" stroke-width="1.3" />
+  <text x="658" y="212" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#fffff0">3</text>
+  <text x="658" y="228" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="9.5" font-weight="bold" fill="#8b0000">extra!</text>
+  <rect x="682" y="197" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="700" y="212" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">4</text>
+  <rect x="724" y="197" width="36" height="22" rx="4" fill="#8b0000" stroke="#8b0000" stroke-width="1.3" />
+  <text x="742" y="212" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#fffff0">6</text>
+  <text x="742" y="228" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="9.5" font-weight="bold" fill="#8b0000">extra!</text>
+  <rect x="766" y="197" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="784" y="212" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">8</text>
+  <rect x="808" y="197" width="36" height="22" rx="4" fill="#8b0000" stroke="#8b0000" stroke-width="1.3" />
+  <text x="826" y="212" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#fffff0">12</text>
+  <text x="826" y="228" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="9.5" font-weight="bold" fill="#8b0000">extra!</text>
+  <path d="M 366.0 273.0 C 399.0 273.0, 453.0 293.0, 484.0 293.0" fill="none" stroke="#8b0000" stroke-width="1.8" marker-end="url(#arrow-red)"/>
+  <rect x="488" y="244" width="380" height="98" rx="6" fill="#fdf3f3" stroke="#8b0000" stroke-width="1.8"/>
+  <text x="500" y="264" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">TYPE ERROR: Candidate g = 8  (returns input b)</text>
+  <text x="500" y="281" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Inhabits Gcd(8, 8) and Gcd(16, 8), NOT Gcd(12, 8)</text>
+  <text x="500" y="298" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">8 ∤ 12  (divisor 8 ∈ Div(8) fails to divide a = 12)</text>
+  <text x="500" y="324" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222">Div(8):</text>
+  <rect x="556" y="309" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="574" y="324" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">1</text>
+  <rect x="598" y="309" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="616" y="324" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">2</text>
+  <rect x="640" y="309" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="658" y="324" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">3</text>
+  <rect x="682" y="309" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="700" y="324" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">4</text>
+  <rect x="724" y="309" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="742" y="324" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">6</text>
+  <rect x="766" y="309" width="36" height="22" rx="4" fill="#8b0000" stroke="#8b0000" stroke-width="1.3" />
+  <text x="784" y="324" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#fffff0">8</text>
+  <text x="784" y="340" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="9.5" font-weight="bold" fill="#8b0000">extra!</text>
+  <rect x="808" y="309" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="826" y="324" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">12</text>
+  <path d="M 366.0 394.0 C 399.0 394.0, 453.0 405.0, 484.0 405.0" fill="none" stroke="#6A5ACD" stroke-width="1.8" marker-end="url(#arrow-navy)"/>
+  <rect x="488" y="356" width="380" height="98" rx="6" fill="#eceaf9" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="500" y="376" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#00008b">WELL-TYPED: Candidate g = 4  ∈  Gcd(12, 8)</text>
+  <text x="500" y="393" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Unique inhabitant of fiber Gcd(12, 8) = {4}</text>
+  <text x="500" y="410" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#00008b">Div(4) = {1, 2, 4} = Div(12) ∩ Div(8)   (exact match)</text>
+  <text x="500" y="436" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222">Div(4):</text>
+  <rect x="556" y="421" width="36" height="22" rx="4" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="574" y="436" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">1</text>
+  <rect x="598" y="421" width="36" height="22" rx="4" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="616" y="436" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">2</text>
+  <rect x="640" y="421" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="658" y="436" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">3</text>
+  <rect x="682" y="421" width="36" height="22" rx="4" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="700" y="436" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">4</text>
+  <rect x="724" y="421" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="742" y="436" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">6</text>
+  <rect x="766" y="421" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="784" y="436" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">8</text>
+  <rect x="808" y="421" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="826" y="436" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">12</text>
+  <path d="M 366.0 454.5 C 399.0 454.5, 453.0 517.0, 484.0 517.0" fill="none" stroke="#8b0000" stroke-width="1.8" marker-end="url(#arrow-red)"/>
+  <rect x="488" y="468" width="380" height="98" rx="6" fill="#fdf3f3" stroke="#8b0000" stroke-width="1.8"/>
+  <text x="500" y="488" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">TYPE ERROR: Candidate g = 2  (non-maximal common divisor)</text>
+  <text x="500" y="505" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Inhabits Gcd(2, 8) and Gcd(6, 8), NOT Gcd(12, 8)</text>
+  <text x="500" y="522" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">4 ∣ 12 ∧ 4 ∣ 8 but 4 ∤ 2  (Div(2) = {1, 2} misses 4)</text>
+  <text x="500" y="548" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222">Div(2):</text>
+  <rect x="556" y="533" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="574" y="548" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">1</text>
+  <rect x="598" y="533" width="36" height="22" rx="4" fill="#e4e0f5" stroke="#6A5ACD" stroke-width="1.3" />
+  <text x="616" y="548" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#222222">2</text>
+  <rect x="640" y="533" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="658" y="548" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">3</text>
+  <rect x="682" y="533" width="36" height="22" rx="4" fill="#fffff0" stroke="#8b0000" stroke-width="1.3" stroke-dasharray="2,2"/>
+  <text x="700" y="548" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">4</text>
+  <text x="700" y="564" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="9.5" font-weight="bold" fill="#8b0000">missed!</text>
+  <rect x="724" y="533" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="742" y="548" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">6</text>
+  <rect x="766" y="533" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="784" y="548" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">8</text>
+  <rect x="808" y="533" width="36" height="22" rx="4" fill="#f4f3ea" stroke="#cccccc" stroke-width="1.3" />
+  <text x="826" y="548" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#cccccc">12</text>
+</svg>

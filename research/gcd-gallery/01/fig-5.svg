@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="660" viewBox="0 0 900 660">
+  <defs>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#555555"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#6A5ACD"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#00008b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#8b0000"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="660" fill="#fffff0"/>
+  <!-- Title Banner -->
+  <text x="26" y="32" font-family="Georgia, 'Times New Roman', serif" font-size="18.5" font-weight="bold" fill="#222222">Euclid's Algorithm Slides the Outer Cones Down to Their Invariant Meet</text>
+  <text x="26" y="53" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#555555">Each step (x, y) ↦ (y, x mod y) shrinks the upper cones while preserving Div(x) ∩ Div(y) = {1, 2, 4}, until y = 0 exposes x = 4 as the top.</text>
+  <rect x="646.0" y="15" width="228.0" height="22" rx="11" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.0"/>
+  <text x="760.0" y="30" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">FIG 5 · EUCLID'S INVARIANT TRACE</text>
+  <line x1="26" y1="64" x2="874" y2="64" stroke="#d8d6c8" stroke-width="1.2"/>
+  <rect x="23" y="74" width="854" height="36" rx="6" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="450" y="97" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Loop Invariant:   Gcd(12, 8)  =  Gcd(8, 4)  =  Gcd(4, 0)  =  {4}     because   Div(x) ∩ Div(y) = Div(y) ∩ Div(x mod y) = {1, 2, 4}</text>
+  <!-- Step Panel 0: (12, 8) -->
+  <rect x="23.0" y="122.0" width="266.0" height="468.0" rx="8" fill="#ffffff" stroke="#d8d6c8" stroke-width="1.6"/>
+  <rect x="23.0" y="122.0" width="266.0" height="50" rx="8" fill="#f3f1e4" stroke="#d8d6c8" stroke-width="1.5"/>
+  <text x="35.0" y="143.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Step 0: Entry (x = 12, y = 8)</text>
+  <text x="35.0" y="162.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#00008b">euclid(12, 8)  →  y ≠ 0</text>
+  <path d="M 73.6 345.7 Q 66.2 334.8 75.8 325.7 L 148.8 256.2 Q 158.4 247.1 165.8 258.0 L 254.4 388.3 Q 261.8 399.2 252.2 408.3 L 179.2 477.8 Q 169.6 486.9 162.2 476.0 Z" fill="#e2e6f7" fill-opacity="0.45" stroke="#00008b" stroke-width="1.6" stroke-dasharray="5,3"/>
+  <path d="M 41.0 291.8 L 155.0 465.8 A 21.5 21.5 0 0 0 191.0 442.2 L 77.0 268.2 A 21.5 21.5 0 0 0 41.0 291.8 Z" fill="#f3f1e4" fill-opacity="0.60" stroke="#555555" stroke-width="1.6" stroke-dasharray="3,3"/>
+  <path d="M 81.9 347.9 L 157.9 463.9 A 18.0 18.0 0 0 0 188.1 444.1 L 112.1 328.1 A 18.0 18.0 0 0 0 81.9 347.9 Z" fill="#d9d5f2" fill-opacity="0.80" stroke="#6A5ACD" stroke-width="2.4"/>
+  <line x1="165.6" y1="442.7" x2="142.4" y2="407.3" stroke="#6A5ACD" stroke-width="2.2"/>
+  <line x1="182.5" y1="444.5" x2="221.5" y2="405.5" stroke="#555555" stroke-width="1.4"/>
+  <line x1="127.6" y1="384.7" x2="104.4" y2="349.3" stroke="#6A5ACD" stroke-width="2.2"/>
+  <line x1="144.5" y1="386.5" x2="183.5" y2="347.5" stroke="#555555" stroke-width="1.4"/>
+  <line x1="223.6" y1="384.7" x2="200.4" y2="349.3" stroke="#555555" stroke-width="1.4"/>
+  <line x1="89.6" y1="326.7" x2="66.4" y2="291.3" stroke="#555555" stroke-width="1.4"/>
+  <line x1="106.5" y1="328.5" x2="145.5" y2="289.5" stroke="#555555" stroke-width="1.4"/>
+  <line x1="185.6" y1="326.7" x2="162.4" y2="291.3" stroke="#555555" stroke-width="1.4"/>
+  <circle cx="173.0" cy="454.0" r="13" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="173.0" y="458.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">1</text>
+  <circle cx="135.0" cy="396.0" r="13" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="135.0" y="400.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">2</text>
+  <circle cx="231.0" cy="396.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="231.0" y="400.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">3</text>
+  <circle cx="97.0" cy="338.0" r="16.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.8"/>
+  <circle cx="97.0" cy="338.0" r="12.5" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="97.0" y="342.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">4</text>
+  <circle cx="193.0" cy="338.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="193.0" y="342.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">6</text>
+  <circle cx="59.0" cy="280.0" r="14.5" fill="#ffffff" stroke="#222222" stroke-width="2.4"/>
+  <text x="59.0" y="284.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="bold" fill="#222222">8</text>
+  <rect x="41.0" y="247.0" width="36" height="15" rx="3" fill="#222222"/>
+  <text x="59.0" y="258.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#ffffff">y=8</text>
+  <circle cx="155.0" cy="280.0" r="14.5" fill="#ffffff" stroke="#00008b" stroke-width="2.4"/>
+  <text x="155.0" y="284.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="bold" fill="#00008b">12</text>
+  <rect x="137.0" y="247.0" width="36" height="15" rx="3" fill="#00008b"/>
+  <text x="155.0" y="258.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#ffffff">x=12</text>
+  <line x1="292.0" y1="332.0" x2="310.0" y2="332.0" stroke="#6A5ACD" stroke-width="2.4" marker-end="url(#arrow-purple)"/>
+  <line x1="35.0" y1="488.0" x2="277.0" y2="488.0" stroke="#d8d6c8" stroke-width="1.2"/>
+  <rect x="35.0" y="498.0" width="242.0" height="28" rx="5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.2"/>
+  <text x="156.0" y="516.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#6A5ACD">Target Type: Gcd(12, 8)</text>
+  <text x="35.0" y="546.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Two distinct cones Div(12) and Div(8)</text>
+  <text x="35.0" y="564.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">overlap on {1, 2, 4}, hidden below 12 &amp; 8.</text>
+  <!-- Step Panel 1: (8, 4) -->
+  <rect x="315.0" y="122.0" width="266.0" height="468.0" rx="8" fill="#ffffff" stroke="#d8d6c8" stroke-width="1.6"/>
+  <rect x="315.0" y="122.0" width="266.0" height="50" rx="8" fill="#f3f1e4" stroke="#d8d6c8" stroke-width="1.5"/>
+  <text x="327.0" y="143.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Step 1: Modulo (x = 8, y = 4)</text>
+  <text x="327.0" y="162.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#00008b">12 mod 8 = 4  →  euclid(8, 4)</text>
+  <path d="M 330.9 293.2 L 444.9 467.2 A 24.0 24.0 0 0 0 485.1 440.8 L 371.1 266.8 A 24.0 24.0 0 0 0 330.9 293.2 Z" fill="#e2e6f7" fill-opacity="0.45" stroke="#00008b" stroke-width="1.6" stroke-dasharray="5,3"/>
+  <path d="M 371.0 349.8 L 447.0 465.8 A 21.5 21.5 0 0 0 483.0 442.2 L 407.0 326.2 A 21.5 21.5 0 0 0 371.0 349.8 Z" fill="#f3f1e4" fill-opacity="0.60" stroke="#555555" stroke-width="1.6" stroke-dasharray="3,3"/>
+  <path d="M 373.9 347.9 L 449.9 463.9 A 18.0 18.0 0 0 0 480.1 444.1 L 404.1 328.1 A 18.0 18.0 0 0 0 373.9 347.9 Z" fill="#d9d5f2" fill-opacity="0.80" stroke="#6A5ACD" stroke-width="2.4"/>
+  <line x1="457.6" y1="442.7" x2="434.4" y2="407.3" stroke="#6A5ACD" stroke-width="2.2"/>
+  <line x1="474.5" y1="444.5" x2="513.5" y2="405.5" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="419.6" y1="384.7" x2="396.4" y2="349.3" stroke="#6A5ACD" stroke-width="2.2"/>
+  <line x1="436.5" y1="386.5" x2="475.5" y2="347.5" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="515.6" y1="384.7" x2="492.4" y2="349.3" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="381.6" y1="326.7" x2="358.4" y2="291.3" stroke="#555555" stroke-width="1.4"/>
+  <line x1="398.5" y1="328.5" x2="437.5" y2="289.5" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="477.6" y1="326.7" x2="454.4" y2="291.3" stroke="#d8d6c8" stroke-width="1.0"/>
+  <circle cx="465.0" cy="454.0" r="13" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="465.0" y="458.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">1</text>
+  <circle cx="427.0" cy="396.0" r="13" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="427.0" y="400.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">2</text>
+  <circle cx="523.0" cy="396.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="523.0" y="400.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">3</text>
+  <circle cx="389.0" cy="338.0" r="16.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.8"/>
+  <circle cx="389.0" cy="338.0" r="12.5" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="389.0" y="342.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">4</text>
+  <rect x="333.0" y="330.0" width="36" height="16" rx="3" fill="#222222"/>
+  <text x="351.0" y="342.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#ffffff">y=4</text>
+  <circle cx="485.0" cy="338.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="485.0" y="342.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">6</text>
+  <circle cx="351.0" cy="280.0" r="14.5" fill="#ffffff" stroke="#00008b" stroke-width="2.4"/>
+  <text x="351.0" y="284.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="bold" fill="#00008b">8</text>
+  <rect x="333.0" y="247.0" width="36" height="15" rx="3" fill="#00008b"/>
+  <text x="351.0" y="258.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#ffffff">x=8</text>
+  <circle cx="447.0" cy="280.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="447.0" y="284.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">12</text>
+  <line x1="584.0" y1="332.0" x2="602.0" y2="332.0" stroke="#6A5ACD" stroke-width="2.4" marker-end="url(#arrow-purple)"/>
+  <line x1="327.0" y1="488.0" x2="569.0" y2="488.0" stroke="#d8d6c8" stroke-width="1.2"/>
+  <rect x="327.0" y="498.0" width="242.0" height="28" rx="5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.2"/>
+  <text x="448.0" y="516.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#6A5ACD">Gcd(8, 4) = Gcd(12, 8)</text>
+  <text x="327.0" y="546.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">×3 branch {3, 6, 12} is shed; y = 4 now</text>
+  <text x="327.0" y="564.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">lands directly on the purple meet {1, 2, 4}!</text>
+  <!-- Step Panel 2: (4, 0) -->
+  <rect x="607.0" y="122.0" width="266.0" height="468.0" rx="8" fill="#ffffff" stroke="#d8d6c8" stroke-width="1.6"/>
+  <rect x="607.0" y="122.0" width="266.0" height="50" rx="8" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="619.0" y="143.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Step 2: Base Case (x = 4, y = 0)</text>
+  <text x="619.0" y="162.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#00008b">8 mod 4 = 0  →  return x = 4</text>
+  <rect x="621.0" y="184.0" width="238.0" height="296" rx="10" fill="#f3f1e4" fill-opacity="0.55" stroke="#555555" stroke-width="1.6" stroke-dasharray="5,3"/>
+  <text x="631.0" y="202.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#555555">Div(y = 0) = ℕ (entire space)</text>
+  <circle cx="827.0" cy="214.0" r="14" fill="#ffffff" stroke="#222222" stroke-width="2.0"/>
+  <text x="827.0" y="218.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#222222">0</text>
+  <rect x="773.0" y="206.0" width="36" height="16" rx="3" fill="#222222"/>
+  <text x="791.0" y="218.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#ffffff">y=0</text>
+  <path d="M 665.9 347.9 L 741.9 463.9 A 18.0 18.0 0 0 0 772.1 444.1 L 696.1 328.1 A 18.0 18.0 0 0 0 665.9 347.9 Z" fill="#d9d5f2" fill-opacity="0.80" stroke="#6A5ACD" stroke-width="2.4"/>
+  <line x1="749.6" y1="442.7" x2="726.4" y2="407.3" stroke="#6A5ACD" stroke-width="2.2"/>
+  <line x1="766.5" y1="444.5" x2="805.5" y2="405.5" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="711.6" y1="384.7" x2="688.4" y2="349.3" stroke="#6A5ACD" stroke-width="2.2"/>
+  <line x1="728.5" y1="386.5" x2="767.5" y2="347.5" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="807.6" y1="384.7" x2="784.4" y2="349.3" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="673.6" y1="326.7" x2="650.4" y2="291.3" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="690.5" y1="328.5" x2="729.5" y2="289.5" stroke="#d8d6c8" stroke-width="1.0"/>
+  <line x1="769.6" y1="326.7" x2="746.4" y2="291.3" stroke="#d8d6c8" stroke-width="1.0"/>
+  <circle cx="757.0" cy="454.0" r="13" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="757.0" y="458.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">1</text>
+  <circle cx="719.0" cy="396.0" r="13" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="719.0" y="400.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">2</text>
+  <circle cx="815.0" cy="396.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="815.0" y="400.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">3</text>
+  <circle cx="681.0" cy="338.0" r="16.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.8"/>
+  <circle cx="681.0" cy="338.0" r="12.5" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="681.0" y="342.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">4</text>
+  <rect x="619.0" y="330.0" width="42" height="16" rx="3" fill="#6A5ACD"/>
+  <text x="640.0" y="342.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#ffffff">x=4 ✓</text>
+  <circle cx="777.0" cy="338.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="777.0" y="342.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">6</text>
+  <circle cx="643.0" cy="280.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="643.0" y="284.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">8</text>
+  <circle cx="739.0" cy="280.0" r="12" fill="#fffff0" stroke="#d8d6c8" stroke-width="1.1"/>
+  <text x="739.0" y="284.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">12</text>
+  <line x1="619.0" y1="488.0" x2="861.0" y2="488.0" stroke="#d8d6c8" stroke-width="1.2"/>
+  <rect x="619.0" y="498.0" width="242.0" height="28" rx="5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.2"/>
+  <text x="740.0" y="516.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#6A5ACD">x = 4 : Gcd(4, 0) = Gcd(12, 8) ✓</text>
+  <text x="619.0" y="546.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Since Div(0) = ℕ, Div(4) ∩ Div(0) = Div(4).</text>
+  <text x="619.0" y="564.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">Cone of x = 4 IS the intersection — Q.E.D.</text>
+  <rect x="23" y="604" width="854" height="40" rx="6" fill="#f3f1e4" stroke="#6A5ACD" stroke-width="1.3"/>
+  <text x="450" y="622" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">Refinement Type Takeaway: The purple cone {1, 2, 4} is the compile-time proof certificate; the navy numbers (12,8) → (8,4) → (4,0) are the runtime values.</text>
+  <text x="450" y="638" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">At runtime all cones are erased, leaving only integer modulo steps—guaranteed to halt at the unique top element 4.</text>
+</svg>

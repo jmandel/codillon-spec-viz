@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="650" viewBox="0 0 900 650">
+  <rect x="0" y="0" width="900" height="650" fill="#fffff0" />
+  <text x="450" y="32" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="bold" fill="#222222">Euclid&#x2019;s Loop Reshapes Outer Circles While Locking Their Intersection</text>
+  <text x="450" y="52" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="13" fill="#444444">Loop invariant: Div(x) &#x2229; Div(y) = {1, 2, 4} and Gcd(x, y) = {4} never move as (x, y) steps (12, 8) &#x2192; (8, 4) &#x2192; (4, 0)</text>
+  <defs>
+    <clipPath id="f5-pa-0"><circle cx="126" cy="250" r="62" /></clipPath>
+    <clipPath id="f5-pb-0"><circle cx="190" cy="250" r="62" /></clipPath>
+    <clipPath id="f5-pm-0"><circle cx="158" cy="304" r="62" /></clipPath>
+    <clipPath id="f5-pa-1"><circle cx="418" cy="250" r="62" /></clipPath>
+    <clipPath id="f5-pb-1"><circle cx="482" cy="250" r="62" /></clipPath>
+    <clipPath id="f5-pm-1"><circle cx="450" cy="304" r="62" /></clipPath>
+    <clipPath id="f5-pa-2"><circle cx="710" cy="250" r="62" /></clipPath>
+    <clipPath id="f5-pb-2"><circle cx="774" cy="250" r="62" /></clipPath>
+    <clipPath id="f5-pm-2"><circle cx="742" cy="304" r="62" /></clipPath>
+  </defs>
+  <rect x="20" y="68" width="276" height="404" rx="8" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.5" />
+  <rect x="20" y="68" width="276" height="44" rx="8" fill="#efedf9" stroke="#6A5ACD" stroke-width="1.4" />
+  <text x="158" y="87" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Step 0 (Entry): (x, y) = (12, 8)</text>
+  <text x="158" y="104" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#43368a">Gcd(12, 8) = Gcd(12, 8) = {4}</text>
+  <circle cx="126" cy="250" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <circle cx="190" cy="250" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <circle cx="158" cy="304" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <g clip-path="url(#f5-pa-0)"><circle cx="190" cy="250" r="62" fill="#c3bceb" fill-opacity="0.6" /></g>
+  <g clip-path="url(#f5-pa-0)"><g clip-path="url(#f5-pb-0)"><circle cx="158" cy="304" r="62" fill="#d9d5f2" /></g></g>
+  <circle cx="126" cy="250" r="62" fill="none" stroke="#6A5ACD" stroke-width="2.0" />
+  <circle cx="190" cy="250" r="62" fill="none" stroke="#6A5ACD" stroke-width="2.0" stroke-dasharray="5,3" />
+  <circle cx="158" cy="304" r="62" fill="none" stroke="#43368a" stroke-width="2.0" stroke-dasharray="2,2" />
+  <text x="102" y="182" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2081;: g&#x2223;12</text>
+  <text x="214" y="182" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2082;: g&#x2223;8</text>
+  <text x="158" y="379" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2083;: &#x2200;d&#x2208;{1,2,4}. d&#x2223;g</text>
+<g><circle cx="144.0" cy="218.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="144.0" y="221.8" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">1</text></g>
+<g><circle cx="172.0" cy="218.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="172.0" y="221.8" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">2</text></g>
+<g><circle cx="158.0" cy="266.0" r="14.5" fill="#e6eaf5" stroke="#00008b" stroke-width="2.5" /><text x="158.0" y="270.7" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" font-weight="bold" fill="#00008b">4</text></g>
+<g><circle cx="86.0" cy="232.0" r="11.0" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.4" /><text x="86.0" y="235.8" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">3</text></g>
+<g><circle cx="86.0" cy="258.0" r="11.0" fill="#ffffff" stroke="#6A5ACD" stroke-width="1.4" /><text x="86.0" y="261.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">6</text></g>
+<g><circle cx="112.0" cy="290.0" r="11.5" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="112.0" y="293.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">12</text></g>
+<g><circle cx="204.0" cy="290.0" r="11.5" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="204.0" y="293.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">8</text></g>
+<g><circle cx="158.0" cy="342.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="158.0" y="345.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">0</text></g>
+  <rect x="32" y="394" width="252" height="66" rx="5" fill="#f5f5eb" stroke="#bbbbbb" stroke-width="1.2" />
+  <text x="158" y="412" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#43368a">Locked: Div(12) &#x2229; Div(8) = {1, 2, 4}</text>
+  <text x="158" y="430" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#00008b">Locked: P&#x2081; &#x2229; P&#x2082; &#x2229; P&#x2083; = {4}</text>
+  <text x="158" y="449" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">12 mod 8 = 4; step to (8, 4)</text>
+  <rect x="312" y="68" width="276" height="404" rx="8" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.5" />
+  <rect x="312" y="68" width="276" height="44" rx="8" fill="#efedf9" stroke="#6A5ACD" stroke-width="1.4" />
+  <text x="450" y="87" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Step 1 (After mod): (x, y) = (8, 4)</text>
+  <text x="450" y="104" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#43368a">Gcd(8, 4) = Gcd(12, 8) = {4}</text>
+  <circle cx="418" cy="250" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <circle cx="482" cy="250" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <circle cx="450" cy="304" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <g clip-path="url(#f5-pa-1)"><circle cx="482" cy="250" r="62" fill="#c3bceb" fill-opacity="0.6" /></g>
+  <g clip-path="url(#f5-pa-1)"><g clip-path="url(#f5-pb-1)"><circle cx="450" cy="304" r="62" fill="#d9d5f2" /></g></g>
+  <circle cx="418" cy="250" r="62" fill="none" stroke="#6A5ACD" stroke-width="2.0" />
+  <circle cx="482" cy="250" r="62" fill="none" stroke="#6A5ACD" stroke-width="2.0" stroke-dasharray="5,3" />
+  <circle cx="450" cy="304" r="62" fill="none" stroke="#43368a" stroke-width="2.0" stroke-dasharray="2,2" />
+  <text x="394" y="182" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2081;: g&#x2223;8</text>
+  <text x="506" y="182" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2082;: g&#x2223;4</text>
+  <text x="450" y="379" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2083;: &#x2200;d&#x2208;{1,2,4}. d&#x2223;g</text>
+<g><circle cx="436.0" cy="218.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="436.0" y="221.8" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">1</text></g>
+<g><circle cx="464.0" cy="218.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="464.0" y="221.8" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">2</text></g>
+<g><circle cx="450.0" cy="266.0" r="14.5" fill="#e6eaf5" stroke="#00008b" stroke-width="2.5" /><text x="450.0" y="270.7" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" font-weight="bold" fill="#00008b">4</text></g>
+<g><circle cx="404.0" cy="290.0" r="11.5" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="404.0" y="293.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">8</text></g>
+<g><circle cx="434.0" cy="342.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="434.0" y="345.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">0</text></g>
+<g><circle cx="466.0" cy="342.0" r="11.5" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="466.0" y="345.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">12</text></g>
+  <text x="384" y="245" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" fill="#6e6e6e">3,6,12</text>
+  <text x="384" y="257" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" fill="#6e6e6e">expelled</text>
+  <rect x="324" y="394" width="252" height="66" rx="5" fill="#f5f5eb" stroke="#bbbbbb" stroke-width="1.2" />
+  <text x="450" y="412" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#43368a">Locked: Div(8) &#x2229; Div(4) = {1, 2, 4}</text>
+  <text x="450" y="430" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#00008b">Locked: P&#x2081; &#x2229; P&#x2082; &#x2229; P&#x2083; = {4}</text>
+  <text x="450" y="449" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">8 mod 4 = 0; step to (4, 0)</text>
+  <rect x="604" y="68" width="276" height="404" rx="8" fill="#ffffff" stroke="#6e6e6e" stroke-width="1.5" />
+  <rect x="604" y="68" width="276" height="44" rx="8" fill="#e6eaf5" stroke="#00008b" stroke-width="1.4" />
+  <text x="742" y="87" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Step 2 (Exit y = 0): (x, y) = (4, 0)</text>
+  <text x="742" y="104" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#43368a">Gcd(4, 0) = Gcd(12, 8) = {4}</text>
+  <rect x="618" y="124" width="248" height="258" rx="8" fill="#efedf9" fill-opacity="0.45" stroke="#6A5ACD" stroke-width="2.0" stroke-dasharray="6,3" />
+  <text x="742" y="142" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2082;: g &#x2223; 0 expands to ALL of &#x2115;</text>
+  <circle cx="710" cy="250" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <circle cx="742" cy="304" r="62" fill="#efedf9" fill-opacity="0.7" />
+  <circle cx="710" cy="250" r="62" fill="#c3bceb" fill-opacity="0.55" />
+  <g clip-path="url(#f5-pa-2)"><circle cx="742" cy="304" r="62" fill="#d9d5f2" /></g>
+  <circle cx="710" cy="250" r="62" fill="none" stroke="#6A5ACD" stroke-width="2.0" />
+  <circle cx="742" cy="304" r="62" fill="none" stroke="#43368a" stroke-width="2.0" stroke-dasharray="2,2" />
+  <text x="686" y="182" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2081;: g&#x2223;4</text>
+  <text x="742" y="379" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" font-weight="bold" fill="#43368a">P&#x2083;: &#x2200;d&#x2208;{1,2,4}. d&#x2223;g</text>
+<g><circle cx="696.0" cy="224.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="696.0" y="227.8" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">1</text></g>
+<g><circle cx="724.0" cy="224.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="724.0" y="227.8" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">2</text></g>
+<g><circle cx="722.0" cy="272.0" r="15.5" fill="#e6eaf5" stroke="#00008b" stroke-width="2.6" /><text x="722.0" y="276.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#00008b">4</text></g>
+<g><circle cx="766.0" cy="308.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="766.0" y="311.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">8</text></g>
+<g><circle cx="766.0" cy="336.0" r="11.5" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="766.0" y="339.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">12</text></g>
+<g><circle cx="736.0" cy="342.0" r="11.0" fill="#ffffff" stroke="#43368a" stroke-width="1.4" /><text x="736.0" y="345.9" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="normal" fill="#222222">0</text></g>
+  <rect x="616" y="394" width="252" height="66" rx="5" fill="#f5f5eb" stroke="#bbbbbb" stroke-width="1.2" />
+  <text x="742" y="412" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#43368a">Locked: Div(4) &#x2229; Div(0) = {1, 2, 4}</text>
+  <text x="742" y="430" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#00008b">Locked: P&#x2081; &#x2229; P&#x2082; &#x2229; P&#x2083; = {4}</text>
+  <text x="742" y="449" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">y = 0: Div(0) = ℕ, so x = 4 ∈ Gcd(12, 8)!</text>
+  <line x1="298" y1="266" x2="326" y2="266" stroke="#00008b" stroke-width="2.5" />
+  <polygon points="330,266 320,260 320,272" fill="#00008b" />
+  <line x1="590" y1="266" x2="618" y2="266" stroke="#00008b" stroke-width="2.5" />
+  <polygon points="622,266 612,260 612,272" fill="#00008b" />
+  <rect x="20" y="488" width="860" height="142" rx="8" fill="#e6eaf5" stroke="#00008b" stroke-width="1.6" />
+  <text x="38" y="512" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#00008b">How the Euler Diagram Explains Euclid&#x2019;s Return Proof Obligation in One Glance</text>
+  <text x="38" y="535" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#222222">1. <tspan font-weight="bold" fill="#43368a">Loop Invariant (Conservation of Intersection):</tspan> For all d, (d &#x2223; x &#x2227; d &#x2223; y) &#x21D4; (d &#x2223; y &#x2227; d &#x2223; (x mod y)). Thus the lens P&#x2081; &#x2229; P&#x2082; = {1, 2, 4} and P&#x2083; never change.</text>
+  <text x="38" y="558" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#222222">2. <tspan font-weight="bold" fill="#43368a">Outer Shedding:</tspan> Each modulo step strips non-common divisors from the outer crescents (first 3, 6, 12 leave P&#x2081;; then 8 leaves P&#x2081;).</text>
+  <text x="38" y="581" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#222222">3. <tspan font-weight="bold" fill="#43368a">Exit Collapse (y = 0):</tspan> When y = 0, P&#x2082; (g &#x2223; 0) becomes &#x2115;, so CommonDiv(x, 0) = Div(x). Since x &#x2223; x (P&#x2081;) and every d &#x2208; Div(x) divides x (P&#x2083;),</text>
+  <text x="54" y="602" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#00008b">x = 4 automatically inhabits P&#x2081; &#x2229; P&#x2082; &#x2229; P&#x2083; = Gcd(x, 0) = Gcd(12, 8) = {4}.   Q.E.D.</text>
+</svg>

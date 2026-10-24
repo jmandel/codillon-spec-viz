@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 625" width="900" height="625">
+<defs>
+        <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#222222"/>
+        </marker>
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#6A5ACD"/>
+        </marker>
+        <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#00008b"/>
+        </marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#8b0000"/>
+        </marker>
+        <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#555555"/>
+        </marker>
+        </defs>
+<rect x="0" y="0" width="900" height="625" fill="#fffff0"/>
+<text x="32.0" y="34.0" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#222222" text-anchor="start" font-weight="bold" font-style="normal">Type Errors Are Empty Sockets (Too Small) or Spilled Pins (Too Large)</text>
+<text x="32.0" y="55.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">Testing candidate values <tspan font-style="italic">g</tspan> against the socket specification <tspan font-weight="bold" fill="#6A5ACD">CD(12, 8) = {1, 2, 4}</tspan></text>
+<line x1="32.0" y1="66.0" x2="868.0" y2="66.0" stroke="#cccccc" stroke-width="1"/>
+<text x="40.0" y="96.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" text-anchor="start" font-weight="bold" font-style="normal">Divisor axis  d ∈ ℕ</text>
+<text x="225.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">0</text>
+<line x1="225.0" y1="102.0" x2="225.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="261.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">1</text>
+<line x1="261.0" y1="102.0" x2="261.0" y2="455.0" stroke="#d9d5f2" stroke-width="6"/>
+<line x1="261.0" y1="102.0" x2="261.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="297.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">2</text>
+<line x1="297.0" y1="102.0" x2="297.0" y2="455.0" stroke="#d9d5f2" stroke-width="6"/>
+<line x1="297.0" y1="102.0" x2="297.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="333.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">3</text>
+<line x1="333.0" y1="102.0" x2="333.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="369.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">4</text>
+<line x1="369.0" y1="102.0" x2="369.0" y2="455.0" stroke="#d9d5f2" stroke-width="6"/>
+<line x1="369.0" y1="102.0" x2="369.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="405.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">5</text>
+<line x1="405.0" y1="102.0" x2="405.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="441.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">6</text>
+<line x1="441.0" y1="102.0" x2="441.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="477.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">7</text>
+<line x1="477.0" y1="102.0" x2="477.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="513.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">8</text>
+<line x1="513.0" y1="102.0" x2="513.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="549.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">9</text>
+<line x1="549.0" y1="102.0" x2="549.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="585.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">10</text>
+<line x1="585.0" y1="102.0" x2="585.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="621.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">11</text>
+<line x1="621.0" y1="102.0" x2="621.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="657.0" y="96.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">12</text>
+<line x1="657.0" y1="102.0" x2="657.0" y2="455.0" stroke="#e8e8dc" stroke-width="1" stroke-dasharray="2,2"/>
+<rect x="28.0" y="111.0" width="646.0" height="42.0" fill="#efedfa" stroke="#6A5ACD" stroke-width="1.2" rx="6" ry="6"/>
+<text x="40.0" y="130.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal"><tspan font-weight="bold" fill="#6A5ACD">Target CD(12, 8)</tspan></text>
+<text x="40.0" y="146.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">Required sockets {1, 2, 4}</text>
+<line x1="225.0" y1="132.0" x2="669.0" y2="132.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="225.0" y1="128.0" x2="225.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="225.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="261.0" y1="128.0" x2="261.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="261.0" cy="132.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="261.0" cy="132.0" r="2.5" fill="#6A5ACD"/>
+<line x1="297.0" y1="128.0" x2="297.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="297.0" cy="132.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="297.0" cy="132.0" r="2.5" fill="#6A5ACD"/>
+<line x1="333.0" y1="128.0" x2="333.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="333.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="369.0" y1="128.0" x2="369.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="369.0" cy="132.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="369.0" cy="132.0" r="2.5" fill="#6A5ACD"/>
+<line x1="405.0" y1="128.0" x2="405.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="405.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="441.0" y1="128.0" x2="441.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="441.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="477.0" y1="128.0" x2="477.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="477.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="513.0" y1="128.0" x2="513.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="513.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="549.0" y1="128.0" x2="549.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="549.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="585.0" y1="128.0" x2="585.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="585.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="621.0" y1="128.0" x2="621.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="621.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<line x1="657.0" y1="128.0" x2="657.0" y2="136.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="657.0" cy="132.0" r="2.0" fill="#cccccc"/>
+<rect x="684.0" y="117.0" width="188.0" height="30.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" rx="5" ry="5"/>
+<text x="778.0" y="136.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">SPECIFICATION: {1, 2, 4}</text>
+<rect x="28.0" y="187.0" width="646.0" height="42.0" fill="#fcf3f3" rx="6" ry="6"/>
+<text x="40.0" y="206.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal">Wrong <tspan font-weight="bold" fill="#8b0000">g = 2</tspan> : <tspan font-style="italic">Div</tspan>(2)</text>
+<text x="40.0" y="222.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">Common divisor, not greatest</text>
+<line x1="225.0" y1="208.0" x2="669.0" y2="208.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="225.0" y1="204.0" x2="225.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="225.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="261.0" y1="204.0" x2="261.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="261.0" cy="208.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="261.0" cy="208.0" r="6.0" fill="#00008b"/>
+<line x1="297.0" y1="204.0" x2="297.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="297.0" cy="208.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="297.0" cy="208.0" r="6.0" fill="#00008b"/>
+<line x1="333.0" y1="204.0" x2="333.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="333.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="369.0" y1="204.0" x2="369.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="369.0" cy="208.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="369.0" y="212.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="405.0" y1="204.0" x2="405.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="405.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="441.0" y1="204.0" x2="441.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="441.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="477.0" y1="204.0" x2="477.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="477.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="513.0" y1="204.0" x2="513.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="513.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="549.0" y1="204.0" x2="549.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="549.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="585.0" y1="204.0" x2="585.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="585.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="621.0" y1="204.0" x2="621.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="621.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<line x1="657.0" y1="204.0" x2="657.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="657.0" cy="208.0" r="2.0" fill="#cccccc"/>
+<rect x="684.0" y="193.0" width="188.0" height="30.0" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.3" rx="5" ry="5"/>
+<text x="778.0" y="212.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">ERROR: missing d = 4</text>
+<text x="389.0" y="240.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">↑ Empty socket: 4 ∈ CD(12,8) but 4 ∤ 2</text>
+<rect x="28.0" y="267.0" width="646.0" height="42.0" fill="#fcf3f3" rx="6" ry="6"/>
+<text x="40.0" y="286.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal">Wrong <tspan font-weight="bold" fill="#8b0000">g = 8</tspan> : <tspan font-style="italic">Div</tspan>(8)</text>
+<text x="40.0" y="302.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">Divides b = 8, fails g | 12</text>
+<line x1="225.0" y1="288.0" x2="669.0" y2="288.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="225.0" y1="284.0" x2="225.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="225.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="261.0" y1="284.0" x2="261.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="261.0" cy="288.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="261.0" cy="288.0" r="6.0" fill="#00008b"/>
+<line x1="297.0" y1="284.0" x2="297.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="297.0" cy="288.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="297.0" cy="288.0" r="6.0" fill="#00008b"/>
+<line x1="333.0" y1="284.0" x2="333.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="333.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="369.0" y1="284.0" x2="369.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="369.0" cy="288.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="369.0" cy="288.0" r="6.0" fill="#00008b"/>
+<line x1="405.0" y1="284.0" x2="405.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="405.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="441.0" y1="284.0" x2="441.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="441.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="477.0" y1="284.0" x2="477.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="477.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="513.0" y1="284.0" x2="513.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="513.0" cy="288.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.5"/>
+<circle cx="513.0" cy="288.0" r="6.0" fill="#8b0000"/>
+<line x1="504.5" y1="279.5" x2="521.5" y2="296.5" stroke="#8b0000" stroke-width="1.8"/>
+<line x1="504.5" y1="296.5" x2="521.5" y2="279.5" stroke="#8b0000" stroke-width="1.8"/>
+<line x1="549.0" y1="284.0" x2="549.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="549.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="585.0" y1="284.0" x2="585.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="585.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="621.0" y1="284.0" x2="621.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="621.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<line x1="657.0" y1="284.0" x2="657.0" y2="292.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="657.0" cy="288.0" r="2.0" fill="#cccccc"/>
+<rect x="684.0" y="273.0" width="188.0" height="30.0" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.3" rx="5" ry="5"/>
+<text x="778.0" y="292.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">ERROR: d = 8 spills</text>
+<text x="513.0" y="320.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">↑ Spilled divisor: 8 | 8 but 8 ∉ CD(12,8)</text>
+<rect x="28.0" y="347.0" width="646.0" height="42.0" fill="#fcf3f3" rx="6" ry="6"/>
+<text x="40.0" y="366.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal">Wrong <tspan font-weight="bold" fill="#8b0000">g = 6</tspan> : <tspan font-style="italic">Div</tspan>(6)</text>
+<text x="40.0" y="382.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">Divides a = 12, fails g | 8</text>
+<line x1="225.0" y1="368.0" x2="669.0" y2="368.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="225.0" y1="364.0" x2="225.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="225.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<line x1="261.0" y1="364.0" x2="261.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="261.0" cy="368.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="261.0" cy="368.0" r="6.0" fill="#00008b"/>
+<line x1="297.0" y1="364.0" x2="297.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="297.0" cy="368.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="297.0" cy="368.0" r="6.0" fill="#00008b"/>
+<line x1="333.0" y1="364.0" x2="333.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="333.0" cy="368.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.5"/>
+<circle cx="333.0" cy="368.0" r="6.0" fill="#8b0000"/>
+<line x1="324.5" y1="359.5" x2="341.5" y2="376.5" stroke="#8b0000" stroke-width="1.8"/>
+<line x1="324.5" y1="376.5" x2="341.5" y2="359.5" stroke="#8b0000" stroke-width="1.8"/>
+<line x1="369.0" y1="364.0" x2="369.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="369.0" cy="368.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="369.0" y="372.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="405.0" y1="364.0" x2="405.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="405.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<line x1="441.0" y1="364.0" x2="441.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="441.0" cy="368.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.5"/>
+<circle cx="441.0" cy="368.0" r="6.0" fill="#8b0000"/>
+<line x1="432.5" y1="359.5" x2="449.5" y2="376.5" stroke="#8b0000" stroke-width="1.8"/>
+<line x1="432.5" y1="376.5" x2="449.5" y2="359.5" stroke="#8b0000" stroke-width="1.8"/>
+<line x1="477.0" y1="364.0" x2="477.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="477.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<line x1="513.0" y1="364.0" x2="513.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="513.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<line x1="549.0" y1="364.0" x2="549.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="549.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<line x1="585.0" y1="364.0" x2="585.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="585.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<line x1="621.0" y1="364.0" x2="621.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="621.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<line x1="657.0" y1="364.0" x2="657.0" y2="372.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="657.0" cy="368.0" r="2.0" fill="#cccccc"/>
+<rect x="684.0" y="353.0" width="188.0" height="30.0" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.3" rx="5" ry="5"/>
+<text x="778.0" y="372.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">ERROR: misses 4; spills 3, 6</text>
+<text x="399.0" y="400.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">↑ 3, 6 spill out  &amp;  socket 4 is empty</text>
+<rect x="28.0" y="421.0" width="646.0" height="42.0" fill="#efedfa" rx="6" ry="6"/>
+<text x="40.0" y="440.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal">Valid <tspan font-weight="bold" fill="#00008b">g = 4</tspan> : <tspan font-style="italic">Div</tspan>(4)</text>
+<text x="40.0" y="456.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">Div(4) = CD(12, 8)</text>
+<line x1="225.0" y1="442.0" x2="669.0" y2="442.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="225.0" y1="438.0" x2="225.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="225.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="261.0" y1="438.0" x2="261.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="261.0" cy="442.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="261.0" cy="442.0" r="6.0" fill="#00008b"/>
+<line x1="297.0" y1="438.0" x2="297.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="297.0" cy="442.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="297.0" cy="442.0" r="6.0" fill="#00008b"/>
+<line x1="333.0" y1="438.0" x2="333.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="333.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="369.0" y1="438.0" x2="369.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="369.0" cy="442.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="369.0" cy="442.0" r="6.0" fill="#00008b"/>
+<line x1="405.0" y1="438.0" x2="405.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="405.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="441.0" y1="438.0" x2="441.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="441.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="477.0" y1="438.0" x2="477.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="477.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="513.0" y1="438.0" x2="513.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="513.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="549.0" y1="438.0" x2="549.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="549.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="585.0" y1="438.0" x2="585.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="585.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="621.0" y1="438.0" x2="621.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="621.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<line x1="657.0" y1="438.0" x2="657.0" y2="446.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="657.0" cy="442.0" r="2.0" fill="#cccccc"/>
+<rect x="684.0" y="427.0" width="188.0" height="30.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" rx="5" ry="5"/>
+<text x="778.0" y="446.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">WELL-TYPED: 0 empty, 0 spills</text>
+<rect x="28.0" y="482.0" width="844.0" height="124.0" fill="#faf8ee" stroke="#6A5ACD" stroke-width="1.4" rx="8" ry="8"/>
+<text x="44.0" y="504.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="bold" font-style="normal">Two Halves of the Refinement Predicate on the Value Line <tspan font-style="italic">g</tspan> ∈ ℕ:</text>
+<text x="44.0" y="522.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.8" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">• No spilled pins  (Div(g) ⊆ CD(a,b))  ⇔  g divides both a and b.      • No empty sockets  (CD(a,b) ⊆ Div(g))  ⇔  every common divisor divides g.</text>
+<text x="44.0" y="569.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#222222" text-anchor="start" font-weight="bold" font-style="normal">Candidate  g ∈ ℕ</text>
+<line x1="225.0" y1="564.0" x2="687.0" y2="564.0" stroke="#222222" stroke-width="1.8" marker-end="url(#arrow-ink)"/>
+<line x1="225.0" y1="560.0" x2="225.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="225.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="225.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">0</text>
+<line x1="261.0" y1="560.0" x2="261.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="261.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="261.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">1</text>
+<line x1="297.0" y1="560.0" x2="297.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="297.0" cy="564.0" r="7.0" fill="#f9e6e6" stroke="#8b0000" stroke-width="2"/>
+<line x1="292.0" y1="559.0" x2="302.0" y2="569.0" stroke="#8b0000" stroke-width="2"/>
+<line x1="292.0" y1="569.0" x2="302.0" y2="559.0" stroke="#8b0000" stroke-width="2"/>
+<text x="297.0" y="583.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">2</text>
+<text x="297.0" y="597.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="normal" font-style="normal">missing 4</text>
+<line x1="333.0" y1="560.0" x2="333.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="333.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="333.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">3</text>
+<line x1="369.0" y1="560.0" x2="369.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<rect x="352.0" y="544.0" width="34.0" height="42.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2" rx="14" ry="14"/>
+<circle cx="369.0" cy="564.0" r="7.0" fill="#00008b" stroke="#fffff0" stroke-width="1.4"/>
+<text x="369.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#00008b" text-anchor="middle" font-weight="bold" font-style="normal">4</text>
+<text x="369.0" y="539.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">Gcd(12,8)</text>
+<line x1="405.0" y1="560.0" x2="405.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="405.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="405.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">5</text>
+<line x1="441.0" y1="560.0" x2="441.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="441.0" cy="564.0" r="7.0" fill="#f9e6e6" stroke="#8b0000" stroke-width="2"/>
+<line x1="436.0" y1="559.0" x2="446.0" y2="569.0" stroke="#8b0000" stroke-width="2"/>
+<line x1="436.0" y1="569.0" x2="446.0" y2="559.0" stroke="#8b0000" stroke-width="2"/>
+<text x="441.0" y="583.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">6</text>
+<text x="441.0" y="597.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="normal" font-style="normal">spills 3,6</text>
+<line x1="477.0" y1="560.0" x2="477.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="477.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="477.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">7</text>
+<line x1="513.0" y1="560.0" x2="513.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="513.0" cy="564.0" r="7.0" fill="#f9e6e6" stroke="#8b0000" stroke-width="2"/>
+<line x1="508.0" y1="559.0" x2="518.0" y2="569.0" stroke="#8b0000" stroke-width="2"/>
+<line x1="508.0" y1="569.0" x2="518.0" y2="559.0" stroke="#8b0000" stroke-width="2"/>
+<text x="513.0" y="583.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">8</text>
+<text x="513.0" y="597.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="normal" font-style="normal">spills 8</text>
+<line x1="549.0" y1="560.0" x2="549.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="549.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="549.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">9</text>
+<line x1="585.0" y1="560.0" x2="585.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="585.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="585.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">10</text>
+<line x1="621.0" y1="560.0" x2="621.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="621.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="621.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">11</text>
+<line x1="657.0" y1="560.0" x2="657.0" y2="568.0" stroke="#222222" stroke-width="1"/>
+<circle cx="657.0" cy="564.0" r="2.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="657.0" y="582.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">12</text>
+</svg>

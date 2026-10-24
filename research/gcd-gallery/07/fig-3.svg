@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 900 635" width="900" height="635">
+<defs>
+        <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#00008b"/>
+        </marker>
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#6A5ACD"/>
+        </marker>
+        <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#222222"/>
+        </marker>
+        <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#888888"/>
+        </marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#8b0000"/>
+        </marker>
+        </defs>
+<rect x="0" y="0" width="900" height="635" fill="#fffff0"/>
+<rect x="25.0" y="16.0" width="850.0" height="58.0" fill="#eeecfa" stroke="#6A5ACD" stroke-width="1.2" rx="6" ry="6"/>
+<text x="42.0" y="41.0" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#222222" text-anchor="start" font-weight="bold">Extended Euclid preserves the ideal while shrinking remainders to the generator</text>
+<text x="42.0" y="62.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#555555" text-anchor="start">Each remainder <tspan font-style="italic">r</tspan><tspan baseline-shift="sub" font-size="10">i</tspan> = <tspan font-style="italic">a</tspan><tspan font-style="italic">x</tspan><tspan baseline-shift="sub" font-size="10">i</tspan> + <tspan font-style="italic">b</tspan><tspan font-style="italic">y</tspan><tspan baseline-shift="sub" font-size="10">i</tspan> stays inside <tspan font-style="italic">a</tspan>ℤ + <tspan font-style="italic">b</tspan>ℤ until <tspan font-style="italic">r</tspan><tspan baseline-shift="sub" font-size="10">k+1</tspan> = 0 proves <tspan font-style="italic">r</tspan><tspan baseline-shift="sub" font-size="10">k</tspan> generates the whole ideal.</text>
+<rect x="685.0" y="23.0" width="178.0" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.8" rx="4" ry="4"/>
+<text x="774.0" y="38.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">FIG 3 · EXTENDED EUCLID</text>
+<rect x="25.0" y="86.0" width="850.0" height="326.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.5" rx="8" ry="8"/>
+<rect x="25.0" y="86.0" width="850.0" height="32.0" fill="#eeecfa" stroke="#6A5ACD" stroke-width="1.0" rx="8" ry="8"/>
+<text x="42.0" y="107.0" font-family="Georgia, 'Times New Roman', serif" font-size="14.5" fill="#222222" text-anchor="start" font-weight="bold">Case A:  a = 1071,  b = 462   ⇒   1071ℤ + 462ℤ = 21ℤ   (Gcd(1071, 462) = { 21 })</text>
+<text x="858.0" y="107.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" text-anchor="end" font-weight="bold">Loop Invariant:  rᵢℤ + rᵢ₊₁ℤ = 1071ℤ + 462ℤ</text>
+<rect x="38.0" y="128.0" width="470.0" height="24.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1"/>
+<text x="59.0" y="144.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle" font-weight="bold">Step</text>
+<text x="104.0" y="144.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle" font-weight="bold">Quot q</text>
+<text x="158.0" y="144.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle" font-weight="bold">Rem rᵢ</text>
+<text x="212.0" y="144.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle" font-weight="bold">xᵢ</text>
+<text x="260.0" y="144.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle" font-weight="bold">yᵢ</text>
+<text x="396.0" y="144.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle" font-weight="bold">Bézout Certificate (∈ 1071ℤ + 462ℤ)</text>
+<rect x="38.0" y="152.0" width="470.0" height="29.0" fill="#fffff0" stroke="#cccccc" stroke-width="0.8"/>
+<text x="59.0" y="171.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">i = 0</text>
+<text x="104.0" y="171.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">—</text>
+<text x="158.0" y="171.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">1071</text>
+<text x="212.0" y="171.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">1</text>
+<text x="260.0" y="171.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">0</text>
+<text x="396.0" y="171.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="middle">1071(1) + 462(0) = 1071</text>
+<rect x="38.0" y="181.0" width="470.0" height="29.0" fill="#eeecfa" stroke="#cccccc" stroke-width="0.8"/>
+<text x="59.0" y="200.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">i = 1</text>
+<text x="104.0" y="200.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">—</text>
+<text x="158.0" y="200.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">462</text>
+<text x="212.0" y="200.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">0</text>
+<text x="260.0" y="200.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">1</text>
+<text x="396.0" y="200.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="middle">1071(0) + 462(1) = 462</text>
+<rect x="38.0" y="210.0" width="470.0" height="29.0" fill="#fffff0" stroke="#cccccc" stroke-width="0.8"/>
+<text x="59.0" y="229.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">i = 2</text>
+<text x="104.0" y="229.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">2</text>
+<text x="158.0" y="229.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">147</text>
+<text x="212.0" y="229.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">1</text>
+<text x="260.0" y="229.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">-2</text>
+<text x="396.0" y="229.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="middle">1071(1) + 462(-2) = 147</text>
+<rect x="38.0" y="239.0" width="470.0" height="29.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="59.0" y="258.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">i = 3</text>
+<text x="104.0" y="258.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">3</text>
+<text x="158.0" y="258.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">21</text>
+<text x="212.0" y="258.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">-3</text>
+<text x="260.0" y="258.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">7</text>
+<text x="396.0" y="258.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">1071(-3) + 462(7) = 21</text>
+<rect x="38.0" y="268.0" width="470.0" height="29.0" fill="#fffff0" stroke="#cccccc" stroke-width="0.8"/>
+<text x="59.0" y="287.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">i = 4</text>
+<text x="104.0" y="287.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">7</text>
+<text x="158.0" y="287.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle" font-weight="bold">0</text>
+<text x="212.0" y="287.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">22</text>
+<text x="260.0" y="287.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="middle">-51</text>
+<text x="396.0" y="287.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#222222" text-anchor="middle">1071(22) + 462(-51) = 0</text>
+<rect x="38.0" y="306.0" width="470.0" height="88.0" fill="#eeecfa" stroke="#6A5ACD" stroke-width="1" rx="5" ry="5"/>
+<text x="50.0" y="326.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Why i = 3 proves g = 21 ∈ Gcd(1071, 462):</text>
+<text x="50.0" y="346.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">• Reachability (21ℤ ⊆ 1071ℤ + 462ℤ):</text>
+<text x="62.0" y="362.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="start">Row i = 3 constructs  1071(−3) + 462(7) = 21.</text>
+<text x="50.0" y="381.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">• Exactness (1071ℤ + 462ℤ ⊆ 21ℤ):  Row i = 4 hits r₄ = 0, so 21 | 1071 and 21 | 462.</text>
+<text x="524.0" y="142.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#222222" text-anchor="start" font-weight="bold">Remainder Cascade on 1071ℤ + 462ℤ = 21ℤ</text>
+<text x="524.0" y="159.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555" text-anchor="start">Every remainder is an exact multiple of 21:</text>
+<line x1="536.0" y1="210.0" x2="855.0" y2="210.0" stroke="#222222" stroke-width="2"/>
+<line x1="536.0" y1="206.0" x2="536.0" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="542.3" y1="208.0" x2="542.3" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="548.5" y1="208.0" x2="548.5" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="554.8" y1="208.0" x2="554.8" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="561.0" y1="208.0" x2="561.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="567.3" y1="206.0" x2="567.3" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="573.5" y1="208.0" x2="573.5" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="579.8" y1="208.0" x2="579.8" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="586.0" y1="208.0" x2="586.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="592.3" y1="208.0" x2="592.3" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="598.5" y1="206.0" x2="598.5" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="604.8" y1="208.0" x2="604.8" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="611.1" y1="208.0" x2="611.1" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="617.3" y1="208.0" x2="617.3" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="623.6" y1="208.0" x2="623.6" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="629.8" y1="206.0" x2="629.8" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="636.1" y1="208.0" x2="636.1" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="642.3" y1="208.0" x2="642.3" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="648.6" y1="208.0" x2="648.6" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="654.8" y1="208.0" x2="654.8" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="661.1" y1="206.0" x2="661.1" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="667.4" y1="208.0" x2="667.4" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="673.6" y1="208.0" x2="673.6" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="679.9" y1="208.0" x2="679.9" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="686.1" y1="208.0" x2="686.1" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="692.4" y1="206.0" x2="692.4" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="698.6" y1="208.0" x2="698.6" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="704.9" y1="208.0" x2="704.9" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="711.1" y1="208.0" x2="711.1" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="717.4" y1="208.0" x2="717.4" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="723.6" y1="206.0" x2="723.6" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="729.9" y1="208.0" x2="729.9" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="736.2" y1="208.0" x2="736.2" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="742.4" y1="208.0" x2="742.4" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="748.7" y1="208.0" x2="748.7" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="754.9" y1="206.0" x2="754.9" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="761.2" y1="208.0" x2="761.2" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="767.4" y1="208.0" x2="767.4" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="773.7" y1="208.0" x2="773.7" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="779.9" y1="208.0" x2="779.9" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="786.2" y1="206.0" x2="786.2" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="792.5" y1="208.0" x2="792.5" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="798.7" y1="208.0" x2="798.7" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="805.0" y1="208.0" x2="805.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="811.2" y1="208.0" x2="811.2" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="817.5" y1="206.0" x2="817.5" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="823.7" y1="208.0" x2="823.7" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="830.0" y1="208.0" x2="830.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="836.2" y1="208.0" x2="836.2" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="842.5" y1="208.0" x2="842.5" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<line x1="848.7" y1="206.0" x2="848.7" y2="214.0" stroke="#6A5ACD" stroke-width="1"/>
+<line x1="855.0" y1="208.0" x2="855.0" y2="212.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="536.0" cy="210.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<circle cx="542.3" cy="210.0" r="6.5" fill="#6A5ACD" stroke="#fffff0" stroke-width="1.2"/>
+<circle cx="579.8" cy="210.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<circle cx="673.6" cy="210.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<circle cx="855.0" cy="210.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="536.0" y="199.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">0</text>
+<text x="546.3" y="230.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">g=21</text>
+<text x="579.8" y="194.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">147=7(21)</text>
+<text x="681.6" y="230.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="start" font-weight="bold">462 = 22·(21)</text>
+<text x="855.0" y="230.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="end" font-weight="bold">1071 = 51·(21)</text>
+<path d="M 855.0 204.0 Q 717.4 160.0 584.8 204.0" fill="none" stroke="#00008b" stroke-width="1.6" stroke-dasharray="4,2" marker-end="url(#arrow-navy)"/>
+<text x="742.4" y="178.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">1071 − 2·(462) = 147</text>
+<path d="M 673.6 216.0 Q 607.9 260.0 546.3 216.0" fill="none" stroke="#6A5ACD" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+<text x="612.9" y="253.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">462 − 3·(147) = 21</text>
+<rect x="524.0" y="270.0" width="336.0" height="124.0" fill="#eeecfa" stroke="#6A5ACD" stroke-width="1.2" rx="6" ry="6"/>
+<text x="536.0" y="289.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Zoomed Ideal Lattice  21ℤ  near 0:</text>
+<rect x="582.5" y="322.0" width="36.5" height="28.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="540.0" y1="336.0" x2="844.0" y2="336.0" stroke="#222222" stroke-width="1.8"/>
+<circle cx="546.0" cy="336.0" r="4.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="546.0" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">-21</text>
+<circle cx="582.5" cy="336.0" r="4.5" fill="#00008b" stroke="none" stroke-width="1"/>
+<text x="582.5" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">0</text>
+<circle cx="619.0" cy="336.0" r="8.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2"/>
+<circle cx="619.0" cy="336.0" r="4.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="619.0" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">21</text>
+<circle cx="655.5" cy="336.0" r="4.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="655.5" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">42</text>
+<circle cx="692.0" cy="336.0" r="4.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="692.0" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">63</text>
+<circle cx="728.5" cy="336.0" r="4.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="728.5" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">84</text>
+<circle cx="765.0" cy="336.0" r="4.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="765.0" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">105</text>
+<circle cx="801.5" cy="336.0" r="4.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="801.5" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">126</text>
+<circle cx="838.0" cy="336.0" r="4.5" fill="#00008b" stroke="none" stroke-width="1"/>
+<text x="838.0" y="357.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="middle">147</text>
+<path d="M 583.5 320.0 L 583.5 313.0 L 618.0 313.0 L 618.0 320.0" fill="none" stroke="#6A5ACD" stroke-width="1.6"/>
+<line x1="600.8" y1="313.0" x2="600.8" y2="309.0" stroke="#6A5ACD" stroke-width="1.4"/>
+<text x="600.8" y="306.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">step g = 21</text>
+<text x="692.0" y="382.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">20 integers sit strictly inside (0, 21) — none reachable!</text>
+<rect x="25.0" y="426.0" width="850.0" height="192.0" fill="#fffff0" stroke="#00008b" stroke-width="1.5" rx="8" ry="8"/>
+<rect x="25.0" y="426.0" width="850.0" height="32.0" fill="#eeecfa" stroke="#00008b" stroke-width="1.0" rx="8" ry="8"/>
+<text x="42.0" y="447.0" font-family="Georgia, 'Times New Roman', serif" font-size="14.5" fill="#222222" text-anchor="start" font-weight="bold">Case B (Coprime Saturation):  a = 13,  b = 8   ⇒   13ℤ + 8ℤ = 1ℤ = ℤ   (Gcd(13, 8) = { 1 })</text>
+<text x="858.0" y="447.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#00008b" text-anchor="end" font-weight="bold">Bézout Witness: 13·(−3) + 8·(5) = −39 + 40 = +1</text>
+<rect x="142.8" y="524.0" width="43.9" height="40.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2"/>
+<text x="164.7" y="518.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">unit step g = 1</text>
+<path d="M 713.3 537.0 Q 537.8 483.2 365.2 536.0" fill="none" stroke="#00008b" stroke-width="1.7" stroke-dasharray="3,2" marker-end="url(#arrow-navy)"/>
+<text x="537.8" y="502.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">13 − 8 = 5</text>
+<path d="M 493.9 537.0 Q 384.2 505.6 277.4 536.0" fill="none" stroke="#00008b" stroke-width="1.7" stroke-dasharray="3,2" marker-end="url(#arrow-navy)"/>
+<text x="384.2" y="516.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">8 − 5 = 3</text>
+<path d="M 362.2 537.0 Q 296.4 483.2 233.6 536.0" fill="none" stroke="#00008b" stroke-width="1.7" stroke-dasharray="3,2" marker-end="url(#arrow-navy)"/>
+<text x="296.4" y="502.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">5 − 3 = 2</text>
+<path d="M 274.4 537.0 Q 230.6 508.8 189.7 536.0" fill="none" stroke="#6A5ACD" stroke-width="1.7" marker-end="url(#arrow-purple)"/>
+<text x="230.6" y="518.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">3 − 2 = 1</text>
+<line x1="43.0" y1="544.0" x2="857.0" y2="544.0" stroke="#222222" stroke-width="2"/>
+<circle cx="55.0" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="55.0" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">-2</text>
+<text x="55.0" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(-2,3)</text>
+<circle cx="98.9" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="98.9" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">-1</text>
+<text x="98.9" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(3,-5)</text>
+<circle cx="142.8" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="142.8" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">0</text>
+<text x="142.8" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(0,0)</text>
+<circle cx="186.7" cy="544.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="186.7" cy="544.0" r="5.0" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+<text x="186.7" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">1</text>
+<text x="186.7" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">(-3,5)</text>
+<circle cx="230.6" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="230.6" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">2</text>
+<text x="230.6" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(2,-3)</text>
+<circle cx="274.4" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="274.4" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">3</text>
+<text x="274.4" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(-1,2)</text>
+<circle cx="318.3" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="318.3" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">4</text>
+<text x="318.3" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(4,-6)</text>
+<circle cx="362.2" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="362.2" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">5</text>
+<text x="362.2" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(1,-1)</text>
+<circle cx="406.1" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="406.1" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">6</text>
+<text x="406.1" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(-2,4)</text>
+<circle cx="450.0" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="450.0" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">7</text>
+<text x="450.0" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(3,-4)</text>
+<circle cx="493.9" cy="544.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="493.9" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold">8</text>
+<text x="493.9" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(0,1)</text>
+<circle cx="537.8" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="537.8" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">9</text>
+<text x="537.8" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(-3,6)</text>
+<circle cx="581.7" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="581.7" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">10</text>
+<text x="581.7" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(2,-2)</text>
+<circle cx="625.6" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="625.6" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">11</text>
+<text x="625.6" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(-1,3)</text>
+<circle cx="669.4" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="669.4" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">12</text>
+<text x="669.4" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(4,-5)</text>
+<circle cx="713.3" cy="544.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="713.3" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold">13</text>
+<text x="713.3" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(1,0)</text>
+<circle cx="757.2" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="757.2" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">14</text>
+<text x="757.2" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(-2,5)</text>
+<circle cx="801.1" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="801.1" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">15</text>
+<text x="801.1" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(3,-3)</text>
+<circle cx="845.0" cy="544.0" r="5.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+<text x="845.0" y="567.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" text-anchor="middle">16</text>
+<text x="845.0" y="582.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">(0,2)</text>
+<text x="450.0" y="603.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#222222" text-anchor="middle" font-weight="bold">Every integer n ∈ ℤ has a witness pair (x, y) shown below each tick: coprime inputs saturate the entire integer line (no gaps).</text>
+</svg>

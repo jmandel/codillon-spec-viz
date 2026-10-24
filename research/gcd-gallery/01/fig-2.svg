@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="650" viewBox="0 0 900 650">
+  <defs>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#555555"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#6A5ACD"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#00008b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#8b0000"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="650" fill="#fffff0"/>
+  <!-- Title Banner -->
+  <text x="26" y="32" font-family="Georgia, 'Times New Roman', serif" font-size="18.5" font-weight="bold" fill="#222222">Type Errors in Gcd(12, 8): Why g = 2, g = 8, and g = 6 Are Rejected</text>
+  <text x="26" y="53" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#555555">A candidate g inhabits Gcd(12, 8) iff its down-set Div(g) equals the target intersection Div(12) ∩ Div(8) = {1, 2, 4}.</text>
+  <rect x="633.0" y="15" width="241.0" height="22" rx="11" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.0"/>
+  <text x="753.5" y="30" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">FIG 2 · TYPE ERROR ANATOMY (12, 8)</text>
+  <line x1="26" y1="64" x2="874" y2="64" stroke="#d8d6c8" stroke-width="1.2"/>
+  <!-- Panel 1: Candidate g = 2 -->
+  <rect x="23.0" y="82.0" width="274.0" height="528.0" rx="8" fill="#ffffff" stroke="#d8d6c8" stroke-width="1.6"/>
+  <rect x="23.0" y="82.0" width="274.0" height="52" rx="8" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.5"/>
+  <text x="35.0" y="103.0" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#8b0000">Case A: Candidate g = 2   ✗</text>
+  <text x="35.0" y="123.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#8b0000">TYPE ERROR: Too Small (Not Top)</text>
+  <path d="M 70.4 304.5 Q 63.2 293.4 72.3 283.8 L 142.8 209.6 Q 151.9 200.0 159.0 211.1 L 249.6 350.5 Q 256.8 361.6 247.7 371.2 L 177.2 445.4 Q 168.1 455.0 161.0 443.9 Z" fill="none" stroke="#888888" stroke-width="1.0" stroke-dasharray="3,3"/>
+  <path d="M 35.3 244.6 L 152.3 433.6 A 22.0 22.0 0 0 0 189.7 410.4 L 72.7 221.4 A 22.0 22.0 0 0 0 35.3 244.6 Z" fill="none" stroke="#888888" stroke-width="1.0" stroke-dasharray="3,3"/>
+  <path d="M 74.3 307.6 L 152.3 433.6 A 22.0 22.0 0 0 0 189.7 410.4 L 111.7 284.4 A 22.0 22.0 0 0 0 74.3 307.6 Z" fill="#d9d5f2" fill-opacity="0.62" stroke="#6A5ACD" stroke-width="2.0"/>
+  <path d="M 117.1 368.2 L 156.1 431.2 A 17.5 17.5 0 0 0 185.9 412.8 L 146.9 349.8 A 17.5 17.5 0 0 0 117.1 368.2 Z" fill="#f9e2e2" fill-opacity="0.38" stroke="#8b0000" stroke-width="2.2" stroke-dasharray="5,3"/>
+  <line x1="163.6" y1="410.1" x2="139.4" y2="370.9" stroke="#6A5ACD" stroke-width="2.0"/>
+  <line x1="180.3" y1="411.5" x2="217.7" y2="369.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="124.6" y1="347.1" x2="100.4" y2="307.9" stroke="#6A5ACD" stroke-width="2.0"/>
+  <line x1="141.3" y1="348.5" x2="178.7" y2="306.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="219.6" y1="347.1" x2="195.4" y2="307.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="85.6" y1="284.1" x2="61.4" y2="244.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="102.3" y1="285.5" x2="139.7" y2="243.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="180.6" y1="284.1" x2="156.4" y2="244.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="63.3" y1="222.5" x2="100.7" y2="180.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="141.6" y1="221.1" x2="117.4" y2="181.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <circle cx="171.0" cy="422.0" r="13.5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="171.0" y="426.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">1</text>
+  <circle cx="132.0" cy="359.0" r="17" fill="#f9e2e2" stroke="#8b0000" stroke-width="2.8"/>
+  <text x="132.0" y="363.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">2</text>
+  <circle cx="227.0" cy="359.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="227.0" y="363.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">3</text>
+  <circle cx="93.0" cy="296.0" r="15.5" fill="#ffffff" stroke="#6A5ACD" stroke-width="2.4"/>
+  <circle cx="93.0" cy="296.0" r="19.5" fill="none" stroke="#8b0000" stroke-width="1.6" stroke-dasharray="3,2"/>
+  <text x="93.0" y="300.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">4</text>
+  <circle cx="188.0" cy="296.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="188.0" y="300.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">6</text>
+  <circle cx="54.0" cy="233.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="54.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">8</text>
+  <circle cx="149.0" cy="233.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="149.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">12</text>
+  <circle cx="110.0" cy="170.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="110.0" y="174.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">24</text>
+  <rect x="37.0" y="288.0" width="36" height="15" rx="3" fill="#6A5ACD"/>
+  <text x="55.0" y="299.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">Top=4</text>
+  <text x="35.0" y="363.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">g = 2 ✗</text>
+  <path d="M 113.0 294.0 Q 147.0 319.5 151.0 355.0" fill="none" stroke="#8b0000" stroke-width="2.0" stroke-dasharray="4,2" marker-end="url(#arrow-red)"/>
+  <text x="139.0" y="319.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">4 ∤ 2 (misses 4)</text>
+  <line x1="35.0" y1="454.0" x2="285.0" y2="454.0" stroke="#d8d6c8" stroke-width="1.2"/>
+  <rect x="35.0" y="464.0" width="250.0" height="32" rx="5" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.2"/>
+  <text x="160.0" y="484.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="bold" fill="#8b0000">Div(2) = {1, 2}  ⊊  {1, 2, 4}</text>
+  <text x="35.0" y="516.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">Fails: ∀d ∈ Div(12)∩Div(8), d ∣ g</text>
+  <text x="35.0" y="535.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Witness d = 4:  4 ∣ 12 and 4 ∣ 8, but 4 ∤ 2</text>
+  <text x="35.0" y="560.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">2 is inside the common down-set, but sits</text>
+  <text x="35.0" y="577.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">below top element 4 (leaves 4 uncovered).</text>
+  <!-- Panel 2: Candidate g = 8 -->
+  <rect x="313.0" y="82.0" width="274.0" height="528.0" rx="8" fill="#ffffff" stroke="#d8d6c8" stroke-width="1.6"/>
+  <rect x="313.0" y="82.0" width="274.0" height="52" rx="8" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.5"/>
+  <text x="325.0" y="103.0" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#8b0000">Case B: Candidate g = 8   ✗</text>
+  <text x="325.0" y="123.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#8b0000">TYPE ERROR: Outside Div(12)</text>
+  <path d="M 360.4 304.5 Q 353.2 293.4 362.3 283.8 L 432.8 209.6 Q 441.9 200.0 449.0 211.1 L 539.6 350.5 Q 546.8 361.6 537.7 371.2 L 467.2 445.4 Q 458.1 455.0 451.0 443.9 Z" fill="none" stroke="#888888" stroke-width="1.0" stroke-dasharray="3,3"/>
+  <path d="M 325.3 244.6 L 442.3 433.6 A 22.0 22.0 0 0 0 479.7 410.4 L 362.7 221.4 A 22.0 22.0 0 0 0 325.3 244.6 Z" fill="none" stroke="#888888" stroke-width="1.0" stroke-dasharray="3,3"/>
+  <path d="M 364.3 307.6 L 442.3 433.6 A 22.0 22.0 0 0 0 479.7 410.4 L 401.7 284.4 A 22.0 22.0 0 0 0 364.3 307.6 Z" fill="#d9d5f2" fill-opacity="0.62" stroke="#6A5ACD" stroke-width="2.0"/>
+  <path d="M 329.1 242.2 L 446.1 431.2 A 17.5 17.5 0 0 0 475.9 412.8 L 358.9 223.8 A 17.5 17.5 0 0 0 329.1 242.2 Z" fill="#f9e2e2" fill-opacity="0.38" stroke="#8b0000" stroke-width="2.2" stroke-dasharray="5,3"/>
+  <line x1="453.6" y1="410.1" x2="429.4" y2="370.9" stroke="#6A5ACD" stroke-width="2.0"/>
+  <line x1="470.3" y1="411.5" x2="507.7" y2="369.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="414.6" y1="347.1" x2="390.4" y2="307.9" stroke="#6A5ACD" stroke-width="2.0"/>
+  <line x1="431.3" y1="348.5" x2="468.7" y2="306.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="509.6" y1="347.1" x2="485.4" y2="307.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="375.6" y1="284.1" x2="351.4" y2="244.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="392.3" y1="285.5" x2="429.7" y2="243.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="470.6" y1="284.1" x2="446.4" y2="244.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="353.3" y1="222.5" x2="390.7" y2="180.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="431.6" y1="221.1" x2="407.4" y2="181.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <circle cx="461.0" cy="422.0" r="13.5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="461.0" y="426.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">1</text>
+  <circle cx="422.0" cy="359.0" r="13.5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="422.0" y="363.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">2</text>
+  <circle cx="517.0" cy="359.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="517.0" y="363.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">3</text>
+  <circle cx="383.0" cy="296.0" r="15.5" fill="#ffffff" stroke="#6A5ACD" stroke-width="2.4"/>
+  <text x="383.0" y="300.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">4</text>
+  <circle cx="478.0" cy="296.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="478.0" y="300.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">6</text>
+  <circle cx="344.0" cy="233.0" r="17" fill="#f9e2e2" stroke="#8b0000" stroke-width="2.8"/>
+  <text x="344.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">8</text>
+  <circle cx="439.0" cy="233.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="439.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">12</text>
+  <circle cx="400.0" cy="170.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="400.0" y="174.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">24</text>
+  <rect x="327.0" y="288.0" width="36" height="15" rx="3" fill="#6A5ACD"/>
+  <text x="345.0" y="299.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">Top=4</text>
+  <text x="344.0" y="210.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">g = 8 ✗</text>
+  <line x1="362.0" y1="233.0" x2="423.0" y2="233.0" stroke="#8b0000" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrow-red)"/>
+  <text x="391.5" y="226.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">8 ∤ 12</text>
+  <line x1="325.0" y1="454.0" x2="575.0" y2="454.0" stroke="#d8d6c8" stroke-width="1.2"/>
+  <rect x="325.0" y="464.0" width="250.0" height="32" rx="5" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.2"/>
+  <text x="450.0" y="484.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="bold" fill="#8b0000">Div(8) = {1, 2, 4, 8}  ⊋  {1, 2, 4}</text>
+  <text x="325.0" y="516.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">Fails: g ∣ 12  (not a common divisor)</text>
+  <text x="325.0" y="535.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Witness d = 8 ∈ Div(8), but 8 ∉ Div(12)</text>
+  <text x="325.0" y="560.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">8 climbs one ×2 step past the meet 4;</text>
+  <text x="325.0" y="577.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">its down-set spills outside Div(12).</text>
+  <!-- Panel 3: Candidate g = 6 -->
+  <rect x="603.0" y="82.0" width="274.0" height="528.0" rx="8" fill="#ffffff" stroke="#d8d6c8" stroke-width="1.6"/>
+  <rect x="603.0" y="82.0" width="274.0" height="52" rx="8" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.5"/>
+  <text x="615.0" y="103.0" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#8b0000">Case C: Candidate g = 6   ✗</text>
+  <text x="615.0" y="123.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#8b0000">TYPE ERROR: Incomparable Branch</text>
+  <path d="M 650.4 304.5 Q 643.2 293.4 652.3 283.8 L 722.8 209.6 Q 731.9 200.0 739.0 211.1 L 829.6 350.5 Q 836.8 361.6 827.7 371.2 L 757.2 445.4 Q 748.1 455.0 741.0 443.9 Z" fill="none" stroke="#888888" stroke-width="1.0" stroke-dasharray="3,3"/>
+  <path d="M 615.3 244.6 L 732.3 433.6 A 22.0 22.0 0 0 0 769.7 410.4 L 652.7 221.4 A 22.0 22.0 0 0 0 615.3 244.6 Z" fill="none" stroke="#888888" stroke-width="1.0" stroke-dasharray="3,3"/>
+  <path d="M 654.3 307.6 L 732.3 433.6 A 22.0 22.0 0 0 0 769.7 410.4 L 691.7 284.4 A 22.0 22.0 0 0 0 654.3 307.6 Z" fill="#d9d5f2" fill-opacity="0.62" stroke="#6A5ACD" stroke-width="2.0"/>
+  <path d="M 695.6 365.2 Q 690.3 357.1 696.8 350.1 L 763.5 279.0 Q 770.1 271.9 775.4 280.0 L 823.4 352.8 Q 828.7 360.9 822.2 367.9 L 755.5 439.0 Q 748.9 446.1 743.6 438.0 Z" fill="#f9e2e2" fill-opacity="0.38" stroke="#8b0000" stroke-width="2.2" stroke-dasharray="5,3"/>
+  <line x1="743.6" y1="410.1" x2="719.4" y2="370.9" stroke="#6A5ACD" stroke-width="2.0"/>
+  <line x1="760.3" y1="411.5" x2="797.7" y2="369.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="704.6" y1="347.1" x2="680.4" y2="307.9" stroke="#6A5ACD" stroke-width="2.0"/>
+  <line x1="721.3" y1="348.5" x2="758.7" y2="306.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="799.6" y1="347.1" x2="775.4" y2="307.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="665.6" y1="284.1" x2="641.4" y2="244.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="682.3" y1="285.5" x2="719.7" y2="243.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="760.6" y1="284.1" x2="736.4" y2="244.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="643.3" y1="222.5" x2="680.7" y2="180.5" stroke="#d8d6c8" stroke-width="1.2"/>
+  <line x1="721.6" y1="221.1" x2="697.4" y2="181.9" stroke="#d8d6c8" stroke-width="1.2"/>
+  <circle cx="751.0" cy="422.0" r="13.5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="751.0" y="426.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">1</text>
+  <circle cx="712.0" cy="359.0" r="13.5" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.6"/>
+  <text x="712.0" y="363.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222">2</text>
+  <circle cx="807.0" cy="359.0" r="14" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.8"/>
+  <text x="807.0" y="363.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#8b0000">3</text>
+  <circle cx="673.0" cy="296.0" r="15.5" fill="#ffffff" stroke="#6A5ACD" stroke-width="2.4"/>
+  <circle cx="673.0" cy="296.0" r="19.5" fill="none" stroke="#8b0000" stroke-width="1.6" stroke-dasharray="3,2"/>
+  <text x="673.0" y="300.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">4</text>
+  <circle cx="768.0" cy="296.0" r="17" fill="#f9e2e2" stroke="#8b0000" stroke-width="2.8"/>
+  <text x="768.0" y="300.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">6</text>
+  <circle cx="634.0" cy="233.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="634.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">8</text>
+  <circle cx="729.0" cy="233.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="729.0" y="237.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">12</text>
+  <circle cx="690.0" cy="170.0" r="12.5" fill="#fffff0" stroke="#888888" stroke-width="1.1"/>
+  <text x="690.0" y="174.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888">24</text>
+  <rect x="617.0" y="288.0" width="36" height="15" rx="3" fill="#6A5ACD"/>
+  <text x="635.0" y="299.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">Top=4</text>
+  <text x="789.0" y="300.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">g = 6 ✗</text>
+  <line x1="692.0" y1="296.0" x2="749.0" y2="296.0" stroke="#8b0000" stroke-width="1.8" stroke-dasharray="4,3"/>
+  <text x="720.5" y="289.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">4 ∤ 6, 6 ∤ 8</text>
+  <line x1="615.0" y1="454.0" x2="865.0" y2="454.0" stroke="#d8d6c8" stroke-width="1.2"/>
+  <rect x="615.0" y="464.0" width="250.0" height="32" rx="5" fill="#f9e2e2" stroke="#8b0000" stroke-width="1.2"/>
+  <text x="740.0" y="484.0" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="bold" fill="#8b0000">Div(6) = {1, 2, 3, 6}  ≠  {1, 2, 4}</text>
+  <text x="615.0" y="516.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#8b0000">Fails BOTH: 6 ∤ 8  and  4 ∤ 6</text>
+  <text x="615.0" y="535.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222">Spills into ×3 branch (3, 6) AND misses 4</text>
+  <text x="615.0" y="560.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">6 is in Div(12) only; its cone neither</text>
+  <text x="615.0" y="577.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555">contains nor is contained in {1, 2, 4}.</text>
+  <rect x="23" y="618" width="854" height="24" rx="4" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.0"/>
+  <text x="450" y="634" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#222222">Visual Type-Check Rule: Red dashed cone Div(g) must coincide EXACTLY with purple target cone Div(12) ∩ Div(8) = {1, 2, 4}.</text>
+</svg>

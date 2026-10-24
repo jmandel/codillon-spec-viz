@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 565" width="900" height="565">
+<defs>
+        <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#222222"/>
+        </marker>
+        <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#00008b"/>
+        </marker>
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#6A5ACD"/>
+        </marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#8b0000"/>
+        </marker>
+        <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#555555"/>
+        </marker>
+        <pattern id="hatch-red" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="8" stroke="#8b0000" stroke-width="1.5" opacity="0.35"/>
+        </pattern>
+        <pattern id="hatch-navy" width="10" height="10" patternTransform="rotate(-30 0 0)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="10" stroke="#00008b" stroke-width="1.0" opacity="0.12"/>
+        </pattern>
+        </defs>
+<rect x="0" y="0" width="900" height="565" fill="#fffff0"/>
+<text x="36" y="36" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#222222" font-weight="bold" font-style="normal" text-anchor="start">In prime-exponent space, Div(n) is a box and gcd is the corner.</text>
+<text x="36" y="56" font-family="'Arial Narrow', Arial, sans-serif" font-size="13" fill="#555555" font-weight="normal" font-style="normal" text-anchor="start">Concrete inputs a = 12 (2²·3¹) and b = 8 (2³·3⁰): each divisor d | n is a grid point inside the box [0, e₂(n)] × [0, e₃(n)].</text>
+<line x1="36" y1="66" x2="864" y2="66" stroke="#cccccc" stroke-width="1"/>
+<rect x="64" y="276" width="256" height="186" fill="url(#hatch-navy)" stroke="#00008b" stroke-width="2" rx="9" ry="9" stroke-dasharray="7,4"/>
+<rect x="71" y="405" width="338" height="50" fill="none" stroke="#00008b" stroke-width="2" rx="7" ry="7" stroke-dasharray="3,3"/>
+<rect x="78" y="412" width="228" height="36" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.8" rx="6" ry="6"/>
+<line x1="96" y1="430" x2="96" y2="158" stroke="#cccccc" stroke-width="1"/>
+<text x="96" y="492" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="middle">e₂ = 0</text>
+<text x="96" y="507" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="middle">(2⁰=1)</text>
+<line x1="192" y1="430" x2="192" y2="158" stroke="#cccccc" stroke-width="1"/>
+<text x="192" y="492" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="middle">e₂ = 1</text>
+<text x="192" y="507" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="middle">(2¹=2)</text>
+<line x1="288" y1="430" x2="288" y2="158" stroke="#cccccc" stroke-width="1"/>
+<text x="288" y="492" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="middle">e₂ = 2</text>
+<text x="288" y="507" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="middle">(2²=4)</text>
+<line x1="384" y1="430" x2="384" y2="158" stroke="#cccccc" stroke-width="1"/>
+<text x="384" y="492" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="middle">e₂ = 3</text>
+<text x="384" y="507" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="middle">(2³=8)</text>
+<line x1="480" y1="430" x2="480" y2="158" stroke="#cccccc" stroke-width="1"/>
+<text x="480" y="492" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="middle">e₂ = 4</text>
+<text x="480" y="507" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="middle">(2⁴=16)</text>
+<line x1="96" y1="430" x2="510" y2="430" stroke="#cccccc" stroke-width="1"/>
+<text x="58" y="434" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="end">e₃ = 0</text>
+<text x="58" y="448" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="end">(3⁰=1)</text>
+<line x1="96" y1="308" x2="510" y2="308" stroke="#cccccc" stroke-width="1"/>
+<text x="58" y="312" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="end">e₃ = 1</text>
+<text x="58" y="326" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="end">(3¹=3)</text>
+<line x1="96" y1="186" x2="510" y2="186" stroke="#cccccc" stroke-width="1"/>
+<text x="58" y="190" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" font-weight="normal" font-style="normal" text-anchor="end">e₃ = 2</text>
+<text x="58" y="204" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#888888" font-weight="normal" font-style="normal" text-anchor="end">(3²=9)</text>
+<line x1="96" y1="430" x2="518" y2="430" stroke="#222222" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<line x1="96" y1="430" x2="96" y2="150" stroke="#222222" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<text x="518" y="458" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#222222" font-weight="normal" font-style="italic" text-anchor="end">exponent of 2 (e₂)</text>
+<text x="86" y="142" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#222222" font-weight="normal" font-style="italic" text-anchor="start">exponent of 3 (e₃)</text>
+<circle cx="96" cy="430" r="5.5" fill="#6A5ACD" stroke="none" stroke-width="1.5"/>
+<rect x="100.36" y="391" width="15.280000000000001" height="18" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="108" y="406" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" font-weight="bold" font-style="normal" text-anchor="middle">1</text>
+<rect x="77.7" y="462" width="36.6" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="96" y="474" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" font-weight="normal" font-style="normal" text-anchor="middle">2⁰·3⁰</text>
+<circle cx="96" cy="308" r="5.5" fill="#00008b" stroke="none" stroke-width="1.5"/>
+<rect x="106" y="283.5" width="15.02" height="17.5" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="110" y="298" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#00008b" font-weight="bold" font-style="normal" text-anchor="start">3</text>
+<rect x="106" y="303" width="36.6" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="110" y="315" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" font-weight="normal" font-style="normal" text-anchor="start">2⁰·3¹</text>
+<circle cx="96" cy="186" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="104" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">9</text>
+<circle cx="192" cy="430" r="5.5" fill="#6A5ACD" stroke="none" stroke-width="1.5"/>
+<rect x="196.36" y="391" width="15.280000000000001" height="18" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="204" y="406" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" font-weight="bold" font-style="normal" text-anchor="middle">2</text>
+<rect x="173.7" y="462" width="36.6" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="192" y="474" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" font-weight="normal" font-style="normal" text-anchor="middle">2¹·3⁰</text>
+<circle cx="192" cy="308" r="5.5" fill="#00008b" stroke="none" stroke-width="1.5"/>
+<rect x="202" y="283.5" width="15.02" height="17.5" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="206" y="298" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#00008b" font-weight="bold" font-style="normal" text-anchor="start">6</text>
+<rect x="202" y="303" width="36.6" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="206" y="315" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" font-weight="normal" font-style="normal" text-anchor="start">2¹·3¹</text>
+<circle cx="192" cy="186" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="200" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">18</text>
+<circle cx="288" cy="430" r="14" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="3"/>
+<circle cx="288" cy="430" r="6" fill="#6A5ACD" stroke="#222222" stroke-width="1.5"/>
+<rect x="264.5" y="380" width="47.0" height="19" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="288" y="396" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="middle">g = 4</text>
+<rect x="269.7" y="462" width="36.6" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="288" y="474" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="middle">2²·3⁰</text>
+<circle cx="288" cy="308" r="7" fill="#00008b" stroke="#fffff0" stroke-width="1.5"/>
+<rect x="298.6" y="282" width="54.800000000000004" height="19" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="326" y="298" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#00008b" font-weight="bold" font-style="normal" text-anchor="middle">a = 12</text>
+<rect x="301.98" y="304" width="48.040000000000006" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="326" y="316" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" font-weight="normal" font-style="normal" text-anchor="middle">(2²·3¹)</text>
+<circle cx="288" cy="186" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="296" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">36</text>
+<circle cx="384" cy="430" r="7" fill="#00008b" stroke="#fffff0" stroke-width="1.5"/>
+<rect x="360.5" y="380" width="47.0" height="19" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="384" y="396" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#00008b" font-weight="bold" font-style="normal" text-anchor="middle">b = 8</text>
+<rect x="359.98" y="462" width="48.040000000000006" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="384" y="474" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" font-weight="normal" font-style="normal" text-anchor="middle">(2³·3⁰)</text>
+<circle cx="384" cy="308" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="392" y="302" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">24</text>
+<circle cx="384" cy="186" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="392" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">72</text>
+<circle cx="480" cy="430" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="488" y="424" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">16</text>
+<circle cx="480" cy="308" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="488" y="302" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">48</text>
+<circle cx="480" cy="186" r="3.5" fill="#cccccc" stroke="#888888" stroke-width="1"/>
+<text x="488" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#888888" font-weight="normal" font-style="normal" text-anchor="start">144</text>
+<rect x="28.879999999999995" y="253" width="326.24" height="16" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="192" y="266" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#00008b" font-weight="bold" font-style="normal" text-anchor="middle">Div(12) = {1, 2, 3, 4, 6, 12} : dashed box ≤ (2, 1)</text>
+<path d="M 411 418 L 445 402" fill="none" stroke="#00008b" stroke-width="1.4"/>
+<rect x="445" y="383" width="139.04" height="16" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="449" y="396" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#00008b" font-weight="bold" font-style="normal" text-anchor="start">Div(8) = {1, 2, 4, 8}</text>
+<rect x="445" y="399" width="116.68" height="15" fill="#fffff0" stroke="none" stroke-width="1" rx="3" ry="3" opacity="0.88"/>
+<text x="449" y="411" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" font-weight="normal" font-style="normal" text-anchor="start">dotted box ≤ (3, 0)</text>
+<path d="M 300 416 Q 318 365 338 344" fill="none" stroke="#6A5ACD" stroke-width="2.0" marker-end="url(#arrow-purple)"/>
+<rect x="342" y="316" width="226" height="62" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8" rx="6" ry="6"/>
+<text x="354" y="336" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="start">Type Gcd(12, 8) = { 4 }</text>
+<text x="354" y="354" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#222222" font-weight="normal" font-style="normal" text-anchor="start">Unique top-right corner of</text>
+<text x="354" y="369" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="start">Div(12) ∩ Div(8) = {1, 2, 4}</text>
+<rect x="592" y="92" width="276" height="290" fill="#f7f6eb" stroke="#cccccc" stroke-width="1.2" rx="8" ry="8"/>
+<text x="608" y="118" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#222222" font-weight="bold" font-style="normal" text-anchor="start">Why a Box Has One Corner</text>
+<line x1="608" y1="126" x2="852" y2="126" stroke="#cccccc" stroke-width="1"/>
+<text x="608" y="148" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#222222" font-weight="bold" font-style="normal" text-anchor="start">1. Divisibility is coordinatewise ≤ :</text>
+<text x="616" y="166" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" font-weight="normal" font-style="normal" text-anchor="start">d | n   ⇔   e₂(d) ≤ e₂(n)  ∧  e₃(d) ≤ e₃(n)</text>
+<text x="616" y="183" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#555555" font-weight="normal" font-style="normal" text-anchor="start">So Div(n) is the origin-anchored box ≤ n.</text>
+<text x="608" y="210" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#222222" font-weight="bold" font-style="normal" text-anchor="start">2. Common divisors = box intersection:</text>
+<text x="616" y="228" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#222222" font-weight="normal" font-style="normal" text-anchor="start">Div(a) ∩ Div(b) = box ≤ min(e(a), e(b))</text>
+<text x="616" y="246" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="start">e₂: min(2, 3) = 2</text>
+<text x="732" y="246" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="start">e₃: min(1, 0) = 0</text>
+<text x="608" y="274" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="start">3. The refinement type:</text>
+<rect x="608" y="283" width="244" height="46" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+<text x="616" y="302" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" font-weight="bold" font-style="normal" text-anchor="start">Gcd(12, 8) = { g ∈ ℕ |</text>
+<text x="630" y="320" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#6A5ACD" font-weight="bold" font-style="normal" text-anchor="start">Div(g) = Div(12) ∩ Div(8) } = { 4 }</text>
+<text x="608" y="350" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" font-weight="normal" font-style="normal" text-anchor="start">Only g = 4 = 2²·3⁰ generates this exact</text>
+<text x="608" y="365" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" font-weight="normal" font-style="normal" text-anchor="start">purple box — making the type a singleton.</text>
+</svg>

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="650" viewBox="0 0 900 650">
+<defs>
+        <pattern id="errHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="#f7d6d6"/>
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#8b0000" stroke-width="2"/>
+        </pattern>
+        <pattern id="purpleHatch" width="8" height="8" patternTransform="rotate(-45 0 0)" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="#ece9fa"/>
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#6A5ACD" stroke-width="1.2" opacity="0.45"/>
+        </pattern>
+        <marker id="arrowInk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#222222"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#6A5ACD"/>
+        </marker>
+        <marker id="arrowNavy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#00008b"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#8b0000"/>
+        </marker>
+        </defs>
+<rect x="0" y="0" width="900" height="650" fill="#fffff0"/>
+<text x="30.00" y="34.00" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#222222" text-anchor="start" font-weight="bold">Dependent Type Fibers Gcd(x, y) Collapse Along Euclid&#x27;s Cut Trajectories</text>
+<text x="30.00" y="56.00" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#555555" text-anchor="start">Dependent family <tspan fill="#6A5ACD" font-weight="bold">(x, y) ↦ Gcd(x, y)</tspan> over <tspan fill="#222222">ℕ × ℕ</tspan>, and symbolic evidence preservation for <tspan fill="#4b0082" font-weight="bold">unknown (x, y)</tspan></text>
+<line x1="30.00" y1="66.00" x2="870.00" y2="66.00" stroke="#cccccc" stroke-width="1"/>
+<rect x="30.00" y="80.00" width="425.00" height="540.00" fill="#faf9f0" stroke="#6A5ACD" stroke-width="1.6" rx="6"/>
+<text x="44.00" y="104.00" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="bold">1. Dependent Index Plane (x, y) and Iso-Type Fibers</text>
+<text x="44.00" y="122.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" text-anchor="start">Every trajectory (x, y) → (y, x mod y) stays inside one fiber Gcd = {g}:</text>
+<line x1="88.00" y1="470.00" x2="88.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="470.00" x2="406.00" y2="470.00" stroke="#e8e8dc" stroke-width="1"/>
+<text x="88.00" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">0</text>
+<text x="78.00" y="474.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">0</text>
+<line x1="114.50" y1="470.00" x2="114.50" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="443.50" x2="406.00" y2="443.50" stroke="#e8e8dc" stroke-width="1"/>
+<text x="114.50" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">1</text>
+<text x="78.00" y="447.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">1</text>
+<line x1="141.00" y1="470.00" x2="141.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="417.00" x2="406.00" y2="417.00" stroke="#e8e8dc" stroke-width="1"/>
+<text x="141.00" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">2</text>
+<text x="78.00" y="421.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">2</text>
+<line x1="167.50" y1="470.00" x2="167.50" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="390.50" x2="406.00" y2="390.50" stroke="#e8e8dc" stroke-width="1"/>
+<text x="167.50" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">3</text>
+<text x="78.00" y="394.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">3</text>
+<line x1="194.00" y1="470.00" x2="194.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="364.00" x2="406.00" y2="364.00" stroke="#e8e8dc" stroke-width="1"/>
+<text x="194.00" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">4</text>
+<text x="78.00" y="368.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">4</text>
+<line x1="220.50" y1="470.00" x2="220.50" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="337.50" x2="406.00" y2="337.50" stroke="#e8e8dc" stroke-width="1"/>
+<text x="220.50" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">5</text>
+<text x="78.00" y="341.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">5</text>
+<line x1="247.00" y1="470.00" x2="247.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="311.00" x2="406.00" y2="311.00" stroke="#e8e8dc" stroke-width="1"/>
+<text x="247.00" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">6</text>
+<text x="78.00" y="315.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">6</text>
+<line x1="273.50" y1="470.00" x2="273.50" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="284.50" x2="406.00" y2="284.50" stroke="#e8e8dc" stroke-width="1"/>
+<text x="273.50" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">7</text>
+<text x="78.00" y="288.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">7</text>
+<line x1="300.00" y1="470.00" x2="300.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="258.00" x2="406.00" y2="258.00" stroke="#e8e8dc" stroke-width="1"/>
+<text x="300.00" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">8</text>
+<text x="78.00" y="262.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">8</text>
+<line x1="326.50" y1="470.00" x2="326.50" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="231.50" x2="406.00" y2="231.50" stroke="#e8e8dc" stroke-width="1"/>
+<text x="326.50" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">9</text>
+<text x="78.00" y="235.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">9</text>
+<line x1="353.00" y1="470.00" x2="353.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="205.00" x2="406.00" y2="205.00" stroke="#e8e8dc" stroke-width="1"/>
+<text x="353.00" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">10</text>
+<text x="78.00" y="209.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">10</text>
+<line x1="379.50" y1="470.00" x2="379.50" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="178.50" x2="406.00" y2="178.50" stroke="#e8e8dc" stroke-width="1"/>
+<text x="379.50" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">11</text>
+<text x="78.00" y="182.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">11</text>
+<line x1="406.00" y1="470.00" x2="406.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<line x1="88.00" y1="152.00" x2="406.00" y2="152.00" stroke="#e8e8dc" stroke-width="1"/>
+<text x="406.00" y="485.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="middle">12</text>
+<text x="78.00" y="156.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="end">12</text>
+<line x1="88.00" y1="470.00" x2="416.00" y2="470.00" stroke="#222222" stroke-width="1.5"/>
+<line x1="88.00" y1="470.00" x2="88.00" y2="142.00" stroke="#222222" stroke-width="1.5"/>
+<text x="247.00" y="502.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="middle" font-weight="bold">width x ∈ ℕ</text>
+<text x="54.00" y="311.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="middle" font-weight="bold">y ∈ ℕ</text>
+<line x1="406.00" y1="258.00" x2="306.01" y2="357.99" stroke="#6A5ACD" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+<line x1="300.00" y1="364.00" x2="200.01" y2="463.99" stroke="#6A5ACD" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+<line x1="326.50" y1="311.00" x2="252.66" y2="384.84" stroke="#00008b" stroke-width="2.0" stroke-dasharray="4,2" marker-end="url(#arrowNavy)"/>
+<line x1="247.00" y1="390.50" x2="173.16" y2="464.34" stroke="#00008b" stroke-width="2.0" stroke-dasharray="4,2" marker-end="url(#arrowNavy)"/>
+<circle cx="88.00" cy="470.00" r="5.00" fill="#cccccc" stroke="#222222" stroke-width="1"/>
+<circle cx="88.00" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="390.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="88.00" y="394.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="88.00" cy="364.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="88.00" y="367.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="88.00" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="88.00" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="114.50" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="141.00" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="470.00" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="167.50" y="473.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="167.50" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="390.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="167.50" y="394.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="167.50" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="311.00" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="167.50" y="314.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="167.50" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="231.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="167.50" y="235.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="167.50" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="167.50" cy="152.00" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="167.50" y="155.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="194.00" cy="470.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="194.00" y="473.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="194.00" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="364.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="194.00" y="367.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="194.00" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="258.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="194.00" y="261.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="194.00" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="194.00" cy="152.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="194.00" y="155.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="220.50" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="220.50" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="390.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="247.00" y="394.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="247.00" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="231.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="247.00" y="235.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="247.00" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="247.00" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="273.50" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="364.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="300.00" y="367.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="300.00" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="300.00" cy="152.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="300.00" y="155.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="326.50" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="390.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="326.50" y="394.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="326.50" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="311.00" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="326.50" y="314.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="326.50" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="326.50" cy="152.00" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="326.50" y="155.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="353.00" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="353.00" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="390.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="364.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="258.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="231.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="379.50" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="470.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="443.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="417.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="390.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="406.00" y="394.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="406.00" cy="364.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="406.00" y="367.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="406.00" cy="337.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="311.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="284.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="258.00" r="7.50" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="406.00" y="261.50" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="406.00" cy="231.50" r="6.50" fill="#dce2f7" stroke="#00008b" stroke-width="1.4"/>
+<text x="406.00" y="235.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="406.00" cy="205.00" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="178.50" r="2.20" fill="#cccccc" stroke="none"/>
+<circle cx="406.00" cy="152.00" r="2.20" fill="#cccccc" stroke="none"/>
+<text x="390.10" y="247.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="end" font-weight="bold">(12,8)</text>
+<text x="310.00" y="378.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">(8,4)</text>
+<text x="208.00" y="461.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">(4,0)★</text>
+<text x="316.50" y="300.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">(9,6)→(6,3)→(3,0)</text>
+<rect x="42.00" y="516.00" width="401.00" height="90.00" fill="#ece9fa" stroke="#6A5ACD" stroke-width="1.2" rx="4"/>
+<text x="50.00" y="535.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Dependent Type Reading:</text>
+<text x="50.00" y="554.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">• Fiber 4 = { (x, y) | Gcd(x, y) = {4} }  (purple: (12,8), (8,4), (4,0), …)</text>
+<text x="50.00" y="573.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">• Fiber 3 = { (x, y) | Gcd(x, y) = {3} }  (navy: (9,6), (6,3), (3,0), …)</text>
+<text x="50.00" y="592.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">• Halting on x-axis (y = 0) reveals the fiber&#x27;s unique inhabitant x = g!</text>
+<rect x="470.00" y="80.00" width="400.00" height="540.00" fill="#faf9f0" stroke="#4b0082" stroke-width="1.6" rx="6"/>
+<text x="484.00" y="104.00" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#4b0082" text-anchor="start" font-weight="bold">2. Symbolic Verification for Unknown (x, y) in Codillon</text>
+<text x="484.00" y="122.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555" text-anchor="start">At compile time (x, y) are unknown (indigo), yet the proof is exact:</text>
+<rect x="498.00" y="148.00" width="88.00" height="88.00" fill="#ece9fa" stroke="#4b0082" stroke-width="2"/>
+<rect x="586.00" y="148.00" width="88.00" height="88.00" fill="#ece9fa" stroke="#4b0082" stroke-width="2"/>
+<rect x="674.00" y="148.00" width="74.00" height="88.00" fill="#f3f0fa" stroke="#4b0082" stroke-width="2" stroke-dasharray="4,2"/>
+<rect x="748.00" y="148.00" width="58.00" height="88.00" fill="#d9d5f2" stroke="#4b0082" stroke-width="2.2"/>
+<line x1="520.00" y1="148.00" x2="520.00" y2="236.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="542.00" y1="148.00" x2="542.00" y2="236.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="564.00" y1="148.00" x2="564.00" y2="236.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="586.00" y1="148.00" x2="586.00" y2="236.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="608.00" y1="148.00" x2="608.00" y2="236.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="630.00" y1="148.00" x2="630.00" y2="236.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="652.00" y1="148.00" x2="652.00" y2="236.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="498.00" y1="170.00" x2="806.00" y2="170.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="498.00" y1="192.00" x2="806.00" y2="192.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="498.00" y1="214.00" x2="806.00" y2="214.00" stroke="#6A5ACD" stroke-width="0.8" stroke-dasharray="2,2"/>
+<line x1="748.00" y1="142.00" x2="748.00" y2="242.00" stroke="#8b0000" stroke-width="2.2" stroke-dasharray="4,2"/>
+<text x="542.00" y="196.00" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#4b0082" text-anchor="middle" font-weight="bold">y × y</text>
+<text x="630.00" y="196.00" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#4b0082" text-anchor="middle" font-weight="bold">y × y</text>
+<text x="711.00" y="196.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#4b0082" text-anchor="middle" font-style="italic">… (q copies)</text>
+<text x="777.00" y="188.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#4b0082" text-anchor="middle" font-weight="bold">r × y</text>
+<text x="777.00" y="204.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#4b0082" text-anchor="middle">(r = x%y)</text>
+<text x="652.00" y="140.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#4b0082" text-anchor="middle" font-weight="bold">unknown width x = q·y + r</text>
+<text x="492.00" y="196.00" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#4b0082" text-anchor="end" font-weight="bold">y</text>
+<rect x="498.00" y="214.00" width="22.00" height="22.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+<text x="509.00" y="229.00" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">d</text>
+<text x="652.00" y="254.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#4b0082" text-anchor="middle" font-weight="bold">For any unknown d:  (d ∣ x ∧ d ∣ y)  ⇔  (d ∣ y ∧ d ∣ (x mod y))</text>
+<rect x="484.00" y="276.00" width="372.00" height="330.00" fill="#fffff0" stroke="#222222" stroke-width="1.5" rx="5"/>
+<rect x="484.00" y="276.00" width="372.00" height="26.00" fill="#222222" stroke="none" rx="4"/>
+<rect x="484.00" y="289.00" width="372.00" height="13.00" fill="#222222" stroke="none"/>
+<text x="496.00" y="293.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#fffff0" text-anchor="start" font-weight="bold">Codillon Structured Wasm — Live Refinement Type Pane</text>
+<rect x="492.00" y="308.00" width="356.00" height="30.00" fill="#f7f6ee" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="321.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">fn euclid(a: ℕ, b: ℕ) -&gt; </text>
+<text x="498.00" y="334.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#4b0082" text-anchor="start" font-weight="bold">g : { v ∈ ℕ | Div(v) = Div(a) ∩ Div(b) }</text>
+<rect x="492.00" y="343.00" width="356.00" height="30.00" fill="#efeee4" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="356.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">  let mut (x, y) = (a, b)</text>
+<text x="498.00" y="369.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">Invariant I: Div(x) ∩ Div(y) = Div(a) ∩ Div(b)</text>
+<rect x="492.00" y="378.00" width="356.00" height="30.00" fill="#f7f6ee" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="391.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">  loop {</text>
+<text x="498.00" y="404.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">I holds on entry: Div(a) ∩ Div(b) = Div(a) ∩ Div(b)</text>
+<rect x="492.00" y="413.00" width="356.00" height="30.00" fill="#efeee4" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="426.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">    if (y == 0) {</text>
+<text x="498.00" y="439.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="start" font-weight="bold">Branch evidence: y = 0  ⇒  Div(y) = Div(0) = ℕ</text>
+<rect x="492.00" y="448.00" width="356.00" height="30.00" fill="#f7f6ee" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="461.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">      return x</text>
+<text x="498.00" y="474.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="start" font-weight="bold">Div(x) = Div(x)∩ℕ = Div(x)∩Div(y) = Div(a)∩Div(b) ✓</text>
+<rect x="492.00" y="483.00" width="356.00" height="30.00" fill="#efeee4" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="496.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">    }</text>
+<text x="498.00" y="509.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start" font-weight="bold">Else branch: y &gt; 0  ⇒  x mod y is well-defined</text>
+<rect x="492.00" y="518.00" width="356.00" height="30.00" fill="#f7f6ee" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="531.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">    (x, y) = (y, x % y)</text>
+<text x="498.00" y="544.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start" font-weight="bold">Cut q squares: Div(y)∩Div(x%y) = Div(x)∩Div(y) ✓</text>
+<rect x="492.00" y="553.00" width="356.00" height="30.00" fill="#efeee4" stroke="#cccccc" stroke-width="0.6" rx="3"/>
+<text x="498.00" y="566.00" font-family="monospace" font-size="11.5" fill="#222222" text-anchor="start" font-weight="bold">  }</text>
+<text x="498.00" y="579.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start" font-weight="bold">Evidence erased at runtime; Wasm emits raw i32.rem_u</text>
+</svg>

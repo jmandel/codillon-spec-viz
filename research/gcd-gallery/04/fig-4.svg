@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="900" height="650" viewBox="0 0 900 650">
+<defs>
+        <pattern id="errHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="#f7d6d6"/>
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#8b0000" stroke-width="2"/>
+        </pattern>
+        <pattern id="purpleHatch" width="8" height="8" patternTransform="rotate(-45 0 0)" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="#ece9fa"/>
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#6A5ACD" stroke-width="1.2" opacity="0.45"/>
+        </pattern>
+        <marker id="arrowInk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#222222"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#6A5ACD"/>
+        </marker>
+        <marker id="arrowNavy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#00008b"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#8b0000"/>
+        </marker>
+        </defs>
+<rect x="0" y="0" width="900" height="650" fill="#fffff0"/>
+<text x="30.00" y="34.00" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#222222" text-anchor="start" font-weight="bold">Type Errors: Overhanging Tiles or Missing Coarser Tiles Violate Gcd(12, 8)</text>
+<text x="30.00" y="56.00" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#555555" text-anchor="start">A candidate <tspan fill="#222222">g</tspan> inhabits <tspan fill="#6A5ACD" font-weight="bold">Gcd(a, b)</tspan> iff (1) <tspan fill="#6A5ACD">g tiles a×b</tspan> (Div(g) ⊆ Div(a)∩Div(b)) AND (2) <tspan fill="#6A5ACD">every common tile divides g</tspan> (Div(a)∩Div(b) ⊆ Div(g))</text>
+<line x1="30.00" y1="66.00" x2="870.00" y2="66.00" stroke="#cccccc" stroke-width="1"/>
+<rect x="30.00" y="82.00" width="272.00" height="378.00" fill="#fdf7f7" stroke="#8b0000" stroke-width="2.0" rx="6"/>
+<rect x="30.00" y="82.00" width="272.00" height="28.00" fill="#8b0000" stroke="none" rx="5"/>
+<rect x="30.00" y="96.00" width="272.00" height="14.00" fill="#8b0000" stroke="none"/>
+<text x="166.00" y="101.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#fffff0" text-anchor="middle" font-weight="bold">TYPE ERROR 1:  Return g = 8  for (12, 8)</text>
+<text x="42.00" y="130.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Bug: returning input b = 8 instead of gcd</text>
+<text x="42.00" y="148.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#8b0000" text-anchor="start" font-weight="bold">Violates Soundness:  g ∤ a   (8 ∤ 12)</text>
+<rect x="72.00" y="178.00" width="97.60" height="97.60" fill="#e5e3f3" stroke="#00008b" stroke-width="1.8"/>
+<rect x="169.60" y="178.00" width="48.80" height="97.60" fill="#f7d6d6" stroke="#8b0000" stroke-width="1.5"/>
+<rect x="218.40" y="178.00" width="48.80" height="97.60" fill="url(#errHatch)" stroke="#8b0000" stroke-width="2.2" stroke-dasharray="4,2"/>
+<rect x="72.00" y="178.00" width="146.40" height="97.60" fill="none" stroke="#00008b" stroke-width="2.6"/>
+<text x="145.20" y="170.00" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">True width a = 12</text>
+<text x="242.80" y="170.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">+4 overhang!</text>
+<text x="67.00" y="230.80" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="end" font-weight="bold">b=8</text>
+<text x="120.80" y="230.80" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold">8 × 8 tile</text>
+<text x="194.00" y="224.80" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">part</text>
+<text x="194.00" y="237.80" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">4×8</text>
+<rect x="222.06" y="214.60" width="41.48" height="24.40" fill="#fffff0" stroke="#8b0000" stroke-width="1" rx="2"/>
+<text x="242.80" y="230.46" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">4×8</text>
+<line x1="72.00" y1="289.60" x2="267.20" y2="289.60" stroke="#8b0000" stroke-width="1.5" marker-end="url(#arrowRed)" marker-start="url(#arrowRed)"/>
+<text x="166.00" y="305.60" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold">2 tiles × 8 = 16 ≠ 12  (12 mod 8 = 4 ≠ 0)</text>
+<rect x="42.00" y="330.00" width="248.00" height="116.00" fill="#fffff0" stroke="#8b0000" stroke-width="1.2" rx="4"/>
+<text x="50.00" y="350.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Set Check:</text>
+<text x="50.00" y="370.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Div(8) = { 1, 2, 4, 8 }</text>
+<text x="50.00" y="389.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="start" font-weight="bold">Div(12) ∩ Div(8) = { 1, 2, 4 }</text>
+<text x="50.00" y="412.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">✗  8 ∈ Div(8)  but  8 ∉ Div(12) ∩ Div(8)</text>
+<text x="50.00" y="431.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">✗  Div(8) ⊈ Div(12) ∩ Div(8)  ⇒  8 ∉ Gcd(12,8)</text>
+<rect x="314.00" y="82.00" width="272.00" height="378.00" fill="#fdf7f7" stroke="#8b0000" stroke-width="2.0" rx="6"/>
+<rect x="314.00" y="82.00" width="272.00" height="28.00" fill="#8b0000" stroke="none" rx="5"/>
+<rect x="314.00" y="96.00" width="272.00" height="14.00" fill="#8b0000" stroke="none"/>
+<text x="450.00" y="101.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#fffff0" text-anchor="middle" font-weight="bold">TYPE ERROR 2:  Return g = 2  for (12, 8)</text>
+<text x="326.00" y="130.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">Bug: returning a non-maximal common divisor</text>
+<text x="326.00" y="148.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Violates Completeness:  4 ∣ 12 ∧ 4 ∣ 8  but  4 ∤ 2</text>
+<rect x="330.00" y="180.00" width="126.00" height="84.00" fill="#d9d5f2" stroke="none"/>
+<rect x="330.00" y="180.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="330.00" y="201.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="330.00" y="222.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="330.00" y="243.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="351.00" y="180.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="351.00" y="201.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="351.00" y="222.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="351.00" y="243.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="372.00" y="180.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="372.00" y="201.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="372.00" y="222.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="372.00" y="243.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="393.00" y="180.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="393.00" y="201.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="393.00" y="222.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="393.00" y="243.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="414.00" y="180.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="414.00" y="201.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="414.00" y="222.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="414.00" y="243.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="435.00" y="180.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="435.00" y="201.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="435.00" y="222.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="435.00" y="243.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="330.00" y="180.00" width="126.00" height="84.00" fill="none" stroke="#00008b" stroke-width="2.2"/>
+<line x1="372.00" y1="180.00" x2="372.00" y2="264.00" stroke="#00008b" stroke-width="2.2"/>
+<line x1="414.00" y1="180.00" x2="414.00" y2="264.00" stroke="#00008b" stroke-width="2.2"/>
+<line x1="330.00" y1="222.00" x2="456.00" y2="222.00" stroke="#00008b" stroke-width="2.2"/>
+<text x="330.00" y="172.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="start" font-weight="bold">2×2 tiles 12×8, and d=4 also tiles!</text>
+<rect x="494.00" y="196.00" width="42.00" height="42.00" fill="url(#errHatch)" stroke="#8b0000" stroke-width="2" stroke-dasharray="4,2"/>
+<rect x="494.00" y="196.00" width="21.00" height="21.00" fill="#d9d5f2" stroke="#00008b" stroke-width="2.4"/>
+<text x="504.50" y="210.50" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">g=2</text>
+<text x="515.00" y="190.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">d=4 &gt; g=2!</text>
+<text x="515.00" y="253.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold">4 ∤ 2</text>
+<text x="450.00" y="292.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold">2×2 is too fine: misses valid common tile d = 4</text>
+<rect x="326.00" y="330.00" width="248.00" height="116.00" fill="#fffff0" stroke="#8b0000" stroke-width="1.2" rx="4"/>
+<text x="334.00" y="350.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Set Check:</text>
+<text x="334.00" y="370.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Div(2) = { 1, 2 }</text>
+<text x="334.00" y="389.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="start" font-weight="bold">Div(12) ∩ Div(8) = { 1, 2, 4 }</text>
+<text x="334.00" y="412.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">✗  4 ∈ Div(12) ∩ Div(8)  but  4 ∉ Div(2)</text>
+<text x="334.00" y="431.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold">✗  Div(12) ∩ Div(8) ⊈ Div(2)  ⇒  2 ∉ Gcd(12,8)</text>
+<rect x="598.00" y="82.00" width="272.00" height="378.00" fill="#f7f5fc" stroke="#6A5ACD" stroke-width="2.2" rx="6"/>
+<rect x="598.00" y="82.00" width="272.00" height="28.00" fill="#6A5ACD" stroke="none" rx="5"/>
+<rect x="598.00" y="96.00" width="272.00" height="14.00" fill="#6A5ACD" stroke="none"/>
+<text x="734.00" y="101.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#fffff0" text-anchor="middle" font-weight="bold">WELL-TYPED:  Return g = 4  for (12, 8)</text>
+<text x="610.00" y="130.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Exact refinement match: both inclusions hold</text>
+<text x="610.00" y="148.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="start" font-weight="bold">4 ∣ 12 ∧ 4 ∣ 8   AND   ∀d ∈ {1,2,4}. d ∣ 4</text>
+<rect x="614.00" y="180.00" width="126.00" height="84.00" fill="#d9d5f2" stroke="none"/>
+<rect x="614.00" y="180.00" width="42.00" height="42.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="614.00" y="222.00" width="42.00" height="42.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="656.00" y="180.00" width="42.00" height="42.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="656.00" y="222.00" width="42.00" height="42.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="698.00" y="180.00" width="42.00" height="42.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="698.00" y="222.00" width="42.00" height="42.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="614.00" y="180.00" width="126.00" height="84.00" fill="none" stroke="#00008b" stroke-width="2.2"/>
+<text x="677.00" y="172.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b" text-anchor="middle" font-weight="bold">4×4 tiles 12×8 (0 overhang)</text>
+<rect x="778.00" y="196.00" width="42.00" height="42.00" fill="#d9d5f2" stroke="#00008b" stroke-width="2.4"/>
+<line x1="799.00" y1="196.00" x2="799.00" y2="238.00" stroke="#6A5ACD" stroke-width="1.3" stroke-dasharray="3,2"/>
+<line x1="778.00" y1="217.00" x2="820.00" y2="217.00" stroke="#6A5ACD" stroke-width="1.3" stroke-dasharray="3,2"/>
+<text x="799.00" y="190.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="middle" font-weight="bold">g=4 fits {1,2,4}</text>
+<text x="799.00" y="253.00" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">Div(4)={1,2,4}</text>
+<text x="734.00" y="292.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#00008b" text-anchor="middle" font-weight="bold">Coarsest common grid = unique inhabitant</text>
+<rect x="610.00" y="330.00" width="248.00" height="116.00" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.5" rx="4"/>
+<text x="618.00" y="350.00" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Set Check:</text>
+<text x="618.00" y="370.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="start" font-weight="bold">Div(4) = { 1, 2, 4 }</text>
+<text x="618.00" y="389.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="start" font-weight="bold">Div(12) ∩ Div(8) = { 1, 2, 4 }</text>
+<text x="618.00" y="412.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">✓  Div(4) ⊆ Div(12)∩Div(8)  (4 tiles 12×8)</text>
+<text x="618.00" y="431.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">✓  Div(12)∩Div(8) ⊆ Div(4)  (all d tile 4)</text>
+<rect x="30.00" y="474.00" width="840.00" height="154.00" fill="#fdf7f7" stroke="#8b0000" stroke-width="2.0" rx="6"/>
+<text x="46.00" y="498.00" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#8b0000" text-anchor="start" font-weight="bold">TYPE ERROR 3 (Buggy Loop Step):  (x, y) → (y, (x mod y) − 1)   Destroys the Loop Invariant!</text>
+<text x="46.00" y="518.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#222222" text-anchor="start">Suppose a buggy transition on (12, 8) computes remainder r&#x27; = (12 mod 8) − 1 = 3 instead of 4, stepping to (8, 3):</text>
+<rect x="55.00" y="538.00" width="108.00" height="72.00" fill="#d9d5f2" stroke="none"/>
+<rect x="55.00" y="538.00" width="36.00" height="36.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="55.00" y="574.00" width="36.00" height="36.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="91.00" y="538.00" width="36.00" height="36.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="91.00" y="574.00" width="36.00" height="36.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="127.00" y="538.00" width="36.00" height="36.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="127.00" y="574.00" width="36.00" height="36.00" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+<rect x="55.00" y="538.00" width="108.00" height="72.00" fill="none" stroke="#00008b" stroke-width="2.2"/>
+<text x="109.00" y="533.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold">Pre-state (12, 8): 4×4 fits</text>
+<text x="109.00" y="624.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">Type: Gcd(12, 8) = {4}</text>
+<line x1="181.00" y1="574.00" x2="251.00" y2="574.00" stroke="#8b0000" stroke-width="2.5" stroke-dasharray="4,2" marker-end="url(#arrowRed)"/>
+<text x="216.00" y="566.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold">BUGGY CUT</text>
+<text x="216.00" y="589.00" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold">r&#x27; = 3 ≠ 4</text>
+<rect x="271.00" y="550.00" width="72.00" height="27.00" fill="#f2f2ea" stroke="none"/>
+<rect x="271.00" y="550.00" width="36.00" height="36.00" fill="url(#errHatch)" stroke="#8b0000" stroke-width="1.3" stroke-dasharray="3,2"/>
+<rect x="307.00" y="550.00" width="36.00" height="36.00" fill="url(#errHatch)" stroke="#8b0000" stroke-width="1.3" stroke-dasharray="3,2"/>
+<rect x="271.00" y="550.00" width="72.00" height="27.00" fill="none" stroke="#00008b" stroke-width="2.2"/>
+<text x="307.00" y="544.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold">Post-state (8, 3): 4×4 overhangs height 3!</text>
+<text x="307.00" y="602.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold">Type mutated: Gcd(8, 3) = {1} ≠ {4}</text>
+<rect x="460.00" y="530.00" width="394.00" height="84.00" fill="#fffff0" stroke="#8b0000" stroke-width="1.2" rx="4"/>
+<text x="474.00" y="550.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Refinement Type Checker Diagnosis at Loop Back-Edge:</text>
+<text x="474.00" y="570.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="start" font-weight="bold">Expected return type:   Gcd(12, 8)  where  Div(12) ∩ Div(8) = {1, 2, 4}</text>
+<text x="474.00" y="589.00" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">Recursive call type:    Gcd(8, 3)   where  Div(8) ∩ Div(3)  = {1}</text>
+<text x="474.00" y="607.00" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="start" font-weight="bold">✗  Subtyping fails:  Gcd(8, 3) ⊈ Gcd(12, 8)  because  {1, 2, 4} ≠ {1}!</text>
+</svg>

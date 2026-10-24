@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" width="900" height="640">
+<defs>
+        <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#222222"/>
+        </marker>
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#6A5ACD"/>
+        </marker>
+        <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#00008b"/>
+        </marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#8b0000"/>
+        </marker>
+        <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#555555"/>
+        </marker>
+        </defs>
+<rect x="0" y="0" width="900" height="640" fill="#fffff0"/>
+<text x="32.0" y="34.0" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#222222" text-anchor="start" font-weight="bold" font-style="normal">Extreme Strips: Coprime Inputs Collapse to {1}; Zero Inputs Fill All of ℕ</text>
+<text x="32.0" y="55.0" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" fill="#555555" text-anchor="start" font-weight="normal" font-style="normal">The same definition <tspan font-style="italic">Div</tspan>(<tspan font-style="italic">g</tspan>) = <tspan font-style="italic">Div</tspan>(<tspan font-style="italic">a</tspan>) ∩ <tspan font-style="italic">Div</tspan>(<tspan font-style="italic">b</tspan>) handles coprime numbers and <tspan font-style="italic">a</tspan> = <tspan font-style="italic">b</tspan> = 0 without special cases</text>
+<line x1="32.0" y1="66.0" x2="868.0" y2="66.0" stroke="#cccccc" stroke-width="1"/>
+<rect x="24.0" y="80.0" width="852.0" height="254.0" fill="#fbfaf2" stroke="#cccccc" stroke-width="1.3" rx="8" ry="8"/>
+<text x="40.0" y="104.0" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#222222" text-anchor="start" font-weight="bold" font-style="normal">Case A — Coprime Inputs (a = 13, b = 8):   Div(13) and Div(8) share only d = 1, so Gcd(13, 8) = { 1 }</text>
+<text x="215.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">0</text>
+<line x1="215.0" y1="130.0" x2="215.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="245.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">1</text>
+<line x1="245.0" y1="130.0" x2="245.0" y2="268.0" stroke="#d9d5f2" stroke-width="7"/>
+<line x1="245.0" y1="130.0" x2="245.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="275.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">2</text>
+<line x1="275.0" y1="130.0" x2="275.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="305.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">3</text>
+<line x1="305.0" y1="130.0" x2="305.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="335.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">4</text>
+<line x1="335.0" y1="130.0" x2="335.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="365.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">5</text>
+<line x1="365.0" y1="130.0" x2="365.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="395.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">6</text>
+<line x1="395.0" y1="130.0" x2="395.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="425.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">7</text>
+<line x1="425.0" y1="130.0" x2="425.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="455.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">8</text>
+<line x1="455.0" y1="130.0" x2="455.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="485.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">9</text>
+<line x1="485.0" y1="130.0" x2="485.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="515.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">10</text>
+<line x1="515.0" y1="130.0" x2="515.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="545.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">11</text>
+<line x1="545.0" y1="130.0" x2="545.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="575.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">12</text>
+<line x1="575.0" y1="130.0" x2="575.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="605.0" y="125.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="normal" font-style="normal">13</text>
+<line x1="605.0" y1="130.0" x2="605.0" y2="268.0" stroke="#e8e8dc" stroke-width="1"/>
+<text x="40.0" y="155.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal"><tspan font-style="italic">Div</tspan>(13) (prime)</text>
+<line x1="215.0" y1="150.0" x2="617.0" y2="150.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="215.0" y1="146.0" x2="215.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="245.0" y1="146.0" x2="245.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="150.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="275.0" y1="146.0" x2="275.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="305.0" y1="146.0" x2="305.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="335.0" y1="146.0" x2="335.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="365.0" y1="146.0" x2="365.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="395.0" y1="146.0" x2="395.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="425.0" y1="146.0" x2="425.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="455.0" y1="146.0" x2="455.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="485.0" y1="146.0" x2="485.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="515.0" y1="146.0" x2="515.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="545.0" y1="146.0" x2="545.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="575.0" y1="146.0" x2="575.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="150.0" r="2.0" fill="#cccccc"/>
+<line x1="605.0" y1="146.0" x2="605.0" y2="154.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="150.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<rect x="706.0" y="135.0" width="166.0" height="30.0" fill="#e6eaf5" stroke="#00008b" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="154.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold" font-style="normal">{1, 13}</text>
+<text x="40.0" y="188.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal"><tspan font-style="italic">Div</tspan>(8)</text>
+<line x1="215.0" y1="183.0" x2="617.0" y2="183.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="215.0" y1="179.0" x2="215.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="245.0" y1="179.0" x2="245.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="183.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="275.0" y1="179.0" x2="275.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="183.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="305.0" y1="179.0" x2="305.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="335.0" y1="179.0" x2="335.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="183.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="365.0" y1="179.0" x2="365.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="395.0" y1="179.0" x2="395.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="425.0" y1="179.0" x2="425.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="455.0" y1="179.0" x2="455.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="183.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="485.0" y1="179.0" x2="485.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="515.0" y1="179.0" x2="515.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="545.0" y1="179.0" x2="545.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="575.0" y1="179.0" x2="575.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<line x1="605.0" y1="179.0" x2="605.0" y2="187.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="183.0" r="2.0" fill="#cccccc"/>
+<rect x="706.0" y="168.0" width="166.0" height="30.0" fill="#e6eaf5" stroke="#00008b" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="187.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold" font-style="normal">{1, 2, 4, 8}</text>
+<text x="40.0" y="223.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal"><tspan font-weight="bold" fill="#6A5ACD">CD(13, 8)</tspan></text>
+<line x1="215.0" y1="218.0" x2="617.0" y2="218.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="215.0" y1="214.0" x2="215.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="245.0" y1="214.0" x2="245.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="218.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="245.0" cy="218.0" r="2.5" fill="#6A5ACD"/>
+<line x1="275.0" y1="214.0" x2="275.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="305.0" y1="214.0" x2="305.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="335.0" y1="214.0" x2="335.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="365.0" y1="214.0" x2="365.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="395.0" y1="214.0" x2="395.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="425.0" y1="214.0" x2="425.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="455.0" y1="214.0" x2="455.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="485.0" y1="214.0" x2="485.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="515.0" y1="214.0" x2="515.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="545.0" y1="214.0" x2="545.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="575.0" y1="214.0" x2="575.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<line x1="605.0" y1="214.0" x2="605.0" y2="222.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="218.0" r="2.0" fill="#cccccc"/>
+<rect x="706.0" y="203.0" width="166.0" height="30.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="222.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">Single socket: {1}</text>
+<text x="40.0" y="259.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal">Candidate <tspan font-weight="bold" fill="#00008b">g = 1</tspan> : <tspan font-style="italic">Div</tspan>(1)</text>
+<line x1="215.0" y1="254.0" x2="617.0" y2="254.0" stroke="#cccccc" stroke-width="1.2"/>
+<line x1="215.0" y1="250.0" x2="215.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="245.0" y1="250.0" x2="245.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="254.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="245.0" cy="254.0" r="6.0" fill="#00008b"/>
+<line x1="275.0" y1="250.0" x2="275.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="305.0" y1="250.0" x2="305.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="335.0" y1="250.0" x2="335.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="365.0" y1="250.0" x2="365.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="395.0" y1="250.0" x2="395.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="425.0" y1="250.0" x2="425.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="455.0" y1="250.0" x2="455.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="485.0" y1="250.0" x2="485.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="515.0" y1="250.0" x2="515.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="545.0" y1="250.0" x2="545.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="575.0" y1="250.0" x2="575.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<line x1="605.0" y1="250.0" x2="605.0" y2="258.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="254.0" r="2.0" fill="#cccccc"/>
+<rect x="706.0" y="239.0" width="166.0" height="30.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="258.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">1 : Gcd(13, 8) ✓</text>
+<text x="40.0" y="304.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#6A5ACD" text-anchor="start" font-weight="bold" font-style="normal">Type  Gcd(13, 8) = {1}</text>
+<line x1="215.0" y1="300.0" x2="629.0" y2="300.0" stroke="#222222" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<circle cx="215.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="215.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">0</text>
+<rect x="231.0" y="286.0" width="28.0" height="36.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2" rx="12" ry="12"/>
+<circle cx="245.0" cy="300.0" r="6.0" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="245.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold" font-style="normal">1</text>
+<circle cx="275.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="275.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">2</text>
+<circle cx="305.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="305.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">3</text>
+<circle cx="335.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="335.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">4</text>
+<circle cx="365.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="365.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">5</text>
+<circle cx="395.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="395.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">6</text>
+<circle cx="425.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="425.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">7</text>
+<circle cx="455.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="455.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">8</text>
+<circle cx="485.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="485.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">9</text>
+<circle cx="515.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="515.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">10</text>
+<circle cx="545.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="545.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">11</text>
+<circle cx="575.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="575.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">12</text>
+<circle cx="605.0" cy="300.0" r="2.2" fill="#cccccc"/>
+<text x="605.0" y="317.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">13</text>
+<rect x="24.0" y="348.0" width="852.0" height="274.0" fill="#fbfaf2" stroke="#cccccc" stroke-width="1.3" rx="8" ry="8"/>
+<text x="40.0" y="372.0" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#222222" text-anchor="start" font-weight="bold" font-style="normal">Case B — All-Zero Inputs (a = 0, b = 0):   Every d ∈ ℕ divides 0 (since 0 = d · 0), so Div(0) = ℕ and Gcd(0, 0) = { 0 }</text>
+<text x="215.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">0</text>
+<line x1="215.0" y1="398.0" x2="215.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="245.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">1</text>
+<line x1="245.0" y1="398.0" x2="245.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="275.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">2</text>
+<line x1="275.0" y1="398.0" x2="275.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="305.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">3</text>
+<line x1="305.0" y1="398.0" x2="305.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="335.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">4</text>
+<line x1="335.0" y1="398.0" x2="335.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="365.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">5</text>
+<line x1="365.0" y1="398.0" x2="365.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="395.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">6</text>
+<line x1="395.0" y1="398.0" x2="395.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="425.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">7</text>
+<line x1="425.0" y1="398.0" x2="425.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="455.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">8</text>
+<line x1="455.0" y1="398.0" x2="455.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="485.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">9</text>
+<line x1="485.0" y1="398.0" x2="485.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="515.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">10</text>
+<line x1="515.0" y1="398.0" x2="515.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="545.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">11</text>
+<line x1="545.0" y1="398.0" x2="545.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="575.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">12</text>
+<line x1="575.0" y1="398.0" x2="575.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="605.0" y="393.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">13</text>
+<line x1="605.0" y1="398.0" x2="605.0" y2="543.0" stroke="#d9d5f2" stroke-width="5"/>
+<text x="40.0" y="425.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal"><tspan font-style="italic">Div</tspan>(0) = ℕ</text>
+<line x1="215.0" y1="420.0" x2="631.0" y2="420.0" stroke="#cccccc" stroke-width="1.2" marker-end="url(#arrow-gray)"/>
+<line x1="215.0" y1="416.0" x2="215.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="245.0" y1="416.0" x2="245.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="275.0" y1="416.0" x2="275.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="305.0" y1="416.0" x2="305.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="335.0" y1="416.0" x2="335.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="365.0" y1="416.0" x2="365.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="395.0" y1="416.0" x2="395.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="425.0" y1="416.0" x2="425.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="455.0" y1="416.0" x2="455.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="485.0" y1="416.0" x2="485.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="515.0" y1="416.0" x2="515.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="545.0" y1="416.0" x2="545.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="575.0" y1="416.0" x2="575.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<line x1="605.0" y1="416.0" x2="605.0" y2="424.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="420.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="639.0" y="424.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="start" font-weight="bold" font-style="normal">⋯ ∀d ∈ ℕ</text>
+<rect x="706.0" y="405.0" width="166.0" height="30.0" fill="#e6eaf5" stroke="#00008b" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="424.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold" font-style="normal">All d ∈ ℕ (incl. 0)</text>
+<text x="40.0" y="461.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal"><tspan font-weight="bold" fill="#6A5ACD">CD(0, 0)</tspan> = ℕ ∩ ℕ</text>
+<line x1="215.0" y1="456.0" x2="631.0" y2="456.0" stroke="#cccccc" stroke-width="1.2" marker-end="url(#arrow-gray)"/>
+<line x1="215.0" y1="452.0" x2="215.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="215.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="245.0" y1="452.0" x2="245.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="245.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="275.0" y1="452.0" x2="275.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="275.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="305.0" y1="452.0" x2="305.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="305.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="335.0" y1="452.0" x2="335.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="335.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="365.0" y1="452.0" x2="365.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="365.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="395.0" y1="452.0" x2="395.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="395.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="425.0" y1="452.0" x2="425.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="425.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="455.0" y1="452.0" x2="455.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="455.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="485.0" y1="452.0" x2="485.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="485.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="515.0" y1="452.0" x2="515.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="515.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="545.0" y1="452.0" x2="545.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="545.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="575.0" y1="452.0" x2="575.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="575.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<line x1="605.0" y1="452.0" x2="605.0" y2="460.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="456.0" r="9.5" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="605.0" cy="456.0" r="2.5" fill="#6A5ACD"/>
+<text x="639.0" y="460.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="start" font-weight="bold" font-style="normal">⋯ ∀d ∈ ℕ</text>
+<rect x="706.0" y="441.0" width="166.0" height="30.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="460.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">Infinite sockets: ℕ</text>
+<text x="40.0" y="497.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal">Wrong <tspan font-weight="bold" fill="#8b0000">g = 12</tspan> : <tspan font-style="italic">Div</tspan>(12)</text>
+<line x1="215.0" y1="492.0" x2="631.0" y2="492.0" stroke="#cccccc" stroke-width="1.2" marker-end="url(#arrow-gray)"/>
+<line x1="215.0" y1="488.0" x2="215.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="215.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="245.0" y1="488.0" x2="245.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="492.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="245.0" cy="492.0" r="6.0" fill="#00008b"/>
+<line x1="275.0" y1="488.0" x2="275.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="492.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="275.0" cy="492.0" r="6.0" fill="#00008b"/>
+<line x1="305.0" y1="488.0" x2="305.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="492.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="305.0" cy="492.0" r="6.0" fill="#00008b"/>
+<line x1="335.0" y1="488.0" x2="335.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="492.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="335.0" cy="492.0" r="6.0" fill="#00008b"/>
+<line x1="365.0" y1="488.0" x2="365.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="365.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="395.0" y1="488.0" x2="395.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="492.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="395.0" cy="492.0" r="6.0" fill="#00008b"/>
+<line x1="425.0" y1="488.0" x2="425.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="425.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="455.0" y1="488.0" x2="455.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="455.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="485.0" y1="488.0" x2="485.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="485.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="515.0" y1="488.0" x2="515.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="515.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="545.0" y1="488.0" x2="545.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="545.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<line x1="575.0" y1="488.0" x2="575.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="492.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="575.0" cy="492.0" r="6.0" fill="#00008b"/>
+<line x1="605.0" y1="488.0" x2="605.0" y2="496.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="492.0" r="10.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="2.3" stroke-dasharray="3,2"/>
+<text x="605.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">?</text>
+<text x="639.0" y="496.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="start" font-weight="bold" font-style="normal">⋯ ∞ empty</text>
+<rect x="706.0" y="477.0" width="166.0" height="30.0" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="496.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">ERROR: ∞ empty sockets</text>
+<text x="40.0" y="533.0" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#222222" text-anchor="start" font-weight="normal" font-style="normal">Valid <tspan font-weight="bold" fill="#00008b">g = 0</tspan> : <tspan font-style="italic">Div</tspan>(0)</text>
+<line x1="215.0" y1="528.0" x2="631.0" y2="528.0" stroke="#cccccc" stroke-width="1.2" marker-end="url(#arrow-gray)"/>
+<line x1="215.0" y1="524.0" x2="215.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="215.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="215.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="245.0" y1="524.0" x2="245.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="245.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="245.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="275.0" y1="524.0" x2="275.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="275.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="275.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="305.0" y1="524.0" x2="305.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="305.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="305.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="335.0" y1="524.0" x2="335.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="335.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="335.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="365.0" y1="524.0" x2="365.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="365.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="365.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="395.0" y1="524.0" x2="395.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="395.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="395.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="425.0" y1="524.0" x2="425.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="425.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="425.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="455.0" y1="524.0" x2="455.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="455.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="455.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="485.0" y1="524.0" x2="485.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="485.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="485.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="515.0" y1="524.0" x2="515.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="515.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="515.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="545.0" y1="524.0" x2="545.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="545.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="545.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="575.0" y1="524.0" x2="575.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="575.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="575.0" cy="528.0" r="6.0" fill="#00008b"/>
+<line x1="605.0" y1="524.0" x2="605.0" y2="532.0" stroke="#cccccc" stroke-width="1"/>
+<circle cx="605.0" cy="528.0" r="10.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2.2"/>
+<circle cx="605.0" cy="528.0" r="6.0" fill="#00008b"/>
+<text x="639.0" y="532.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="start" font-weight="bold" font-style="normal">⋯ ∀d ∈ ℕ</text>
+<rect x="706.0" y="513.0" width="166.0" height="30.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.3" rx="5" ry="5"/>
+<text x="789.0" y="532.5" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold" font-style="normal">0 : Gcd(0, 0) ✓</text>
+<text x="40.0" y="590.0" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#6A5ACD" text-anchor="start" font-weight="bold" font-style="normal">Type  Gcd(0, 0) = {0}</text>
+<line x1="215.0" y1="586.0" x2="629.0" y2="586.0" stroke="#222222" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="201.0" y="572.0" width="28.0" height="36.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="2" rx="12" ry="12"/>
+<circle cx="215.0" cy="586.0" r="6.0" fill="#00008b" stroke="#fffff0" stroke-width="1.2"/>
+<text x="215.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#00008b" text-anchor="middle" font-weight="bold" font-style="normal">0</text>
+<circle cx="245.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="245.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">1</text>
+<circle cx="275.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="275.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">2</text>
+<circle cx="305.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="305.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">3</text>
+<circle cx="335.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="335.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">4</text>
+<circle cx="365.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="365.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">5</text>
+<circle cx="395.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="395.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">6</text>
+<circle cx="425.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="425.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">7</text>
+<circle cx="455.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="455.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">8</text>
+<circle cx="485.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="485.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">9</text>
+<circle cx="515.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="515.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">10</text>
+<circle cx="545.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="545.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">11</text>
+<circle cx="575.0" cy="586.0" r="5.5" fill="#f9e6e6" stroke="#8b0000" stroke-width="1.6"/>
+<line x1="571.0" y1="582.0" x2="579.0" y2="590.0" stroke="#8b0000" stroke-width="1.6"/>
+<line x1="571.0" y1="590.0" x2="579.0" y2="582.0" stroke="#8b0000" stroke-width="1.6"/>
+<text x="575.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="bold" font-style="normal">12</text>
+<circle cx="605.0" cy="586.0" r="2.2" fill="#cccccc"/>
+<text x="605.0" y="603.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#888888" text-anchor="middle" font-weight="normal" font-style="normal">13</text>
+<text x="431.0" y="572.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#8b0000" text-anchor="middle" font-weight="normal" font-style="normal">Every g &gt; 0 has only finitely many divisors, leaving infinitely many sockets empty!</text>
+</svg>

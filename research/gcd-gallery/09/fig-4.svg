@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" width="900" height="620">
+  <defs>
+    
+            <marker id="arrow-ink" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#222222"/>
+            </marker>
+
+            <marker id="arrow-purple" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#6A5ACD"/>
+            </marker>
+
+            <marker id="arrow-navy" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#00008b"/>
+            </marker>
+
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#8b0000"/>
+            </marker>
+
+            <marker id="arrow-gray" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#888888"/>
+            </marker>
+
+            <marker id="arrow-indigo" viewBox="0 0 10 10" refX="8.5" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#4b0082"/>
+            </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="620" fill="#fffff0"/>
+  <text x="24.0" y="30.0" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#222222" text-anchor="start" font-weight="bold">Same derivation template adapts to coprime (13, 8) and zero edge cases</text>
+  <text x="24.0" y="49.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12.5" fill="#555555" text-anchor="start">Dependent type Gcd(a, b) is a family of sets indexed by (a, b); the proof skeleton stays identical</text>
+  <line x1="24.0" y1="57.0" x2="876.0" y2="57.0" stroke="#dedede" stroke-width="1"/>
+  <rect x="24.0" y="66.0" width="852.0" height="36.0" fill="#efedfa" stroke="#6A5ACD" stroke-width="1.2" rx="5" ry="5"/>
+  <text x="40.0" y="89.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Dependent Type Family:   (a, b : ℕ)  ↦  Inv(a,b) = {(x,y) | Div(x)∩Div(y) = Div(a)∩Div(b)}   ──►   Gcd(a,b) = {g | Div(g) = Div(a)∩Div(b)}</text>
+  <rect x="24.0" y="114.0" width="852.0" height="152.0" fill="#ffffff" stroke="#222222" stroke-width="1.4" rx="6" ry="6"/>
+  <rect x="24.0" y="114.0" width="852.0" height="24.0" fill="#f5f5e8" stroke="#222222" stroke-width="1.0" rx="6" ry="6"/>
+  <rect x="25.0" y="132.0" width="850.0" height="6.0" fill="#f5f5e8" stroke="none" stroke-width="1"/>
+  <line x1="24.0" y1="138.0" x2="876.0" y2="138.0" stroke="#222222" stroke-width="1.0"/>
+  <text x="36.0" y="130.5" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Case A: Coprime Inputs  (a = 13, b = 8)   →   gcd = 1   (5 loop iterations: Fibonacci worst-case)</text>
+  <rect x="36.0" y="146.0" width="228.0" height="112.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="44.0" y="162.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">1. Entry (13, 8) ∈ Inv</text>
+  <text x="44.0" y="180.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#222222" text-anchor="start">Div(13) ∩ Div(8) = {1, 13} ∩ {1, 2, 4, 8}</text>
+  <text x="44.0" y="195.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#222222" text-anchor="start">= { 1 }   (coprime: only 1 divides both)</text>
+  <rect x="44.0" y="204.0" width="212.0" height="46.0" fill="#ffffff" stroke="#888888" stroke-width="0.8" rx="3" ry="3"/>
+  <text x="48.0" y="219.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" fill="#555555" text-anchor="start" font-weight="bold">Run trace:</text>
+  <text x="48.0" y="237.0" font-family="Georgia, 'Times New Roman', serif" font-size="10.8" fill="#00008b" text-anchor="start" font-weight="bold">(13,8)→(8,5)→(5,3)→(3,2)→(2,1)→(1,0)</text>
+  <line x1="268.0" y1="202.0" x2="295.0" y2="202.0" stroke="#6A5ACD" stroke-width="2.2" marker-end="url(#arrow-purple)"/>
+  <circle cx="264.0" cy="202.0" r="4.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="300.0" cy="202.0" r="4.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="270.0" y="193.0" width="24.0" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="282.0" y="206.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">⊆</text>
+  <rect x="300.0" y="146.0" width="304.0" height="112.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="310.0" y="162.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">2. Loop Invariant Set  Inv(13, 8)</text>
+  <rect x="310.0" y="168.0" width="134.0" height="84.0" fill="#ffffff" stroke="#888888" stroke-width="1" rx="3" ry="3"/>
+  <circle cx="322.0" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="322.0" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="226.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="218.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="210.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="202.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="186.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="178.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="242.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="242.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="226.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="226.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="210.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="210.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="194.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="194.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="330.5" cy="178.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="330.5" cy="178.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="338.9" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="226.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="338.9" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="210.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="338.9" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="338.9" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="338.9" cy="178.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="347.4" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="226.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="347.4" cy="226.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="218.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="210.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="347.4" cy="210.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="347.4" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="347.4" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="347.4" cy="178.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="347.4" cy="178.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="355.8" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="226.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="355.8" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="210.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="355.8" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="355.8" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="355.8" cy="178.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="364.3" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="226.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="364.3" cy="226.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="364.3" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="210.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="364.3" cy="210.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="202.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="194.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="364.3" cy="194.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="364.3" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="364.3" cy="178.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="364.3" cy="178.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="372.8" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="226.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="218.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="210.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="372.8" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="372.8" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="372.8" cy="178.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="381.2" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="226.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="381.2" cy="226.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="381.2" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="210.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="381.2" cy="210.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="381.2" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="194.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="381.2" cy="194.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="186.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="381.2" cy="178.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="381.2" cy="178.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="389.7" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="226.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="389.7" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="210.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="389.7" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="389.7" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="389.7" cy="178.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="398.2" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="226.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="398.2" cy="226.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="218.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="210.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="398.2" cy="210.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="398.2" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="398.2" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="398.2" cy="178.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="398.2" cy="178.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="406.6" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="226.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="406.6" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="210.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="202.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="406.6" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="406.6" cy="178.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="226.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="226.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="210.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="210.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="194.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="194.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="415.1" cy="178.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="415.1" cy="178.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="423.5" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="226.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="218.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="210.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="423.5" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="194.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="423.5" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="423.5" cy="178.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="242.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="234.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="234.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="226.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="226.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="218.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="218.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="210.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="210.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="202.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="202.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="194.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="194.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="186.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="186.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="178.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="178.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <line x1="432.0" y1="178.0" x2="389.7" y2="202.0" stroke="#00008b" stroke-width="1.6" marker-end="url(#arrow-navy)"/>
+  <line x1="389.7" y1="202.0" x2="364.3" y2="218.0" stroke="#00008b" stroke-width="1.6" marker-end="url(#arrow-navy)"/>
+  <line x1="364.3" y1="218.0" x2="347.4" y2="226.0" stroke="#00008b" stroke-width="1.6" marker-end="url(#arrow-navy)"/>
+  <line x1="347.4" y1="226.0" x2="338.9" y2="234.0" stroke="#00008b" stroke-width="1.6" marker-end="url(#arrow-navy)"/>
+  <line x1="338.9" y1="234.0" x2="330.5" y2="242.0" stroke="#00008b" stroke-width="1.6" marker-end="url(#arrow-navy)"/>
+  <circle cx="432.0" cy="178.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <circle cx="389.7" cy="202.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <circle cx="364.3" cy="218.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <circle cx="347.4" cy="226.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <circle cx="338.9" cy="234.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <circle cx="330.5" cy="242.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <text x="452.0" y="186.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start" font-weight="bold">Dense Inv (coprime pairs);</text>
+  <text x="452.0" y="201.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start" font-weight="bold">5 Fibonacci steps</text>
+  <text x="452.0" y="224.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">Exit slice y = 0:</text>
+  <text x="452.0" y="241.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Inv ∧ (y=0) = {(1, 0)}</text>
+  <line x1="608.0" y1="202.0" x2="635.0" y2="202.0" stroke="#6A5ACD" stroke-width="2.2" marker-end="url(#arrow-purple)"/>
+  <circle cx="604.0" cy="202.0" r="4.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="640.0" cy="202.0" r="4.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="610.0" y="193.0" width="24.0" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="622.0" y="206.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">⊆</text>
+  <rect x="640.0" y="146.0" width="224.0" height="112.0" fill="#efedfa" stroke="#6A5ACD" stroke-width="1.5" rx="4" ry="4"/>
+  <text x="650.0" y="164.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">3. Return Type  Gcd(13, 8)</text>
+  <rect x="652.0" y="174.0" width="200.0" height="44.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="4" ry="4"/>
+  <circle cx="676.0" cy="196.0" r="13.0" fill="#00008b" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="676.0" y="200.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">1</text>
+  <text x="698.0" y="193.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Gcd(13, 8) = { 1 }</text>
+  <text x="698.0" y="210.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start">unique inhabitant g = 1</text>
+  <text x="652.0" y="240.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">Div(1) = Div(13) ∩ Div(8) ✓</text>
+  <rect x="24.0" y="278.0" width="852.0" height="152.0" fill="#ffffff" stroke="#222222" stroke-width="1.4" rx="6" ry="6"/>
+  <rect x="24.0" y="278.0" width="852.0" height="24.0" fill="#f5f5e8" stroke="#222222" stroke-width="1.0" rx="6" ry="6"/>
+  <rect x="25.0" y="296.0" width="850.0" height="6.0" fill="#f5f5e8" stroke="none" stroke-width="1"/>
+  <line x1="24.0" y1="302.0" x2="876.0" y2="302.0" stroke="#222222" stroke-width="1.0"/>
+  <text x="36.0" y="294.5" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Case B: Zero Input Edge Case  (a = 21, b = 0)   →   gcd = 21   (0 loop steps: immediate exit)</text>
+  <rect x="36.0" y="310.0" width="228.0" height="112.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="44.0" y="326.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">1. Entry (21, 0) ∈ Inv</text>
+  <text x="44.0" y="344.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#222222" text-anchor="start">Since Div(0) = ℕ:  Div(21) ∩ Div(0)</text>
+  <text x="44.0" y="359.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#222222" text-anchor="start">= Div(21) ∩ ℕ = {1, 3, 7, 21}</text>
+  <rect x="44.0" y="368.0" width="212.0" height="46.0" fill="#ffffff" stroke="#888888" stroke-width="0.8" rx="3" ry="3"/>
+  <text x="48.0" y="383.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" fill="#555555" text-anchor="start" font-weight="bold">Run trace:</text>
+  <text x="48.0" y="401.0" font-family="Georgia, 'Times New Roman', serif" font-size="10.8" fill="#00008b" text-anchor="start" font-weight="bold">(21, 0)   [y = 0 at entry → 0 body steps]</text>
+  <line x1="268.0" y1="366.0" x2="295.0" y2="366.0" stroke="#6A5ACD" stroke-width="2.2" marker-end="url(#arrow-purple)"/>
+  <circle cx="264.0" cy="366.0" r="4.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="300.0" cy="366.0" r="4.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="270.0" y="357.0" width="24.0" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="282.0" y="370.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">⊆</text>
+  <rect x="300.0" y="310.0" width="304.0" height="112.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="310.0" y="326.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">2. Loop Invariant Set  Inv(21, 0)</text>
+  <rect x="310.0" y="332.0" width="134.0" height="84.0" fill="#ffffff" stroke="#888888" stroke-width="1" rx="3" ry="3"/>
+  <circle cx="322.0" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="327.2" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="332.5" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="337.7" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="343.0" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="348.2" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="353.4" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="358.7" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.9" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="369.1" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="374.4" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="379.6" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="384.9" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.1" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="395.3" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="400.6" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="405.8" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="411.0" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="416.3" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="421.5" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="406.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="426.8" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="406.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="432.0" cy="406.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="396.9" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="387.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="378.6" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="369.4" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="360.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="351.1" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="342.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="406.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <text x="452.0" y="350.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start" font-weight="bold">0 iterations! Guard y ≠ 0 is</text>
+  <text x="452.0" y="365.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start" font-weight="bold">false immediately at entry</text>
+  <text x="452.0" y="388.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">Exit slice y = 0:</text>
+  <text x="452.0" y="405.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Inv ∧ (y=0) = {(21, 0)}</text>
+  <line x1="608.0" y1="366.0" x2="635.0" y2="366.0" stroke="#6A5ACD" stroke-width="2.2" marker-end="url(#arrow-purple)"/>
+  <circle cx="604.0" cy="366.0" r="4.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="640.0" cy="366.0" r="4.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="610.0" y="357.0" width="24.0" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="622.0" y="370.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">⊆</text>
+  <rect x="640.0" y="310.0" width="224.0" height="112.0" fill="#efedfa" stroke="#6A5ACD" stroke-width="1.5" rx="4" ry="4"/>
+  <text x="650.0" y="328.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">3. Return Type  Gcd(21, 0)</text>
+  <rect x="652.0" y="338.0" width="200.0" height="44.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="4" ry="4"/>
+  <circle cx="676.0" cy="360.0" r="13.0" fill="#00008b" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="676.0" y="364.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">21</text>
+  <text x="698.0" y="357.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Gcd(21, 0) = { 21 }</text>
+  <text x="698.0" y="374.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start">unique inhabitant g = 21</text>
+  <text x="652.0" y="404.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">Div(21) = Div(21) ∩ Div(0) ✓</text>
+  <rect x="24.0" y="442.0" width="852.0" height="152.0" fill="#ffffff" stroke="#222222" stroke-width="1.4" rx="6" ry="6"/>
+  <rect x="24.0" y="442.0" width="852.0" height="24.0" fill="#f5f5e8" stroke="#222222" stroke-width="1.0" rx="6" ry="6"/>
+  <rect x="25.0" y="460.0" width="850.0" height="6.0" fill="#f5f5e8" stroke="none" stroke-width="1"/>
+  <line x1="24.0" y1="466.0" x2="876.0" y2="466.0" stroke="#222222" stroke-width="1.0"/>
+  <text x="36.0" y="458.5" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Case C: Double-Zero Singularity  (a = 0, b = 0)   →   gcd = 0   (only number divisible by all of ℕ)</text>
+  <rect x="36.0" y="474.0" width="228.0" height="112.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="44.0" y="490.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">1. Entry (0, 0) ∈ Inv</text>
+  <text x="44.0" y="508.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#222222" text-anchor="start">Div(0) ∩ Div(0) = ℕ ∩ ℕ = ℕ</text>
+  <text x="44.0" y="523.0" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#222222" text-anchor="start">(every d ∈ ℕ divides 0 since 0 = 0·d)</text>
+  <rect x="44.0" y="532.0" width="212.0" height="46.0" fill="#ffffff" stroke="#888888" stroke-width="0.8" rx="3" ry="3"/>
+  <text x="48.0" y="547.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="10.5" fill="#555555" text-anchor="start" font-weight="bold">Run trace:</text>
+  <text x="48.0" y="565.0" font-family="Georgia, 'Times New Roman', serif" font-size="10.8" fill="#00008b" text-anchor="start" font-weight="bold">(0, 0)   [0 steps; only g=0 has Div(g)=ℕ]</text>
+  <line x1="268.0" y1="530.0" x2="295.0" y2="530.0" stroke="#6A5ACD" stroke-width="2.2" marker-end="url(#arrow-purple)"/>
+  <circle cx="264.0" cy="530.0" r="4.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="300.0" cy="530.0" r="4.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="270.0" y="521.0" width="24.0" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="282.0" y="534.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">⊆</text>
+  <rect x="300.0" y="474.0" width="304.0" height="112.0" fill="#f5f5e8" stroke="#6A5ACD" stroke-width="1.2" rx="4" ry="4"/>
+  <text x="310.0" y="490.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">2. Loop Invariant Set  Inv(0, 0)</text>
+  <rect x="310.0" y="496.0" width="134.0" height="84.0" fill="#ffffff" stroke="#888888" stroke-width="1" rx="3" ry="3"/>
+  <circle cx="322.0" cy="570.0" r="4.1" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.0"/>
+  <circle cx="322.0" cy="570.0" r="1.5" fill="#6A5ACD" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="335.8" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="335.8" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="335.8" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="335.8" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="335.8" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="335.8" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="335.8" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="349.5" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="349.5" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="349.5" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="349.5" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="349.5" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="349.5" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="349.5" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.2" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.2" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.2" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.2" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.2" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.2" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="363.2" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="377.0" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="377.0" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="377.0" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="377.0" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="377.0" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="377.0" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="377.0" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.8" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.8" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.8" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.8" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.8" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.8" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="390.8" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="404.5" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="404.5" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="404.5" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="404.5" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="404.5" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="404.5" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="404.5" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="418.2" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="418.2" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="418.2" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="418.2" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="418.2" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="418.2" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="418.2" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="570.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="559.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="548.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="538.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="527.3" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="516.7" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="432.0" cy="506.0" r="1.3" fill="#dedede" stroke="none" stroke-width="1"/>
+  <circle cx="322.0" cy="570.0" r="3.5" fill="none" stroke="#00008b" stroke-width="1.8"/>
+  <text x="452.0" y="514.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start" font-weight="bold">Inv = {(0, 0)} is a singleton</text>
+  <text x="452.0" y="529.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222" text-anchor="start" font-weight="bold">set throughout!</text>
+  <text x="452.0" y="552.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555" text-anchor="start">Exit slice y = 0:</text>
+  <text x="452.0" y="569.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">Inv ∧ (y=0) = {(0, 0)}</text>
+  <line x1="608.0" y1="530.0" x2="635.0" y2="530.0" stroke="#6A5ACD" stroke-width="2.2" marker-end="url(#arrow-purple)"/>
+  <circle cx="604.0" cy="530.0" r="4.0" fill="#6A5ACD" stroke="#fffff0" stroke-width="1"/>
+  <circle cx="640.0" cy="530.0" r="4.0" fill="#fffff0" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="610.0" y="521.0" width="24.0" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="9" ry="9"/>
+  <text x="622.0" y="534.5" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#6A5ACD" text-anchor="middle" font-weight="bold">⊆</text>
+  <rect x="640.0" y="474.0" width="224.0" height="112.0" fill="#efedfa" stroke="#6A5ACD" stroke-width="1.5" rx="4" ry="4"/>
+  <text x="650.0" y="492.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11.5" fill="#6A5ACD" text-anchor="start" font-weight="bold">3. Return Type  Gcd(0, 0)</text>
+  <rect x="652.0" y="502.0" width="200.0" height="44.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.4" rx="4" ry="4"/>
+  <circle cx="676.0" cy="524.0" r="13.0" fill="#00008b" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="676.0" y="528.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">0</text>
+  <text x="698.0" y="521.0" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" fill="#222222" text-anchor="start" font-weight="bold">Gcd(0, 0) = { 0 }</text>
+  <text x="698.0" y="538.0" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD" text-anchor="start">unique inhabitant g = 0</text>
+  <text x="652.0" y="568.0" font-family="Georgia, 'Times New Roman', serif" font-size="11.5" fill="#00008b" text-anchor="start" font-weight="bold">Div(0) = Div(0) ∩ Div(0) ✓</text>
+</svg>

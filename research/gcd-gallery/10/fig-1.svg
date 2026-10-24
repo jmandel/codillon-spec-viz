@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560">
+  <defs>
+    <pattern id="err-hatch" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#f5d6d6" fill-opacity="0.72"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#8b0000" stroke-width="2.2"/>
+    </pattern>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#222222"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#6A5ACD"/>
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#4b0082"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#00008b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#8b0000"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="560" fill="#fffff0"/>
+  <text x="28" y="34" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#222222">Refined Stack Fractions: From Flat i32 Boxes to Dependent Number-Line Cups</text>
+  <text x="28" y="54" font-family="'Arial Narrow', Arial, sans-serif" font-size="13" fill="#555555">Codillon draws each instruction's stack effect as inputs above a bar and outputs below; refinements turn 30×11 boxes into 84×14 number lines.</text>
+  <line x1="28" y1="64" x2="872" y2="64" stroke="#d8d8d0" stroke-width="1"/>
+
+  <rect x="28" y="78" width="844" height="190" rx="6" fill="#fffff0" stroke="#d8d8d0" stroke-width="1.2"/>
+  <text x="44" y="100" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#222222">1. Codillon Stack-Fraction Idiom (1:1 Editor Scale vs. Refined Number-Line Scale)</text>
+  <text x="155" y="124" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">A. Unrefined i32 (30×11 px)</text>
+  <text x="155" y="141" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Any 32-bit int fits; 0 divisor undetected</text>
+  <rect x="119.0" y="165.0" width="30.0" height="11.0" fill="#fffff0" stroke="none"/>
+  <path d="M 119.0 165.0 L 119.0 176.0 L 149.0 176.0 L 149.0 165.0" fill="none" stroke="#222222" stroke-width="1.6"/>
+  <text x="134.0" y="174.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">12</text>
+  <text x="134.0" y="161.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">a</text>
+  <rect x="161.0" y="165.0" width="30.0" height="11.0" fill="#fffff0" stroke="none"/>
+  <path d="M 161.0 165.0 L 161.0 176.0 L 191.0 176.0 L 191.0 165.0" fill="none" stroke="#222222" stroke-width="1.6"/>
+  <text x="176.0" y="174.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">8</text>
+  <text x="176.0" y="161.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">b</text>
+  <line x1="109" y1="181" x2="201" y2="181" stroke="#222222" stroke-width="2.0"/>
+  <rect x="140.0" y="186.0" width="30.0" height="11.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.5"/>
+  <text x="155.0" y="195.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">4</text>
+  <text x="211" y="185" font-family="'Courier New', Courier, monospace" font-size="13" font-weight="bold" fill="#222222">i32.rem_u</text>
+  <text x="155" y="222" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Open-top cups = inputs consumed</text>
+  <text x="155" y="238" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Solid box = output produced</text>
+  <line x1="305" y1="112" x2="305" y2="254" stroke="#d8d8d0" stroke-width="1"/>
+  <text x="455" y="124" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">B. Refined i32 (84×14 px) — Valid Seat</text>
+  <text x="455" y="141" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Divisor cup requires {y ∈ i32 | y ≥ 1}</text>
+  <rect x="365.0" y="162.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="407.0" y="162.0" width="42.0" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="407.0" y1="162.0" x2="407.0" y2="176.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="449.0" y1="162.0" x2="449.0" y2="176.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="381.8" y1="162.0" x2="381.8" y2="176.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="432.2" y1="162.0" x2="432.2" y2="176.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="407.0" y1="162.0" x2="407.0" y2="176.0" stroke="#888888" stroke-width="1.0"/>
+  <line x1="432.6" y1="162.0" x2="432.6" y2="176.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="432.6" cy="169.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 365.0 160.0 L 365.0 176.0 L 449.0 176.0 L 449.0 160.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="461.0" y="162.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="506.1" y="162.0" width="38.9" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="506.1" y1="162.0" x2="506.1" y2="176.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="545.0" y1="162.0" x2="545.0" y2="176.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="477.8" y1="162.0" x2="477.8" y2="176.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="528.2" y1="162.0" x2="528.2" y2="176.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="503.0" y1="162.0" x2="503.0" y2="176.0" stroke="#888888" stroke-width="1.0"/>
+  <line x1="528.2" y1="162.0" x2="528.2" y2="176.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="528.2" cy="169.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 461.0 160.0 L 461.0 176.0 L 545.0 176.0 L 545.0 160.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="407" y="156" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">x = 12 ∈ [0, MAX]</text>
+  <text x="503" y="156" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">y = 8 ∈ [1, MAX]</text>
+  <line x1="357" y1="181" x2="553" y2="181" stroke="#222222" stroke-width="2.0"/>
+  <rect x="413.0" y="186.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="455.0" y="186.0" width="22.1" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="455.0" y1="186.0" x2="455.0" y2="200.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="477.1" y1="186.0" x2="477.1" y2="200.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="429.8" y1="186.0" x2="429.8" y2="200.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="480.2" y1="186.0" x2="480.2" y2="200.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="455.0" y1="186.0" x2="455.0" y2="200.0" stroke="#888888" stroke-width="1.0"/>
+  <line x1="467.6" y1="186.0" x2="467.6" y2="200.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="467.6" cy="193.0" r="4.8" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="413.0" y="186.0" width="84.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="455" y="218" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#00008b">Result 4 seats inside shaded [0, y−1]</text>
+  <text x="455" y="236" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">Purple region = admitted subset of i32</text>
+  <line x1="605" y1="112" x2="605" y2="254" stroke="#d8d8d0" stroke-width="1"/>
+  <text x="740" y="124" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">C. Out-of-Region Value SPILLS</text>
+  <text x="740" y="141" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000">Passing y = 0 into {y ∈ i32 | y ≥ 1}</text>
+  <rect x="698.0" y="168.0" width="84.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <rect x="743.1" y="168.0" width="38.9" height="14.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="743.1" y1="168.0" x2="743.1" y2="182.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="782.0" y1="168.0" x2="782.0" y2="182.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="714.8" y1="168.0" x2="714.8" y2="182.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="765.2" y1="168.0" x2="765.2" y2="182.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="740.0" y1="168.0" x2="740.0" y2="182.0" stroke="#888888" stroke-width="1.0"/>
+  <path d="M 698.0 166.0 L 698.0 182.0 L 782.0 182.0 L 782.0 166.0" fill="none" stroke="#8b0000" stroke-width="1.8"/>
+  <path d="M 730.2 170.0 C 727.4 157.9, 752.6 157.9, 749.8 170.0 L 746.3 180.0 L 733.7 180.0 Z" fill="url(#err-hatch)" stroke="#8b0000" stroke-width="1.6"/>
+  <circle cx="740.0" cy="164.5" r="4.2" fill="#8b0000" stroke="#fffff0" stroke-width="1.0"/>
+  <line x1="688" y1="187" x2="792" y2="187" stroke="#8b0000" stroke-width="2.0"/>
+  <text x="740" y="215" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">y = 0 lands outside [1, INT_MAX]</text>
+  <text x="740" y="233" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000">Dark-red hatch spills over cup rim!</text>
+  <rect x="28" y="282" width="844" height="258" rx="6" fill="#fffff0" stroke="#d8d8d0" stroke-width="1.2"/>
+  <text x="44" y="305" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="bold" fill="#222222">2. Magnified Anatomy of a Dependent Result Cup: Gcd(a, b) = { g ∈ ℕ | Div(g) = Div(a) ∩ Div(b) }</text>
+  <text x="155" y="350" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">param $a = 12</text>
+  <rect x="165.0" y="336.0" width="195.0" height="20.0" fill="#fffff0" stroke="none"/>
+  <rect x="262.5" y="336.0" width="97.5" height="20.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="262.5" y1="336.0" x2="262.5" y2="356.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="360.0" y1="336.0" x2="360.0" y2="356.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="204.0" y1="336.0" x2="204.0" y2="356.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="321.0" y1="336.0" x2="321.0" y2="356.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="262.5" y1="336.0" x2="262.5" y2="356.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="268.1" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="275.4" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="282.7" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="290.0" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="304.6" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="320.1" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="321.8" y1="336.0" x2="321.8" y2="356.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="321.8" cy="346.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="165.0" y="336.0" width="195.0" height="20.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="262.5" y="330" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">Div(12) = {1, 2, 3, 4, 6, 12}</text>
+  <text x="535" y="350" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#222222">param $b = 8</text>
+  <rect x="545.0" y="336.0" width="195.0" height="20.0" fill="#fffff0" stroke="none"/>
+  <rect x="642.5" y="336.0" width="97.5" height="20.0" fill="#d9d5f2" fill-opacity="0.85"/>
+  <line x1="642.5" y1="336.0" x2="642.5" y2="356.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="740.0" y1="336.0" x2="740.0" y2="356.0" stroke="#6A5ACD" stroke-width="1.2"/>
+  <line x1="584.0" y1="336.0" x2="584.0" y2="356.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="701.0" y1="336.0" x2="701.0" y2="356.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="642.5" y1="336.0" x2="642.5" y2="356.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="648.1" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="655.4" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="670.0" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="699.2" y="337.0" width="3.5" height="18.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <line x1="701.0" y1="336.0" x2="701.0" y2="356.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="701.0" cy="346.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <rect x="545.0" y="336.0" width="195.0" height="20.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="642.5" y="330" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#6A5ACD">Div(8) = {1, 2, 4, 8}</text>
+  <rect x="190.0" y="434.0" width="520.0" height="34.0" fill="#fffff0" stroke="none"/>
+  <line x1="294.0" y1="434.0" x2="294.0" y2="468.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="606.0" y1="434.0" x2="606.0" y2="468.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="450.0" y1="434.0" x2="450.0" y2="468.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="464.8" y="435.0" width="9.4" height="32.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="484.3" y="435.0" width="9.4" height="32.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="519.7" y="434.0" width="16.6" height="34.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 517.7 432.0 L 519.7 434.0 L 519.7 468.0 L 536.3 468.0 L 536.3 434.0 L 538.3 432.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <line x1="528.0" y1="434.0" x2="528.0" y2="468.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="528.0" cy="451.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 190.0 432.0 L 190.0 468.0 L 710.0 468.0 L 710.0 432.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="190.0" y="481.0" text-anchor="start" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">INT_MIN</text>
+  <text x="294.0" y="481.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-8</text>
+  <text x="450.0" y="481.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#222222">0</text>
+  <text x="606.0" y="481.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">+8</text>
+  <text x="710.0" y="481.0" text-anchor="end" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">INT_MAX</text>
+  <line x1="190" y1="494" x2="291.0" y2="494" stroke="#888888" stroke-width="1.2" marker-start="url(#arrow-ink)" marker-end="url(#arrow-ink)"/>
+  <text x="242.0" y="508" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">20% log [INT_MIN, −8]</text>
+  <line x1="297.0" y1="494" x2="603.0" y2="494" stroke="#6A5ACD" stroke-width="1.5" marker-start="url(#arrow-purple)" marker-end="url(#arrow-purple)"/>
+  <text x="450.0" y="508" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">60% linear scale |v| ≤ 8 (exact integer ticks)</text>
+  <line x1="609.0" y1="494" x2="710" y2="494" stroke="#888888" stroke-width="1.2" marker-start="url(#arrow-ink)" marker-end="url(#arrow-ink)"/>
+  <text x="658.0" y="508" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">20% log [+8, INT_MAX]</text>
+  <line x1="294.0" y1="463.0" x2="294.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="313.5" y1="463.0" x2="313.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="333.0" y1="463.0" x2="333.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <text x="333.0" y="461.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-6</text>
+  <line x1="352.5" y1="463.0" x2="352.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="372.0" y1="463.0" x2="372.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <text x="372.0" y="461.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-4</text>
+  <line x1="391.5" y1="463.0" x2="391.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="411.0" y1="463.0" x2="411.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <text x="411.0" y="461.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-2</text>
+  <line x1="430.5" y1="463.0" x2="430.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="450.0" y1="463.0" x2="450.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="469.5" y1="463.0" x2="469.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <text x="469.5" y="461.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">1</text>
+  <line x1="489.0" y1="463.0" x2="489.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <text x="489.0" y="461.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">2</text>
+  <line x1="508.5" y1="463.0" x2="508.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="528.0" y1="463.0" x2="528.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="547.5" y1="463.0" x2="547.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="567.0" y1="463.0" x2="567.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <text x="567.0" y="461.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">6</text>
+  <line x1="586.5" y1="463.0" x2="586.5" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <line x1="606.0" y1="463.0" x2="606.0" y2="468.0" stroke="#888888" stroke-width="0.9"/>
+  <path d="M 321.8 356.0 C 321.8 411.0, 498.0 389.0, 524.0 431.0" fill="none" stroke="#4b0082" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arrow-indigo)"/>
+  <path d="M 701.0 356.0 C 701.0 411.0, 558.0 389.0, 532.0 431.0" fill="none" stroke="#4b0082" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arrow-indigo)"/>
+  <rect x="295" y="366" width="350" height="36" rx="5" fill="#fffff0" fill-opacity="0.92" stroke="#4b0082" stroke-width="1.0" stroke-dasharray="3,2"/>
+  <text x="470" y="381" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#4b0082">Dependent socket tethered to $a and $b</text>
+  <text x="470" y="396" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">Unique g with Div(g) = {1, 2, 4} is g = 4 (returned 4 seats in socket)</text>
+  <text x="178" y="455" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">result Gcd(a, b)</text>
+</svg>

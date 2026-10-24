@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" width="900" height="620">
+  <defs>
+    <pattern id="err-hatch" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#f5d6d6" fill-opacity="0.72"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#8b0000" stroke-width="2.2"/>
+    </pattern>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#222222"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#6A5ACD"/>
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#4b0082"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#00008b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#8b0000"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="620" fill="#fffff0"/>
+  <text x="28" y="34" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#222222">Type Errors Spill Over the Rim: Any Return Value ≠ gcd(12, 8) = 4 Is Rejected</text>
+  <text x="28" y="54" font-family="'Arial Narrow', Arial, sans-serif" font-size="13" fill="#555555">Gcd(12, 8) = { g ∈ ℕ | Div(g) = {1, 2, 4} } is a singleton set {4}. Returning 2, 8, or 12 violates the refinement and spills.</text>
+  <line x1="28" y1="64" x2="872" y2="64" stroke="#d8d8d0" stroke-width="1"/>
+
+  <rect x="28" y="78" width="844" height="122" rx="6" fill="#fffff0" stroke="#d8d8d0" stroke-width="1.2"/>
+  <text x="44" y="100" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#222222">Reference Specification for (a = 12, b = 8): Div(12) ∩ Div(8) = {1, 2, 3, 4, 6, 12} ∩ {1, 2, 4, 8} = {1, 2, 4}</text>
+  <text x="44" y="118" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" fill="#555555">To inhabit Gcd(12, 8), candidate g must satisfy:  (1) g | 12   ∧   (2) g | 8   ∧   (3) ∀d ∈ {1, 2, 4} . d | g.   Only g = 4 satisfies all three.</text>
+  <rect x="180.0" y="142.0" width="540.0" height="24.0" fill="#fffff0" stroke="none"/>
+  <line x1="288.0" y1="142.0" x2="288.0" y2="166.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="612.0" y1="142.0" x2="612.0" y2="166.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="450.0" y1="142.0" x2="450.0" y2="166.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="465.4" y="143.0" width="9.7" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="485.6" y="143.0" width="9.7" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="522.4" y="142.0" width="17.3" height="24.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 520.4 140.0 L 522.4 142.0 L 522.4 166.0 L 539.6 166.0 L 539.6 142.0 L 541.6 140.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <line x1="531.0" y1="142.0" x2="531.0" y2="166.0" stroke="#00008b" stroke-width="2.0"/>
+  <circle cx="531.0" cy="154.0" r="6.5" fill="#00008b" stroke="#fffff0" stroke-width="1.0"/>
+  <path d="M 180.0 140.0 L 180.0 166.0 L 720.0 166.0 L 720.0 140.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="180.0" y="179.0" text-anchor="start" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">INT_MIN</text>
+  <text x="288.0" y="179.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-8</text>
+  <text x="450.0" y="179.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#222222">0</text>
+  <text x="612.0" y="179.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">+8</text>
+  <text x="720.0" y="179.0" text-anchor="end" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">INT_MAX</text>
+  <text x="531.0" y="136" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#00008b">Valid socket at g = 4 (seated)</text>
+  <text x="168" y="158" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#6A5ACD">Gcd(12, 8) Cup:</text>
+  <rect x="28" y="214" width="272" height="392" rx="6" fill="#fffff0" stroke="#8b0000" stroke-width="1.5"/>
+  <rect x="28" y="214" width="272" height="30" rx="6" fill="#f5d6d6" stroke="#8b0000" stroke-width="1.0"/>
+  <text x="164.0" y="234" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">Error 1: Common Divisor Too Small</text>
+  <text x="42" y="266" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#222222">Candidate g = 2 in return cup:</text>
+  <rect x="42" y="274" width="244" height="24" rx="3" fill="#f2f2e6" stroke="#d8d8d0"/>
+  <text x="50" y="290" font-family="'Courier New', Courier, monospace" font-size="11.5" font-weight="bold" fill="#8b0000">i32.const 2 ;; return</text>
+  <rect x="46.0" y="356.0" width="236.0" height="24.0" fill="#fffff0" stroke="none"/>
+  <line x1="93.2" y1="356.0" x2="93.2" y2="380.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="234.8" y1="356.0" x2="234.8" y2="380.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="164.0" y1="356.0" x2="164.0" y2="380.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="170.7" y="357.0" width="4.2" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="179.6" y="357.0" width="4.2" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="195.6" y="356.0" width="7.6" height="24.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 193.6 354.0 L 195.6 356.0 L 195.6 380.0 L 203.2 380.0 L 203.2 356.0 L 205.2 354.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 46.0 354.0 L 46.0 380.0 L 282.0 380.0 L 282.0 354.0" fill="none" stroke="#8b0000" stroke-width="1.8"/>
+  <path d="M 169.3 358.0 C 165.8 338.7, 197.6 338.7, 194.1 358.0 L 189.7 378.0 L 173.7 378.0 Z" fill="url(#err-hatch)" stroke="#8b0000" stroke-width="1.6"/>
+  <circle cx="181.7" cy="350.0" r="6.0" fill="#8b0000" stroke="#fffff0" stroke-width="1.0"/>
+  <text x="46.0" y="393.0" text-anchor="start" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">MIN</text>
+  <text x="93.2" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-8</text>
+  <text x="164.0" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#222222">0</text>
+  <text x="234.8" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">+8</text>
+  <text x="282.0" y="393.0" text-anchor="end" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">MAX</text>
+  <line x1="40" y1="398" x2="288" y2="398" stroke="#8b0000" stroke-width="2.0"/>
+  <text x="221.4" y="326" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Socket=4</text>
+  <line x1="199.4" y1="331" x2="199.4" y2="353" stroke="#6A5ACD" stroke-width="1.3" marker-end="url(#arrow-purple)"/>
+  <text x="153.7" y="334" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">Spill g=2!</text>
+  <text x="42" y="426" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#222222">Why g = 2 Misses the Socket:</text>
+  <text x="42" y="446" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">✓ 2 | 12 and 2 | 8 (common divisor)</text>
+  <text x="42" y="464" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">✗ Fails (3): d = 4 ∈ Div(12)∩Div(8),</text>
+  <text x="42" y="482" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000">   but 4 ∤ 2! (Div(2) = {1, 2} ⊊ {1, 2, 4})</text>
+  <rect x="42" y="498" width="244" height="92" rx="4" fill="#f2f2e6" stroke="#d8d8d0"/>
+  <text x="50" y="516" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Required: Div(12)∩Div(8) = {1, 2, 4}</text>
+  <rect x="50.0" y="522.0" width="228.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="95.6" y1="522.0" x2="95.6" y2="536.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="232.4" y1="522.0" x2="232.4" y2="536.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="164.0" y1="522.0" x2="164.0" y2="536.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="170.5" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="179.0" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="196.1" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="194.6" y="522.0" width="7.3" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="50.0" y="522.0" width="228.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="50" y="554" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">Actual Div(2) — missing 4:</text>
+  <rect x="50.0" y="560.0" width="228.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="95.6" y1="560.0" x2="95.6" y2="574.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="232.4" y1="560.0" x2="232.4" y2="574.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="164.0" y1="560.0" x2="164.0" y2="574.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="170.5" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="179.0" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="50.0" y="560.0" width="228.0" height="14.0" fill="none" stroke="#8b0000" stroke-width="1.8"/>
+  <rect x="314" y="214" width="272" height="392" rx="6" fill="#fffff0" stroke="#8b0000" stroke-width="1.5"/>
+  <rect x="314" y="214" width="272" height="30" rx="6" fill="#f5d6d6" stroke="#8b0000" stroke-width="1.0"/>
+  <text x="450.0" y="234" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">Error 2: Divides b Only (Not a)</text>
+  <text x="328" y="266" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#222222">Candidate g = 8 in return cup:</text>
+  <rect x="328" y="274" width="244" height="24" rx="3" fill="#f2f2e6" stroke="#d8d8d0"/>
+  <text x="336" y="290" font-family="'Courier New', Courier, monospace" font-size="11.5" font-weight="bold" fill="#8b0000">local.get $b ;; return</text>
+  <rect x="332.0" y="356.0" width="236.0" height="24.0" fill="#fffff0" stroke="none"/>
+  <line x1="379.2" y1="356.0" x2="379.2" y2="380.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="520.8" y1="356.0" x2="520.8" y2="380.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="450.0" y1="356.0" x2="450.0" y2="380.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="456.7" y="357.0" width="4.2" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="465.6" y="357.0" width="4.2" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="481.6" y="356.0" width="7.6" height="24.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 479.6 354.0 L 481.6 356.0 L 481.6 380.0 L 489.2 380.0 L 489.2 356.0 L 491.2 354.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 332.0 354.0 L 332.0 380.0 L 568.0 380.0 L 568.0 354.0" fill="none" stroke="#8b0000" stroke-width="1.8"/>
+  <path d="M 508.4 358.0 C 504.9 338.7, 536.7 338.7, 533.2 358.0 L 528.8 378.0 L 512.8 378.0 Z" fill="url(#err-hatch)" stroke="#8b0000" stroke-width="1.6"/>
+  <circle cx="520.8" cy="350.0" r="6.0" fill="#8b0000" stroke="#fffff0" stroke-width="1.0"/>
+  <text x="332.0" y="393.0" text-anchor="start" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">MIN</text>
+  <text x="379.2" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-8</text>
+  <text x="450.0" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#222222">0</text>
+  <text x="520.8" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">+8</text>
+  <text x="568.0" y="393.0" text-anchor="end" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">MAX</text>
+  <line x1="326" y1="398" x2="574" y2="398" stroke="#8b0000" stroke-width="2.0"/>
+  <text x="469.4" y="326" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Socket=4</text>
+  <line x1="485.4" y1="331" x2="485.4" y2="353" stroke="#6A5ACD" stroke-width="1.3" marker-end="url(#arrow-purple)"/>
+  <text x="538.8" y="334" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">Spill g=8!</text>
+  <text x="328" y="426" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#222222">Why g = 8 Misses the Socket:</text>
+  <text x="328" y="446" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">✓ 8 | 8 and ∀d ∈ {1,2,4}. d | 8</text>
+  <text x="328" y="464" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">✗ Fails (1): 8 ∤ 12 (12 mod 8 = 4 ≠ 0)!</text>
+  <text x="328" y="482" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000">   (Div(8) = {1, 2, 4, 8} ⊋ {1, 2, 4})</text>
+  <rect x="328" y="498" width="244" height="92" rx="4" fill="#f2f2e6" stroke="#d8d8d0"/>
+  <text x="336" y="516" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Required: Div(12)∩Div(8) = {1, 2, 4}</text>
+  <rect x="336.0" y="522.0" width="228.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="381.6" y1="522.0" x2="381.6" y2="536.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="518.4" y1="522.0" x2="518.4" y2="536.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="450.0" y1="522.0" x2="450.0" y2="536.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="456.5" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="465.0" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="482.1" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="480.6" y="522.0" width="7.3" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="336.0" y="522.0" width="228.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="336" y="554" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">Actual Div(8) — extra 8 ∉ Div(12):</text>
+  <rect x="336.0" y="560.0" width="228.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="381.6" y1="560.0" x2="381.6" y2="574.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="518.4" y1="560.0" x2="518.4" y2="574.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="450.0" y1="560.0" x2="450.0" y2="574.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="456.5" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="465.0" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="482.1" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="516.3" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="336.0" y="560.0" width="228.0" height="14.0" fill="none" stroke="#8b0000" stroke-width="1.8"/>
+  <rect x="600" y="214" width="272" height="392" rx="6" fill="#fffff0" stroke="#8b0000" stroke-width="1.5"/>
+  <rect x="600" y="214" width="272" height="30" rx="6" fill="#f5d6d6" stroke="#8b0000" stroke-width="1.0"/>
+  <text x="736.0" y="234" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#8b0000">Error 3: Buggy Loop Exit (br_if $x)</text>
+  <text x="614" y="266" font-family="'Arial Narrow', Arial, sans-serif" font-size="12" font-weight="bold" fill="#222222">Returns g = 12 (exits on step 1):</text>
+  <rect x="614" y="274" width="244" height="24" rx="3" fill="#f2f2e6" stroke="#d8d8d0"/>
+  <text x="622" y="290" font-family="'Courier New', Courier, monospace" font-size="11.5" font-weight="bold" fill="#8b0000">local.get $x ;; br_if $exit</text>
+  <rect x="618.0" y="356.0" width="236.0" height="24.0" fill="#fffff0" stroke="none"/>
+  <line x1="665.2" y1="356.0" x2="665.2" y2="380.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="806.8" y1="356.0" x2="806.8" y2="380.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="736.0" y1="356.0" x2="736.0" y2="380.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="742.7" y="357.0" width="4.2" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="751.6" y="357.0" width="4.2" height="22.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="767.6" y="356.0" width="7.6" height="24.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 765.6 354.0 L 767.6 356.0 L 767.6 380.0 L 775.2 380.0 L 775.2 356.0 L 777.2 354.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <path d="M 618.0 354.0 L 618.0 380.0 L 854.0 380.0 L 854.0 354.0" fill="none" stroke="#8b0000" stroke-width="1.8"/>
+  <path d="M 795.4 358.0 C 791.9 338.7, 823.7 338.7, 820.2 358.0 L 815.8 378.0 L 799.8 378.0 Z" fill="url(#err-hatch)" stroke="#8b0000" stroke-width="1.6"/>
+  <circle cx="807.8" cy="350.0" r="6.0" fill="#8b0000" stroke="#fffff0" stroke-width="1.0"/>
+  <text x="618.0" y="393.0" text-anchor="start" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">MIN</text>
+  <text x="665.2" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">-8</text>
+  <text x="736.0" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#222222">0</text>
+  <text x="806.8" y="393.0" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">+8</text>
+  <text x="854.0" y="393.0" text-anchor="end" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#555555">MAX</text>
+  <line x1="612" y1="398" x2="860" y2="398" stroke="#8b0000" stroke-width="2.0"/>
+  <text x="755.4" y="326" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Socket=4</text>
+  <line x1="771.4" y1="331" x2="771.4" y2="353" stroke="#6A5ACD" stroke-width="1.3" marker-end="url(#arrow-purple)"/>
+  <text x="825.8" y="334" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">Spill g=12!</text>
+  <text x="614" y="426" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="bold" fill="#222222">Why g = 12 Misses the Socket:</text>
+  <text x="614" y="446" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#222222">✓ 12 | 12 and ∀d ∈ {1,2,4}. d | 12</text>
+  <text x="614" y="464" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">✗ Fails (2): 12 ∤ 8 (exited before y=0)!</text>
+  <text x="614" y="482" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" fill="#8b0000">   (Div(12) = {1,2,3,4,6,12} ≠ {1,2,4})</text>
+  <rect x="614" y="498" width="244" height="92" rx="4" fill="#f2f2e6" stroke="#d8d8d0"/>
+  <text x="622" y="516" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#6A5ACD">Required: Div(12)∩Div(8) = {1, 2, 4}</text>
+  <rect x="622.0" y="522.0" width="228.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="667.6" y1="522.0" x2="667.6" y2="536.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="804.4" y1="522.0" x2="804.4" y2="536.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="736.0" y1="522.0" x2="736.0" y2="536.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="742.5" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="751.0" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="768.1" y="523.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="766.6" y="522.0" width="7.3" height="14.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="1.8"/>
+  <rect x="622.0" y="522.0" width="228.0" height="14.0" fill="none" stroke="#6A5ACD" stroke-width="1.8"/>
+  <text x="622" y="554" font-family="'Arial Narrow', Arial, sans-serif" font-size="11" font-weight="bold" fill="#8b0000">Actual Div(12) — extra {3,6,12}:</text>
+  <rect x="622.0" y="560.0" width="228.0" height="14.0" fill="#fffff0" stroke="none"/>
+  <line x1="667.6" y1="560.0" x2="667.6" y2="574.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="804.4" y1="560.0" x2="804.4" y2="574.0" stroke="#d8d8d0" stroke-width="0.9" stroke-dasharray="2,2"/>
+  <line x1="736.0" y1="560.0" x2="736.0" y2="574.0" stroke="#888888" stroke-width="1.0"/>
+  <rect x="742.5" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="751.0" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="759.6" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="768.1" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="785.2" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="803.3" y="561.0" width="4.1" height="12.0" fill="#d9d5f2" stroke="#6A5ACD" stroke-width="0.9"/>
+  <rect x="622.0" y="560.0" width="228.0" height="14.0" fill="none" stroke="#8b0000" stroke-width="1.8"/>
+</svg>
