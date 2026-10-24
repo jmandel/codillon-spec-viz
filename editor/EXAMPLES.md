@@ -2,7 +2,7 @@
 
 Live build of https://github.com/jmandel/codillon/tree/refined (a fork of codillon/codillon, LGPL-2.1).
 Each name opens the editor on that program. Correct programs open at the last step; bugs open at the first failed check.
-Deep-link format: `editor/#ex=<name>`, plus `&step=<n|last|fail>`, plus `&embed=1` for iframes.
+Deep-link format: `editor/#ex=<name>`, plus `&step=<n|last|fail>`, `&args=1,2` for `$main`'s arguments, `&embed=1` for iframes (`&fit=1` scales to the frame).
 
 | example | kind | what it shows |
 |---|---|---|
@@ -14,13 +14,19 @@ Deep-link format: `editor/#ex=<name>`, plus `&step=<n|last|fail>`, plus `&embed=
 | [parity-p1](./#ex=parity-p1&step=fail) | bug | gate inverted: @assert and $half's precondition fail at the call |
 | [parity-p2](./#ex=parity-p2&step=fail) | bug | shr_u instead of shr_s: $half's ensures fails with 2147483646 |
 | [parity-p3](./#ex=parity-p3&step=fail) | spec bug | the code is right, the spec is wrong: $h < $x fails at 0 |
-| [isqrt-s1](./#ex=isqrt-s1&step=fail) | bug, passes this run | signed compare; the failing input needs ~695,000 steps (phase 4 searches for it) |
-| [isqrt-s2](./#ex=isqrt-s2&step=fail) | spec bug | < and <= swapped in the spec: ensures fails at n = 4 |
+| [isqrt-s1](./#ex=isqrt-s1&step=fail) | bug, passes this run | signed compare; the input search finds $isqrt(2147483646), which fails at step 695,119, beyond the 100,000-step budget (shown honestly) |
+| [isqrt-args](./#ex=isqrt-args&args=26&step=last) | correct | $main takes an argument: change args= in the URL (here isqrt(26)) |
+| [isqrt-s2](./#ex=isqrt-s2&step=fail) | spec bug | < and <= swapped in the spec: your run (n = 10) holds; the input search finds n = 0 (dashed track above the slider; click to replay) |
 | [isqrt-s3](./#ex=isqrt-s3&step=fail) | bug | search starts at r = 1: invariant and measure fail on loop entry at n = 0 |
 | [gcd-g1](./#ex=gcd-g1&step=fail) | bug | guard tests the wrong variable: remainder by zero (💣) |
 | [gcd-g3](./#ex=gcd-g3&step=fail) | spec bug | invariant y <= x is never established on entry |
 | [triangle-bug](./#ex=triangle-bug&step=fail) | bug | loop guard off by one: a refined local is set outside its type and spills |
 | [spec-errors](./#ex=spec-errors&step=fail) | spec syntax | a malformed predicate (𝄞) and an unknown name (✗) |
-| [hashtable](./#ex=hashtable&step=last) | **work in progress** | spec lines parse and the program runs, but ghost state ($M) is not executed yet, so the representation-invariant checks show "? not checked". Bug variants (b), (c), (d) are coming. |
+| [hashtable](./#ex=hashtable&step=last) | correct | the fixture sequence insert(3,30), insert(11,110), delete(3), lookup(11,−1); ghost map $M and the representation invariant R checked on every operation |
+| [hashtable-a](./#ex=hashtable-a&step=fail) | bug | probe index not wrapped: probe invariant fails, then out-of-bounds trap |
+| [hashtable-b](./#ex=hashtable-b&step=fail) | bug | lookup treats TOMB as EMPTY: $find's result check fails at step 241 (fixture numbering) |
+| [hashtable-b2](./#ex=hashtable-b2&step=fail) | bug | delete writes EMPTY: R breaks at the delete |
+| [hashtable-c](./#ex=hashtable-c&step=fail) | bug | insert skips the existing-key check: invariant k ∉ M fails |
+| [hashtable-d](./#ex=hashtable-d&step=fail) | bug | load factor off by one: ensures R fails, then lookup probes until the 100,000-step budget |
 
 Back to the study: [codillon-spec-viz](../)

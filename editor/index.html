@@ -1,47 +1,103 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="/codillon-spec-viz/editor/codillon-aab2c0f160846f05.css" integrity="sha384-IDeFJUjixoC4qCDHV4f/1WR9bb/vPWtSldNgoetzLkPmR9QoAQHLCcg38z6bk+oD"/>
+    <link rel="stylesheet" href="/codillon-spec-viz/editor/codillon-895dac383fa160c3.css" integrity="sha384-iWJN7ob3pr6EC4B9k3G8uiSvn6QNc5OnxaA0mT6aIdM2vmqGePf68aSPmcOsyuoI"/>
     
     
     <link rel="icon" href="/codillon-spec-viz/editor/favicon-7b39a1b948b8e6e8.ico" integrity="sha384-RuFb1jjOrXdGHaenqsl++de3DxpDlbW0jxmi4Z9GWbvf23t3/fubp0jaSz06g3u/"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Codillon</title>
     <script>
-      // Embed mode (#...&embed=1): mark the document, and keep the parent frame informed
-      // of our height so it can size the iframe to fit.
+      // Embed mode (#...&embed=1): mark the document, keep the parent frame informed of our
+      // height, and (fit=1, the default for embeds narrower than 700 px) scale the whole
+      // editor to the frame's width with CSS zoom (falling back to a transform).
       (function () {
-        function isEmbed() { return /(^#|&)embed=1(&|$)/.test(location.hash); }
+        var de = document.documentElement;
+        function param(name) {
+          var m = location.hash.match(new RegExp("(?:^#|&)" + name + "=([^&]*)"));
+          return m ? m[1] : null;
+        }
+        function isEmbed() { return param("embed") === "1"; }
+        function wantFit() {
+          var f = param("fit");
+          if (f !== null) return f === "1";
+          return isEmbed() && window.innerWidth < 700;
+        }
+        var zoomOK = window.CSS && CSS.supports && CSS.supports("zoom", "1");
+        var scale = 1;
+        function setScale(z) {
+          scale = z;
+          if (zoomOK) {
+            de.style.zoom = z === 1 ? "" : String(z);
+          } else if (document.body) {
+            var b = document.body.style;
+            b.transformOrigin = "0 0";
+            b.transform = z === 1 ? "" : "scale(" + z + ")";
+            b.width = z === 1 ? "" : (100 / z) + "%";
+          }
+        }
+        var fitting = false;
+        function fit() {
+          if (fitting) return;
+          fitting = true;
+          if (!wantFit()) {
+            if (scale !== 1) setScale(1);
+          } else {
+            setScale(1); // measure the editor at its natural size
+            var natural = Math.max(de.scrollWidth, document.body ? document.body.scrollWidth : 0);
+            var z = Math.min(1, window.innerWidth / Math.max(natural, 1));
+            setScale(Math.floor(z * 1000) / 1000);
+          }
+          fitting = false;
+        }
         var last = -1;
         function post() {
           if (!isEmbed() || window.parent === window) return;
-          var h = Math.ceil(Math.max(document.documentElement.scrollHeight,
-                                     document.body ? document.body.getBoundingClientRect().bottom : 0));
+          // the height the parent must give the frame, after scaling
+          var h = document.body
+            ? document.body.getBoundingClientRect().bottom
+            : de.getBoundingClientRect().height;
+          if (!zoomOK && scale !== 1 && document.body) {
+            h = document.body.offsetHeight * scale;
+          }
+          h = Math.ceil(Math.max(h, zoomOK || scale === 1 ? de.scrollHeight * (zoomOK ? 1 : scale) : 0));
           if (h !== last) {
             last = h;
             window.parent.postMessage({ type: "codillon-height", height: h }, "*");
           }
         }
+        var queued = false;
+        function update() {
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(function () {
+            queued = false;
+            fit();
+            post();
+          });
+        }
         function apply() {
-          document.documentElement.classList.toggle("embed", isEmbed());
-          post();
+          de.classList.toggle("embed", isEmbed());
+          update();
         }
         apply();
         window.addEventListener("hashchange", apply);
-        window.addEventListener("load", post);
-        var ro = new ResizeObserver(post);
-        ro.observe(document.documentElement);
+        window.addEventListener("resize", update);
+        window.addEventListener("load", update);
+        var ro = new ResizeObserver(update);
+        ro.observe(de);
         document.addEventListener("DOMContentLoaded", function () {
           ro.observe(document.body);
-          new MutationObserver(function () { requestAnimationFrame(post); })
+          new MutationObserver(update)
             .observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["height", "class"] });
         });
       })();
     </script>
-  <link rel="modulepreload" href="/codillon-spec-viz/editor/codillon-78f0c15115b92af3.js" crossorigin="anonymous" integrity="sha384-kf4CTLhSsnm0R0/Lzclag5gHZ26UQnNuMeU/SLbDcKnkYhzmTq1aiydH1BxReRKP"><link rel="preload" href="/codillon-spec-viz/editor/codillon-6529cb03dfea8d3b_bg.wasm" crossorigin="anonymous" integrity="sha384-J+OF9mMKVUs3bX1grXGlj9DE3ru7cfLXMWLS1ty9GvY0ewiIkof+wkcpZHTXapFe" as="fetch" type="application/wasm"></head>
+  <link rel="modulepreload" href="/codillon-spec-viz/editor/codillon-759fb4d920d45601.js" crossorigin="anonymous" integrity="sha384-wjYPbh5N96vK//5qsRQ2eqqSO7FSFhe6NrXW16aK4/y3dXGI74ca7ghDwnD/6EfH"><link rel="preload" href="/codillon-spec-viz/editor/codillon-64b487587691fab5_bg.wasm" crossorigin="anonymous" integrity="sha384-BPfiOjZqTT5clC6FmXwE5Fr5OlXPOmXp5YzB5QLdYQPdVm8cMc02FMN2bXdrzkAn" as="fetch" type="application/wasm"></head>
   <body>
 <script type="module">
-import init, * as bindings from '/codillon-spec-viz/editor/codillon-78f0c15115b92af3.js';
-const wasm = await init({ module_or_path: '/codillon-spec-viz/editor/codillon-6529cb03dfea8d3b_bg.wasm' });
+import init, * as bindings from '/codillon-spec-viz/editor/codillon-759fb4d920d45601.js';
+const wasm = await init({ module_or_path: '/codillon-spec-viz/editor/codillon-64b487587691fab5_bg.wasm' });
 
 
 window.wasmBindings = bindings;
