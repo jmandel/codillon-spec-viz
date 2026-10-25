@@ -66,6 +66,14 @@ A proof the kernel found is drawn exactly like one the student wrote. Concretely
   every line's reason at once;
 - ex falso and never-run cases say so in words on the line.
 
+**Naming rule (review 25 B1).** A fact prints one way everywhere it appears: its chip, a label that names it,
+every account that uses it and a stale hint all show the text rendered in the view of the fact's birth line
+(the names the student sees on that line). A cup's goal and an account's reason are rendered in the view of the
+cup's line. When the two views name one value differently (`local.get $y; local.set $x` moves the value of `y`
+into `x`), the account says so beside the fact: `② y ≠ 0 [y of line 119 is x here] — br_if on line 119 not
+taken`. Facts are attributed to their birth line, never to the `local.get` of a handle that brings them back to
+the top of the lane.
+
 The old account was printed in the kernel's term syntax (`and(mul($x, 2), 1)`). One infix printer now renders every
 proposition the student sees: chips, cups, accounts and error messages.
 
@@ -199,7 +207,16 @@ hovering, read what each cup needs and see where it came from?*
 - **Mostly** for primality and the hash table: lines whose code is wider than the window (`block … (fact …)`,
   long headers) push their label off the right edge. Their propositions are in the code itself, and the cups they
   feed name their line, but a student must scroll to read the label.
-- **The reasons are plainer, not yet forward.** Unknowns are letters with a one-time definition (`x>>1 = h, so
+- **Forward accounts (polish round).** A direct proof is now told forward from the procedure's own run on the
+  facts with the goal translated but not negated: equalities with a unit coefficient are solved and substituted,
+  two opposite bounds that meet after integer tightening force an equality, and the goal's linear form must end
+  as a constant, a bound given by one fact, or a range. Even-shift reads `x is even, so x = 2a. x>>1 = h means
+  2h ≤ x ≤ 2h + 1. So 2h ≤ 2a ≤ 2h + 1, which forces h = a. So (x>>1)·2 − x = 2h − x = 2h − 2a = 0. Nothing
+  wraps: (x>>1)·2 = 2h stays below 2³²; (x>>1)·2 − x would wrap only if 2h + 1 ≤ x, but 2h = x.` When some case
+  does not close forward (Fourier–Motzkin, a split on a comparison inside the goal), the refutation account
+  below is kept. Accounts are drawn in a column right of the code on wide windows, one note per account aligned
+  with its line; labels that do not fit right of the code sit in the gap below it.
+- **The reasons are plainer, not yet forward** (before the polish round). Unknowns are letters with a one-time definition (`x>>1 = h, so
   2h ≤ x ≤ 2h + 1`), predicate facts read as `x is even (x&1 = 0)`, and Fourier–Motzkin is glossed; but a reason is
   still a case analysis on the goal failing (`If (x>>1)·2 − x > 0: then h − a would be ≥ 1 and ≤ 0 at once`),
   not the forward chain of the even-shift benchmark (`2h ≤ 2a ≤ 2h+1 forces h = a`). Extracting forward chains from
