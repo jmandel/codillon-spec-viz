@@ -16,6 +16,11 @@ deterministic decision procedure, and checks everything with a kernel that has n
   bent, what v2 changes and costs, and what is not done yet;
 - the live v2 editor at [`editor/v2/`](../editor/v2/) (fork branch `proofs`).
 
+**Update, 2026-10-24: automatic proofs (R5a).** Version 2 no longer asks for routine `prove k` lines. The kernel
+feeds each proof cup from the relevant in-scope facts and draws what it used, so the refinements stay in the types and
+the proofs stay visible: every cup states its proposition and source line, and its reason is one keystroke away.
+`prove k` remains an optional override. See [24 · Automatic subsumption](24-automatic-subsumption.md).
+
 The rest of this document is unchanged. The v1 composition below (the three layers, the six states, the
 prototype verdicts) remains the record of the first iteration, and its drawing decisions carry into v2.
 

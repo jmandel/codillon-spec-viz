@@ -6,6 +6,17 @@ iteration. Version 2 (research 15–17, `v2-examples/`, the editor at `editor/v2
 core. This note says what v1 got right, where it bent Codillon out of shape, what v2 changes, what v2 costs, and what
 is not done yet.
 
+> **Update, 2026-10-24: automatic proofs (R5a).** The `prove k` lines described below (§3 "proof cups", "`prove k`
+> instead of search"; §4 "proof lines to write", "a positional `prove k`"; the isqrt listing in §6) are no longer
+> required. Refinements stay in the types, and the kernel now feeds a cup itself when the decision procedure proves its
+> goal from the in-scope facts relevant to it, keeping only the facts it used and drawing a wire from each. Every cup
+> shows its proposition and source line, with its reason one keystroke away (or all at once with "show all proofs").
+> `prove k` remains an optional override, used once in `primality.wat` (for speed) and as the seeded wrong override in
+> `isqrt-wrong-cup.wat`. What students still write are facts: invariants, guards, refined locals and lemmas for
+> nonlinear steps. Rationale, costs, soundness and the effect on every example:
+> [24 · Automatic subsumption](24-automatic-subsumption.md); the rule edits are marked **[R5a]** in
+> [16](16-v2-design.md). The text below is kept as written.
+
 ## 1. What v1 did well
 
 - **The six-state model.** Refuted and replayed; refuted, not yet replayed; held on this run only; assumed or vacuous;
