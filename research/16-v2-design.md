@@ -1141,9 +1141,17 @@ gutter glyphs, far-right darkred commentary. v2 adds:
   each older value with the line that set it (`i@12`), so a fact about the old `i` and a cup about the new one never
   read alike; φ values at a loop head or join print plainly inside the loop or after the join. The stale-fact hint uses
   the same names (`i@12 < 8 is about the i set at line 12`).
-- **[R5a] Layout.** Proposition text after a cup or chip uses the note font, at most 36 characters on the line itself
-  (longer text is cut with `…` and given whole in the account); the account wraps in the gap below the line, the width of
-  the code column, and pushes nothing else. The **show all proofs** toggle is off by default and remembered per viewer.
+- **[R5a] Layout (as built).** Every line with proof cups or drawn chips carries a **label** right of its code, in
+  the note font at 13 pt, up to two lines: `gives (x·2)&1 ≠ 0 if not taken` for each drawn fact born there (with
+  `— stale after line N` once a `local.set` or store frays it), and `needs ⟨G⟩ ✓ from lines 33, 37` / `✓ fact of line 8`
+  / `✓ true for every value` / `⊥ … never runs` / `⏱ not proved: checked when run` for each cup (plus `assuming …` and
+  `relative to the checks on …`). The label shares the row with the darkred commentary and both shrink. The full
+  **account** (what the cup needs and for which instruction, each fact used with ①… and its origin, `found
+  automatically`, and the why lines) is a box just below the caret's line and below a hovered line; the rows are
+  45 px apart, so it overlays the lines under it rather than reflowing the editor. **Show all proofs** (a toggle at
+  the bottom right, off by default, remembered per viewer; `#proofs=all` in a link) adds each line's reason, two lines,
+  under its label. `#cursor=N` opens a link with line N's account shown. Long propositions in a label are cut at 56
+  characters with `…`; the account always has them whole.
 - **[R5a] The ex-falso glyph.** A cup fed only because its facts contradict each other shows `⊥` inside it (as an
   evaluation-fed cup shows `=`), so a solid cup in a region that never runs is never mistaken for an ordinary proof.
 - **Gradual checks**: an unfed cup is drawn empty with Codillon's fade-up gradient, plus a small stopwatch tick to say

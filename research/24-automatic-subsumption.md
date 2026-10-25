@@ -184,3 +184,23 @@ Minimization dominates where it costs anything: the expensive `$from_agrees` arm
 each, because its proof is inherently case-heavy (about 200 cases even on its minimal facts). Chunked (halving)
 minimization was tried and was slower there, since the costly calls are the successful ones. That arm is exactly what
 `prove k` is still for, and the example says so in a comment.
+
+## 8. The drawing as built, and a QA reading
+
+Built in the editor (`src/proof_view.rs`, `src/line.rs`, `public/codillon.css`): the label on every proof line, the
+account below the caret's or hovered line, **show all proofs**, `⊥` in a cup fed ex falso, versioned names
+(`i@296`, `x₀`) in accounts and hints, and wires from each fact an automatically fed cup used. Screenshots of every
+example, plain and with show all proofs, were taken headless and read with one question: *could a student, without
+hovering, read what each cup needs and see where it came from?*
+
+- **Yes** for parity (and its two bug variants), isqrt (and its three variants), even-shift, gcd (and variants),
+  prove-explain and hashtable-stale: every proof line states its need and its source line, every fact used is
+  labelled on its own line, stale facts say where they go stale, and never-run lines say so in words.
+- **Mostly** for primality and the hash table: lines whose code is wider than the window (`block … (fact …)`,
+  long headers) push their label off the right edge. Their propositions are in the code itself, and the cups they
+  feed name their line, but a student must scroll to read the label.
+- **The reasons are plainer, not yet forward.** Unknowns are letters with a one-time definition (`x>>1 = h, so
+  2h ≤ x ≤ 2h + 1`), predicate facts read as `x is even (x&1 = 0)`, and Fourier–Motzkin is glossed; but a reason is
+  still a case analysis on the goal failing (`If (x>>1)·2 − x > 0: then h − a would be ≥ 1 and ≤ 0 at once`),
+  not the forward chain of the even-shift benchmark (`2h ≤ 2a ≤ 2h+1 forces h = a`). Extracting forward chains from
+  the procedure's eliminations is open work.
