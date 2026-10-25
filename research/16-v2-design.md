@@ -615,7 +615,10 @@ allows (§3.3); only then does its parent use it. Two rules apply to every row w
 | `extend_i32_u(a)` | `A` |
 | `extend_i32_s(a)`, signed reading `s(x)` | `A − 2ʷ·σ` (or `A + (2⁶⁴ − 2³²)·σ` for extend), `σ ∈ [0,1]` with `2ʷ⁻¹·σ ≤ A ≤ 2ʷ⁻¹ − 1 + 2ʷ⁻¹·σ` |
 | `shr_s(a, k)` (constant) | `D + 2ʷ·τ`, `τ ∈ [0,1]`, `D` a signed variable in `[−2ʷ⁻¹⁻ᵏ, 2ʷ⁻¹⁻ᵏ)` with `2ᵏ·D ≤ S(a) ≤ 2ᵏ·D + 2ᵏ − 1`, where `S(a)` is the signed reading below |
-| `div_s`, `rem_s`, rotations, `xor`/`or`, `and` with other masks, non-constant shifts | opaque leaf |
+| `div_s(a, c)`, `rem_s(a, c)` (constant `c ≠ 0`) | truncation toward zero on the signed reading: a signed quotient `D` with `\|c·D\| ≤ \|S(a)\|` and remainder `S(a) − c·D` of the sign of `S(a)` with magnitude `< \|c\|`, using the sign split of `S(a)` already made; `div_s` result taken mod 2ʷ; `c = ±1` special-cased (INT_MIN / −1 is left to its R25 cup) (added 2026-10-24) |
+| comparison of two constants | the constant 0 or 1 |
+| `and`/`or`/`xor` of two comparisons (0/1 values) | the corresponding boolean combination (a case split) |
+| rotations, `xor`/`or` of non-boolean terms, `and` with other masks, non-constant shifts | opaque leaf |
 | comparison or `eqz` used as a value; `select`; unfolded predicate `if` | `ite(cond, t, e)`: a **case split** (3.4) |
 | `call $p` non-recursive predicate | its body term (R29) |
 
@@ -695,6 +698,7 @@ source of nondeterminism: variable numbering is the order of first appearance in
 | no consumer | `prove has nothing to feed` |
 | `k` too large | `only 3 facts in scope` |
 | **[R5a]** automatic feeding fails, not a cap | the cup's ordinary R5 error, `needs ⟨G⟩; nothing feeds it`, followed inline by the countermodel against the relevant facts: `(the 3 facts about these values allow i=8)` |
+| any shown countermodel (added 2026-10-24) | **checked before it is shown**: the model's values for parameters, local versions and call results are evaluated with the reference interpreter; only if every fact in scope holds and the goal fails is it shown, as `it fails for x = 1073741824: x·2 wraps to −2147483648` when every value is a parameter. Otherwise it is dropped and boundary values are searched (0, ±1, ±2, 2ᵏ and 2ᵏ±1 for k ∈ {7, 8, 15, 16, 30, 31} (also 32, 62, 63 for i64), the extremes, the harness edges, the module's constants; at most 1024 assignments); if none fails: `no counterexample found among the boundary values tried`. Facts that read memory cannot be evaluated, so for them nothing is shown. A relaxation's model is never presented as a counterexample |
 | **[R5a]** automatic feeding hits a cap (and the 8 closest fail) | `needs ⟨G⟩; nothing feeds it (the 14 facts about these values exceed the solver's limits (too many cases); the 8 closest (up to ring 2) allow …; choose facts with prove k)` |
 | **[R5a]** budget used up | `… (this function used its budget of 16384 automatic proof cases)` |
 
