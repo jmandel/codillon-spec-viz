@@ -67,12 +67,13 @@
     <li><b>The account</b> under line 25 says what the cup needs, which fact was used, and why that fact is enough:</li>
   </ul>
   <pre class="code">needs (x&gt;&gt;1)·2 − x = 0 — the function's result cup (line 25)
-using ① x is even (x&amp;1 = 0) — the parameter's type, line 17 (found automatically)
-why: Let x = 2a + x&amp;1, with 0 ≤ x&amp;1 ≤ 1; x&gt;&gt;1 = h, so 2h ≤ x ≤ 2h + 1.
-        (x&gt;&gt;1)·2 is even ((x&gt;&gt;1)·2 = 2h); with ① the goal cannot fail.
-        If computing (x&gt;&gt;1)·2 − x does not wrap around and (x&gt;&gt;1)·2 − x &gt; 0: then h − a would be ≥ 1 and ≤ 0 at once, which is impossible.</pre>
-  <p>The kernel names the unknowns: <code>h</code> for <code>x&gt;&gt;1</code>, and <code>a</code> for half of <code>x</code>. It states what the shift means (2h ≤ x ≤ 2h + 1), and it shows that with ① the goal cannot fail. <code>$back_s</code> does the same with a signed shift (line 34: “needs (x &gt;&gt;ₛ 1)·2 − x = 0 ✓ from line 26”). The harness <code>$back_harness</code> doubles any <code>x</code> with <code>i32.shl</code>, so the call’s cup on line 39 holds for every value, and its <code>unreachable</code> on line 42 is labelled “⊥ the facts of line 41 contradict each other: this line never runs”.</p>
-  <div class="callout"><p><b>Still open.</b> The account is a case analysis on the goal failing (“If … &gt; 0: then h − a would be ≥ 1 and ≤ 0 at once”). It is not yet the forward chain a person would write: 2h ≤ 2a ≤ 2h + 1 forces h = a. Extracting forward chains from the procedure’s steps is open work (research 24 §8).</p></div>
+using ① x is even (x&amp;1 = 0) — the parameter's type, line 17 (found automatically; each is needed)
+        and what $is_even computes (unfolded)
+why: x is even, so x = 2a. x&gt;&gt;1 = h means 2h ≤ x ≤ 2h + 1.
+        So 2h ≤ 2a ≤ 2h + 1, which forces h = a. So (x&gt;&gt;1)·2 − x = 2h − x = 2h − 2a = 0.
+        Nothing wraps: (x&gt;&gt;1)·2 = 2h stays below 2³²; (x&gt;&gt;1)·2 − x would wrap only if 2h + 1 ≤ x, but 2h = x.</pre>
+  <p>The account reads forward, the way a person would argue it. ① says <code>x</code> is even, so it names half of <code>x</code> as <code>a</code> (x = 2a), and names the shift <code>h</code>. Shifting right by 1 means 2h ≤ x ≤ 2h + 1, so 2h ≤ 2a ≤ 2h + 1, which forces h = a, and the result is 2h − 2a = 0. The last line checks that no step wraps around. “each is needed” means no fact in the list can be dropped, and “what $is_even computes (unfolded)” says the kernel looked inside the predicate. <code>$back_s</code> does the same with a signed shift (line 34: “needs (x &gt;&gt;ₛ 1)·2 − x = 0 ✓ from line 26”). The harness <code>$back_harness</code> doubles any <code>x</code> with <code>i32.shl</code>, so the call’s cup on line 39 holds for every value, and its <code>unreachable</code> on line 42 is labelled “⊥ the fact of line 41 cannot hold: this line never runs”.</p>
+  <div class="callout"><p><b>Not every account reads this well yet.</b> Where the procedure has to split into cases, the account still lists them (“If sq_le(r, n) is false: then r·r − n would be ≥ 1 and ≤ 0 at once, which is impossible”), as on isqrt’s exits in section 2. Turning more of those into forward chains is open work (research 24 §8).</p></div>
   <h3>What <code>prove k</code> is still for</h3>
   <p><code>prove k</code> remains as an optional override. It names the facts, as the <code>k</code> newest in the lane, for the next cup, and the kernel never second-guesses it. It is never required where the kernel can feed the cup on its own. It earns its place in three cases:</p>
   <ul>
