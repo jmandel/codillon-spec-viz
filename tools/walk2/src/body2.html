@@ -3,17 +3,18 @@
   <h2>2 · Reading a line</h2>
   <p>Every instruction already has a fraction just left of its text, with its inputs as cups above a rule and its outputs as shapes below it. Version 2 keeps that layout and adds four things.</p>
   <ul>
-    <li><b>Proof cups</b> are diamonds in the same fraction, to the right of the value cups. A division has a diamond for <code>b ≠ 0</code>. A load or store has one for its bounds. A call to <code>$half</code> has one for <code>$is_even($x)</code>. A loop’s back-edge has one for each invariant, and <code>unreachable</code> has one for False.</li>
-    <li><b>Facts</b> are born at fixed points: an <code>if</code> or <code>br_if</code> arm, a block’s <code>end</code>, a call’s result, function entry, a <code>prove</code> line or a <code>lemma</code> line. A fact stays in the lane until its block arm ends, like a path condition. Facts are never popped, so ordinary lines keep their stack effect.</li>
-    <li><b>Wires.</b> Every fed cup has a thin purple wire from the fact that feeds it. The wire is always drawn, not only on hover. A cup is fed in exactly one of two ways. Either a <code>prove</code> line directly above feeds it, or the kernel finds the identical fact in the lane (an exact match, not a search).</li>
-    <li><b>Fraying.</b> When <code>local.set $x</code> rebinds a variable that a fact is about, that fact’s ribbon frays. It is still a true fact about the <i>old</i> value, so it cannot feed a cup about the new one.</li>
+    <li><b>Proof cups</b> are diamonds in the same fraction, to the right of the value cups. A division has a diamond for <code>b ≠ 0</code>. A load or store has one for its bounds. A call to <code>$half</code> has one for <code>$is_even($x)</code>. A loop’s back-edge has one for each invariant, and <code>unreachable</code> has one for False. Every line with a proof cup also carries a <b>label</b>, always on: what the cup needs, then ✓ and where it came from (“needs u(r + 1) ≤ 65535 ✓ from line 37”), or ⏱ “not proved: checked when run”.</li>
+    <li><b>Facts</b> are born at fixed points: an <code>if</code> or <code>br_if</code> arm, a block’s <code>end</code>, a call’s result, a parameter’s type at function entry, a loop’s block type, and a <code>lemma</code> or <code>unfold</code> line. The line where a fact is born is labelled too (“gives u(r) &lt; 65535 if not taken”). A fact stays in the lane until its block arm ends, like a path condition. Facts are never popped, so ordinary lines keep their stack effect.</li>
+    <li><b>Wires.</b> Every fed cup has a thin purple wire from each fact it used, always drawn, not only on hover. A cup is fed in one of three ways. The identical fact is already in the lane (lookup). The goal has only constants in it (evaluation). Or the kernel proves the goal from the in-scope facts that mention the same values, then drops every fact the proof did not need, and draws a wire from each one that is left. Section 3 walks through one. An optional <code>prove k</code> line directly above a cup overrides that third way and names the facts itself.</li>
+    <li><b>The account.</b> Put the caret on a line, or open a link ending in <code>#cursor=N</code>, and a short account opens under it: what the cup needs, each fact used with its line and origin, and why those facts are enough. The editor’s <b>show all proofs</b> button (or <code>#proofs=all</code> in a link) opens every line’s account at once.</li>
+    <li><b>Fraying.</b> When <code>local.set $x</code> rebinds a variable that a fact is about, that fact’s ribbon frays, and its label says “stale after line N”. It is still a true fact about the <i>old</i> value, so it cannot feed a cup about the new one.</li>
   </ul>
   <figure class="dia"><figcaption><span class="dtag">DIAGRAM</span>The fact lane as an idea. The value stack (gray curves) and the lane (purple) are separate. Here a <code>br_if</code> enters <code>$y ≠ 0</code> on its fall-through, and the <code>rem_u</code> two lines later finds that exact fact. The editor draws the same wire in the gcd loop (the version 2 section of the <a href="gcd-as-a-type.html#v2">gcd page</a>).</figcaption>
     <svg viewBox="0 0 600 210" width="600" role="img" aria-label="fact lane diagram">
-      <text class="dn" x="10" y="40">122</text><text class="dc" x="230" y="40">br_if $done</text>
-      <text class="dn" x="10" y="80">123</text><text class="dc" x="250" y="80">local.get $x</text>
-      <text class="dn" x="10" y="120">124</text><text class="dc" x="250" y="120">local.get $y</text>
-      <text class="dn" x="10" y="160">125</text><text class="dc" x="230" y="160">i32.rem_u</text>
+      <text class="dn" x="10" y="40">119</text><text class="dc" x="230" y="40">br_if $done</text>
+      <text class="dn" x="10" y="80">120</text><text class="dc" x="250" y="80">local.get $x</text>
+      <text class="dn" x="10" y="120">121</text><text class="dc" x="250" y="120">local.get $y</text>
+      <text class="dn" x="10" y="160">122</text><text class="dc" x="230" y="160">i32.rem_u</text>
       <rect x="160" y="86" width="22" height="9" fill="#6A5ACD"/><rect x="180" y="126" width="22" height="9" fill="#6A5ACD"/>
       <path d="M171,95 C171,125 141,130 141,150 M191,135 C191,142 163,140 163,150" fill="none" stroke="#ddd" stroke-width="7"/>
       <rect x="130" y="150" width="22" height="12" fill="#e8e6f4" stroke="#6A5ACD"/><rect x="152" y="150" width="22" height="12" fill="#e8e6f4" stroke="#6A5ACD"/>
@@ -26,11 +27,11 @@
       <text class="dl" x="335" y="160" fill="#483D8B">proof cup: b ≠ 0, fed by lookup</text>
       <text class="dl s" x="196" y="200">lane column</text>
     </svg></figure>
-  <h3><code>prove k</code></h3>
-  <p>Some cups need a step of arithmetic, not a lookup. <code>prove k</code> takes the <code>k</code> most recent facts in the lane as hypotheses, drawn as <code>k</code> diamond cups on its own fraction with wires back to where those facts were born. It proves the goal of the cup it feeds: the first unfed cup on the next ordinary line. The decision procedure (research 16 §3) is linear integer arithmetic over unsigned readings. It handles wraparound with explicit wrap variables, treats a monomial like <code>r·r</code> as an atom, and has fixed caps of 64 terms, 24 variables, 32 atoms and 256 cases. Nonlinear facts beyond monomials have to be lemmas. When a <code>prove</code> fails, its commentary names the hypotheses it actually took, which is how you catch the wrong <code>k</code>.</p>
-  <p>Here is the isqrt loop in the real editor. The loop’s block type on line 34 is the invariant <code>$sq_le(r, n)</code>. Line 38, <code>prove 2</code>, takes the two most recent lane facts, the invariant and the local’s refinement <code>u($r) ≤ 65535</code>. Because it feeds the taken edge of the <code>br_if</code> below it, it also gets that branch’s own condition, <code>u($r) ≥ 65535</code>. Together these pin <code>r = 65535</code>, and the step proves the exit fact <code>$is_isqrt(r, n)</code> that <code>block $done</code> (line 32) requires of every branch to it. Line 57 (<code>prove 2</code>) proves that <code>r + 1</code> still fits the refined local, using the guard’s fall-through <code>u($r) &lt; 65535</code>. Line 59 (<code>prove 3</code>) proves that the back-edge supplies the invariant.</p>
+  <h3>Arithmetic the kernel does for you</h3>
+  <p>Some cups need a step of arithmetic, not a lookup. The kernel collects the facts in scope that share a value with the goal, and runs one decision procedure on them (research 16 §3). The procedure is linear integer arithmetic over unsigned readings. It handles wraparound with explicit wrap variables, treats a monomial like <code>r·r</code> as an atom, and has fixed caps of 64 terms, 24 variables, 32 atoms and 256 cases. It tries the nearest facts first, in a fixed order, so the same text gets the same proof on every machine. When it succeeds, the kernel keeps only the facts the proof needed, and those are the wires you see.</p>
+  <p>Here is the isqrt loop in the real editor, with every line’s account open (<code>#proofs=all</code>). There is no proof line in it. The loop’s block type on line 33 is the invariant <code>sq_le(r, n)</code>, that is, r² ≤ n. <code>br_if $done</code> on line 37 leaves <code>block $done</code>, so its cup needs the block’s fact <code>is_isqrt(r, n)</code>. Its label reads “✓ from lines 33, 37”: the invariant, and the branch’s own condition <code>65535 ≤ u(r)</code>, which makes (r+1)² at least 2³², more than any 32-bit <code>n</code>. Line 54, <code>local.set $r</code>, needs <code>u(r + 1) ≤ 65535</code> for the refined local, and gets it from the guard’s fall-through <code>u(r) &lt; 65535</code> on line 37. The back-edge on line 55 needs the invariant again for the new <code>r</code>. It gets it from line 50’s fall-through, (r+1)² ≤ n, because the new <code>r</code> is the old <code>r + 1</code>.</p>
   <div class="emb" data-id="e2"></div>
-  <figure class="dia"><figcaption><span class="dtag">DIAGRAM</span>The shape of a rule card. The kernel is 35 such cards (R1–R35 in research 16 §2). Each one says what a line needs, what it adds, how it is drawn and what its error says. Every error appears as commentary at the far right of the line plus an empty cup. There is no other channel.</figcaption>
+  <figure class="dia"><figcaption><span class="dtag">DIAGRAM</span>The shape of a rule card. The kernel is 35 such cards (R1–R35 in research 16 §2), plus R5a, the card for automatic feeding. Each one says what a line needs, what it adds, how it is drawn and what its error says. Every error appears as commentary at the far right of the line plus an empty cup. There is no other channel.</figcaption>
     <svg viewBox="0 0 760 170" width="760" role="img" aria-label="rule card R24">
       <rect x="4" y="4" width="752" height="160" rx="6" fill="#fffff6" stroke="#bbb"/>
       <text class="dl" x="18" y="26" font-weight="700">R24 · division and remainder by zero</text>
@@ -40,4 +41,52 @@
       <text class="dl" x="18" y="138">ERROR</text><text class="dc" x="120" y="138" font-size="15" fill="darkred">needs ⟨b ≠ 0⟩; nothing feeds it</text>
       <text class="dl s" x="18" y="156">gradual mode: the unfed cup becomes a check before the instruction (R35)</text>
     </svg></figure>
+</section>
+
+<section id="sauto" class="sec">
+  <h2>3 · Where did the <code>prove</code> lines go?</h2>
+  <p>An earlier build of this editor made you write a <code>prove k</code> line above every cup that needed arithmetic. It meant “hand the <code>k</code> newest lane facts to the decision procedure, and prove the next cup”. The user’s reaction: <i>“I sort of thought the refinements were going to be part of the types themselves … Are you sure there need to be these separate proof lines?”</i> They were right. A refinement type is a type, and checking that one refinement implies another is the type checker’s job in every refinement-type system (Liquid Haskell, F*, Flux). <code>prove k</code> had turned that check into a proof script. The count <code>k</code> came from the lane’s stack order, not from the mathematics, and the line never said what it proved. So the routine <code>prove</code> lines are gone from every example, and the kernel feeds those cups itself (card R5a, <a href="../research/24-automatic-subsumption.html">research 24</a>).</p>
+  <p>The proofs are not gone. The user’s second requirement was <i>“the propositions and proofs need to be visible and comprehensible.”</i> <b>Automation removes the typing of proofs, not their visibility.</b> A proof the kernel finds is drawn exactly like one you wrote: the proposition on the line, a wire from each fact used, and an account you can open.</p>
+  <h3>Worked example: an even number, shifted and doubled</h3>
+  <p>The user’s own test case: take an even <code>x</code>, shift it right by 1, multiply by 2, and subtract the original. The answer is 0. Here it is as <code>$back_u</code> in <code>even-shift.wat</code>, with an unsigned shift:</p>
+  <pre class="code">(func $back_u (export "back_u") (param $x (i32 | $is_even)) (result (i32 | (i32.eqz v)))
+  local.get $x
+  i32.const 1
+  i32.shr_u
+  i32.const 2
+  i32.mul
+  local.get $x
+  i32.sub
+)</pre>
+  <p>The whole spec is in the types. The parameter is <code>(i32 | $is_even)</code>. The result is <code>(i32 | (i32.eqz v))</code>: a value <code>v</code> for which <code>i32.eqz</code> is true, that is, 0. The body is the arithmetic and nothing else. Below is the editor, opened with the caret on the closing line (<code>#cursor=27</code>). Line numbers in this text are the editor’s, which skip comment lines.</p>
+  <div class="emb" data-id="eauto"></div>
+  <p>Read it top to bottom, without hovering:</p>
+  <ul>
+    <li><b>Line 17</b>, the header, is labelled “gives is_even(x) (parameter)”. The parameter’s type is a fact in the lane from the first instruction on.</li>
+    <li><b>Line 25</b>, the closing parenthesis, holds the result cup. Its label reads “needs (x&gt;&gt;1)·2 − x = 0 ✓ from line 17”, and a purple wire runs from line 17 down to the diamond.</li>
+    <li><b>The account</b> under line 25 says what the cup needs, which fact was used, and why that fact is enough:</li>
+  </ul>
+  <pre class="code">needs (x&gt;&gt;1)·2 − x = 0 — the function's result cup (line 25)
+using ① x is even (x&amp;1 = 0) — the parameter's type, line 17 (found automatically)
+why: Let x = 2a + x&amp;1, with 0 ≤ x&amp;1 ≤ 1; x&gt;&gt;1 = h, so 2h ≤ x ≤ 2h + 1.
+        (x&gt;&gt;1)·2 is even ((x&gt;&gt;1)·2 = 2h); with ① the goal cannot fail.
+        If computing (x&gt;&gt;1)·2 − x does not wrap around and (x&gt;&gt;1)·2 − x &gt; 0: then h − a would be ≥ 1 and ≤ 0 at once, which is impossible.</pre>
+  <p>The kernel names the unknowns: <code>h</code> for <code>x&gt;&gt;1</code>, and <code>a</code> for half of <code>x</code>. It states what the shift means (2h ≤ x ≤ 2h + 1), and it shows that with ① the goal cannot fail. <code>$back_s</code> does the same with a signed shift (line 34: “needs (x &gt;&gt;ₛ 1)·2 − x = 0 ✓ from line 26”). The harness <code>$back_harness</code> doubles any <code>x</code> with <code>i32.shl</code>, so the call’s cup on line 39 holds for every value, and its <code>unreachable</code> on line 42 is labelled “⊥ the facts of line 41 contradict each other: this line never runs”.</p>
+  <div class="callout"><p><b>Still open.</b> The account is a case analysis on the goal failing (“If … &gt; 0: then h − a would be ≥ 1 and ≤ 0 at once”). It is not yet the forward chain a person would write: 2h ≤ 2a ≤ 2h + 1 forces h = a. Extracting forward chains from the procedure’s steps is open work (research 24 §8).</p></div>
+  <h3>What <code>prove k</code> is still for</h3>
+  <p><code>prove k</code> remains as an optional override. It names the facts, as the <code>k</code> newest in the lane, for the next cup, and the kernel never second-guesses it. It is never required where the kernel can feed the cup on its own. It earns its place in three cases:</p>
+  <ul>
+    <li><b>Speed.</b> Relevance is transitive, so in a long function a goal can pull in many facts. In primality’s lemma <code>$from_agrees</code>, the block fact on line 146 has 19 relevant facts, and finding and trimming the proof costs about 20 ms on every check. Line 145, <code>prove 7</code>, is the one override left in the examples, and its comment says why. It names the three fact handles and the lemma results just above, and the check becomes instant. Its account lists all seven facts and marks one “(not needed)”. The cup it feeds says “✓ by the prove on line 145”.</li>
+    <li><b>Teaching.</b> An author can pin the derivation they want drawn.</li>
+    <li><b>Steering, in vericoding.</b> An LLM can name the facts it intends, so a failure names those facts. When the relevant facts exceed the procedure’s caps, the cup’s line asks for exactly this: “choose facts with prove k”.</li>
+  </ul>
+  <div class="emb" data-id="eprove"></div>
+  <p>Because an override is final, a wrong one is a bug you can see. <code>isqrt-wrong-cup</code> (§5) has one.</p>
+  <h3>Where automation stops</h3>
+  <ul>
+    <li><b>It never invents a fact.</b> The kernel proves goals from the facts the text states. The loop invariant, the guard, the refined local and the lemma still have to be written. Delete the loop’s fact in isqrt and both exits go unfed (§5). The bugs you seed now are missing or wrong <i>facts</i>, not missing proof lines.</li>
+    <li><b>Nonlinear facts need lemmas.</b> The procedure treats a product such as <code>r·r</code> as an opaque atom. From (r+1)² ≤ n alone it cannot conclude r + 1 ≤ 65535, and it says so: “could not decide (inexact step on r); add a lemma”. A lemma is a function whose header states the fact, cited with a <code>lemma</code> line. Primality’s facts about division and square roots (<code>div_shrinks</code>, <code>sqrt_suffices</code>) are lemmas, here taken as instructor axioms.</li>
+    <li><b>Caps.</b> Every call has the fixed caps above, and each function has a budget of 16,384 cases for automatic proofs. A cup past them is unfed, and its line names the cap. Nothing is ever “unknown” or machine-dependent.</li>
+    <li><b>Memory.</b> No fact about memory survives a store (§6). Automation does not change that.</li>
+  </ul>
 </section>

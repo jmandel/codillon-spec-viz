@@ -1,41 +1,44 @@
 
 <section id="s7" class="sec">
-  <h2>7 · What the checker hands the editor</h2>
-  <p>For each function the kernel returns a list of cups, line errors and lane chips, and the editor draws only from that list (research 16 §4.3). Each cup records its line, the operand it sits beside, its kind, its goal as text, its verdict, what fed it, which assumptions it rests on, which runtime checks it depends on, and a witness if it was refuted. Here is one cup from the wrong-cup isqrt variant, as recorded in the test oracle, with the research file’s line numbers. In that file the <code>prove 2</code> meant for <code>local.set $r</code> was moved one line down, so it now feeds the back-edge:</p>
-  <pre class="code">{ "line": 54, "kind": "Refinement", "goal": "u(#r + 1) ≤ 65535 (refined local $r)",
+  <h2>8 · What the checker hands the editor</h2>
+  <p>For each function the kernel returns a list of cups, line errors and lane chips, and the editor draws only from that list (research 16 §4.3). Each cup records its line, the operand it sits beside, its kind, its goal as text, its verdict, what fed it, which assumptions it rests on, which runtime checks it depends on, and a witness if it was refuted. Here are two cups from the wrong-override isqrt variant, as recorded in the test oracle (<code>research/v2-examples/isqrt-wrong-cup.expect.json</code>, abridged, with that file’s raw line numbers). The first was fed automatically. The second was taken by the explicit <code>prove 1</code> on line 51:</p>
+  <pre class="code">{ "line": 53, "kind": "BackEdge", "goal": "$sq_le(ext_u(#r'), ext_u($n)), #r' = i32.add(#r, 1)",
+  "verdict": "proven",
+  "feed": { "by": <span class="sp">"auto"</span>, "hyps": [ { "fact": "u(mul(add(ext_u($r), 1), add(ext_u($r), 1))) ≤ u(ext_u($n))",
+                               "line": 47, "origin": "br_if fall-through" } ] }, … }
+{ "line": 52, "kind": "Refinement", "goal": "u(#r + 1) ≤ 65535 (refined local $r)",
   "verdict": <span class="sp">"runtime-checked"</span>, "feed": { "by": "none" },
-  "strict_error": "$r needs ⟨u(r+1) ≤ 65535⟩; nothing feeds it",
-  "why": "no prove line directly above line 54 any more; lookup finds only u(#r) &lt; 65535,
-          about the old value of $r." }</pre>
-  <p>Two other cups in the same function are now <i>proven*</i>: their derivation is valid, but it rests on that check (<code>"depends_on_checks": [54]</code>). The kernel reports one line error, “prove has nothing to feed”, on the displaced line. The oracle for all 13 examples is 201 cups, each hand-derived from the rule cards. The kernel matches 201 of 201, and the test asserts it (<a href="../research/17-kernel-review-fable.html">research 17</a>). The decision procedure was fuzzed against exhaustive 8-bit evaluation and gave 0 unsound answers in 700 cases.</p>
+  "strict_error": "needs ⟨u(add($r, 1)) ≤ u(65535)⟩; nothing feeds it (the prove at line 51 failed: could not decide (inexact step on u($r)); add a lemma; hypotheses […])", … }</pre>
+  <p>A <code>feed</code> is <code>lookup</code> (the matched fact), <code>eval</code>, <code>auto</code> (the facts the automatic proof used, top of lane first, after every fact it did not need was dropped), <code>prove</code> (an override line and the facts it took), <code>dead</code>, or <code>none</code>. The editor draws one wire per listed fact, so a proof the kernel found looks exactly like one you wrote. The oracle for the 15 examples is 214 cups. It was first derived by hand from the rule cards (<a href="../research/17-kernel-review-fable.html">research 17</a>). After automatic proofs it was re-derived: formerly <code>prove</code>-fed cups take their feed from the kernel, and every verdict in the unchanged examples had to stay the same, cup for cup (<a href="../research/24-automatic-subsumption.html">research 24 §7</a>). The decision procedure was fuzzed against exhaustive 8-bit evaluation and gave 0 unsound answers in 700 cases.</p>
   <div class="tscroll"><table class="t">
     <tr><th>kind</th><th>where</th><th>feeds that work in the examples</th></tr>
     <tr><td>Bounds</td><td>every load and store</td><td>an <code>and 7</code> mask, a guard, a callee’s result type</td></tr>
     <tr><td>DivByZero</td><td><code>div</code>, <code>rem</code></td><td>the fall-through of <code>eqz</code> + <code>br_if</code></td></tr>
-    <tr><td>Refinement</td><td>call arguments, <code>local.set</code> of a refined local</td><td>lookup of a branch fact; <code>prove</code></td></tr>
+    <tr><td>Refinement</td><td>call arguments, <code>local.set</code> of a refined local</td><td>lookup of a branch fact; automatic, from a guard</td></tr>
     <tr><td>ResultRefinement</td><td>function exit</td><td>a block’s exit fact, found by lookup</td></tr>
-    <tr><td>BlockFact, LoopEntry, BackEdge</td><td><code>br</code>, <code>br_if</code>, <code>end</code>, <code>loop</code></td><td><code>prove k</code> from the invariant and the guard</td></tr>
-    <tr><td>False</td><td><code>unreachable</code></td><td><code>prove</code> from contradictory facts, or dead code</td></tr>
-    <tr><td>Measure</td><td>recursive predicates and lemmas</td><td>evaluation or <code>prove</code> that the measure decreases</td></tr>
+    <tr><td>BlockFact, LoopEntry, BackEdge</td><td><code>br</code>, <code>br_if</code>, <code>end</code>, <code>loop</code></td><td>automatic, from the invariant and the guard</td></tr>
+    <tr><td>False</td><td><code>unreachable</code></td><td>automatic, from contradictory facts, or dead code</td></tr>
+    <tr><td>Measure</td><td>recursive predicates and lemmas</td><td>evaluation, or automatic (a remainder is below its divisor for every value)</td></tr>
   </table></div>
 </section>
 
 <section id="s8" class="sec">
-  <h2>8 · Rules we kept, and what is actually proven</h2>
+  <h2>9 · Rules we kept, and what is actually proven</h2>
   <div class="rules">
     <div class="rule"><h4>Darkred means violated</h4><p>Darkred is used only for a refuted cup, a failed check or a failed <code>prove</code>. An unfed cup in gradual mode is gray, because a missing proof is not a bug.</p></div>
     <div class="rule"><h4>Held on this run is not proven</h4><p>A runtime-checked cup that passed on your run is still gray. Anything that rests on one carries a <code>*</code>. Nothing downstream of a check is ever drawn as plain proven.</p></div>
-    <div class="rule"><h4>Blame goes where the fix goes</h4><p>A missing proof, a wrong proof, a code bug and a spec bug each look different (§3, §4). The commentary sits on the line you would change.</p></div>
+    <div class="rule"><h4>Blame goes where the fix goes</h4><p>A missing proof, a wrong proof, a code bug and a spec bug each look different (§4, §5). The commentary sits on the line you would change.</p></div>
     <div class="rule"><h4>One margin, Codillon’s idiom</h4><p>Proof cups sit in the instruction’s own fraction, wires sit beside the value ribbons, and errors appear as far-right commentary. There is no side window you have to open to learn whether a line is safe.</p></div>
     <div class="rule"><h4>Erasure line for line</h4><p>Proof lines become <code>nop</code> and refinements are erased from the binary, so the line count is unchanged. The program you run is the program you proved, with exactly the same steps.</p></div>
-    <div class="rule"><h4>Explicit, not searched</h4><p>Every feed is a wire to a line you wrote. The kernel looks facts up and checks <code>prove</code> steps, but it never searches for a proof.</p></div>
+    <div class="rule"><h4>Found, then shown</h4><p>The kernel finds which facts imply a cup, with one bounded procedure run in a fixed order, so the same text gets the same proof everywhere. Then it draws what it found: the proposition on the line, a wire from each fact used, and an account one keystroke away. Automation removes the typing of proofs, not their visibility.</p></div>
   </div>
   <h3>Proven, assumed, runtime-checked, by example</h3>
   <div class="tscroll"><table class="t">
     <tr><th>example</th><th>cups</th><th>verdicts (kernel = oracle)</th><th>what the non-proven ones rest on</th></tr>
     <tr><td>parity</td><td>6</td><td>6 proven</td><td>—</td></tr>
+    <tr><td>even-shift</td><td>4</td><td>4 proven</td><td>—</td></tr>
     <tr><td>isqrt</td><td>9</td><td>9 proven</td><td>—</td></tr>
-    <tr><td>gcd</td><td>13</td><td>12 proven, 1 assumed</td><td>instructor axiom <code>gcd_ref_is_gcd</code>: Euclid’s reference <code>$gcd_ref</code> really computes a value satisfying <code>$is_gcd</code></td></tr>
+    <tr><td>gcd</td><td>14</td><td>13 proven, 1 assumed</td><td>instructor axiom <code>gcd_ref_is_gcd</code>: Euclid’s reference <code>$gcd_ref</code> really computes a value satisfying <code>$is_gcd</code></td></tr>
     <tr><td>primality (capstone)</td><td>31</td><td>19 proven, 12 assumed</td><td>three instructor axioms: <code>div_shrinks</code>, <code>sqrt_suffices</code>, <code>nd_extend</code> (the last provable by induction, kept as an axiom for length)</td></tr>
     <tr><td>hash table</td><td>29</td><td>22 proven (3 proven*), 7 runtime-checked</td><td>no memory frame rules: <code>$rep_ok</code> across a store</td></tr>
   </table></div>
@@ -45,14 +48,15 @@
     <li><b>Partial correctness.</b> A fully proven function never traps on an input that meets its entry contract, and it returns results that satisfy its result type. But ordinary loops and recursion are not proven to terminate, and call-stack exhaustion is excluded. Predicates, measures and lemmas must be total. Version 1 at least had <code>(@decreases …)</code>.</li>
     <li><b>No memory frame rules.</b> After a store, facts about memory-reading predicates are gone. Preserving a memory invariant across a store is runtime-checked or needs an instructor axiom (7 cups in the hash table).</li>
     <li><b>Nonlinear arithmetic</b> stops at monomial atoms plus interval substitution. Anything more needs a lemma.</li>
-    <li><b><code>prove k</code> is positional.</b> It takes the <code>k</code> most recent lane facts. Inserting an unrelated <code>call</code> or <code>br_if</code> between a fact and its <code>prove</code> silently changes which facts it takes (the wrong-cup isqrt is a two-line swap). An older fact must be re-cited through a fact local. Explicit references (<code>prove @14 @22</code>) remain an open question.</li>
+    <li><b>The override is positional.</b> <code>prove k</code> takes the <code>k</code> most recent lane facts, so inserting an unrelated <code>call</code> or <code>br_if</code> between a fact and its <code>prove</code> changes which facts it takes. It is now needed only for speed or steering. Explicit references (<code>prove @14 @22</code>) remain an open question.</li>
+    <li><b>Search has a cost.</b> Most functions check in well under a millisecond. Primality’s costly arm takes about 20 ms without its override, and each function has a budget of 16,384 automatic proof cases (research 24 §5, §7).</li>
     <li><b>Outside v2:</b> floats are opaque. <code>call_indirect</code>, tables, reference types, SIMD, multiple memories and <code>memory.grow</code> are not covered. There is no congruence for opaque terms (the gcd harness routes around it by naming values in locals), and no ghost integers, so harnesses compute in i64.</li>
-    <li><b>Proof lines to write.</b> The intro functions need four to six <code>prove</code> lines each. Version 1’s Z3 found that arithmetic on its own.</li>
+    <li><b>Facts to write.</b> The kernel does the arithmetic, not the insight. Loop invariants, refined locals, <code>unfold</code> steps, and lemmas for nonlinear steps are still written by hand. Its accounts are case analyses on the goal failing, not yet the forward chain a person would write.</li>
     <li><b>Instructor axioms are trusted.</b> The design allows an axiom to be justified outside Codillon, for example in Lean, but that bridge is not specified yet (open question 6).</li>
   </ul>
 </section>
 
 <footer>
-  <p><b>More:</b> <a href="../index.html">the study index</a> · <a href="00-refined-codillon.html">Refined Codillon, version 1, first iteration</a> · <a href="gcd-as-a-type.html#v2">gcd as a type, with the v2 proof in the editor</a> · research <a href="../research/15-input-proofs-as-values.html">15 (input: proofs as values)</a>, <a href="../research/16-v2-design.html">16 (v2 design)</a>, <a href="../research/18-annotations-to-proofs-as-values.html">18 (why v1 was replaced)</a>, <a href="../research/19-editor-review-fable.html">19 (editor review)</a> · <a href="../research/v2-examples/">the v2 examples and their oracle</a> · the fork’s source: <a href="https://github.com/jmandel/codillon/tree/proofs">github.com/jmandel/codillon/tree/proofs</a>.</p>
+  <p><b>More:</b> <a href="../index.html">the study index</a> · <a href="00-refined-codillon.html">Refined Codillon, version 1, first iteration</a> · <a href="gcd-as-a-type.html#v2">gcd as a type, with the v2 proof in the editor</a> · research <a href="../research/15-input-proofs-as-values.html">15 (input: proofs as values)</a>, <a href="../research/16-v2-design.html">16 (v2 design)</a>, <a href="../research/18-annotations-to-proofs-as-values.html">18 (why v1 was replaced)</a>, <a href="../research/24-automatic-subsumption.html">24 (automatic proofs)</a>, <a href="../research/19-editor-review-fable.html">19 (editor review)</a> · <a href="../research/v2-examples/">the v2 examples and their oracle</a> · the fork’s source: <a href="https://github.com/jmandel/codillon/tree/proofs">github.com/jmandel/codillon/tree/proofs</a>.</p>
   <p class="small dim">The large pictures are the real editor (<code>editor/v2/</code>), embedded live with <code>&amp;embed=1</code>. Small dashed-border figures are hand-drawn diagrams. Session verdicts are read live from the editor when the page and the editor share an origin. Otherwise the recorded expectation is shown and labelled. Fonts: MLModern, as bundled with Codillon, embedded.</p>
 </footer>

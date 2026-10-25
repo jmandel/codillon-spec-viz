@@ -14,7 +14,7 @@ body = ''.join(open(W + f).read() for f in ('body1.html', 'body2.html', 'body3.h
 html = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Refined Codillon, version 2</title><link rel="icon" href="data:,">
-<meta name="description" content="A walkthrough of Refined Codillon v2: proofs as values in a fact lane, prove k, block types as invariants, four verdicts, and vericoding, shown in the real editor.">
+<meta name="description" content="A walkthrough of Refined Codillon v2: refinements in the types, proofs the kernel finds and draws in a fact lane, block types as invariants, four verdicts, and vericoding, shown in the real editor.">
 <style>
 {fonts}
 {open(W + 'style.css').read()}

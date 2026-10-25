@@ -61,7 +61,10 @@
     const fr = { el, f: $('iframe', el), a: $('a.openlink', el), cp: $('.livecap', el), token: 0, loads: 0, reported: 0, target: null, frag: null };
     fr.f.addEventListener('load', () => { fr.ready = true; aim(fr); });
     FRAMES.push(fr);
+    // the editor reads #cursor= and #proofs=all only when it starts, so a state that has (or had) one reloads the frame
+    const startupOnly = f => /(^|&)(cursor|proofs)=/.test(f || '');
     fr.set = (st) => {
+      if (!st.reload && (startupOnly(st.frag) || startupOnly(fr.frag))) st = Object.assign({}, st, { reload: true });
       fr.frag = st.frag; fr.target = st.sel ? { sel: st.sel } : (st.line != null ? { line: st.line, soft: !!st.soft } : null);
       if (FILE) {
         fr.f.style.display = 'none';
