@@ -21,14 +21,14 @@ rule cards R1–R35 and the decision procedure of §3.
 | `gcd.wat` | `$gcd_ref` (recursive, measure), `unfold`, bounded `$is_gcd` predicate, 1 instructor axiom | 14 | 13 proven, 1 assumed |
 | `gcd-bug-guard.wat` | code bug G1: guard on the wrong variable (div cup unfed) | 14 | 10 proven (2 relative to checks), 3 runtime-checked (2 refuted by runs), 1 assumed |
 | `gcd-vacuous.wat` | **vacuous spec**: unsatisfiable harness precondition proves False without the axiom | 13 | 13 proven, flagged by the adequacy check |
-| `primality.wat` (**capstone**, not intro material) | `$prime_spec` vs `$prime` (`d > n/d`), 3 measures, induction lemma, 3 instructor axioms; keeps one deliberate `prove 4` pair as an override (commented) | 31 | 19 proven, 12 assumed |
+| `primality.wat` (**capstone**, not intro material) | `$prime_spec` vs `$prime` (`d > n/d`), 3 measures, induction lemma, 3 instructor axioms; keeps one deliberate `prove 7` as an override (commented: it saves about 20 ms of search) | 31 | 19 proven, 12 assumed |
 | `hashtable.wat` | 8-slot open addressing with tombstones; bounds on every load/store; `$rep_ok` over memory | 29 | 22 proven (3 relative to the check at line 322), 7 runtime-checked |
 | `hashtable-stale.wat` | **wrong proof (stale fact)**: increment before the store | 29 | 21 proven, 8 runtime-checked (bounds cup refuted: OOB trap) |
 | `hashtable-bug-tombstone.wat` | code bug: `$remove` writes 0, not a tombstone | 29 | 22 proven, 7 runtime-checked (2 refuted by runs) |
 
 **Automatic subsumption (R5a, `../24-automatic-subsumption.md`).** The examples carry no routine `prove`
 lines: the kernel feeds those cups itself from the relevant in-scope facts (`feed.by: "auto"`, with the facts it
-used as `hyps`). `prove` lines remain only as deliberate overrides: `primality.wat` (a commented pair that saves
+used as `hyps`). `prove` lines remain only as deliberate overrides: `primality.wat` (one commented `prove 7` that saves
 search time) and `isqrt-wrong-cup.wat` (the seeded wrong one). The seeded bugs are now missing or wrong *facts*
 (a deleted parameter type, a deleted loop invariant) or a wrong override, since a missing proof line is no longer a
 bug. After R5a the oracle was re-derived: line numbers remapped mechanically, and each formerly `prove`-fed cup's
