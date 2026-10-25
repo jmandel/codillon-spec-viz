@@ -10,19 +10,29 @@ rule cards R1–R35 and the decision procedure of §3.
 
 | file | what it shows | cups | verdicts |
 |---|---|---|---|
+| `even-shift.wat` | an even x: `(x>>1)·2 − x = 0`, for `shr_u` and `shr_s`; the readability benchmark for proof accounts | 4 | 4 proven |
 | `parity.wat` | evenness gate, `$half` precondition, `$hon_ok` relational result | 6 | 6 proven |
-| `parity-missing-proof.wat` | **missing proof**: `prove 1` deleted in `$half` | 6 | 5 proven, 1 runtime-checked |
+| `parity-missing-proof.wat` | **missing fact**: `$half`'s parameter lost its type `(i32 \| $is_even)` | 5 | 4 proven, 1 runtime-checked |
 | `parity-bug-gate.wat` | code bug P1: gate inverted | 6 | 4 proven (2 of them relative to checks), 2 runtime-checked (both refuted by runs) |
 | `isqrt.wat` | loop invariant as block type, refined local, monomial `r²`, harness | 9 | 9 proven |
 | `isqrt-harness-bug.wat` | **spec bug**: harness computes in i32, `(r+1)²` wraps at r = 65535 | 9 | 8 proven, 1 runtime-checked (refuted at n = 2³²−1) |
-| `isqrt-wrong-cup.wat` | **wrong proof**: a `prove` feeds the back-edge instead of `local.set` | 9 | 8 proven (2 relative to the check at line 54), 1 runtime-checked, plus a `prove has nothing to feed` line error |
-| `gcd.wat` | `$gcd_ref` (recursive, measure), `unfold`, bounded `$is_gcd` predicate, 1 instructor axiom | 13 | 12 proven, 1 assumed |
-| `gcd-bug-guard.wat` | code bug G1: guard on the wrong variable (div cup unfed) | 13 | 9 proven (2 relative to checks), 3 runtime-checked (2 refuted by runs), 1 assumed |
-| `gcd-vacuous.wat` | **vacuous spec**: unsatisfiable harness precondition proves False without the axiom | 12 | 12 proven, flagged by the adequacy check |
-| `primality.wat` (**capstone**, not intro material) | `$prime_spec` vs `$prime` (`d > n/d`), 3 measures, induction lemma, 3 instructor axioms | 31 | 19 proven, 12 assumed |
-| `hashtable.wat` | 8-slot open addressing with tombstones; bounds on every load/store; `$rep_ok` over memory | 29 | 22 proven (3 relative to the check at line 333), 7 runtime-checked |
+| `isqrt-wrong-cup.wat` | **wrong proof**: a deliberate `prove 1` override names the wrong fact; an explicit prove is final | 9 | 8 proven, 1 runtime-checked, plus the failed prove's line error |
+| `isqrt-missing-invariant.wat` | **missing invariant**: the loop's fact `sq_le(r, n)` deleted | 7 | 5 proven, 2 runtime-checked |
+| `gcd.wat` | `$gcd_ref` (recursive, measure), `unfold`, bounded `$is_gcd` predicate, 1 instructor axiom | 14 | 13 proven, 1 assumed |
+| `gcd-bug-guard.wat` | code bug G1: guard on the wrong variable (div cup unfed) | 14 | 10 proven (2 relative to checks), 3 runtime-checked (2 refuted by runs), 1 assumed |
+| `gcd-vacuous.wat` | **vacuous spec**: unsatisfiable harness precondition proves False without the axiom | 13 | 13 proven, flagged by the adequacy check |
+| `primality.wat` (**capstone**, not intro material) | `$prime_spec` vs `$prime` (`d > n/d`), 3 measures, induction lemma, 3 instructor axioms; keeps one deliberate `prove 4` pair as an override (commented) | 31 | 19 proven, 12 assumed |
+| `hashtable.wat` | 8-slot open addressing with tombstones; bounds on every load/store; `$rep_ok` over memory | 29 | 22 proven (3 relative to the check at line 322), 7 runtime-checked |
 | `hashtable-stale.wat` | **wrong proof (stale fact)**: increment before the store | 29 | 21 proven, 8 runtime-checked (bounds cup refuted: OOB trap) |
 | `hashtable-bug-tombstone.wat` | code bug: `$remove` writes 0, not a tombstone | 29 | 22 proven, 7 runtime-checked (2 refuted by runs) |
+
+**Automatic subsumption (R5a, `../24-automatic-subsumption.md`).** The examples carry no routine `prove`
+lines: the kernel feeds those cups itself from the relevant in-scope facts (`feed.by: "auto"`, with the facts it
+used as `hyps`). `prove` lines remain only as deliberate overrides: `primality.wat` (a commented pair that saves
+search time) and `isqrt-wrong-cup.wat` (the seeded wrong one). The seeded bugs are now missing or wrong *facts*
+(a deleted parameter type, a deleted loop invariant) or a wrong override, since a missing proof line is no longer a
+bug. After R5a the oracle was re-derived: line numbers remapped mechanically, and each formerly `prove`-fed cup's
+feed taken from the kernel; verdicts were required to stay the same, and they did in every unchanged example.
 
 Axioms (all instructor-supplied, `axiom:` exports): `gcd_ref_is_gcd` (gcd.wat), `div_shrinks`, `sqrt_suffices`,
 `nd_extend` (primality.wat; `nd_extend` is provable by induction in v2 and is an axiom only to keep the file short).
@@ -48,7 +58,7 @@ Lemmas with proofs: `lemma:from_agrees` (induction via `measure:from_agrees`), `
   drawn as *proven\* relative to checks* and its function is not VERIFIED (design §4.1).
 - `after_runs` (optional) describes runs of the **instrumented** program (gradual mode, checks inserted): the first
   failing check refutes its cup, with the witness input.
-- `feed.by` is `lookup` (with the matched fact), `prove` (the `prove` line and its hypotheses, top of lane first),
+- `feed.by` is `lookup` (with the matched fact), `prove` (the `prove` line and its hypotheses, top of lane first), `auto` (R5a: the facts the automatic proof used, top of lane first),
   `eval`, `dead` (ex falso after a branch), or `none`. Failed proves are in `prove_error`; stale facts in `stale_hint`.
 - Other optional keys: `prove_error` (the failing `prove` line and its text, which lists the hypotheses taken),
   `stale_hint`, `strict_error`, `hyps_tried`, `assumptions` (axioms an assumed cup rests on), `adequacy` (vacuity
